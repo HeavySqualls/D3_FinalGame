@@ -6,7 +6,7 @@ public class WindEffect : MonoBehaviour
 {
     private Vector3 _initialPos;
 
-    private int _randomDirection;   //8 random possibilities, North(up) being 1 and NW (up-left) being 8
+    private int _randomDirection;   
     [SerializeField]
     private Vector3[] _possibleDirections;
     private float _randomSpeed;
@@ -25,7 +25,7 @@ public class WindEffect : MonoBehaviour
     void Start()
     {
         _initialPos = transform.position;
-       //StartCoroutine(WindEffectOnFixedObjects());
+        StartCoroutine(WindEffectOnFixedObjects());
     }
 
     // Update is called once per frame
@@ -37,14 +37,28 @@ public class WindEffect : MonoBehaviour
 
     private IEnumerator WindEffectOnFixedObjects()
     {
+        int randomDirection;
+        float randomSpeed;
+        float randomDelay;
+        Vector3 chosenDirection;
+        Vector3 randomVelocity;
+
         while (true)
         {
-            _randomDirection = Random.Range(1, 9);
-            _randomSpeed = Random.Range(1f, 8f);
-            float randomVelocity = _randomDirection * _randomSpeed;
-        }
-        
+            randomDelay = Random.Range(0.5f, 2f);
+            randomSpeed = Random.Range(1f, 8f);
 
+            randomDirection = Random.Range(0, 8);
+            chosenDirection = _possibleDirections[randomDirection];
+            randomVelocity = chosenDirection * randomSpeed;
+            transform.Translate(randomVelocity * Time.deltaTime);
+
+            
+
+            yield return new WaitForSeconds(randomDelay);
+            transform.position = _initialPos;
+            
+        }     
     }
 
     private void FixedConstraints()
