@@ -13,12 +13,11 @@ public class WindOnUnit : MonoBehaviour
     void Start()
     {
         pCon = GetComponent<PlayerController>();
-
     }
 
     void FixedUpdate()
     {
-        if (inWindZone)
+        if (inWindZone && pCon.magBootsOn == false)
         {
             pCon.rb2d.AddForce(windZone.direction * windZone.strength);
         }
@@ -38,6 +37,7 @@ public class WindOnUnit : MonoBehaviour
     {
         if (coll.gameObject.tag == "WindZone")
         {
+            pCon.rb2d.velocity = Vector3.zero;
             windZone = null;
             inWindZone = false;
         }

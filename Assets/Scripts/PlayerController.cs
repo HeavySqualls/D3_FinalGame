@@ -7,6 +7,7 @@ public class PlayerController : Character_Base
     public bool pIsFlipped;
     public bool isInteractable;
     public bool isDead = false;
+    public bool magBootsOn = false;
     //public bool isFrozen = true;
 
     [Space]
@@ -45,6 +46,7 @@ public class PlayerController : Character_Base
     {
         base.Update();
         ComputeVelocity();
+        MagBoots();
         //Interaction();
 
         //if (isFrozen)
@@ -54,6 +56,21 @@ public class PlayerController : Character_Base
     public void Destruction()
     {
         Destroy(gameObject);
+    }
+
+    public void MagBoots()
+    {
+        if (Input.GetKeyUp(KeyCode.E) && !magBootsOn)
+        {
+            print("MagBoots Activated: " + magBootsOn);
+            magBootsOn = true;
+            rb2d.velocity = Vector3.zero;
+        }
+        else if (Input.GetKeyUp(KeyCode.E) && magBootsOn)
+        {
+            print("MagBoots Activated: " + magBootsOn);
+            magBootsOn = false;
+        }
     }
 
     protected override void ComputeVelocity()
