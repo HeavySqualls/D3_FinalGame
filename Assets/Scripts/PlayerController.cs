@@ -80,16 +80,19 @@ public class PlayerController : Character_Base
             Vector2 move = Vector2.zero;
             move.x = Input.GetAxis("Horizontal");
 
-            if (Input.GetButtonDown("Jump") && isGrounded)
+            if (!magBootsOn)
             {
-                velocity.y = jumpTakeoffSpeed;
-                animator.SetTrigger("jumping");
-            }
-            else if (Input.GetButtonUp("Jump"))
-            {
-                if (velocity.y > 0)
+                if (Input.GetButtonDown("Jump") && isGrounded)
                 {
-                    velocity.y = velocity.y * 0.5f;
+                    velocity.y = jumpTakeoffSpeed;
+                    animator.SetTrigger("jumping");
+                }
+                else if (Input.GetButtonUp("Jump"))
+                {
+                    if (velocity.y > 0)
+                    {
+                        velocity.y = velocity.y * 0.5f;
+                    }
                 }
             }
 
