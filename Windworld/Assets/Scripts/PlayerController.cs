@@ -66,24 +66,24 @@ public class PlayerController : Character_Base
             if (Input.GetButtonDown("Jump") && isGrounded)
             {
                 velocity.y = jumpTakeoffSpeed;
+                animator.SetTrigger("jumping");
             }
             else if (Input.GetButtonUp("Jump"))
             {
                 if (velocity.y > 0)
                 {
                     velocity.y = velocity.y * 0.5f;
-                    animator.SetTrigger("jumping");
                 }
             }
 
-            bool flipPlayerSprite = (spriteRenderer.flipX ? (move.x > 0.01f) : (move.x < -0.01f));
+            bool flipPlayerSprite = (spriteRenderer.flipX ? (move.x > 0.0001f) : (move.x < -0.0001f));
             if (flipPlayerSprite)
             {
                 pIsFlipped = !pIsFlipped;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
             }
 
-            //animator.SetBool("grounded", isGrounded);
+            animator.SetBool("grounded", isGrounded);
             animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
             targetVelocity = move * maxSpeed;
         }
