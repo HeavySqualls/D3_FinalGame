@@ -8,38 +8,21 @@ public class PlayerController : Character_Base
     public bool isInteractable;
     public bool isDead = false;
     public bool magBootsOn = false;
-    //public bool isFrozen = true;
 
     [Space]
     [Header("Player Stats:")]
     public float jumpTakeoffSpeed = 6f;
     public float maxSpeed = 2f;
-    //public float damageOutput;
-    //public int health = 100;
-
-    //[Space]
-    //[Header("Player Score:")]
-    //public int timesPlayerDied = 0;
-    //public int enemiesKilled = 0;
-    //public float totalTime = 0;
 
     [Space]
     [Header("Player Refrences:")]
-    //public Transform spawnZone;
-    //public GameObject interactableItem;
-    //private GameManager gm;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
-    //private PlayerUI pUI;
 
     void Awake()
     {
-        //gm = Toolbox.GetInstance().GetGameManager();
-        //pUI = GetComponentInChildren<PlayerUI>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
-
-        //pUI.SetAmmo(ammo);
     }
 
     protected override void Update()
@@ -47,15 +30,6 @@ public class PlayerController : Character_Base
         base.Update();
         ComputeVelocity();
         MagBoots();
-        //Interaction();
-
-        //if (isFrozen)
-        //    isGrounded = true;
-    }
-
-    public void Destruction()
-    {
-        Destroy(gameObject);
     }
 
     public void MagBoots()
@@ -75,7 +49,7 @@ public class PlayerController : Character_Base
 
     protected override void ComputeVelocity()
     {
-        if (!isDead /*&& !isFrozen*/)
+        if (!isDead)
         {
             Vector2 move = Vector2.zero;
             move.x = Input.GetAxis("Horizontal");
@@ -114,54 +88,8 @@ public class PlayerController : Character_Base
         velocity.y = jumpTakeoffSpeed;
     }
 
-    //public void DeliverScore()
-    //{
-    //    gm.RecieveScore(timesPlayerDied, bulletsCollected, enemiesKilled);
-    //}
-
-    //public void Respawn()
-    //{
-    //    gm.RestartLevel(false);
-    //}
-
-    //public void TakeDamage(int _damage)
-    //{
-    //    health -= _damage;
-    //    UpdateHealthUI();
-    //    StartCoroutine(IFlashRed(spriteRenderer));
-
-    //    if (health <= 0)
-    //    {
-    //        print("Player is DEAD");
-    //        isDead = true;
-    //        animator.SetBool("isDead", isDead);
-    //    }
-    //}
-
-    //public void UpdateHealthUI()
-    //{
-    //    pUI.SetHealth(health);
-    //}
-
-    //private void Interaction()
-    //{
-    //    if (interactableItem != null && !isDead)
-    //    {
-    //        if (interactableItem.GetComponent<Interactable_DoubleJump>() && Input.GetKeyDown(KeyCode.Mouse1))
-    //        {
-    //            interactableItem.GetComponent<Interact_Base>().OnInteracted();
-    //            print("Double jumped!");
-    //        }
-    //        else if (Input.GetKeyUp(KeyCode.E))
-    //        {
-    //            interactableItem.GetComponent<Interact_Base>().OnInteracted();
-    //            print("Picked up item");
-    //        }
-    //    }
-    //}
-
-    //public void InteractableItem(GameObject _interactableObject)
-    //{
-    //    interactableItem = _interactableObject;
-    //}
+    public void Destruction()
+    {
+        Destroy(gameObject);
+    }
 }

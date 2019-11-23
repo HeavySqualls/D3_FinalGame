@@ -8,10 +8,11 @@ public class Character_Base : MonoBehaviour
     public float gravityModifier = 1f;
 
     protected Vector2 targetVelocity;
-    protected bool isGrounded;
+
+    [SerializeField] protected bool isGrounded;
     protected Vector2 groundNormal;
     public Rigidbody2D rb2d;
-    protected Vector2 velocity;
+    [SerializeField] protected Vector2 velocity;
     protected ContactFilter2D contactFilter;
     protected RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
@@ -39,7 +40,10 @@ public class Character_Base : MonoBehaviour
 
     protected virtual void ComputeVelocity()
     {
-
+        if (velocity.y < 0)
+        {
+            velocity.y = 0;
+        }
     }
 
     void FixedUpdate()
@@ -61,18 +65,6 @@ public class Character_Base : MonoBehaviour
     {
         yield return new WaitForSeconds(2f);
         isGrounded = false;
-    }
-
-    protected IEnumerator IFlashRed(SpriteRenderer _thisFlashRenderer)
-    {
-        _thisFlashRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        _thisFlashRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.1f);
-        _thisFlashRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
-        _thisFlashRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.1f);
     }
 
     void Movement(Vector2 move, bool yMovement)
@@ -113,6 +105,18 @@ public class Character_Base : MonoBehaviour
         }
 
         rb2d.position = rb2d.position + move.normalized * distance;
+    }
+
+    protected IEnumerator IFlashRed(SpriteRenderer _thisFlashRenderer)
+    {
+        _thisFlashRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        _thisFlashRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.1f);
+        _thisFlashRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.1f);
+        _thisFlashRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.1f);
     }
 }
 
