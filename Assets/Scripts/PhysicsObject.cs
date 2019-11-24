@@ -2,17 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Character_Base : MonoBehaviour
+public class PhysicsObject : MonoBehaviour
 {
     public float minGroundNormalY = .65f;
     public float gravityModifier = 1f;
 
     protected Vector2 targetVelocity;
 
-    [SerializeField] protected bool isGrounded;
+    protected Vector2 direction;
+
+    [SerializeField] public bool isGrounded;
+
     protected Vector2 groundNormal;
     public Rigidbody2D rb2d;
-    [SerializeField] protected Vector2 velocity;
+    [SerializeField] public Vector2 velocity;
     protected ContactFilter2D contactFilter;
     protected RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
@@ -27,8 +30,8 @@ public class Character_Base : MonoBehaviour
 
     void Start()
     {
-        contactFilter.useTriggers = false;
-        contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(gameObject.layer));
+        contactFilter.useTriggers = false; // not checking collisions against triggers
+        contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(gameObject.layer)); // only grabs collisions on the layer that the player is on (see project settings > physics2d)
         contactFilter.useLayerMask = true;
     }
 
@@ -40,13 +43,10 @@ public class Character_Base : MonoBehaviour
 
     protected virtual void ComputeVelocity()
     {
-        if (velocity.y < 0)
-        {
-            velocity.y = 0;
-        }
+
     }
 
-    void FixedUpdate()
+    protected virtual void FixedUpdate()
     {
         velocity += gravityModifier * Physics2D.gravity * Time.deltaTime;
         velocity.x = targetVelocity.x;
@@ -55,15 +55,19 @@ public class Character_Base : MonoBehaviour
 
         Vector2 deltaPosition = velocity * Time.deltaTime;
         Vector2 moveAlongGround = new Vector2(groundNormal.y, -groundNormal.x);
+
+        // First calculate X movement
         Vector2 move = moveAlongGround * deltaPosition.x;
         Movement(move, false);
+
+        //Second calculate Y movement
         move = Vector2.up * deltaPosition.y;
         Movement(move, true);
     }
 
     protected IEnumerator NotGroundedDelay()
     {
-        yield return new WaitForSeconds(2f);
+        yield return new WaitForSeconds(1f);
         isGrounded = false;
     }
 
@@ -83,7 +87,8 @@ public class Character_Base : MonoBehaviour
             for (int i = 0; i < hitBufferList.Count; i++)
             {
                 Vector2 currentNormal = hitBufferList[i].normal;
-                if (currentNormal.y > minGroundNormalY)
+
+                if (currentNormal.y > minGroundNormalY) // represents the angle of the Y position relative to the ground (ie slopes)
                 {
                     isGrounded = true;
                     if (yMovement)
@@ -93,14 +98,15 @@ public class Character_Base : MonoBehaviour
                     }
                 }
 
-                float projection = Vector2.Dot(velocity, currentNormal);
+                // Prevents player from loosing velocity when interacting with another slope while in the air
+                float projection = Vector2.Dot(velocity, currentNormal); // Vector2.Dot returns zero if vectors are perpendicular
                 if (projection < 0)
                 {
                     velocity = velocity - projection * currentNormal;
                 }
 
                 float modifiedDistance = hitBufferList[i].distance - shellRadius;
-                distance = modifiedDistance < distance ? modifiedDistance : distance;
+                distance = modifiedDistance < distance ? modifiedDistance : distance; // if ModifiedDistance is less than distance, use modified distance, otherwise use distance
             }
         }
 

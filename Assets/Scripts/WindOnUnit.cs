@@ -7,6 +7,7 @@ public class WindOnUnit : MonoBehaviour
 
     public bool inWindZone = false;
     public WindArea windZone;
+    public Transform respawnZone;
 
     private PlayerController pCon;
 
@@ -47,7 +48,7 @@ public class WindOnUnit : MonoBehaviour
     {
         if (coll.gameObject.name == "DeathZone")
         {
-            pCon.Destruction();
+            pCon.gameObject.transform.position = respawnZone.position;
         }
     }
 }
