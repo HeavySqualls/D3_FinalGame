@@ -1,57 +1,62 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerController : PhysicsObject
 {
     [Space]
     [Header("STATUS:")]
-    public bool pIsFlipped;
     public bool isInteractable;
     public bool canMove = true;
     public bool magBootsOn = false;
-
+    [SerializeField] bool pIsFlipped;
+    [SerializeField] bool canJump = true;
 
     [Space]
-    [Header("MOVEMENT/JUMP:")]
+    [Header("MOVEMENT:")]
     public float maxSpeed = 2f;
-    public float jumpTakeoffSpeed = 6f;
-    [SerializeField] private float maxGraceTime = 0.12f;
-    [SerializeField] private float currentGraceTime;
 
+    [Space]
+    [Header("JUMP:")]
+    public float jumpTakeoffSpeed = 6f;
+    public float jumpDelay = 0.005f;
+    public float hardLandTime = 1f;
+    [SerializeField] bool inAir;
+    [SerializeField] float airTime = 0f;
+    [SerializeField] float maxGraceTime = 0.12f;
+    [SerializeField] float currentGraceTime;
+
+    [Space]
+    [Header("MAG BOOTS:")]
+    public float onGravValue = 10f;
 
     [Space]
     [Header("LEDGE CHECK:")]
-    private bool isTouchingLedge = false;
     public float ledgeCheckDistance = 1;
     public Transform ledgeCheck; // for checking if on the edge of a collider
-
     public bool canClimbLedge = false;
-    private bool ledgeDetected;
-
-    private Vector2 ledgePosBot;
-
-    private Vector2 ledgePos1;
     public float ledgeClimbXOffset1 = 0f;
-    public float ledgeClimbYOffset1 = 0f;
-
-    private Vector2 ledgePos2;
+    public float ledgeClimbYOffset1 = 0f; 
     public float ledgeClimbXOffset2 = 0f;
     public float ledgeClimbYOffset2 = 0f;
-
+    private Vector2 ledgePos1;
+    private Vector2 ledgePos2;
+    private Vector2 ledgePosBot;
+    private bool ledgeDetected;
+    private bool isTouchingLedge = false;
 
     [Space]
     [Header("WALL CHECK:")]
-    private bool isTouchingWall = false;
     public float wallCheckDistance = 1;
     public Transform wallCheck; // for checking if against wall
-
+    private bool isTouchingWall = false;
 
     [Space]
     [Header("GROUND CHECK:")]
-    [SerializeField] private bool isTouchingGround = false;
-    int whatIsGround;
     public float groundCheckDistance = 1;
     public Transform groundCheck; // for determining quick landing jump
-
+    [SerializeField] private bool isTouchingGround = false;
+    private int whatIsGround;
 
     [Space]
     [Header("REFERENCES:")]
@@ -77,6 +82,7 @@ public class PlayerController : PhysicsObject
         MagBoots();
         JumpTimer();
         CheckLedgeClimb();
+        TrackAirTime();
     }
 
     protected override void FixedUpdate()
@@ -85,15 +91,49 @@ public class PlayerController : PhysicsObject
         CheckSurroundings();
     }
 
-    void JumpTimer()
+
+    // ---- LOCOMOTION METHODS ---- //
+
+    protected override void ComputeVelocity()
     {
-        if (!isGrounded)
+        if (canMove)
         {
-            currentGraceTime -= Time.deltaTime;
-        }
-        else
-        {
-            currentGraceTime = maxGraceTime;
+            Vector2 move = Vector2.zero;
+            move.x = Input.GetAxis("Horizontal");
+
+            if (!magBootsOn && canJump)
+            {
+                if (Input.GetButtonDown("Jump") && isGrounded || Input.GetButtonDown("Jump") && currentGraceTime > 0 || isTouchingGround && !isGrounded && Input.GetButton("Jump"))
+                {
+                    velocity.y = jumpTakeoffSpeed;
+                    animator.SetTrigger("jumping");
+                    currentGraceTime = 0;
+                    StartCoroutine(JumpDelay());
+                    inAir = true;
+                }
+                else if (Input.GetButtonUp("Jump"))
+                {
+                    if (velocity.y > 0)
+                    {
+                        velocity.y = velocity.y * 0.5f;
+                    }
+                }
+            }
+
+            RapidJump();
+
+            bool flipPlayerSprite = (spriteRenderer.flipX ? (move.x > 0.0001f) : (move.x < -0.0001f));
+            if (flipPlayerSprite)
+            {
+                ChangeDirection();
+                pIsFlipped = !pIsFlipped;
+                spriteRenderer.flipX = !spriteRenderer.flipX;
+            }
+
+            animator.SetBool("grounded", isGrounded);
+
+            animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+            targetVelocity = move * maxSpeed;
         }
     }
 
@@ -110,13 +150,42 @@ public class PlayerController : PhysicsObject
             isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, whatIsGround);
             Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
 
-            if (isTouchingWall && !isTouchingLedge && !ledgeDetected)
+            if (isTouchingWall && !isTouchingLedge && !ledgeDetected /*&& Input.GetKey(KeyCode.Space)*/)
             {
                 ledgeDetected = true;
                 ledgePosBot = wallCheck.position;
             }
         }
     }
+    public void MagBoots()
+    {
+        if (Input.GetKeyUp(KeyCode.LeftShift) && !magBootsOn)
+        {
+            print("MagBoots Activated: " + magBootsOn);
+            magBootsOn = true;
+            rb2d.velocity = Vector3.zero;
+            gravityModifier = onGravValue;
+        }
+        else if (Input.GetKeyUp(KeyCode.LeftShift) && magBootsOn)
+        {
+            print("MagBoots Activated: " + magBootsOn);
+            magBootsOn = false;
+            gravityModifier = 6.35f;
+        }
+    }
+
+    private void ChangeDirection()
+    {
+        if (direction == Vector2.right)
+            direction = Vector2.left;
+        else
+            direction = Vector2.right;
+    }
+
+
+
+    // ---- LEDGE CLIMB METHODS ---- //
+
 
     private void CheckLedgeClimb()
     {
@@ -156,43 +225,16 @@ public class PlayerController : PhysicsObject
         animator.SetBool("canClimbLedge", canClimbLedge);
     }
 
-    protected override void ComputeVelocity()
+
+
+    // ---- JUMP METHODS ---- //
+
+
+    private IEnumerator JumpDelay()
     {
-        if (canMove)
-        {
-            Vector2 move = Vector2.zero;
-            move.x = Input.GetAxis("Horizontal");
-
-            if (!magBootsOn)
-            {
-                if (Input.GetButtonDown("Jump") && isGrounded || Input.GetButtonDown("Jump") && currentGraceTime > 0 || isTouchingGround && !isGrounded && Input.GetKey(KeyCode.Space))
-                {
-                    velocity.y = jumpTakeoffSpeed;
-                    animator.SetTrigger("jumping");
-                    currentGraceTime = 0;
-                }
-                else if (Input.GetButtonUp("Jump"))
-                {
-                    if (velocity.y > 0)
-                    {
-                        velocity.y = velocity.y * 0.5f;
-                    }
-                }
-            }
-
-            bool flipPlayerSprite = (spriteRenderer.flipX ? (move.x > 0.0001f) : (move.x < -0.0001f));
-            if (flipPlayerSprite)
-            {
-                ChangeDirection();
-                pIsFlipped = !pIsFlipped;
-                spriteRenderer.flipX = !spriteRenderer.flipX;
-            }
-
-
-            animator.SetBool("grounded", isGrounded);
-            animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
-            targetVelocity = move * maxSpeed;
-        }
+        canJump = false;
+        yield return new WaitForSeconds(jumpDelay);
+        canJump = true;
     }
 
     public void RapidJump()
@@ -202,30 +244,56 @@ public class PlayerController : PhysicsObject
             velocity.y = jumpTakeoffSpeed;
             animator.SetTrigger("jumping");
             currentGraceTime = 0;
+
+            inAir = false;
+            airTime = 0;
+            inAir = true;
         }
     }
 
-    private void ChangeDirection()
+    void JumpTimer()
     {
-        if (direction == Vector2.right)
-            direction = Vector2.left;
+        if (!isGrounded)
+        {
+            currentGraceTime -= Time.deltaTime;
+        }
         else
-            direction = Vector2.right;
+        {
+            currentGraceTime = maxGraceTime;
+        }
     }
 
-    public void MagBoots()
+    void TrackAirTime()
     {
-        if (Input.GetKeyUp(KeyCode.E) && !magBootsOn)
+        if (inAir)
         {
-            print("MagBoots Activated: " + magBootsOn);
-            magBootsOn = true;
-            rb2d.velocity = Vector3.zero;
+            airTime += Time.deltaTime;
+
+            if (isGrounded)
+            {
+                if (airTime > hardLandTime)
+                {
+                    animator.SetTrigger("land");
+                }
+
+                airTime = 0;
+                inAir = false;
+            }
         }
-        else if (Input.GetKeyUp(KeyCode.E) && magBootsOn)
-        {
-            print("MagBoots Activated: " + magBootsOn);
-            magBootsOn = false;
-        }
+    }
+
+
+
+    // ---- UTILITY ---- //
+
+    public void EnableMovement() // Called by the Animator at the moment
+    {
+        canMove = true;
+    }
+
+    public void DisableMovement() // Called by the Animator at the moment
+    {
+        canMove = false;
     }
 
     public void Destruction()

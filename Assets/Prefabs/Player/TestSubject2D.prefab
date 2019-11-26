@@ -100,7 +100,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 1242993176099357728}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -128,24 +128,29 @@ MonoBehaviour:
   isGrounded: 0
   rb2d: {fileID: 1242993176099357729}
   velocity: {x: 0, y: 0}
-  pIsFlipped: 0
   isInteractable: 0
   canMove: 1
   magBootsOn: 0
+  pIsFlipped: 0
+  canJump: 1
   maxSpeed: 12
   jumpTakeoffSpeed: 26
+  jumpDelay: 0.02
+  inAir: 0
+  airTime: 0
   maxGraceTime: 0.12
   currentGraceTime: 0
   ledgeCheckDistance: 0.75
   ledgeCheck: {fileID: 792494948184693284}
   canClimbLedge: 0
-  ledgeClimbXOffset1: -0.23
-  ledgeClimbYOffset1: 0.6
+  ledgeClimbXOffset1: -0.2
+  ledgeClimbYOffset1: 0.55
   ledgeClimbXOffset2: 1.7
   ledgeClimbYOffset2: 2.65
   wallCheckDistance: 0.75
   wallCheck: {fileID: 8395342489049737418}
-  groundCheckDistance: 0.5
+  isTouchingGround: 0
+  groundCheckDistance: 1
   groundCheck: {fileID: 450504362977715217}
 --- !u!114 &1242993176099357720
 MonoBehaviour:
@@ -173,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inWindZone: 0
   windZone: {fileID: 0}
+  respawnZone: {fileID: 0}
 --- !u!95 &1242993176099357723
 Animator:
   serializedVersion: 3
