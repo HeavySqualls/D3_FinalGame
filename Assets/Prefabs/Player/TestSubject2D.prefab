@@ -136,10 +136,12 @@ MonoBehaviour:
   maxSpeed: 12
   jumpTakeoffSpeed: 26
   jumpDelay: 0.02
+  hardLandTime: 1
   inAir: 0
   airTime: 0
   maxGraceTime: 0.12
   currentGraceTime: 0
+  onGravValue: 10
   ledgeCheckDistance: 0.75
   ledgeCheck: {fileID: 792494948184693284}
   canClimbLedge: 0
@@ -149,9 +151,9 @@ MonoBehaviour:
   ledgeClimbYOffset2: 2.65
   wallCheckDistance: 0.75
   wallCheck: {fileID: 8395342489049737418}
-  isTouchingGround: 0
   groundCheckDistance: 1
   groundCheck: {fileID: 450504362977715217}
+  isTouchingGround: 0
 --- !u!114 &1242993176099357720
 MonoBehaviour:
   m_ObjectHideFlags: 0

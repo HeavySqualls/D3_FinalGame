@@ -9,8 +9,8 @@ public class PlayerController : PhysicsObject
     public bool isInteractable;
     public bool canMove = true;
     public bool magBootsOn = false;
-    [SerializeField] bool pIsFlipped;
-    [SerializeField] bool canJump = true;
+    private bool pIsFlipped;
+    private bool canJump = true;
 
     [Space]
     [Header("MOVEMENT:")]
@@ -101,9 +101,12 @@ public class PlayerController : PhysicsObject
             Vector2 move = Vector2.zero;
             move.x = Input.GetAxis("Horizontal");
 
-            if (!magBootsOn && canJump)
+            if (!magBootsOn && canJump) 
             {
-                if (Input.GetButtonDown("Jump") && isGrounded || Input.GetButtonDown("Jump") && currentGraceTime > 0 || isTouchingGround && !isGrounded && Input.GetButton("Jump"))
+                if (Input.GetButtonDown("Jump") && isGrounded || 
+                    Input.GetButtonDown("Jump") && currentGraceTime > 0 || 
+                    isTouchingGround && !isGrounded && Input.GetButton("Jump")
+                    )
                 {
                     velocity.y = jumpTakeoffSpeed;
                     animator.SetTrigger("jumping");
@@ -117,6 +120,10 @@ public class PlayerController : PhysicsObject
                     {
                         velocity.y = velocity.y * 0.5f;
                     }
+                }
+                else if (!isGrounded)
+                {
+                    inAir = true;
                 }
             }
 

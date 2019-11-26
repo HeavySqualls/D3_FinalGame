@@ -43,7 +43,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected virtual void ComputeVelocity()
     {
-
+        // Handled inside the controller script
     }
 
     protected virtual void FixedUpdate()
