@@ -54,6 +54,7 @@ public class PhysicsObject : MonoBehaviour
         velocity.x = targetVelocity.x;
 
         isGrounded = false;
+        isOnWall = false;
 
         Vector2 deltaPosition = velocity * Time.deltaTime;
         Vector2 moveAlongGround = new Vector2(groundNormal.y, -groundNormal.x);
@@ -77,6 +78,16 @@ public class PhysicsObject : MonoBehaviour
     {
         float distance = move.magnitude;
 
+        if (currentNormal.x > minWallNormalX) // represents the angle of the Y position relative to the ground (ie slopes)
+        {
+            isOnWall = true;
+            if (yMovement)
+            {
+                groundNormal = currentNormal;
+                currentNormal.x = 0;
+            }
+        }
+
         if (distance > minMoveDistance)
         {
             int count = rb2d.Cast(move, contactFilter, hitBuffer, distance + shellRadius);
@@ -93,16 +104,6 @@ public class PhysicsObject : MonoBehaviour
                 if (currentNormal.y > minGroundNormalY) // represents the angle of the Y position relative to the ground (ie slopes)
                 {
                     isGrounded = true;
-                    if (yMovement)
-                    {
-                        groundNormal = currentNormal;
-                        currentNormal.x = 0;
-                    }
-                }
-
-                if (currentNormal.x > minWallNormalX) // represents the angle of the Y position relative to the ground (ie slopes)
-                {
-                    isOnWall = true;
                     if (yMovement)
                     {
                         groundNormal = currentNormal;

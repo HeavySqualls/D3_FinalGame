@@ -18,7 +18,7 @@ public class WindOnUnit : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (inWindZone && pCon.magBootsOn == false)
+        if (inWindZone && pCon.magBootsOn == false && !pCon.isOnWall)
         {
             pCon.rb2d.velocity = windZone.direction * windZone.strength;
         }
