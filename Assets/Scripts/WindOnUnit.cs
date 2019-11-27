@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WindOnUnit : MonoBehaviour
 {
-
     public bool inWindZone = false;
     public WindArea windZone;
     public Transform respawnZone;
@@ -16,11 +15,17 @@ public class WindOnUnit : MonoBehaviour
         pCon = GetComponent<PlayerController>();
     }
 
-    void FixedUpdate()
+    void Update()
     {
-        if (inWindZone && pCon.magBootsOn == false && !pCon.isOnWall)
+        if (!pCon.isOnWall && inWindZone && pCon.magBootsOn == false)
         {
             pCon.rb2d.velocity = windZone.direction * windZone.strength;
+            print(pCon.rb2d.velocity);
+        }
+        else if (inWindZone && pCon.isOnWall)
+        {
+            print("Hit wall");
+            //pCon.AutoMove();
         }
     }
 

@@ -98,13 +98,14 @@ public class PlayerController : PhysicsObject
 
     // ---- LOCOMOTION METHODS ---- //
 
+    Vector2 move;
     protected override void ComputeVelocity()
     {
         if (canMove)
         {
-            Vector2 move = Vector2.zero;
+            move = Vector2.zero;
             move.x = Input.GetAxis("Horizontal");
-
+            
             Jump();
 
             RapidJump();
@@ -122,6 +123,12 @@ public class PlayerController : PhysicsObject
             animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
             targetVelocity = move * maxSpeed;
         }
+    }
+
+    public void AutoMove()
+    {
+        move.x = 0.1f;
+        targetVelocity = move * maxSpeed;
     }
 
     private void CheckSurroundings()
