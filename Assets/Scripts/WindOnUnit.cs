@@ -20,7 +20,7 @@ public class WindOnUnit : MonoBehaviour
     {
         if (inWindZone && pCon.magBootsOn == false)
         {
-            pCon.rb2d.AddForce(windZone.direction * windZone.strength);
+            pCon.rb2d.velocity = windZone.direction * windZone.strength;
         }
     }
 
