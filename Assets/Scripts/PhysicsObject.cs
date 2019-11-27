@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class PhysicsObject : MonoBehaviour
 {
-    public float minGroundNormalY = .65f;
+    public float minWallNormalX = 0.65f;
+    public float minGroundNormalY = 0.65f;
     public float gravityModifier = 1f;
 
     protected Vector2 targetVelocity;
-
+    protected Vector2 currentNormal;
     protected Vector2 direction;
 
+    [SerializeField] public bool isOnWall;
     [SerializeField] public bool isGrounded;
 
     protected Vector2 groundNormal;
@@ -86,11 +88,21 @@ public class PhysicsObject : MonoBehaviour
 
             for (int i = 0; i < hitBufferList.Count; i++)
             {
-                Vector2 currentNormal = hitBufferList[i].normal;
+                currentNormal = hitBufferList[i].normal;
 
                 if (currentNormal.y > minGroundNormalY) // represents the angle of the Y position relative to the ground (ie slopes)
                 {
                     isGrounded = true;
+                    if (yMovement)
+                    {
+                        groundNormal = currentNormal;
+                        currentNormal.x = 0;
+                    }
+                }
+
+                if (currentNormal.x > minWallNormalX) // represents the angle of the Y position relative to the ground (ie slopes)
+                {
+                    isOnWall = true;
                     if (yMovement)
                     {
                         groundNormal = currentNormal;
