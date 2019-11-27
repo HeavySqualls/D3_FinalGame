@@ -131,17 +131,17 @@ MonoBehaviour:
   isInteractable: 0
   canMove: 1
   magBootsOn: 0
-  pIsFlipped: 0
-  canJump: 1
   maxSpeed: 12
   jumpTakeoffSpeed: 26
-  jumpDelay: 0.02
-  hardLandTime: 1
+  hardLandTime: 0.85
+  heavyLandTime: 1.2
   inAir: 0
   airTime: 0
   maxGraceTime: 0.12
   currentGraceTime: 0
-  onGravValue: 10
+  onGravValue: 25
+  bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
+    type: 3}
   ledgeCheckDistance: 0.75
   ledgeCheck: {fileID: 792494948184693284}
   canClimbLedge: 0
@@ -151,6 +151,7 @@ MonoBehaviour:
   ledgeClimbYOffset2: 2.65
   wallCheckDistance: 0.75
   wallCheck: {fileID: 8395342489049737418}
+  bottom: {x: 0, y: 0, z: 0}
   groundCheckDistance: 1
   groundCheck: {fileID: 450504362977715217}
   isTouchingGround: 0

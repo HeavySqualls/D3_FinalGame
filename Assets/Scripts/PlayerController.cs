@@ -19,8 +19,8 @@ public class PlayerController : PhysicsObject
     [Space]
     [Header("JUMP:")]
     public float jumpTakeoffSpeed = 6f;
-    public float jumpDelay = 0.005f;
     public float hardLandTime = 1f;
+    public float heavyLandTime = 1.5f;
     [SerializeField] bool inAir;
     [SerializeField] float airTime = 0f;
     [SerializeField] float maxGraceTime = 0.12f;
@@ -29,6 +29,7 @@ public class PlayerController : PhysicsObject
     [Space]
     [Header("MAG BOOTS:")]
     public float onGravValue = 10f;
+    public ParticleSystem bootSparks;
 
     [Space]
     [Header("LEDGE CHECK:")]
@@ -53,7 +54,7 @@ public class PlayerController : PhysicsObject
 
     [Space]
     [Header("GROUND CHECK:")]
-    Vector2 bottom;
+    public Vector3 bottom;
     public float groundCheckDistance = 1;
     public Transform groundCheck; // for determining quick landing jump
     [SerializeField] private bool isTouchingGround = false;
@@ -61,6 +62,7 @@ public class PlayerController : PhysicsObject
 
     [Space]
     [Header("REFERENCES:")]
+    private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
     private Animator animator;
 
@@ -69,6 +71,7 @@ public class PlayerController : PhysicsObject
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         direction = Vector2.right;
+        ripPP = Camera.main.GetComponent<RipplePostProcessor>();
     }
 
     void Start()
@@ -143,19 +146,42 @@ public class PlayerController : PhysicsObject
     }
     public void MagBoots()
     {
-        if (Input.GetKeyUp(KeyCode.LeftShift) && !magBootsOn)
+        if (Input.GetKeyUp(KeyCode.Mouse1) && !magBootsOn)
         {
             print("MagBoots Activated: " + magBootsOn);
-            magBootsOn = true;
-            rb2d.velocity = Vector3.zero;
-            gravityModifier = onGravValue;
+
+            if (!isGrounded)
+            {
+                StartCoroutine(MagBootsOn());
+            }
+            else
+            {
+                magBootsOn = true;
+                rb2d.velocity = Vector3.zero;
+                gravityModifier = onGravValue;
+                ripPP.CauseRipple(groundCheck, 12f, 0.5f);
+            }
         }
-        else if (Input.GetKeyUp(KeyCode.LeftShift) && magBootsOn)
+        else if (Input.GetKeyUp(KeyCode.Mouse1) && magBootsOn)
         {
             print("MagBoots Activated: " + magBootsOn);
             magBootsOn = false;
             gravityModifier = 6.35f;
         }
+    }
+
+    private IEnumerator MagBootsOn()
+    {
+        magBootsOn = true;
+        canMove = false;
+        gravityModifier = 0;
+        rb2d.velocity = Vector3.zero;
+        ripPP.CauseRipple(groundCheck, 15f, 0.95f);
+
+        yield return new WaitForSeconds(0.25f);
+
+        gravityModifier = onGravValue;
+        canMove = true;
     }
 
     private void ChangeDirection()
@@ -217,7 +243,7 @@ public class PlayerController : PhysicsObject
 
     private void Jump()
     {
-        if (!magBootsOn && canJump)
+        if (!magBootsOn)
         {
             if (Input.GetButtonDown("Jump") && isGrounded && canJump ||
                 Input.GetButtonDown("Jump") && currentGraceTime > 0 && canJump ||
@@ -227,19 +253,14 @@ public class PlayerController : PhysicsObject
                 velocity.y = jumpTakeoffSpeed;
                 animator.SetTrigger("jumping");
                 currentGraceTime = 0;
-                inAir = true;
                 canJump = false;
             }
             else if (Input.GetButtonUp("Jump"))
-            {
+            {            
                 if (velocity.y > 0)
                 {
                     velocity.y = velocity.y * 0.5f;
                 }
-            }
-            else if (!isGrounded)
-            {
-                inAir = true;
             }
         }
 
@@ -266,6 +287,7 @@ public class PlayerController : PhysicsObject
     {
         if (!isGrounded)
         {
+            inAir = true;
             currentGraceTime -= Time.deltaTime;
         }
         else
@@ -285,6 +307,19 @@ public class PlayerController : PhysicsObject
                 if (airTime > hardLandTime)
                 {
                     animator.SetTrigger("land");
+                    ripPP.CauseRipple(groundCheck, 12f, 0.8f);
+                }
+                else if (airTime > heavyLandTime)
+                {
+                    animator.SetTrigger("land");
+                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
+                }
+
+                if (magBootsOn)
+                {
+                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
+                    ParticleSystem ps = Instantiate(bootSparks, transform.position, transform.rotation) as ParticleSystem;
+                    Destroy(ps.gameObject, ps.main.startLifetime.constantMax);
                 }
 
                 airTime = 0;
@@ -300,7 +335,6 @@ public class PlayerController : PhysicsObject
     }
 
 
-
     // ---- UTILITY ---- //
 
     public void EnableMovement() // Called by the Animator at the moment
@@ -311,10 +345,5 @@ public class PlayerController : PhysicsObject
     public void DisableMovement() // Called by the Animator at the moment
     {
         canMove = false;
-    }
-
-    public void Destruction()
-    {
-        Destroy(gameObject);
     }
 }
