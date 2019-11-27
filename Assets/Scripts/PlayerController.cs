@@ -53,6 +53,7 @@ public class PlayerController : PhysicsObject
 
     [Space]
     [Header("GROUND CHECK:")]
+    Vector2 bottom;
     public float groundCheckDistance = 1;
     public Transform groundCheck; // for determining quick landing jump
     [SerializeField] private bool isTouchingGround = false;
@@ -101,31 +102,7 @@ public class PlayerController : PhysicsObject
             Vector2 move = Vector2.zero;
             move.x = Input.GetAxis("Horizontal");
 
-            if (!magBootsOn && canJump) 
-            {
-                if (Input.GetButtonDown("Jump") && isGrounded || 
-                    Input.GetButtonDown("Jump") && currentGraceTime > 0 || 
-                    isTouchingGround && !isGrounded && Input.GetButton("Jump")
-                    )
-                {
-                    velocity.y = jumpTakeoffSpeed;
-                    animator.SetTrigger("jumping");
-                    currentGraceTime = 0;
-                    StartCoroutine(JumpDelay());
-                    inAir = true;
-                }
-                else if (Input.GetButtonUp("Jump"))
-                {
-                    if (velocity.y > 0)
-                    {
-                        velocity.y = velocity.y * 0.5f;
-                    }
-                }
-                else if (!isGrounded)
-                {
-                    inAir = true;
-                }
-            }
+            Jump();
 
             RapidJump();
 
@@ -157,7 +134,7 @@ public class PlayerController : PhysicsObject
             isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, whatIsGround);
             Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
 
-            if (isTouchingWall && !isTouchingLedge && !ledgeDetected /*&& Input.GetKey(KeyCode.Space)*/)
+            if (isTouchingWall && !isTouchingLedge && !ledgeDetected)// << ----------- OPTION TO PUT MANUAL LEDGE GRAB HERE 
             {
                 ledgeDetected = true;
                 ledgePosBot = wallCheck.position;
@@ -200,6 +177,8 @@ public class PlayerController : PhysicsObject
         {
             canClimbLedge = true;
 
+            StopTrackAirTime();
+
             if (direction == Vector2.right)
             {
                 ledgePos1 = new Vector2(Mathf.Floor(ledgePosBot.x + wallCheckDistance) - ledgeClimbXOffset1, Mathf.Floor(ledgePosBot.y) + ledgeClimbYOffset1);
@@ -236,24 +215,49 @@ public class PlayerController : PhysicsObject
 
     // ---- JUMP METHODS ---- //
 
-
-    private IEnumerator JumpDelay()
+    private void Jump()
     {
-        canJump = false;
-        yield return new WaitForSeconds(jumpDelay);
-        canJump = true;
+        if (!magBootsOn && canJump)
+        {
+            if (Input.GetButtonDown("Jump") && isGrounded && canJump ||
+                Input.GetButtonDown("Jump") && currentGraceTime > 0 && canJump ||
+                isTouchingGround && !isGrounded && Input.GetButtonDown("Jump") && canJump
+                )
+            {
+                velocity.y = jumpTakeoffSpeed;
+                animator.SetTrigger("jumping");
+                currentGraceTime = 0;
+                inAir = true;
+                canJump = false;
+            }
+            else if (Input.GetButtonUp("Jump"))
+            {
+                if (velocity.y > 0)
+                {
+                    velocity.y = velocity.y * 0.5f;
+                }
+            }
+            else if (!isGrounded)
+            {
+                inAir = true;
+            }
+        }
+
+        if (Input.GetButtonUp("Jump"))
+        {
+            canJump = true;
+        }
     }
 
     public void RapidJump()
     {
-        if (isTouchingGround && !isGrounded && Input.GetKey(KeyCode.Space))
+        if (isTouchingGround && !isGrounded && Input.GetButtonDown("Jump") && canJump)
         {
             velocity.y = jumpTakeoffSpeed;
             animator.SetTrigger("jumping");
             currentGraceTime = 0;
 
-            inAir = false;
-            airTime = 0;
+            StopTrackAirTime();
             inAir = true;
         }
     }
@@ -287,6 +291,12 @@ public class PlayerController : PhysicsObject
                 inAir = false;
             }
         }
+    }
+
+    void StopTrackAirTime()
+    {
+        airTime = 0;
+        inAir = false;
     }
 
 
