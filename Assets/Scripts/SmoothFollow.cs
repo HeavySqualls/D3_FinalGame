@@ -36,10 +36,10 @@ public class SmoothFollow : MonoBehaviour
 
         transform.position = position;
 
-        if (isCamera)
-        {
-            VerticalMovementOffset();
-        }
+        //if (isCamera)
+        //{
+        //    VerticalMovementOffset();
+        //}
     }
 
     void VerticalMovementOffset()

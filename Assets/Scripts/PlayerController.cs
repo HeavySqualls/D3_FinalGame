@@ -9,7 +9,7 @@ public class PlayerController : PhysicsObject
     public bool isInteractable;
     public bool canMove = true;
     public bool magBootsOn = false;
-    private bool pIsFlipped;
+    public bool pIsFlipped;
     private bool canJump = true;
 
     [Space]

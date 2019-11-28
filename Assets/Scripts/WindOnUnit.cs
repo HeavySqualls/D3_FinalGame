@@ -5,6 +5,7 @@ using UnityEngine;
 public class WindOnUnit : MonoBehaviour
 {
     public bool inWindZone = false;
+    private bool affectUnit = true;
     public WindArea windZone;
     public Transform respawnZone;
 
@@ -17,16 +18,58 @@ public class WindOnUnit : MonoBehaviour
 
     void Update()
     {
-        if (!pCon.isOnWall && inWindZone && pCon.magBootsOn == false)
+        //if (!pCon.isOnWall && inWindZone && pCon.magBootsOn == false)
+        //{
+        //    pCon.rb2d.velocity = windZone.direction * windZone.strength;
+        //    print(pCon.rb2d.velocity);
+        //}
+        //else if (inWindZone && pCon.isOnWall)
+        //{
+        //    print("Hit wall");
+        //    //pCon.AutoMove();
+        //}
+        if (affectUnit)
         {
-            pCon.rb2d.velocity = windZone.direction * windZone.strength;
-            print(pCon.rb2d.velocity);
+            if (!pCon.isOnWall && inWindZone && pCon.magBootsOn == false)
+            {
+                pCon.rb2d.velocity = windZone.direction * windZone.strength;
+                print(pCon.rb2d.velocity);
+            }
+            else if (inWindZone && pCon.isOnWall)
+            {
+                print("Hit wall");
+                if (pCon.velocity.x > 0.01f)
+                {
+                    transform.position = new Vector2(transform.position.x - -0.2f, transform.position.y);
+                }
+                else
+                {
+                    transform.position = new Vector2(transform.position.x - 0.2f, transform.position.y);
+                }
+
+                //if (pCon.pIsFlipped)
+                //{
+                //    transform.position = new Vector2(transform.position.x - -0.2f, transform.position.y);
+                //}
+                //else
+                //{
+                //    transform.position = new Vector2(transform.position.x - 0.2f, transform.position.y);
+                //}
+                
+                affectUnit = false;
+            }
         }
-        else if (inWindZone && pCon.isOnWall)
+
+        if (!affectUnit && Input.GetButton("Horizontal"))
         {
-            print("Hit wall");
-            //pCon.AutoMove();
+            StartCoroutine(Countdown());
         }
+    }
+
+    private IEnumerator Countdown()
+    {
+        yield return new WaitForSeconds(0.5f);
+        affectUnit = true;
     }
 
     void OnTriggerEnter2D(Collider2D coll)
@@ -37,6 +80,12 @@ public class WindOnUnit : MonoBehaviour
             windZone = coll.gameObject.GetComponent<WindArea>();
             inWindZone = true;
         }
+
+        if (coll.gameObject.tag == "DeathZone")
+        {
+            print("Dead");
+            pCon.gameObject.transform.position = respawnZone.position;
+        }
     }
 
     void OnTriggerExit2D(Collider2D coll)
@@ -46,14 +95,6 @@ public class WindOnUnit : MonoBehaviour
             pCon.rb2d.velocity = Vector3.zero;
             windZone = null;
             inWindZone = false;
-        }
-    }
-
-    void OnCollisionEnter2D(Collision2D coll)
-    {
-        if (coll.gameObject.name == "DeathZone")
-        {
-            pCon.gameObject.transform.position = respawnZone.position;
         }
     }
 }

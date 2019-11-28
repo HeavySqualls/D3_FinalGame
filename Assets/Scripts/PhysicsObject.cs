@@ -5,7 +5,7 @@ using UnityEngine;
 public class PhysicsObject : MonoBehaviour
 {
     public float minWallNormalX = 0.8f;
-    public float maxWallNormalX = -0.8f;
+    public float maxWallNormalX = 0.5f;
     public float minGroundNormalY = 0.65f; // 
     public float gravityModifier = 1f;
 
@@ -23,7 +23,7 @@ public class PhysicsObject : MonoBehaviour
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
 
     protected const float minMoveDistance = 0.001f; // Minimum distance the player must be moving in order to trigger movement 
-    protected const float shellRadius = 0.1f;
+    protected const float shellRadius = 0.05f;
 
     void OnEnable()
     {
@@ -105,7 +105,7 @@ public class PhysicsObject : MonoBehaviour
                     }
                 }
 
-                if (currentNormal.x > minWallNormalX || currentNormal.x < maxWallNormalX)
+                if (currentNormal.x < minWallNormalX || currentNormal.x > maxWallNormalX)
                 {
                     print(currentNormal.x);                
                     rb2d.velocity = Vector2.zero;

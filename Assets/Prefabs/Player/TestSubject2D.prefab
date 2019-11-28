@@ -123,14 +123,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d497e3f2e784f2f4e823786439ee42de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  minWallNormalX: -0.9
+  maxWallNormalX: 0.9
   minGroundNormalY: 0.5
   gravityModifier: 6.35
+  velocity: {x: 0, y: 0}
+  isOnWall: 0
   isGrounded: 0
   rb2d: {fileID: 1242993176099357729}
-  velocity: {x: 0, y: 0}
   isInteractable: 0
   canMove: 1
   magBootsOn: 0
+  pIsFlipped: 0
   maxSpeed: 12
   jumpTakeoffSpeed: 26
   hardLandTime: 0.85
