@@ -68,16 +68,16 @@ public class PhysicsObject : MonoBehaviour
         Movement(move, true);
     }
 
-    void Movement(Vector2 move, bool yMovement)
+    void Movement(Vector2 _move, bool _yMovement)
     {
-        float distance = move.magnitude;
+        float distance = _move.magnitude;
 
         if (distance > minMoveDistance)
         {
             // Send out a raycast in the form of the attached collider (in this case a box, with an additional shell radius buffer) 
             // at the projected new position
-            int count = rb2d.Cast(move, contactFilter, hitBuffer, distance + shellRadius);  
-            Debug.DrawRay(transform.position, move, Color.red);
+            int count = rb2d.Cast(_move, contactFilter, hitBuffer, distance + shellRadius);  
+            Debug.DrawRay(transform.position, _move, Color.red);
 
             // Clear old values in hitbuffer list 
             hitBufferList.Clear(); 
@@ -98,16 +98,16 @@ public class PhysicsObject : MonoBehaviour
                 if (currentNormal.y > minGroundNormalY) // checks if the normal of the item is greater than the minimum required angle for it to be considered ground
                 {
                     isGrounded = true;
-                    if (yMovement)
+                    if (_yMovement)
                     {
                         groundNormal = currentNormal;
                         currentNormal.x = 0;
                     }
                 }
 
+                // THIS IS WHERE THE PLAYER IS DETERMINED TO BE ON A WALL OR NOT
                 if (currentNormal.x < minWallNormalX || currentNormal.x > maxWallNormalX)
-                {
-                    print(currentNormal.x);                
+                {                                 
                     rb2d.velocity = Vector2.zero;
                     isOnWall = true;
                 }
@@ -124,19 +124,23 @@ public class PhysicsObject : MonoBehaviour
             }
         }
 
-        rb2d.position = rb2d.position + move.normalized * distance;
+        rb2d.position = rb2d.position + _move.normalized * distance;
     }
 
-    protected IEnumerator IFlashRed(SpriteRenderer _thisFlashRenderer)
+    public IEnumerator IFlashRed(SpriteRenderer _thisFlashRenderer)
     {
         _thisFlashRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         _thisFlashRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         _thisFlashRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
         _thisFlashRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.1f);
+        yield return new WaitForSeconds(0.2f);
+        _thisFlashRenderer.color = Color.red;
+        yield return new WaitForSeconds(0.2f);
+        _thisFlashRenderer.color = Color.white;
+        yield return new WaitForSeconds(0.2f);
     }
 }
 

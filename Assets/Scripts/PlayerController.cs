@@ -9,12 +9,16 @@ public class PlayerController : PhysicsObject
     public bool isInteractable;
     public bool canMove = true;
     public bool magBootsOn = false;
+    public bool inWindZone = false;
     public bool pIsFlipped;
     private bool canJump = true;
 
     [Space]
     [Header("MOVEMENT:")]
     public float maxSpeed = 2f;
+    private bool windAffectUnit = true;
+    private Vector2 windDir;
+    private float windPwr;
 
     [Space]
     [Header("JUMP:")]
@@ -98,14 +102,45 @@ public class PlayerController : PhysicsObject
 
     // ---- LOCOMOTION METHODS ---- //
 
-    Vector2 move;
+    public void WindZoneStats(Vector2 _windDir, float _windPwr)
+    {
+        windDir = _windDir;
+        windPwr = _windPwr;
+    }
+
     protected override void ComputeVelocity()
     {
         if (canMove)
         {
-            move = Vector2.zero;
+            Vector2 move = Vector2.zero;
             move.x = Input.GetAxis("Horizontal");
-            
+
+            if (inWindZone && !magBootsOn && windAffectUnit)
+            {
+                if (velocity.x > 0.01f) // player moving right
+                {
+                    move.x += windDir.x * windPwr;
+                }
+                else if(velocity.x < -0.01f) // player moving left 
+                {
+                    move.x += windDir.x * windPwr;
+                }
+                else if (velocity.x == 0)
+                {
+                    move.x = windDir.x * windPwr;
+                }
+
+                if (isTouchingWall)
+                {
+                    windAffectUnit = false;
+                }
+            }
+
+            if (!windAffectUnit && Input.GetButton("Horizontal"))
+            {
+                StartCoroutine(Countdown());
+            }
+
             Jump();
 
             RapidJump();
@@ -119,16 +154,23 @@ public class PlayerController : PhysicsObject
             }
 
             animator.SetBool("grounded", isGrounded);
-
-            animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+            if (inWindZone && move.x <= 0.5f || inWindZone && move.x <= -0.5f)
+            {
+                animator.SetFloat("velocityX", 0);// TODO: Add a walking in the wind animation here
+            }
+            else
+            {
+                animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+            }
+            
             targetVelocity = move * maxSpeed;
         }
     }
 
-    public void AutoMove()
+    private IEnumerator Countdown()
     {
-        move.x = 0.1f;
-        targetVelocity = move * maxSpeed;
+        yield return new WaitForSeconds(0.2f);
+        windAffectUnit = true;
     }
 
     private void CheckSurroundings()
@@ -248,7 +290,7 @@ public class PlayerController : PhysicsObject
 
     // ---- JUMP METHODS ---- //
 
-    private void Jump()
+    private void Jump() // TODO: Fix jumping bug
     {
         if (!magBootsOn)
         {
@@ -313,17 +355,20 @@ public class PlayerController : PhysicsObject
             {
                 if (airTime > hardLandTime)
                 {
+                    DisableMovement(); // enable is called in the animation
                     animator.SetTrigger("land");
                     ripPP.CauseRipple(groundCheck, 12f, 0.8f);
                 }
                 else if (airTime > heavyLandTime)
                 {
+                    DisableMovement(); // enable is called in the animation
                     animator.SetTrigger("land");
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
                 }
 
                 if (magBootsOn)
                 {
+                    DisableMovement(); // enable is called in the animation
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
                     ParticleSystem ps = Instantiate(bootSparks, transform.position, transform.rotation) as ParticleSystem;
                     Destroy(ps.gameObject, ps.main.startLifetime.constantMax);
