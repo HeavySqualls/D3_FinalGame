@@ -115,6 +115,7 @@ public class PlayerController : PhysicsObject
             Vector2 move = Vector2.zero;
             move.x = Input.GetAxis("Horizontal");
 
+            // If the player is in the windzone without mag boots and not against a wall, add in wind force vector to move vector
             if (inWindZone && !magBootsOn && windAffectUnit)
             {
                 if (velocity.x > 0.01f) // player moving right
@@ -145,7 +146,8 @@ public class PlayerController : PhysicsObject
 
             RapidJump();
 
-            bool flipPlayerSprite = (spriteRenderer.flipX ? (move.x > 0.0001f) : (move.x < -0.0001f));
+            float minXFlip = 0.0001f; // minimum velocity on the x axis to trigger the sprite flip
+            bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip));
             if (flipPlayerSprite)
             {
                 ChangeDirection();
@@ -154,7 +156,9 @@ public class PlayerController : PhysicsObject
             }
 
             animator.SetBool("grounded", isGrounded);
-            if (inWindZone && move.x <= 0.5f || inWindZone && move.x <= -0.5f)
+
+            float minXMove = 0.5f; // minimum value on the x axis to cause the animator to trigger the running animation
+            if (inWindZone && !magBootsOn && move.x <= minXMove || inWindZone && !magBootsOn && move.x <= -minXMove)
             {
                 animator.SetFloat("velocityX", 0);// TODO: Add a walking in the wind animation here
             }
@@ -221,8 +225,8 @@ public class PlayerController : PhysicsObject
 
     private IEnumerator MagBootsOn()
     {
+        EnableMovement(false);
         magBootsOn = true;
-        canMove = false;
         gravityModifier = 0;
         rb2d.velocity = Vector3.zero;
         ripPP.CauseRipple(groundCheck, 15f, 0.95f);
@@ -230,7 +234,7 @@ public class PlayerController : PhysicsObject
         yield return new WaitForSeconds(0.25f);
 
         gravityModifier = onGravValue;
-        canMove = true;
+        EnableMovement(true);
     }
 
     private void ChangeDirection()
@@ -265,7 +269,7 @@ public class PlayerController : PhysicsObject
                 ledgePos2 = new Vector2(Mathf.Ceil(ledgePosBot.x - wallCheckDistance) - ledgeClimbXOffset2, Mathf.Floor(ledgePosBot.y) + ledgeClimbYOffset2);
             }
 
-            canMove = false;
+            EnableMovement(false);
             //canFlip = false;
 
             animator.SetBool("canClimbLedge", canClimbLedge);
@@ -280,7 +284,7 @@ public class PlayerController : PhysicsObject
     public void FinishLedgeClimb()
     {
         transform.position = ledgePos2;
-        canMove = true;
+        EnableMovement(true);
         ledgeDetected = false;
         canClimbLedge = false;
         animator.SetBool("canClimbLedge", canClimbLedge);
@@ -290,7 +294,7 @@ public class PlayerController : PhysicsObject
 
     // ---- JUMP METHODS ---- //
 
-    private void Jump() // TODO: Fix jumping bug
+    private void Jump()
     {
         if (!magBootsOn)
         {
@@ -345,7 +349,9 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    void TrackAirTime()
+    // TODO: Player does not hard land on medium height falls if he just walks off the edge. 
+    //       Look in to adding something that detects that player did not jump before falling? 
+    void TrackAirTime() 
     {
         if (inAir)
         {
@@ -353,23 +359,25 @@ public class PlayerController : PhysicsObject
 
             if (isGrounded)
             {
-                if (airTime > hardLandTime)
+                if (airTime > hardLandTime) // Light hard landing 
                 {
-                    DisableMovement(); // enable is called in the animation
                     animator.SetTrigger("land");
+                    StartCoroutine(LandingPause(animator.GetCurrentAnimatorStateInfo(0).length));
                     ripPP.CauseRipple(groundCheck, 12f, 0.8f);
                 }
-                else if (airTime > heavyLandTime)
+                else if (airTime > heavyLandTime) // Heavy hard landing 
                 {
-                    DisableMovement(); // enable is called in the animation
                     animator.SetTrigger("land");
+                    StartCoroutine(LandingPause(animator.GetCurrentAnimatorStateInfo(0).length + 0.5f));
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
                 }
 
-                if (magBootsOn)
+                if (magBootsOn) // Landing with Mag Boots engaged
                 {
-                    DisableMovement(); // enable is called in the animation
+                    animator.SetTrigger("land");
+                    StartCoroutine(LandingPause(animator.GetCurrentAnimatorStateInfo(0).length));
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
+
                     ParticleSystem ps = Instantiate(bootSparks, transform.position, transform.rotation) as ParticleSystem;
                     Destroy(ps.gameObject, ps.main.startLifetime.constantMax);
                 }
@@ -389,13 +397,17 @@ public class PlayerController : PhysicsObject
 
     // ---- UTILITY ---- //
 
-    public void EnableMovement() // Called by the Animator at the moment
+    public void EnableMovement(bool _enable) // Called by the Animator at the moment
     {
-        canMove = true;
+        canMove = _enable;
     }
 
-    public void DisableMovement() // Called by the Animator at the moment
+    private IEnumerator LandingPause(float _pauseTime)
     {
-        canMove = false;
+        EnableMovement(false);
+
+        yield return new WaitForSeconds(_pauseTime);
+        
+        EnableMovement(true);
     }
 }
