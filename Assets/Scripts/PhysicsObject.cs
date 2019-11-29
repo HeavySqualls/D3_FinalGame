@@ -10,7 +10,7 @@ public class PhysicsObject : MonoBehaviour
     public float gravityModifier = 1f;
 
     [SerializeField] public Vector2 velocity;
-    protected Vector2 targetVelocity;
+    [SerializeField] protected Vector2 targetVelocity;
     protected Vector2 direction;
 
     public bool isOnWall = false;

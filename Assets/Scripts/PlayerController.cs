@@ -11,7 +11,7 @@ public class PlayerController : PhysicsObject
     public bool magBootsOn = false;
     public bool inWindZone = false;
     public bool pIsFlipped;
-    private bool canJump = true;
+    [SerializeField] private bool canJump = true;
 
     [Space]
     [Header("MOVEMENT:")]
@@ -59,7 +59,7 @@ public class PlayerController : PhysicsObject
     [Space]
     [Header("GROUND CHECK:")]
     public Vector3 bottom;
-    public float groundCheckDistance = 1;
+    public float groundCheckDistance = 2f;
     public Transform groundCheck; // for determining quick landing jump
     [SerializeField] private bool isTouchingGround = false;
     private int whatIsGround;
@@ -112,13 +112,41 @@ public class PlayerController : PhysicsObject
     {
         if (canMove)
         {
+            float windForce = 6f; // the force of the wind on the player. If this is the current wind force, the player will move to his IdleInWind animation  
+
             Vector2 move = Vector2.zero;
-            move.x = Input.GetAxis("Horizontal");
+
+            if (Input.GetButton("Horizontal"))
+            {
+                move.x = Input.GetAxis("Horizontal") + 0.1f;
+
+                float minXFlip = 0.01f; // minimum velocity on the x axis to trigger the sprite flip
+                bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+                if (inWindZone && pIsFlipped)
+                {
+                    if (velocity.x > windForce +1)
+                    {
+                        ChangeDirection();
+                        pIsFlipped = !pIsFlipped;
+                        spriteRenderer.flipX = !spriteRenderer.flipX;
+                    }
+                    else
+                    {
+                        pIsFlipped = true;
+                    }                 
+                }
+                else if (flipPlayerSprite)
+                {
+                    ChangeDirection();
+                    pIsFlipped = !pIsFlipped;
+                    spriteRenderer.flipX = !spriteRenderer.flipX;
+                }
+            }
 
             // If the player is in the windzone without mag boots and not against a wall, add in wind force vector to move vector
             if (inWindZone && !magBootsOn && windAffectUnit)
-            {
-                if (velocity.x > 0.01f) // player moving right
+            {              
+                if (velocity.x > 0.001f) // player moving right
                 {
                     move.x += windDir.x * windPwr;
                 }
@@ -146,21 +174,19 @@ public class PlayerController : PhysicsObject
 
             RapidJump();
 
-            float minXFlip = 0.0001f; // minimum velocity on the x axis to trigger the sprite flip
-            bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip));
-            if (flipPlayerSprite)
-            {
-                ChangeDirection();
-                pIsFlipped = !pIsFlipped;
-                spriteRenderer.flipX = !spriteRenderer.flipX;
-            }
-
             animator.SetBool("grounded", isGrounded);
+            animator.SetBool("inWind", inWindZone);
 
-            float minXMove = 0.5f; // minimum value on the x axis to cause the animator to trigger the running animation
-            if (inWindZone && !magBootsOn && move.x <= minXMove || inWindZone && !magBootsOn && move.x <= -minXMove)
+                   
+            if (inWindZone && !magBootsOn && velocity.x == windForce)
             {
-                animator.SetFloat("velocityX", 0);// TODO: Add a walking in the wind animation here
+                animator.SetFloat("velocityX", 0);
+                if (!pIsFlipped)
+                {
+                    ChangeDirection();
+                    pIsFlipped = !pIsFlipped;
+                    spriteRenderer.flipX = !spriteRenderer.flipX;
+                }
             }
             else
             {
@@ -173,7 +199,7 @@ public class PlayerController : PhysicsObject
 
     private IEnumerator Countdown()
     {
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(1f);
         windAffectUnit = true;
     }
 
@@ -319,13 +345,22 @@ public class PlayerController : PhysicsObject
 
         if (Input.GetButtonUp("Jump"))
         {
+            print("can jump");
             canJump = true;
         }
     }
 
     public void RapidJump()
     {
-        if (isTouchingGround && !isGrounded && Input.GetButtonDown("Jump") && canJump)
+        if (isTouchingGround && !isGrounded && canJump)
+        {
+            StartCoroutine(QuickJumpTimer(1));
+        }
+    }
+
+    private IEnumerator QuickJumpTimer(float _time)
+    {
+        if (Input.GetButton("Jump"))
         {
             velocity.y = jumpTakeoffSpeed;
             animator.SetTrigger("jumping");
@@ -334,6 +369,8 @@ public class PlayerController : PhysicsObject
             StopTrackAirTime();
             inAir = true;
         }
+
+        yield return new WaitForSeconds(_time);
     }
 
     void JumpTimer()
