@@ -112,7 +112,8 @@ public class PlayerController : PhysicsObject
     {
         if (canMove)
         {
-            float windForce = 6f; // the force of the wind on the player. If this is the current wind force, the player will move to his IdleInWind animation  
+            // The force of the wind on the player 
+            float windForce = 6f; //TODO: Determine the source of this number to be able to adjust to different wind strengths
 
             Vector2 move = Vector2.zero;
 
@@ -122,9 +123,10 @@ public class PlayerController : PhysicsObject
 
                 float minXFlip = 0.01f; // minimum velocity on the x axis to trigger the sprite flip
                 bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+
                 if (inWindZone && pIsFlipped)
                 {
-                    if (velocity.x > windForce +1)
+                    if (velocity.x > windForce +1) // 1 is just a random int to get a value outside the limit of windForce
                     {
                         ChangeDirection();
                         pIsFlipped = !pIsFlipped;
@@ -150,7 +152,7 @@ public class PlayerController : PhysicsObject
                 {
                     move.x += windDir.x * windPwr;
                 }
-                else if(velocity.x < -0.01f) // player moving left 
+                else if(velocity.x < -0.001f) // player moving left 
                 {
                     move.x += windDir.x * windPwr;
                 }
@@ -177,16 +179,17 @@ public class PlayerController : PhysicsObject
             animator.SetBool("grounded", isGrounded);
             animator.SetBool("inWind", inWindZone);
 
-                   
-            if (inWindZone && !magBootsOn && velocity.x == windForce)
+            // Used to always face the player in to the direction of the wind - if in wind zone and not moving      
+            if (inWindZone && velocity.x == windForce || inWindZone && magBootsOn && velocity.x == 0)
             {
-                animator.SetFloat("velocityX", 0);
                 if (!pIsFlipped)
                 {
                     ChangeDirection();
                     pIsFlipped = !pIsFlipped;
                     spriteRenderer.flipX = !spriteRenderer.flipX;
                 }
+
+                animator.SetFloat("velocityX", 0);
             }
             else
             {
