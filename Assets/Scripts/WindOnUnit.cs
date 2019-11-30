@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class WindOnUnit : MonoBehaviour
 {
-    private bool affectUnit = true;
     public WindArea windZone;
     public Transform respawnZone;
 
@@ -22,7 +21,7 @@ public class WindOnUnit : MonoBehaviour
             print("Entered wind zone");
             windZone = coll.gameObject.GetComponent<WindArea>();
             pCon.inWindZone = true;
-            pCon.WindZoneStats(windZone.direction, windZone.strength);
+            pCon.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft);
         }
 
         if (coll.gameObject.tag == "DeathZone")
