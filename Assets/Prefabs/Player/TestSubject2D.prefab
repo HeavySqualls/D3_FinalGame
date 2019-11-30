@@ -157,6 +157,7 @@ MonoBehaviour:
   ledgeClimbYOffset1: 0.55
   ledgeClimbXOffset2: 1.7
   ledgeClimbYOffset2: 2.65
+  isTouchingLedge: 0
   wallCheckDistance: 0.75
   wallCheck: {fileID: 8395342489049737418}
   bottom: {x: 0, y: 0, z: 0}
@@ -252,7 +253,7 @@ TrailRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10308, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: 0fab7f3c3d61de84da2b091f9c4d17e7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -324,7 +325,7 @@ TrailRenderer:
     numCornerVertices: 0
     numCapVertices: 0
     alignment: 0
-    textureMode: 0
+    textureMode: 1
     shadowBias: 0.5
     generateLightingData: 0
   m_MinVertexDistance: 0.1

@@ -8,6 +8,7 @@ public class PlayerController : PhysicsObject
     [Header("STATUS:")]
     public bool isInteractable;
     public bool canMove = true;
+    public bool isMoving = false;
     public bool magBootsOn = false;
     public bool inWindZone = false;
     public bool pIsFlipped;
@@ -19,6 +20,7 @@ public class PlayerController : PhysicsObject
     private bool windAffectUnit = true;
     private Vector2 windDir;
     private float windPwr;
+    private float windRatio; // Ratio between the wind power and the players velocity
     private bool directionOfSource;
 
     [Space]
@@ -49,7 +51,7 @@ public class PlayerController : PhysicsObject
     private Vector2 ledgePos2;
     private Vector2 ledgePosBot;
     private bool ledgeDetected;
-    private bool isTouchingLedge = false;
+    [SerializeField] private bool isTouchingLedge = false;
 
     [Space]
     [Header("WALL CHECK:")]
@@ -87,6 +89,7 @@ public class PlayerController : PhysicsObject
     protected override void Update()
     {
         base.Update();
+        CheckSurroundings();
         ComputeVelocity();
         MagBoots();
         JumpTimer();
@@ -97,7 +100,6 @@ public class PlayerController : PhysicsObject
     protected override void FixedUpdate()
     {
         base.FixedUpdate();
-        CheckSurroundings();
     }
 
 
@@ -114,21 +116,19 @@ public class PlayerController : PhysicsObject
     {
         if (canMove)
         {
-            // The force of the wind on the player 
-            float windForce = 6f; //TODO: Determine the source of this number to be able to adjust to different wind strengths
-
             Vector2 move = Vector2.zero;
 
             if (Input.GetButton("Horizontal"))
             {
+                isMoving = true;
                 move.x = Input.GetAxis("Horizontal") + 0.1f;
 
-                float minXFlip = 0.01f; // minimum velocity on the x axis to trigger the sprite flip
-                bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+                float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip
+                bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip));
 
                 if (inWindZone && directionOfSource && pIsFlipped)
                 {
-                    if (velocity.x > windForce +1) // 1 is just a random int to get a value outside the limit of windForce
+                    if (velocity.x > windRatio +1) // 1 is just a random int to get a value outside the limit of windForce
                     {
                         ChangeDirection();
                         pIsFlipped = !pIsFlipped;
@@ -141,7 +141,7 @@ public class PlayerController : PhysicsObject
                 }
                 else if (inWindZone && !directionOfSource && !pIsFlipped)
                 {
-                    if (velocity.x < -windForce + 1) // 1 is just a random int to get a value outside the limit of windForce
+                    if (velocity.x < -windRatio + 1) // 1 is just a random int to get a value outside the limit of windForce
                     {
                         ChangeDirection();
                         pIsFlipped = !pIsFlipped;
@@ -160,19 +160,21 @@ public class PlayerController : PhysicsObject
                 }
             }
 
+            if (Input.GetButtonUp("Horizontal"))
+            {
+                isMoving = false;
+            }
+
             // If the player is in the windzone without mag boots and not against a wall, add in wind force vector to move vector
             if (inWindZone && !magBootsOn && windAffectUnit)
             {              
-                if (velocity.x > 0.001f) // player moving right
-                {
-                    move.x += windDir.x * windPwr;
-                }
-                else if(velocity.x < -0.001f) // player moving left 
+                if (velocity.x > 0.001f || velocity.x < -0.001f) // player moving right/left 
                 {
                     move.x += windDir.x * windPwr;
                 }
                 else if (velocity.x == 0)
                 {
+                    isMoving = false;
                     move.x = windDir.x * windPwr;
                 }
 
@@ -194,10 +196,18 @@ public class PlayerController : PhysicsObject
             animator.SetBool("grounded", isGrounded);
             animator.SetBool("inWind", inWindZone);
 
+            if (!isMoving)
+            {
+                windRatio = velocity.x;
+            }
+
             // Used to always face the player in to the direction of the wind - if in wind zone and not moving 
             //  - negative windForce value is used when wind is coming from the right
-            if (inWindZone && velocity.x == windForce || inWindZone && velocity.x == -windForce || inWindZone && magBootsOn && velocity.x == 0)
+            if (inWindZone && velocity.x == windRatio || inWindZone && velocity.x == -windRatio || inWindZone && magBootsOn && velocity.x == 0)
             {
+                isMoving = false;
+                animator.SetBool("isMovingInWind", isMoving);
+
                 if (directionOfSource && !pIsFlipped)
                 {
                     ChangeDirection();
@@ -210,11 +220,10 @@ public class PlayerController : PhysicsObject
                     pIsFlipped = !pIsFlipped;
                     spriteRenderer.flipX = !spriteRenderer.flipX;
                 }
-
-                animator.SetFloat("velocityX", 0);
             }
             else
             {
+                animator.SetBool("isMovingInWind", isMoving);
                 animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
             }
             
@@ -338,6 +347,7 @@ public class PlayerController : PhysicsObject
         EnableMovement(true);
         ledgeDetected = false;
         canClimbLedge = false;
+        canJump = true;
         animator.SetBool("canClimbLedge", canClimbLedge);
     }
 
