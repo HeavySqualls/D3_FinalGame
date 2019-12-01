@@ -8,7 +8,8 @@ public class PlayerController : PhysicsObject
     [Header("STATUS:")]
     public bool isInteractable;
     public bool canMove = true;
-    public bool isMoving = false;
+    public bool isMoving = false; // move to compute velocity
+    public bool isMovingInWind = false; // move to compute velocity
     public bool magBootsOn = false;
     public bool inWindZone = false;
     public bool pIsFlipped;
@@ -121,12 +122,18 @@ public class PlayerController : PhysicsObject
             if (Input.GetButton("Horizontal"))
             {
                 isMoving = true;
+
+                if (inWindZone)
+                {
+                    isMovingInWind = true;
+                }
+
                 move.x = Input.GetAxis("Horizontal") + 0.1f;
 
                 float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip
                 bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip));
 
-                if (inWindZone && directionOfSource && pIsFlipped)
+                if (inWindZone && directionOfSource && pIsFlipped && isGrounded)
                 {
                     if (velocity.x > windRatio +1) // 1 is just a random int to get a value outside the limit of windForce
                     {
@@ -139,17 +146,18 @@ public class PlayerController : PhysicsObject
                         pIsFlipped = true;
                     }                 
                 }
-                else if (inWindZone && !directionOfSource && !pIsFlipped)
+                else if (inWindZone && !directionOfSource && !pIsFlipped && isGrounded)
                 {
-                    if (velocity.x < -windRatio + 1) // 1 is just a random int to get a value outside the limit of windForce
+                    if (velocity.x > windRatio + 1) // 1 is just a random int to get a value outside the limit of windForce
                     {
-                        ChangeDirection();
-                        pIsFlipped = !pIsFlipped;
-                        spriteRenderer.flipX = !spriteRenderer.flipX;
+                        pIsFlipped = false;
                     }
                     else
                     {
-                        pIsFlipped = false;
+                        print("flip");
+                        ChangeDirection();
+                        pIsFlipped = !pIsFlipped;
+                        spriteRenderer.flipX = !spriteRenderer.flipX;
                     }
                 }
                 else if (flipPlayerSprite)
@@ -163,6 +171,7 @@ public class PlayerController : PhysicsObject
             if (Input.GetButtonUp("Horizontal"))
             {
                 isMoving = false;
+                isMovingInWind = false;
             }
 
             // If the player is in the windzone without mag boots and not against a wall, add in wind force vector to move vector
@@ -174,7 +183,6 @@ public class PlayerController : PhysicsObject
                 }
                 else if (velocity.x == 0)
                 {
-                    isMoving = false;
                     move.x = windDir.x * windPwr;
                 }
 
@@ -203,10 +211,13 @@ public class PlayerController : PhysicsObject
 
             // Used to always face the player in to the direction of the wind - if in wind zone and not moving 
             //  - negative windForce value is used when wind is coming from the right
-            if (inWindZone && velocity.x == windRatio || inWindZone && velocity.x == -windRatio || inWindZone && magBootsOn && velocity.x == 0)
+            if (inWindZone && velocity.x == windRatio && isGrounded || 
+                inWindZone && velocity.x == -windRatio && isGrounded || 
+                inWindZone && magBootsOn && velocity.x == 0 && isGrounded
+                )
             {
-                isMoving = false;
-                animator.SetBool("isMovingInWind", isMoving);
+                //isMoving = false;
+                animator.SetBool("isMovingInWind", isMovingInWind);
 
                 if (directionOfSource && !pIsFlipped)
                 {
