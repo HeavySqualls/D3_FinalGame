@@ -8,8 +8,8 @@ public class PlayerController : PhysicsObject
     [Header("STATUS:")]
     public bool isInteractable;
     public bool canMove = true;
-    public bool isMoving = false; // move to compute velocity
-    public bool isMovingInWind = false; // move to compute velocity
+    public bool isMoving = false;
+    public bool isMovingInWind = false;
     public bool magBootsOn = false;
     public bool inWindZone = false;
     public bool pIsFlipped;
@@ -18,6 +18,7 @@ public class PlayerController : PhysicsObject
     [Space]
     [Header("MOVEMENT:")]
     public float maxSpeed = 2f;
+    public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
     private bool windAffectUnit = true;
     private Vector2 windDir;
     private float windPwr;
@@ -72,7 +73,7 @@ public class PlayerController : PhysicsObject
     [Header("REFERENCES:")]
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
-    private Animator animator;
+    public Animator animator;
 
     void Awake()
     {
@@ -104,7 +105,9 @@ public class PlayerController : PhysicsObject
     }
 
 
+
     // ---- LOCOMOTION METHODS ---- //
+
 
     public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource)
     {
@@ -194,7 +197,7 @@ public class PlayerController : PhysicsObject
 
             if (!windAffectUnit && Input.GetButton("Horizontal"))
             {
-                StartCoroutine(Countdown());
+                StartCoroutine(LeaveWallCountdown());
             }
 
             Jump();
@@ -242,12 +245,6 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    private IEnumerator Countdown()
-    {
-        yield return new WaitForSeconds(1f);
-        windAffectUnit = true;
-    }
-
     private void CheckSurroundings()
     {
         if (canMove)
@@ -268,6 +265,22 @@ public class PlayerController : PhysicsObject
             }
         }
     }
+
+    private void ChangeDirection()
+    {
+        if (direction == Vector2.right)
+            direction = Vector2.left;
+        else
+            direction = Vector2.right;
+
+        accessibleDirection = direction;
+    }
+
+
+
+    // ---- MAG BOOTS METHODS ---- //
+
+
     public void MagBoots()
     {
         if (Input.GetKeyUp(KeyCode.Mouse1) && !magBootsOn)
@@ -306,14 +319,6 @@ public class PlayerController : PhysicsObject
 
         gravityModifier = onGravValue;
         EnableMovement(true);
-    }
-
-    private void ChangeDirection()
-    {
-        if (direction == Vector2.right)
-            direction = Vector2.left;
-        else
-            direction = Vector2.right;
     }
 
 
@@ -478,6 +483,7 @@ public class PlayerController : PhysicsObject
     }
 
 
+
     // ---- UTILITY ---- //
 
     public void EnableMovement(bool _enable) // Called by the Animator at the moment
@@ -492,5 +498,11 @@ public class PlayerController : PhysicsObject
         yield return new WaitForSeconds(_pauseTime);
         
         EnableMovement(true);
+    }
+
+    private IEnumerator LeaveWallCountdown()
+    {
+        yield return new WaitForSeconds(1f);
+        windAffectUnit = true;
     }
 }

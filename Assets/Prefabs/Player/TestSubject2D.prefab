@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1242993176099357727}
   - component: {fileID: 1242993176099357726}
   - component: {fileID: 1242993176099357729}
+  - component: {fileID: 8313365752785423527}
   - component: {fileID: 1242993176099357725}
-  - component: {fileID: 1242993176099357720}
   - component: {fileID: 1242993176099357722}
   - component: {fileID: 1242993176099357723}
   - component: {fileID: 1242993176099357724}
@@ -112,6 +112,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &8313365752785423527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242993176099357728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aafd260a57a4464ba86a3828537aabb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1242993176099357725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -135,6 +147,8 @@ MonoBehaviour:
   rb2d: {fileID: 1242993176099357729}
   isInteractable: 0
   canMove: 1
+  isMoving: 0
+  isMovingInWind: 0
   magBootsOn: 0
   inWindZone: 0
   pIsFlipped: 0
@@ -164,18 +178,6 @@ MonoBehaviour:
   groundCheckDistance: 1
   groundCheck: {fileID: 450504362977715217}
   isTouchingGround: 0
---- !u!114 &1242993176099357720
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242993176099357728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c08b7c26a8e455b4ba632f54f1700205, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1242993176099357722
 MonoBehaviour:
   m_ObjectHideFlags: 0
