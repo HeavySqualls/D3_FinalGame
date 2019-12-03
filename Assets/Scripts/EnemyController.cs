@@ -39,8 +39,8 @@ public class EnemyController : PhysicsObject
     //private Animator animator;
     private GameObject target;
 
-    private float x;
-    private float y; 
+    [SerializeField] private float x;
+    [SerializeField] private float y; 
 
     void Start()
     {
