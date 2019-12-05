@@ -3,14 +3,14 @@ using UnityEngine;
 
 public class EnemyController : PhysicsObject
 {
-    enum State { Patrolling, Hunting, Hurt, Dead }
-    State currentState;
+    public enum State { Patrolling, Hunting, Hurt, Dead }
+    public State currentState;
 
     [Space]
     [Header("Enemy Status:")]
     public bool isHunter = true;
     public bool isHit = false;
-    private bool isMoving = false;
+    [SerializeField] private bool isMoving = false;
     private bool movingRight = true;
     private bool isDead = false;
 
@@ -19,7 +19,7 @@ public class EnemyController : PhysicsObject
     public float patrolSpeed = 1.25f;
     public float huntSpeed = 3f;
     public int damageOutput = 2;
-    public int health = 10;
+    public float health = 10;
 
     [Space]
     [Header("Enemy AI:")]
@@ -27,27 +27,28 @@ public class EnemyController : PhysicsObject
     private float detectionRange = 8f;
     private float wallDistance = 1f;
     private float groundDistance = 0.25f;
-    private Vector2 newDirection;
+    [SerializeField] private Vector2 newDirection;
+    [SerializeField] private Vector2 hitDirection;
 
     [Space]
     [Header("Enemy References:")]
+    public ParticleSystem deathParticles;
     public Transform eyeRange;
     public Transform wallDetection;
     public Transform groundDetection;
-    private PlayerController pCon;
-    private BoxCollider2D col;
-    //private Animator animator;
     private GameObject target;
+    private MeshRenderer mR;
+    private BoxCollider2D coll;
 
     [SerializeField] private float x;
     [SerializeField] private float y; 
 
     void Start()
     {
-        this.currentState = State.Patrolling;
-        col = GetComponent<BoxCollider2D>();
+        mR = GetComponent<MeshRenderer>();
+        coll = GetComponent<BoxCollider2D>();
 
-        //animator = GetComponent<Animator>();
+        this.currentState = State.Patrolling;
     }
 
     protected override void Update()
@@ -76,21 +77,57 @@ public class EnemyController : PhysicsObject
 
     private void Patrolling()
     {
-        Patrol();
+        Vector2 move = Vector2.zero;
+
+        if (isGrounded)
+        {
+            if (movingRight)
+            {
+                move.x = 50;
+            }
+            else
+            {
+                move.x = -50;
+            }
+        }
+
+        if (isHunter)
+        {
+            PlayerCheckCast(newDirection);
+        }
+
+        if (isHit)
+        {
+            isHit = false;
+        }
+
+        DetectCollisions();
+        targetVelocity = move * patrolSpeed * Time.deltaTime;
     }
 
     private void Hunting()
     {
         // If enemy has not charged, get the current location of them, 
         // flip sprite if necessary and charge at their last known location.
-        if (isMoving)
+        Vector2 move = Vector2.zero;
+
+        if (isGrounded)
         {
             DetectCollisions();
             PlayerCheckCast(newDirection);
 
             // Move enemy forward with an increased speed, until it hits the end of the platform it is on
-            transform.Translate(Vector2.right * huntSpeed * Time.deltaTime);
+            if (movingRight)
+            {
+                move.x = 50;
+            }
+            else
+            {
+                move.x = -50;
+            }
         }
+
+        targetVelocity = move * huntSpeed * Time.deltaTime;
     }
 
     private void Hurt()
@@ -98,10 +135,10 @@ public class EnemyController : PhysicsObject
         targetVelocity.x += x;
         velocity.y += y;
 
-        if (!isHit)
+        if (health <= 0)
         {
-            targetVelocity.x = 0;         
-            GoPatrolling();
+            Killed();
+            this.currentState = State.Dead;
         }
     }
 
@@ -113,75 +150,30 @@ public class EnemyController : PhysicsObject
 
     // ---- METHODS ---- //
 
-    public void UpdateTargVelocity(float _x, float _y)
+    void Killed()
     {
+        mR.enabled = false;
+        coll.enabled = false;
+        ParticleSystem ps = Instantiate(deathParticles, transform.position, transform.rotation) as ParticleSystem;
+        ps.transform.parent = transform.parent; 
+        Destroy(gameObject, 2);
+    }
+
+    public void TakeDamage(Vector2 _hitDir, float _damage, float _x, float _y)
+    {
+        isHit = true;
+        hitDirection = _hitDir;
+        health -= _damage;
         x = _x;
         velocity.y = _y;
-    }
 
-    public void GoPatrolling()
-    {
-        this.currentState = State.Patrolling;
-    }
+        if (hitDirection == newDirection)
+        {
+            FlipSprite();
+        }
 
-    public void TakeDamage(int _damage)
-    {
         this.currentState = State.Hurt;
-
-        if (isHunter)
-        {
-            health -= _damage;
-            //StartCoroutine(IFlashRed(GetComponent<SpriteRenderer>()));
-
-            //if (health <= 0)
-            //{
-            //    isDead = true;
-            //    //animator.SetTrigger("isDead");
-            //    gravityModifier = 0f;
-            //    col.enabled = false;
-            //    //pCon.enemiesKilled++;
-            //    Destroy(gameObject, 3f);
-            //    this.currentState = State.Dead;
-            //}
-        }
     }
-
-    public void StartChaseWait()
-    {
-        StartCoroutine(ChaseWait());
-    }
-
-    private IEnumerator ChaseWait()
-    {
-        isMoving = false;
-        //animator.SetBool("moving", isMoving);
-
-        yield return new WaitForSeconds(pauseTime);
-
-        isMoving = true;
-    }
-
-    private void Patrol()
-    {
-        if (isGrounded)
-        {
-            isMoving = true;
-            transform.Translate(Vector2.right * patrolSpeed * Time.deltaTime);
-            //animator.SetBool("moving", isMoving);
-        }
-        else
-        {
-            isMoving = false;
-        }
-
-        if (isHunter)
-        {
-            PlayerCheckCast(newDirection);
-        }
-
-        DetectCollisions();
-    }
-
 
 
     // ---- COLLISION/PLAYER CHECKS ---- //
@@ -192,7 +184,7 @@ public class EnemyController : PhysicsObject
         LayerMask player = LayerMask.GetMask("Player");
 
         RaycastHit2D hit = Physics2D.Raycast(eyeRange.position, direction * detectionRange, detectionRange, player);
-        Debug.DrawRay(eyeRange.position, direction * detectionRange, Color.red);
+            Debug.DrawRay(eyeRange.position, direction * detectionRange, Color.red);
 
         if (hit.collider != null && !hit.collider.isTrigger)
         {
@@ -212,20 +204,20 @@ public class EnemyController : PhysicsObject
     private void DetectCollisions()
     {
         // ---- CHECK FOR WALL ---- //
-        LayerMask walls = LayerMask.GetMask("Ground") | LayerMask.GetMask("Player");
-
+        LayerMask wallORplayer = LayerMask.GetMask("Ground") | LayerMask.GetMask("Player");
         RaycastHit2D wallInfo;
-        if (!movingRight)
+
+        if (movingRight)
         {
-            newDirection = Vector2.left; // If moving left, raycast left
-            wallInfo = Physics2D.Raycast(wallDetection.position, newDirection, wallDistance, walls);
-            Debug.DrawRay(wallDetection.position, newDirection * wallDistance, Color.white);
+            newDirection = Vector2.right; // If moving right, raycast right
+            wallInfo = Physics2D.Raycast(wallDetection.position, newDirection, wallDistance, wallORplayer);
+                Debug.DrawRay(wallDetection.position, newDirection * wallDistance, Color.white);
         }
         else
         {
-            newDirection = Vector2.right; // If moving right, raycast right
-            wallInfo = Physics2D.Raycast(wallDetection.position, newDirection, wallDistance, walls);
-            Debug.DrawRay(wallDetection.position, newDirection * wallDistance, Color.white);
+            newDirection = Vector2.left; // If moving left, raycast left
+            wallInfo = Physics2D.Raycast(wallDetection.position, newDirection, wallDistance, wallORplayer);
+                Debug.DrawRay(wallDetection.position, newDirection * wallDistance, Color.white);
         }
 
         if (wallInfo.collider != null)
@@ -244,15 +236,14 @@ public class EnemyController : PhysicsObject
                     movingRight = true;
                 }
 
-                if (movingRight && wallInfo.collider.tag == "Player")
-                {
-
-                }
-                else if (!movingRight && wallInfo.collider.tag == "Player")
-                {
-
-                }
-
+                //if (movingRight && wallInfo.collider.tag == "Player")
+                //{
+                //    // Attack?
+                //}
+                //else if (!movingRight && wallInfo.collider.tag == "Player")
+                //{
+                //    // Attack?
+                //}
 
                 // If the enemy has reached the end of the platform, return to patrolling state
                 if (this.currentState == State.Hunting && target == null)
@@ -260,32 +251,33 @@ public class EnemyController : PhysicsObject
                     this.currentState = State.Patrolling;
                 }
             }
-            else if (true)
-            {
-
-            }
         }
 
         // ---- CHECK FOR GROUND ---- //
-
-        RaycastHit2D groundInfo = Physics2D.Raycast(groundDetection.position, Vector2.down, groundDistance, walls);
+        LayerMask platform = LayerMask.GetMask("Ground");
+        RaycastHit2D groundInfo = Physics2D.Raycast(groundDetection.position, Vector2.down, groundDistance, platform);
         Debug.DrawRay(groundDetection.position, Vector2.down * groundDistance, Color.blue);
 
         // Checks for a loss of vertical collision (end of platform)
         if (!groundInfo.collider)
         {
-            FlipSprite();
+            isGrounded = false;
+            isMoving = false;
 
-            if (!isHunter)
+            if (!isHit)
             {
-                ChaseWait();
+                FlipSprite();
             }
 
-            // If the enemy has reached the edge of the platform, return to patrolling state
             if (this.currentState == State.Hunting)
             {
                 this.currentState = State.Patrolling;
             }
+        }
+        else
+        {
+            isGrounded = true;
+            isMoving = true;
         }
     }
 
@@ -304,17 +296,4 @@ public class EnemyController : PhysicsObject
             movingRight = true;
         }
     }
-
-    //private void OnCollisionEnter2D(Collision2D other)
-    //{
-    //    if (!isDead)
-    //    {
-    //        _OnPlayerHitEnemy pHitE = other.gameObject.GetComponent<_OnPlayerHitEnemy>();
-
-    //        if (pHitE != null)
-    //        {
-    //            pHitE.OnHit(other, this);
-    //        }
-    //    }
-    //}
 }

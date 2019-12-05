@@ -14,7 +14,7 @@ public class Knockback : MonoBehaviour
 
     void Start()
     {
-        //eCon.GetComponent<EnemyController>();
+        knockbackCount = knockbackLength;
     }
 
     void Update()
@@ -23,28 +23,26 @@ public class Knockback : MonoBehaviour
         {
             knockbackCount -= Time.deltaTime;
 
-            if (knockbackCount <= 0)
+            if (knockbackCount <= 0 && eCon.isGrounded)
             {
-                eCon.isHit = false;
+                knockbackCount = knockbackLength;
+                eCon.currentState = EnemyController.State.Patrolling;
             }
         }
     }
 
-    public void IsKnocked(Vector2 _hitDirection)
-    {
-        print("Knocked!");
-        eCon.isHit = true;
-        eCon.TakeDamage(2);
-
-        knockbackCount = knockbackLength;
+    public void IsKnocked(Vector2 _hitDirection, float _dmg)
+    {    
+        print("Enemy Hit!");
 
         if (_hitDirection == Vector2.right) // knock to the left
         {
-            eCon.UpdateTargVelocity(knockback, knockUp);
+            eCon.TakeDamage(_hitDirection, _dmg, knockback, knockUp);
+            //eCon.
         }
         else if (_hitDirection == Vector2.left) // knock to the right 
         {
-            eCon.UpdateTargVelocity(-knockback, knockUp);
+            eCon.TakeDamage(_hitDirection, _dmg, -knockback, knockUp);
         }
     }
 }

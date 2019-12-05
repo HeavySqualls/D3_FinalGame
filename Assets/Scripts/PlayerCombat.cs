@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public float knockback;
+    public float damage;
 
     PlayerController pCon;
 
@@ -33,15 +33,22 @@ public class PlayerCombat : MonoBehaviour
         RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 1f, pCon.accessibleDirection, 1f, enemyMask);
         foreach (RaycastHit2D hit in hits)
         {
-            print("hit: " + hit.collider.gameObject.name);
+            var hitObj = hit.collider.gameObject;
 
-            Rigidbody2D rb = hit.collider.GetComponent<Rigidbody2D>();
-            hit.collider.GetComponent<Knockback>().IsKnocked(pCon.accessibleDirection);
-            // Apply knockback to enemy 
-            //rb.AddRelativeForce(pCon.accessibleDirection, ForceMode2D.Impulse);
-            //rb.AddForce(pCon.accessibleDirection * knockback);
+            if (hitObj.tag == "Enemy")
+            {
+                print("hit: " + hitObj.name);
 
-            // Remove health from enemy
+                // Apply knockback to enemy 
+                if (hitObj.GetComponent<Knockback>() != null)
+                {
+                    hitObj.GetComponent<Knockback>().IsKnocked(pCon.accessibleDirection, damage);
+                }
+                else
+                {
+                    Debug.Log("No Knockback component on enemy!");
+                }           
+            }
         }
     }
 }

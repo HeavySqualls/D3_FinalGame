@@ -80,6 +80,7 @@ public class PlayerController : PhysicsObject
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         direction = Vector2.right;
+        accessibleDirection = direction;
         ripPP = Camera.main.GetComponent<RipplePostProcessor>();
     }
 
