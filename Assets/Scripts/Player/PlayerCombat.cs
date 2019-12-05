@@ -34,8 +34,8 @@ public class PlayerCombat : MonoBehaviour
         if (Input.GetButtonUp(pCon.controls.launch))
         {
             SetAttackStats(0, 0, 35);
-            //pCon.animator.SetTrigger("launch");
-            CastForEnemies();
+            pCon.animator.SetTrigger("kick");
+            //CastForEnemies();
         }
     }
 
