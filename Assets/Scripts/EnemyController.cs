@@ -19,7 +19,11 @@ public class EnemyController : PhysicsObject
     public float patrolSpeed = 1.25f;
     public float huntSpeed = 3f;
     public int damageOutput = 2;
-    public float health = 10;
+    public float currentHP;
+    [SerializeField] float hpStart = 10f;
+    [SerializeField] float baseMoveSpeed;
+    [SerializeField] float baseMoveSpeedStart = 50f;
+
 
     [Space]
     [Header("Enemy AI:")]
@@ -32,6 +36,7 @@ public class EnemyController : PhysicsObject
 
     [Space]
     [Header("Enemy References:")]
+    public Transform respawnZone;
     public ParticleSystem deathParticles;
     public Transform eyeRange;
     public Transform wallDetection;
@@ -48,12 +53,17 @@ public class EnemyController : PhysicsObject
         mR = GetComponent<MeshRenderer>();
         coll = GetComponent<BoxCollider2D>();
 
+        baseMoveSpeed = baseMoveSpeedStart;
+        currentHP = hpStart;
+
         this.currentState = State.Patrolling;
     }
 
     protected override void Update()
     {
         base.Update();
+
+        UpdateMoveSpeed();
 
         switch (this.currentState)
         {
@@ -72,6 +82,38 @@ public class EnemyController : PhysicsObject
         }
     }
 
+    void UpdateMoveSpeed()
+    {
+        if (inWindZone)
+        {
+            if (windDir == Vector2.right)
+            {
+                if (newDirection == Vector2.right)
+                {
+                    baseMoveSpeed = baseMoveSpeed / windPwr;
+                }
+                else
+                {
+                    baseMoveSpeed = baseMoveSpeed * windPwr;
+                }
+            }
+            else if (windDir == Vector2.left)
+            {
+                if (newDirection == Vector2.left)
+                {
+                    baseMoveSpeed = baseMoveSpeed / windPwr;
+                }
+                else
+                {
+                    baseMoveSpeed = baseMoveSpeed * windPwr;
+                }
+            }
+        }
+        else
+        {
+            baseMoveSpeed = baseMoveSpeedStart;
+        }
+    }
 
     // ---- STATES ---- //
 
@@ -83,11 +125,11 @@ public class EnemyController : PhysicsObject
         {
             if (movingRight)
             {
-                move.x = 50;
+                move.x = baseMoveSpeed;
             }
             else
             {
-                move.x = -50;
+                move.x = -baseMoveSpeed;
             }
         }
 
@@ -107,8 +149,6 @@ public class EnemyController : PhysicsObject
 
     private void Hunting()
     {
-        // If enemy has not charged, get the current location of them, 
-        // flip sprite if necessary and charge at their last known location.
         Vector2 move = Vector2.zero;
 
         if (isGrounded)
@@ -116,14 +156,13 @@ public class EnemyController : PhysicsObject
             DetectCollisions();
             PlayerCheckCast(newDirection);
 
-            // Move enemy forward with an increased speed, until it hits the end of the platform it is on
             if (movingRight)
             {
-                move.x = 50;
+                move.x = baseMoveSpeed;
             }
             else
             {
-                move.x = -50;
+                move.x = -baseMoveSpeed;
             }
         }
 
@@ -135,7 +174,7 @@ public class EnemyController : PhysicsObject
         targetVelocity.x += x;
         velocity.y += y;
 
-        if (health <= 0)
+        if (currentHP <= 0)
         {
             Killed();
             this.currentState = State.Dead;
@@ -150,20 +189,37 @@ public class EnemyController : PhysicsObject
 
     // ---- METHODS ---- //
 
-    void Killed()
+    public void Killed()
+    {
+        StartCoroutine(Respawn());
+        ParticleSystem ps = Instantiate(deathParticles, transform.position, transform.rotation) as ParticleSystem;
+        ps.transform.parent = transform; 
+        Destroy(ps, 2);
+    }
+
+    IEnumerator Respawn()
     {
         mR.enabled = false;
         coll.enabled = false;
-        ParticleSystem ps = Instantiate(deathParticles, transform.position, transform.rotation) as ParticleSystem;
-        ps.transform.parent = transform.parent; 
-        Destroy(gameObject, 2);
+
+        yield return new WaitForSeconds(3);
+
+        if (respawnZone)
+        {
+            mR.enabled = true;
+            coll.enabled = true;
+            currentHP = hpStart;
+            transform.position = respawnZone.position;
+        }
+        else
+            Debug.Log("No Respawn Zone Assigned To " + gameObject.name);
     }
 
     public void TakeDamage(Vector2 _hitDir, float _damage, float _x, float _y)
     {
         isHit = true;
         hitDirection = _hitDir;
-        health -= _damage;
+        currentHP -= _damage;
         x = _x;
         velocity.y = _y;
 

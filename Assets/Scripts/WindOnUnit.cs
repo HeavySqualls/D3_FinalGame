@@ -7,12 +7,7 @@ public class WindOnUnit : MonoBehaviour
     public WindArea windZone;
     public Transform respawnZone;
 
-    private PlayerController pCon;
-
-    void Start()
-    {
-        pCon = GetComponent<PlayerController>();
-    }
+    public PhysicsObject unit;
 
     void OnTriggerEnter2D(Collider2D coll)
     {
@@ -20,15 +15,25 @@ public class WindOnUnit : MonoBehaviour
         {
             print("Entered wind zone");
             windZone = coll.gameObject.GetComponent<WindArea>();
-            pCon.inWindZone = true;
-            pCon.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft);
+
+            unit.inWindZone = true;
+            unit.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft);
         }
 
         if (coll.gameObject.tag == "DeathZone")
         {
             print("Dead");
-            pCon.gameObject.transform.position = respawnZone.position;
-            StartCoroutine(pCon.IFlashRed(this.GetComponent<SpriteRenderer>()));
+
+            if (unit.GetComponent<PlayerController>())
+            {
+                unit.gameObject.transform.position = respawnZone.position;
+                StartCoroutine(unit.IFlashRed(this.GetComponent<SpriteRenderer>()));
+            }
+
+            if (unit.GetComponent<EnemyController>())
+            {
+                unit.GetComponent<EnemyController>().Killed();
+            }
         }
     }
 
@@ -36,9 +41,9 @@ public class WindOnUnit : MonoBehaviour
     {
         if (coll.gameObject.tag == "WindZone")
         {
-            pCon.rb2d.velocity = Vector3.zero;
+            unit.velocity = Vector3.zero;
             windZone = null;
-            pCon.inWindZone = false;
+            unit.inWindZone = false;
         }
     }
 }

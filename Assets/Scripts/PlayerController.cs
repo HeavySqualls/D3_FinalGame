@@ -11,7 +11,7 @@ public class PlayerController : PhysicsObject
     public bool isMoving = false;
     public bool isMovingInWind = false;
     public bool magBootsOn = false;
-    public bool inWindZone = false;
+    //public bool inWindZone = false;
     public bool pIsFlipped;
     [SerializeField] private bool canJump = true;
 
@@ -20,10 +20,10 @@ public class PlayerController : PhysicsObject
     public float maxSpeed = 2f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
     private bool windAffectUnit = true;
-    private Vector2 windDir;
-    private float windPwr;
+    //private Vector2 windDir;
+    //private float windPwr;
     private float windRatio; // Ratio between the wind power and the players velocity
-    private bool directionOfSource;
+    //private bool directionOfSource;
 
     [Space]
     [Header("JUMP:")]
@@ -110,12 +110,12 @@ public class PlayerController : PhysicsObject
     // ---- LOCOMOTION METHODS ---- //
 
 
-    public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource)
-    {
-        windDir = _windDir;
-        windPwr = _windPwr;
-        directionOfSource = _directionOfSource;
-    }
+    //public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource)
+    //{
+    //    windDir = _windDir;
+    //    windPwr = _windPwr;
+    //    directionOfSource = _directionOfSource;
+    //}
 
     protected override void ComputeVelocity()
     {

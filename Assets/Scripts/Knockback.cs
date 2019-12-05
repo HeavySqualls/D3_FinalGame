@@ -4,10 +4,7 @@ using UnityEngine;
 
 public class Knockback : MonoBehaviour
 {
-    public float knockback;
-    public float knockUp;
     public float knockbackLength;
-    public bool knockFromRight;
     [SerializeField] float knockbackCount;
 
     public EnemyController eCon;
@@ -31,18 +28,17 @@ public class Knockback : MonoBehaviour
         }
     }
 
-    public void IsKnocked(Vector2 _hitDirection, float _dmg)
+    public void IsKnocked(Vector2 _hitDirection, float _dmg, float _knockback, float _knockUp)
     {    
         print("Enemy Hit!");
 
         if (_hitDirection == Vector2.right) // knock to the left
         {
-            eCon.TakeDamage(_hitDirection, _dmg, knockback, knockUp);
-            //eCon.
+            eCon.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp);
         }
         else if (_hitDirection == Vector2.left) // knock to the right 
         {
-            eCon.TakeDamage(_hitDirection, _dmg, -knockback, knockUp);
+            eCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp);
         }
     }
 }

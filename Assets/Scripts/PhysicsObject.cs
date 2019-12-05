@@ -4,26 +4,32 @@ using UnityEngine;
 
 public class PhysicsObject : MonoBehaviour
 {
-    public float minWallNormalX = 0.8f;
-    public float maxWallNormalX = 0.5f;
-    public float minGroundNormalY = 0.65f; // 
-    public float gravityModifier = 1f;
-
-    [SerializeField] public Vector2 velocity;
-    [SerializeField] protected Vector2 targetVelocity;
-    protected Vector2 direction;
-
+    [Space]
+    [Header("PHYSICS OBJECT:")]
     public bool isOnWall = false;
-    [SerializeField] public bool isGrounded;
+    public bool isGrounded; 
+    public bool inWindZone = false;
+    public float gravityModifier = 1f;
+    public Vector2 velocity;
+    [SerializeField] protected Vector2 targetVelocity;
 
+    protected float minWallNormalX = 0.8f;
+    protected float maxWallNormalX = 0.5f;
+    protected float minGroundNormalY = 0.65f; // 
+
+    protected Vector2 direction;
     protected Vector2 groundNormal;
-    public Rigidbody2D rb2d;
+    protected Rigidbody2D rb2d;
     protected ContactFilter2D contactFilter;
     protected RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
 
     protected const float minMoveDistance = 0.001f; // Minimum distance the player must be moving in order to trigger movement 
     protected const float shellRadius = 0.05f;
+
+    protected Vector2 windDir;
+    protected float windPwr;
+    protected bool directionOfSource;
 
     void OnEnable()
     {
@@ -41,6 +47,13 @@ public class PhysicsObject : MonoBehaviour
     {
         targetVelocity = Vector2.zero;
         ComputeVelocity();
+    }
+
+    public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource)
+    {
+        windDir = _windDir;
+        windPwr = _windPwr;
+        directionOfSource = _directionOfSource;
     }
 
     protected virtual void ComputeVelocity()

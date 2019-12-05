@@ -12,12 +12,12 @@ GameObject:
   - component: {fileID: 1242993176099357726}
   - component: {fileID: 1242993176099357729}
   - component: {fileID: 8313365752785423527}
-  - component: {fileID: 1242993176099357725}
   - component: {fileID: 1242993176099357722}
+  - component: {fileID: 1242993176099357725}
   - component: {fileID: 1242993176099357723}
   - component: {fileID: 1242993176099357724}
   - component: {fileID: 1020012711}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: TestSubject2D
   m_TagString: Player
   m_Icon: {fileID: 0}
@@ -124,6 +124,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aafd260a57a4464ba86a3828537aabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 0
+  knockback: 0
+  knockUp: 0
+--- !u!114 &1242993176099357722
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242993176099357728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ffe022fa0279b7469abf8a7f2f5148b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  windZone: {fileID: 0}
+  respawnZone: {fileID: 0}
+  unit: {fileID: 1242993176099357725}
 --- !u!114 &1242993176099357725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -136,24 +154,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d497e3f2e784f2f4e823786439ee42de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minWallNormalX: -0.9
-  maxWallNormalX: 0.9
-  minGroundNormalY: 0.5
+  isOnWall: 0
+  isGrounded: 0
+  inWindZone: 0
   gravityModifier: 6.35
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
-  isOnWall: 0
-  isGrounded: 0
-  rb2d: {fileID: 1242993176099357729}
   isInteractable: 0
   canMove: 1
   isMoving: 0
   isMovingInWind: 0
   magBootsOn: 0
-  inWindZone: 0
   pIsFlipped: 0
   canJump: 1
   maxSpeed: 12
+  accessibleDirection: {x: 0, y: 0}
   jumpTakeoffSpeed: 26
   hardLandTime: 0.85
   heavyLandTime: 1.2
@@ -178,20 +193,7 @@ MonoBehaviour:
   groundCheckDistance: 1
   groundCheck: {fileID: 450504362977715217}
   isTouchingGround: 0
---- !u!114 &1242993176099357722
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242993176099357728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0ffe022fa0279b7469abf8a7f2f5148b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  windZone: {fileID: 0}
-  respawnZone: {fileID: 0}
+  animator: {fileID: 0}
 --- !u!95 &1242993176099357723
 Animator:
   serializedVersion: 3
@@ -342,7 +344,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8395342489049737418}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: WallCheckPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -372,7 +374,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 450504362977715217}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: GroundCheckPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -402,7 +404,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 792494948184693284}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: LedgeCheckPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -6,6 +6,9 @@ public class PlayerCombat : MonoBehaviour
 {
     public float damage;
 
+    public float knockback;
+    public float knockUp;
+
     PlayerController pCon;
 
     void Start() 
@@ -42,7 +45,7 @@ public class PlayerCombat : MonoBehaviour
                 // Apply knockback to enemy 
                 if (hitObj.GetComponent<Knockback>() != null)
                 {
-                    hitObj.GetComponent<Knockback>().IsKnocked(pCon.accessibleDirection, damage);
+                    hitObj.GetComponent<Knockback>().IsKnocked(pCon.accessibleDirection, damage, knockback, knockUp);
                 }
                 else
                 {
