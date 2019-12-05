@@ -9,6 +9,8 @@ public class PlayerCombat : MonoBehaviour
     public float knockback;
     public float knockUp;
 
+    private bool canAttack = true;
+
     PlayerController pCon;
 
     void Start() 
@@ -23,27 +25,38 @@ public class PlayerCombat : MonoBehaviour
 
     private void Attacks()
     {
-        // Punch
-        if (Input.GetButtonUp(pCon.controls.punch))
+        if (canAttack)
         {
-            SetAttackStats(2, 2, 2);
-            pCon.animator.SetTrigger("punch");
-        }
+            // Punch
+            if (Input.GetButtonUp(pCon.controls.punch))
+            {
+                SetAttackStats(2, 2, 2);
+                pCon.animator.SetTrigger("punch");
+                canAttack = false;
+            }
 
-        // Boot Launch
-        if (Input.GetButtonUp(pCon.controls.launch))
-        {
-            SetAttackStats(0, 0, 35);
-            pCon.animator.SetTrigger("kick");
-            //CastForEnemies();
+            // Boot Launch
+            if (Input.GetButtonUp(pCon.controls.launch))
+            {
+                SetAttackStats(0, 0, 35);
+                pCon.animator.SetTrigger("kick");
+                canAttack = false;
+            }
         }
     }
+
+    
 
     void SetAttackStats(float _dmg, float _knkBk, float _knkUp)
     {
         damage = _dmg;
         knockback = _knkBk;
         knockUp = _knkUp;
+    }
+
+    public void CanAttack() // Called from the animator
+    {
+        canAttack = true;
     }
 
     public void CastForEnemies() // Called from the animator
