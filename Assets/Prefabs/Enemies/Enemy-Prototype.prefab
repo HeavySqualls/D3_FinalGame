@@ -191,20 +191,24 @@ MonoBehaviour:
   isOnWall: 0
   isGrounded: 0
   inWindZone: 0
-  gravityModifier: 1
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
+  gravStart: 6.35
   currentState: 0
   isHunter: 1
   isHit: 0
-  isMoving: 0
   patrolSpeed: 3
   huntSpeed: 10
   damageOutput: 2
-  health: 10
+  currentHP: 0
+  hpStart: 10
+  baseMoveSpeed: 0
+  baseMoveSpeedStart: 50
   pauseTime: 2
+  move: {x: 0, y: 0}
   newDirection: {x: 0, y: 0}
   hitDirection: {x: 0, y: 0}
+  respawnZone: {fileID: 0}
   deathParticles: {fileID: 8791838166214362383, guid: 2a67d50ccbe52194baaaf2afd1d4a005,
     type: 3}
   eyeRange: {fileID: 6881064431387336162}

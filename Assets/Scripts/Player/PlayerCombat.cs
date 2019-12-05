@@ -24,10 +24,26 @@ public class PlayerCombat : MonoBehaviour
     private void Attacks()
     {
         // Punch
-        if (Input.GetButtonUp("Punch"))
+        if (Input.GetButtonUp(pCon.controls.punch))
         {
+            SetAttackStats(2, 2, 2);
             pCon.animator.SetTrigger("punch");
         }
+
+        // Boot Launch
+        if (Input.GetButtonUp(pCon.controls.launch))
+        {
+            SetAttackStats(0, 0, 35);
+            //pCon.animator.SetTrigger("launch");
+            CastForEnemies();
+        }
+    }
+
+    void SetAttackStats(float _dmg, float _knkBk, float _knkUp)
+    {
+        damage = _dmg;
+        knockback = _knkBk;
+        knockUp = _knkUp;
     }
 
     public void CastForEnemies() // Called from the animator

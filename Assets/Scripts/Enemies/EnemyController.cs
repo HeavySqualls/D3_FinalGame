@@ -3,16 +3,14 @@ using UnityEngine;
 
 public class EnemyController : PhysicsObject
 {
-    public enum State { Patrolling, Hunting, Hurt, Dead }
+    public enum State { Patrolling, Hunting, Hurt, InWind, Dead }
     public State currentState;
 
     [Space]
     [Header("Enemy Status:")]
     public bool isHunter = true;
     public bool isHit = false;
-    [SerializeField] private bool isMoving = false;
     private bool movingRight = true;
-    private bool isDead = false;
 
     [Space]
     [Header("Enemy Stats:")]
@@ -31,6 +29,7 @@ public class EnemyController : PhysicsObject
     private float detectionRange = 8f;
     private float wallDistance = 1f;
     private float groundDistance = 0.25f;
+    [SerializeField] private Vector2 move;
     [SerializeField] private Vector2 newDirection;
     [SerializeField] private Vector2 hitDirection;
 
@@ -63,8 +62,6 @@ public class EnemyController : PhysicsObject
     {
         base.Update();
 
-        UpdateMoveSpeed();
-
         switch (this.currentState)
         {
             case State.Patrolling:
@@ -76,36 +73,59 @@ public class EnemyController : PhysicsObject
             case State.Hurt:
                 this.Hurt();
                 break;
+            case State.InWind:
+                this.InWind();
+                break;
             case State.Dead:
                 this.Dead();
                 break;
         }
     }
 
-    void UpdateMoveSpeed()
+    void ComputeBaseMoveSpeed()
     {
         if (inWindZone)
         {
-            if (windDir == Vector2.right)
+            if (windDir == Vector2.right) // Wind is moving to the right 
             {
-                if (newDirection == Vector2.right)
+                if (windDir == newDirection)
                 {
-                    baseMoveSpeed = baseMoveSpeed / windPwr;
+                    baseMoveSpeed += windDir.x * windPwr;
+
+                    if (baseMoveSpeed > 60)
+                    {
+                        baseMoveSpeed = 60;
+                    }
                 }
-                else
+                else if (windDir != newDirection)
                 {
-                    baseMoveSpeed = baseMoveSpeed * windPwr;
+                    baseMoveSpeed -= windDir.x * windPwr;
+
+                    if (baseMoveSpeed < 10)
+                    {
+                        baseMoveSpeed = 10;
+                    }
                 }
             }
-            else if (windDir == Vector2.left)
+            else if (windDir == Vector2.left) // Wind is moving to the left 
             {
-                if (newDirection == Vector2.left)
+                if (windDir != newDirection)
                 {
-                    baseMoveSpeed = baseMoveSpeed / windPwr;
+                    baseMoveSpeed -= windDir.x * windPwr;
+
+                    if (baseMoveSpeed > 10)
+                    {
+                        baseMoveSpeed = 10;
+                    }
                 }
-                else
+                else if (windDir == newDirection)
                 {
-                    baseMoveSpeed = baseMoveSpeed * windPwr;
+                    baseMoveSpeed += windDir.x * windPwr;
+
+                    if (baseMoveSpeed < 60)
+                    {
+                        baseMoveSpeed = 60;
+                    }
                 }
             }
         }
@@ -113,13 +133,15 @@ public class EnemyController : PhysicsObject
         {
             baseMoveSpeed = baseMoveSpeedStart;
         }
-    }
+    } // TODO: Find a way to simplify this 
 
     // ---- STATES ---- //
 
     private void Patrolling()
     {
-        Vector2 move = Vector2.zero;
+        move = Vector2.zero;
+
+        ComputeBaseMoveSpeed();
 
         if (isGrounded)
         {
@@ -149,7 +171,9 @@ public class EnemyController : PhysicsObject
 
     private void Hunting()
     {
-        Vector2 move = Vector2.zero;
+        move = Vector2.zero;
+
+        ComputeBaseMoveSpeed();
 
         if (isGrounded)
         {
@@ -171,14 +195,38 @@ public class EnemyController : PhysicsObject
 
     private void Hurt()
     {
-        targetVelocity.x += x;
-        velocity.y += y;
+        if (inWindZone && isHit)
+        {
+            this.currentState = State.InWind;
+        }
+        else
+        {
+            targetVelocity.x += x;
+            velocity.y += y;
+        }
 
         if (currentHP <= 0)
         {
             Killed();
             this.currentState = State.Dead;
         }
+    }
+
+    private void InWind()
+    {
+        gravityModifier = 5f; // <<--- Gets reset to start grav when landed 
+
+        targetVelocity.x = 0;
+        move.x = 0;
+
+        move.x += (windDir.x * windPwr * 2000);
+
+        if (isGrounded)
+        {
+            this.currentState = State.Patrolling;
+        }
+
+        targetVelocity.x = move.x * Time.deltaTime;
     }
 
     private void Dead()
@@ -209,7 +257,9 @@ public class EnemyController : PhysicsObject
             mR.enabled = true;
             coll.enabled = true;
             currentHP = hpStart;
+            gravityModifier = gravStart;
             transform.position = respawnZone.position;
+            move = Vector2.zero;
         }
         else
             Debug.Log("No Respawn Zone Assigned To " + gameObject.name);
@@ -318,7 +368,6 @@ public class EnemyController : PhysicsObject
         if (!groundInfo.collider)
         {
             isGrounded = false;
-            isMoving = false;
 
             if (!isHit)
             {
@@ -333,7 +382,6 @@ public class EnemyController : PhysicsObject
         else
         {
             isGrounded = true;
-            isMoving = true;
         }
     }
 

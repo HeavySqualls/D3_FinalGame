@@ -14,6 +14,7 @@ GameObject:
   - component: {fileID: 8313365752785423527}
   - component: {fileID: 1242993176099357722}
   - component: {fileID: 1242993176099357725}
+  - component: {fileID: 118447264074416066}
   - component: {fileID: 1242993176099357723}
   - component: {fileID: 1242993176099357724}
   - component: {fileID: 1020012711}
@@ -157,9 +158,10 @@ MonoBehaviour:
   isOnWall: 0
   isGrounded: 0
   inWindZone: 0
-  gravityModifier: 6.35
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
+  gravStart: 6.35
+  isController: 0
   isInteractable: 0
   canMove: 1
   isMoving: 0
@@ -194,6 +196,24 @@ MonoBehaviour:
   groundCheck: {fileID: 450504362977715217}
   isTouchingGround: 0
   animator: {fileID: 0}
+  controls: {fileID: 118447264074416066}
+--- !u!114 &118447264074416066
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242993176099357728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1bceea798f89e454d9b9d6fa7675c5ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  xMove: 
+  jump: 
+  punch: 
+  launch: 
+  magBoots: 
 --- !u!95 &1242993176099357723
 Animator:
   serializedVersion: 3

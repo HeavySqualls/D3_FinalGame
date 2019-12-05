@@ -6,12 +6,12 @@ public class PlayerController : PhysicsObject
 {
     [Space]
     [Header("STATUS:")]
+    public bool isController = false;
     public bool isInteractable;
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
     public bool magBootsOn = false;
-    //public bool inWindZone = false;
     public bool pIsFlipped;
     [SerializeField] private bool canJump = true;
 
@@ -20,10 +20,7 @@ public class PlayerController : PhysicsObject
     public float maxSpeed = 2f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
     private bool windAffectUnit = true;
-    //private Vector2 windDir;
-    //private float windPwr;
     private float windRatio; // Ratio between the wind power and the players velocity
-    //private bool directionOfSource;
 
     [Space]
     [Header("JUMP:")]
@@ -71,9 +68,10 @@ public class PlayerController : PhysicsObject
 
     [Space]
     [Header("REFERENCES:")]
+    public Animator animator;
+    public Controls controls;
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
-    public Animator animator;
 
     void Awake()
     {
@@ -87,6 +85,17 @@ public class PlayerController : PhysicsObject
     void Start()
     {
         whatIsGround = LayerMask.GetMask("Ground");
+
+        if (controls != null)
+        {
+            if (isController)
+                controls.ControllerControls();
+            else
+                controls.KeyboardControls();
+        }
+        else
+            Debug.Log("Player does not have the controls component attached!");
+
     }
 
     protected override void Update()
@@ -110,20 +119,13 @@ public class PlayerController : PhysicsObject
     // ---- LOCOMOTION METHODS ---- //
 
 
-    //public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource)
-    //{
-    //    windDir = _windDir;
-    //    windPwr = _windPwr;
-    //    directionOfSource = _directionOfSource;
-    //}
-
     protected override void ComputeVelocity()
     {
         if (canMove)
         {
             Vector2 move = Vector2.zero;
 
-            if (Input.GetButton("Horizontal"))
+            if (Input.GetAxis(controls.xMove) > 0.2f || Input.GetAxis(controls.xMove) < 0f)
             {
                 isMoving = true;
 
@@ -132,7 +134,7 @@ public class PlayerController : PhysicsObject
                     isMovingInWind = true;
                 }
 
-                move.x = Input.GetAxis("Horizontal") + 0.1f;
+                move.x = Input.GetAxis(controls.xMove) + 0.1f;
 
                 float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip
                 bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip));
@@ -172,7 +174,7 @@ public class PlayerController : PhysicsObject
                 }
             }
 
-            if (Input.GetButtonUp("Horizontal"))
+            if (Input.GetAxis(controls.xMove) == 0)
             {
                 isMoving = false;
                 isMovingInWind = false;
@@ -196,7 +198,7 @@ public class PlayerController : PhysicsObject
                 }
             }
 
-            if (!windAffectUnit && Input.GetButton("Horizontal"))
+            if (!windAffectUnit && Input.GetAxis(controls.xMove) > 0.2f || !windAffectUnit && Input.GetAxis(controls.xMove) < 0f)
             {
                 StartCoroutine(LeaveWallCountdown());
             }
@@ -284,7 +286,7 @@ public class PlayerController : PhysicsObject
 
     public void MagBoots()
     {
-        if (Input.GetKeyUp(KeyCode.Mouse1) && !magBootsOn)
+        if (Input.GetButtonUp(controls.magBoots) && !magBootsOn)
         {
             print("MagBoots Activated: " + magBootsOn);
 
@@ -300,11 +302,11 @@ public class PlayerController : PhysicsObject
                 ripPP.CauseRipple(groundCheck, 12f, 0.5f);
             }
         }
-        else if (Input.GetKeyUp(KeyCode.Mouse1) && magBootsOn)
+        else if (Input.GetButtonUp(controls.magBoots) && magBootsOn)
         {
             print("MagBoots Activated: " + magBootsOn);
             magBootsOn = false;
-            gravityModifier = 6.35f;
+            gravityModifier = gravStart;
         }
     }
 
@@ -376,9 +378,9 @@ public class PlayerController : PhysicsObject
     {
         if (!magBootsOn)
         {
-            if (Input.GetButtonDown("Jump") && isGrounded && canJump ||
-                Input.GetButtonDown("Jump") && currentGraceTime > 0 && canJump ||
-                isTouchingGround && !isGrounded && Input.GetButtonDown("Jump") && canJump
+            if (Input.GetButtonDown(controls.jump) && isGrounded && canJump ||
+                Input.GetButtonDown(controls.jump) && currentGraceTime > 0 && canJump ||
+                isTouchingGround && !isGrounded && Input.GetButtonDown(controls.jump) && canJump
                 )
             {
                 velocity.y = jumpTakeoffSpeed;
@@ -386,7 +388,7 @@ public class PlayerController : PhysicsObject
                 currentGraceTime = 0;
                 canJump = false;
             }
-            else if (Input.GetButtonUp("Jump"))
+            else if (Input.GetButtonUp(controls.jump))
             {            
                 if (velocity.y > 0)
                 {
@@ -395,7 +397,7 @@ public class PlayerController : PhysicsObject
             }
         }
 
-        if (Input.GetButtonUp("Jump"))
+        if (Input.GetButtonUp(controls.jump))
         {
             print("can jump");
             canJump = true;
@@ -412,7 +414,7 @@ public class PlayerController : PhysicsObject
 
     private IEnumerator QuickJumpTimer(float _time)
     {
-        if (Input.GetButton("Jump"))
+        if (Input.GetButton(controls.jump))
         {
             velocity.y = jumpTakeoffSpeed;
             animator.SetTrigger("jumping");
@@ -482,7 +484,6 @@ public class PlayerController : PhysicsObject
         airTime = 0;
         inAir = false;
     }
-
 
 
     // ---- UTILITY ---- //

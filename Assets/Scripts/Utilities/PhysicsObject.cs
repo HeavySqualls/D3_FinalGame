@@ -9,9 +9,10 @@ public class PhysicsObject : MonoBehaviour
     public bool isOnWall = false;
     public bool isGrounded; 
     public bool inWindZone = false;
-    public float gravityModifier = 1f;
     public Vector2 velocity;
     [SerializeField] protected Vector2 targetVelocity;
+    public float gravStart = 6.35f;
+    protected float gravityModifier;
 
     protected float minWallNormalX = 0.8f;
     protected float maxWallNormalX = 0.5f;
@@ -34,6 +35,7 @@ public class PhysicsObject : MonoBehaviour
     void OnEnable()
     {
         rb2d = GetComponent<Rigidbody2D>();
+        gravityModifier = gravStart;
     }
 
     void Start()
