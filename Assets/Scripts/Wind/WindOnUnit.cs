@@ -11,6 +11,8 @@ public class WindOnUnit : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
+        // WIND
+
         if (coll.gameObject.tag == "WindZone")
         {
             print("Entered wind zone");
@@ -20,6 +22,9 @@ public class WindOnUnit : MonoBehaviour
             unit.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft);
         }
 
+
+        // DEATH 
+        
         if (coll.gameObject.tag == "DeathZone")
         {
             print("Dead");

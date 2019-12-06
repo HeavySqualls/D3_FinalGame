@@ -30,7 +30,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected Vector2 windDir;
     protected float windPwr;
-    protected bool directionOfSource;
+    protected bool isWindFromLeft;
 
     void OnEnable()
     {
@@ -55,7 +55,7 @@ public class PhysicsObject : MonoBehaviour
     {
         windDir = _windDir;
         windPwr = _windPwr;
-        directionOfSource = _directionOfSource;
+        isWindFromLeft = _directionOfSource;
     }
 
     protected virtual void ComputeVelocity()
@@ -121,11 +121,12 @@ public class PhysicsObject : MonoBehaviour
                 }
 
                 // THIS IS WHERE THE PLAYER IS DETERMINED TO BE ON A WALL OR NOT
-                if (currentNormal.x < minWallNormalX || currentNormal.x > maxWallNormalX && hitBufferList[i].collider.gameObject.tag == "Platform")
-                {                                 
-                    rb2d.velocity = Vector2.zero;
-                    isOnWall = true;
-                }
+                //if (currentNormal.x < minWallNormalX || currentNormal.x > maxWallNormalX && hitBufferList[i].collider.gameObject.tag == "Platform")
+                //{                                 
+                //    rb2d.velocity = Vector2.zero;
+                //    isOnWall = true;
+                //    print("On Wall");
+                //}
 
                 // Prevents player from loosing velocity when interacting with another slope while in the air
                 float projection = Vector2.Dot(velocity, currentNormal); // Vector2.Dot returns zero if vectors are perpendicular

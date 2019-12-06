@@ -142,15 +142,19 @@ public class PlayerController : PhysicsObject
 
                 move.x = Input.GetAxis(controls.xMove) + 0.1f;
 
+                // FLIP SPRITE CHECKS 
+
                 if (canFlipSprite)
                 {
                     float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip
-                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip));
 
-                    if (inWindZone && directionOfSource && pIsFlipped && isGrounded)
+                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip && !inWindZone) : (velocity.x < -minXFlip && !inWindZone)); // TODO: Implement this better
+
+                    if (inWindZone && isWindFromLeft && pIsFlipped && isGrounded)
                     {
                         if (velocity.x > windRatio + 1) // 1 is just a random int to get a value outside the limit of windForce
                         {
+                            print("mlerp!");
                             ChangeDirection();
                             pIsFlipped = !pIsFlipped;
                             spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -160,7 +164,7 @@ public class PlayerController : PhysicsObject
                             pIsFlipped = true;
                         }
                     }
-                    else if (inWindZone && !directionOfSource && !pIsFlipped && isGrounded)
+                    else if (inWindZone && !isWindFromLeft && !pIsFlipped && isGrounded)
                     {
                         if (velocity.x > windRatio + 1) // 1 is just a random int to get a value outside the limit of windForce
                         {
@@ -168,7 +172,7 @@ public class PlayerController : PhysicsObject
                         }
                         else
                         {
-                            print("flip");
+                            print("honk");
                             ChangeDirection();
                             pIsFlipped = !pIsFlipped;
                             spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -236,14 +240,16 @@ public class PlayerController : PhysicsObject
 
                 if (canFlipSprite)
                 {
-                    if (directionOfSource && !pIsFlipped)
+                    if (isWindFromLeft && !pIsFlipped)
                     {
+                        print("bum");
                         ChangeDirection();
                         pIsFlipped = !pIsFlipped;
                         spriteRenderer.flipX = !spriteRenderer.flipX;
                     }
-                    else if (!directionOfSource && pIsFlipped)
+                    else if (!isWindFromLeft && pIsFlipped)
                     {
+                        print("do");
                         ChangeDirection();
                         pIsFlipped = !pIsFlipped;
                         spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -431,7 +437,16 @@ public class PlayerController : PhysicsObject
     {
         if (isTouchingGround && !isGrounded && canJump)
         {
-            StartCoroutine(QuickJumpTimer(1));
+            if (Input.GetButtonUp(controls.jump))
+            {
+                velocity.y = jumpTakeoffSpeed;
+                animator.SetTrigger("jumping");
+                currentGraceTime = 0;
+
+                StopTrackAirTime();
+                inAir = true;
+            }
+            //StartCoroutine(QuickJumpTimer(1));
         }
     }
 
