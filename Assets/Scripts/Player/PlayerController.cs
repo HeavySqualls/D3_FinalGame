@@ -16,6 +16,9 @@ public class PlayerController : PhysicsObject
     [SerializeField] private bool canFlipSprite = true;
     [SerializeField] private bool canJump = true;
 
+    public AnimationCurve accelerationCurve;
+    public float accelerationTime = 1;
+
     [Space]
     [Header("MOVEMENT:")]
     public float maxSpeed = 2f;
@@ -97,6 +100,8 @@ public class PlayerController : PhysicsObject
         else
             Debug.Log("Player does not have the controls component attached!");
 
+        //speed * accelerationCurve.Evaluate(accelerationTime)
+        //if(accelerationTime+Time.deltaTime < 1) accelerationTime = Mathf.Min(accelerationTime+Time.deltaTime, 1);
     }
 
     protected override void Update()
