@@ -13,7 +13,7 @@ public class PlayerController : PhysicsObject
     public bool isMovingInWind = false;
     public bool magBootsOn = false;
     public bool pIsFlipped;
-    [SerializeField] private bool canFlipSprite = true;
+    public bool canFlipSprite = true;
     [SerializeField] private bool canJump = true;
 
     public AnimationCurve accelerationCurve;
@@ -437,7 +437,7 @@ public class PlayerController : PhysicsObject
 
     private IEnumerator QuickJumpTimer(float _time)
     {
-        if (Input.GetButton(controls.jump))
+        if (Input.GetButtonUp(controls.jump))
         {
             velocity.y = jumpTakeoffSpeed;
             animator.SetTrigger("jumping");

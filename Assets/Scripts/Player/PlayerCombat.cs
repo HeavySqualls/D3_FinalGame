@@ -30,9 +30,9 @@ public class PlayerCombat : MonoBehaviour
             // Punch
             if (Input.GetButtonUp(pCon.controls.punch))
             {
-                SetAttackStats(2, 2, 2);
+                SetAttackStats(2, 2, 8);
                 pCon.animator.SetTrigger("punch");
-                canAttack = false;
+                StartCoroutine(AttackCoolDown(pCon.animator.GetCurrentAnimatorClipInfo(4).Length));
             }
 
             // Boot Launch
@@ -40,12 +40,22 @@ public class PlayerCombat : MonoBehaviour
             {
                 SetAttackStats(0, 0, 35);
                 pCon.animator.SetTrigger("kick");
-                canAttack = false;
+                StartCoroutine(AttackCoolDown(pCon.animator.GetCurrentAnimatorClipInfo(7).Length));
             }
         }
     }
 
-    
+    IEnumerator AttackCoolDown(float _time)
+    {
+        canAttack = false;
+        pCon.CanFlipSprite();
+
+        yield return new WaitForSeconds(_time);
+
+        pCon.CanFlipSprite();
+        canAttack = true;
+
+    }
 
     void SetAttackStats(float _dmg, float _knkBk, float _knkUp)
     {
