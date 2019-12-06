@@ -24,7 +24,7 @@ public class PlayerController : PhysicsObject
     public float maxSpeed = 2f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
     private bool windAffectUnit = true;
-    private float windRatio; // Ratio between the wind power and the players velocity
+    [SerializeField] private float windRatio; // Ratio between the wind power and the players velocity
 
     [Space]
     [Header("JUMP:")]
@@ -148,34 +148,37 @@ public class PlayerController : PhysicsObject
                 {
                     float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip
 
-                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip && !inWindZone) : (velocity.x < -minXFlip && !inWindZone)); // TODO: Implement this better
+                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip)); // TODO: Implement this better
 
-                    if (inWindZone && isWindFromLeft && pIsFlipped && isGrounded)
+                    if (inWindZone)
                     {
-                        if (velocity.x > windRatio + 1) // 1 is just a random int to get a value outside the limit of windForce
+                        if (isWindFromLeft && pIsFlipped && isGrounded)
                         {
-                            print("mlerp!");
-                            ChangeDirection();
-                            pIsFlipped = !pIsFlipped;
-                            spriteRenderer.flipX = !spriteRenderer.flipX;
+                            if (velocity.x > windRatio /*+ 2*/) // 1 is just a random int to get a value outside the limit of windForce
+                            {
+                                print("mlerp!");
+                                ChangeDirection();
+                                pIsFlipped = !pIsFlipped;
+                                spriteRenderer.flipX = !spriteRenderer.flipX;
+                            }
+                            else
+                            {
+                                pIsFlipped = true;
+                            }
                         }
-                        else
+                        else if (!isWindFromLeft && !pIsFlipped && isGrounded)
                         {
-                            pIsFlipped = true;
-                        }
-                    }
-                    else if (inWindZone && !isWindFromLeft && !pIsFlipped && isGrounded)
-                    {
-                        if (velocity.x > windRatio + 1) // 1 is just a random int to get a value outside the limit of windForce
-                        {
-                            pIsFlipped = false;
-                        }
-                        else
-                        {
-                            print("honk");
-                            ChangeDirection();
-                            pIsFlipped = !pIsFlipped;
-                            spriteRenderer.flipX = !spriteRenderer.flipX;
+                            if (velocity.x > windRatio /*+ 2*/) // 1 is just a random int to get a value outside the limit of windForce
+                            {
+                                pIsFlipped = false;
+                            }
+                            else
+                            {
+                                print("honk");
+                                ChangeDirection();
+                                pIsFlipped = !pIsFlipped;
+                                spriteRenderer.flipX = !spriteRenderer.flipX;
+                            }
                         }
                     }
                     else if (flipPlayerSprite)
