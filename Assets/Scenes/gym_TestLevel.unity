@@ -6011,18 +6011,6 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1242993175089327294}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1699834365 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 118447264074416066, guid: 2ad598378404af64e8c629d59ff14cdc,
-    type: 3}
-  m_PrefabInstance: {fileID: 1242993175089327294}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1699834355}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1bceea798f89e454d9b9d6fa7675c5ec, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1750400044
 GameObject:
   m_ObjectHideFlags: 0
@@ -7037,20 +7025,15 @@ PrefabInstance:
       propertyPath: m_Name
       value: TestSubject2D
       objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357728, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
     - target: {fileID: 1242993176099357727, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 164
+      value: 71
       objectReference: {fileID: 0}
     - target: {fileID: 1242993176099357727, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 97
+      value: 32
       objectReference: {fileID: 0}
     - target: {fileID: 1242993176099357727, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
@@ -7102,121 +7085,6 @@ PrefabInstance:
       propertyPath: respawnZone
       value: 
       objectReference: {fileID: 2135247972}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.size
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: windForce
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: pIsFlipped
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: isController
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: controls
-      value: 
-      objectReference: {fileID: 1699834365}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[0].inSlope
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[0].outSlope
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[1].time
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[1].value
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[0].time
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[0].value
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[1].inSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[1].outSlope
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[1].tangentMode
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: accelerationCurve.m_Curve.Array.data[1].inWeight
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8313365752785423527, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: knockback.x
-      value: 10
-      objectReference: {fileID: 0}
-    - target: {fileID: 8313365752785423527, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: knockback.y
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8313365752785423527, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: knockback
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8313365752785423527, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: damage
-      value: 2
-      objectReference: {fileID: 0}
-    - target: {fileID: 8313365752785423527, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: knockUp
-      value: 6
-      objectReference: {fileID: 0}
-    - target: {fileID: 6687144775817189083, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 8826679415011564487, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
-    - target: {fileID: 2259308185300549265, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: m_Layer
-      value: 12
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ad598378404af64e8c629d59ff14cdc, type: 3}
 --- !u!1001 &6881064431782414190

@@ -125,9 +125,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4aafd260a57a4464ba86a3828537aabb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
-  knockback: 0
-  knockUp: 0
+  damage: 2
+  knockback: 2
+  knockUp: 6
 --- !u!114 &1242993176099357722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -167,10 +167,38 @@ MonoBehaviour:
   isMoving: 0
   isMovingInWind: 0
   magBootsOn: 0
-  pIsFlipped: 0
+  pIsFaceLeft: 0
+  canFlipSprite: 1
+  backToWind: 1
   canJump: 1
+  accelerationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  accelerationTime: 1
   maxSpeed: 12
   accessibleDirection: {x: 0, y: 0}
+  windRatio: 0
   jumpTakeoffSpeed: 26
   hardLandTime: 0.85
   heavyLandTime: 1.2
@@ -192,7 +220,7 @@ MonoBehaviour:
   wallCheckDistance: 0.75
   wallCheck: {fileID: 8395342489049737418}
   bottom: {x: 0, y: 0, z: 0}
-  groundCheckDistance: 1
+  groundCheckDistance: 0.75
   groundCheck: {fileID: 450504362977715217}
   isTouchingGround: 0
   animator: {fileID: 0}

@@ -66,7 +66,7 @@ public class PlayerController : PhysicsObject
     [Space]
     [Header("GROUND CHECK:")]
     public Vector3 bottom;
-    public float groundCheckDistance = 2f;
+    public float groundCheckDistance = 1.75f;
     public Transform groundCheck; // for determining quick landing jump
     [SerializeField] private bool isTouchingGround = false;
     private int whatIsGround;
@@ -116,11 +116,6 @@ public class PlayerController : PhysicsObject
         TrackAirTime();
     }
 
-    protected override void FixedUpdate()
-    {
-        base.FixedUpdate();
-    }
-
 
 
     // ---- LOCOMOTION METHODS ---- //
@@ -150,9 +145,14 @@ public class PlayerController : PhysicsObject
                 isMovingInWind = false;
             }
 
+            if (isTouchingWall)
+                windAffectUnit = false;
+            else
+                windAffectUnit = true;
+
             // If the player is in the windzone without mag boots and not against a wall, add in wind force vector to move vector
             if (inWindZone && !magBootsOn && windAffectUnit)
-            {              
+            {
                 if (velocity.x > 0.001f || velocity.x < -0.001f) // player moving right/left 
                 {
                     move.x += windDir.x * windPwr;
@@ -161,20 +161,9 @@ public class PlayerController : PhysicsObject
                 {
                     move.x = windDir.x * windPwr;
                 }
-
-                if (isTouchingWall)
-                {
-                    windAffectUnit = false;
-                }
-            }
-
-            if (!windAffectUnit && Input.GetAxisRaw(controls.xMove) > 0 || !windAffectUnit && Input.GetAxisRaw(controls.xMove) < 0f)
-            {
-                StartCoroutine(LeaveWallCountdown());
             }
 
             Jump();
-
             RapidJump();
 
             animator.SetBool("grounded", isGrounded);
@@ -310,6 +299,8 @@ public class PlayerController : PhysicsObject
         windAffectUnit = true;
     }
 
+
+
     // ---- MAG BOOTS METHODS ---- //
 
 
@@ -407,18 +398,15 @@ public class PlayerController : PhysicsObject
     {
         if (!magBootsOn)
         {
-            if (Input.GetButtonDown(controls.jump) && isGrounded && canJump ||
-                Input.GetButtonDown(controls.jump) && currentGraceTime > 0 && canJump ||
-                isTouchingGround && !isGrounded && Input.GetButtonDown(controls.jump) && canJump
-                )
+            if (Input.GetButtonDown(controls.jump) && currentGraceTime > 0 && canJump)
             {
                 velocity.y = jumpTakeoffSpeed;
-                animator.SetTrigger("jumping");
                 currentGraceTime = 0;
                 canJump = false;
+                animator.SetTrigger("jumping");
             }
-            else if (Input.GetButtonUp(controls.jump))
-            {            
+            else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
+            {
                 if (velocity.y > 0)
                 {
                     velocity.y = velocity.y * 0.5f;
@@ -428,7 +416,6 @@ public class PlayerController : PhysicsObject
 
         if (Input.GetButtonUp(controls.jump))
         {
-            print("can jump");
             canJump = true;
         }
     }
@@ -437,7 +424,7 @@ public class PlayerController : PhysicsObject
     {
         if (isTouchingGround && !isGrounded && canJump)
         {
-            if (Input.GetButtonUp(controls.jump))
+            if (Input.GetButtonDown(controls.jump))
             {
                 velocity.y = jumpTakeoffSpeed;
                 animator.SetTrigger("jumping");
@@ -446,23 +433,7 @@ public class PlayerController : PhysicsObject
                 StopTrackAirTime();
                 inAir = true;
             }
-            //StartCoroutine(QuickJumpTimer(1));
         }
-    }
-
-    private IEnumerator QuickJumpTimer(float _time)
-    {
-        if (Input.GetButtonUp(controls.jump))
-        {
-            velocity.y = jumpTakeoffSpeed;
-            animator.SetTrigger("jumping");
-            currentGraceTime = 0;
-
-            StopTrackAirTime();
-            inAir = true;
-        }
-
-        yield return new WaitForSeconds(_time);
     }
 
     void JumpTimer()

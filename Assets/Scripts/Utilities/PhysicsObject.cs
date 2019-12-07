@@ -25,8 +25,8 @@ public class PhysicsObject : MonoBehaviour
     protected RaycastHit2D[] hitBuffer = new RaycastHit2D[16];
     protected List<RaycastHit2D> hitBufferList = new List<RaycastHit2D>(16);
 
-    protected const float minMoveDistance = 0.001f; // Minimum distance the player must be moving in order to trigger movement 
-    protected const float shellRadius = 0.05f;
+    protected const float minMoveDistance = 0.0001f; // Minimum distance the player must be moving in order to trigger movement 
+    protected const float shellRadius = 0.04f;
 
     protected Vector2 windDir;
     protected float windPwr;
