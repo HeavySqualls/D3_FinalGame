@@ -140,54 +140,7 @@ public class PlayerController : PhysicsObject
                     isMovingInWind = true;
                 }
 
-                move.x = Input.GetAxis(controls.xMove) + 0.1f;
-
-                // FLIP SPRITE CHECKS 
-
-                if (canFlipSprite)
-                {
-                    float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip
-
-                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip)); // TODO: Implement this better
-
-                    if (inWindZone)
-                    {
-                        if (isWindFromLeft && pIsFlipped && isGrounded)
-                        {
-                            if (velocity.x > windRatio /*+ 2*/) // 1 is just a random int to get a value outside the limit of windForce
-                            {
-                                print("mlerp!");
-                                ChangeDirection();
-                                pIsFlipped = !pIsFlipped;
-                                spriteRenderer.flipX = !spriteRenderer.flipX;
-                            }
-                            else
-                            {
-                                pIsFlipped = true;
-                            }
-                        }
-                        else if (!isWindFromLeft && !pIsFlipped && isGrounded)
-                        {
-                            if (velocity.x > windRatio /*+ 2*/) // 1 is just a random int to get a value outside the limit of windForce
-                            {
-                                pIsFlipped = false;
-                            }
-                            else
-                            {
-                                print("honk");
-                                ChangeDirection();
-                                pIsFlipped = !pIsFlipped;
-                                spriteRenderer.flipX = !spriteRenderer.flipX;
-                            }
-                        }
-                    }
-                    else if (flipPlayerSprite)
-                    {
-                        ChangeDirection();
-                        pIsFlipped = !pIsFlipped;
-                        spriteRenderer.flipX = !spriteRenderer.flipX;
-                    }
-                }     
+                move.x = Input.GetAxis(controls.xMove) + 0.1f; 
             }
 
             if (Input.GetAxis(controls.xMove) == 0)
@@ -226,43 +179,65 @@ public class PlayerController : PhysicsObject
             animator.SetBool("grounded", isGrounded);
             animator.SetBool("inWind", inWindZone);
 
+
+            // FLIP SPRITE CHECKS 
+
+
             if (!isMoving)
             {
                 windRatio = velocity.x;
             }
 
-            // Used to always face the player in to the direction of the wind - if in wind zone and not moving 
-            //  - negative windForce value is used when wind is coming from the right
-            if (inWindZone && velocity.x == windRatio && isGrounded || 
-                inWindZone && velocity.x == -windRatio && isGrounded || 
-                inWindZone && magBootsOn && velocity.x == 0 && isGrounded
-                )
+            if (canFlipSprite)
             {
-                //isMoving = false;
-                animator.SetBool("isMovingInWind", isMovingInWind);
+                float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip                   
+                bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip)); // TODO: Implement this better
 
-                if (canFlipSprite)
+                if (inWindZone/* && isGrounded*/)
                 {
-                    if (isWindFromLeft && !pIsFlipped)
+                    if (pIsFlipped != isWindFromLeft) // If player is facing opposite of wind
                     {
-                        print("bum");
-                        ChangeDirection();
-                        pIsFlipped = !pIsFlipped;
-                        spriteRenderer.flipX = !spriteRenderer.flipX;
+                        if (velocity.x < windRatio) // If player is moving with the wind
+                        {
+                            pIsFlipped = true;
+                        }
+                        else // If player is facing right
+                        {
+                            print("honk");
+                            ChangeDirection();
+                            pIsFlipped = !pIsFlipped;
+                            spriteRenderer.flipX = !spriteRenderer.flipX;
+                        }
                     }
-                    else if (!isWindFromLeft && pIsFlipped)
+                    else if (pIsFlipped == isWindFromLeft) // If player is with the wind
                     {
-                        print("do");
-                        ChangeDirection();
-                        pIsFlipped = !pIsFlipped;
-                        spriteRenderer.flipX = !spriteRenderer.flipX;
+                        if (velocity.x == windRatio || velocity.x > windRatio) // If player is not moving or moving agaisnt the wind
+                        {
+                            pIsFlipped = false;
+                        }
+                        else // If player is facing left 
+                        {
+                            print("honk");
+                            ChangeDirection();
+                            pIsFlipped = !pIsFlipped;
+                            spriteRenderer.flipX = !spriteRenderer.flipX;
+                        }
                     }
+
+                    animator.SetBool("isMovingInWind", isMovingInWind);
+                    animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+                }               
+                else if (flipPlayerSprite)
+                {
+                    ChangeDirection();
+                    pIsFlipped = !pIsFlipped;
+                    spriteRenderer.flipX = !spriteRenderer.flipX;
                 }
-            }
-            else
-            {
-                animator.SetBool("isMovingInWind", isMoving);
-                animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+                else
+                {
+                    animator.SetBool("isMovingInWind", isMoving);
+                    animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+                }
             }
             
             targetVelocity = move * maxSpeed;
