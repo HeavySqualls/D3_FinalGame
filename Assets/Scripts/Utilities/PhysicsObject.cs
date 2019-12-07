@@ -30,7 +30,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected Vector2 windDir;
     protected float windPwr;
-    protected bool isWindFromLeft;
+    protected bool windMovingRight;
 
     void OnEnable()
     {
@@ -55,7 +55,7 @@ public class PhysicsObject : MonoBehaviour
     {
         windDir = _windDir;
         windPwr = _windPwr;
-        isWindFromLeft = _directionOfSource;
+        windMovingRight = _directionOfSource;
     }
 
     protected virtual void ComputeVelocity()
