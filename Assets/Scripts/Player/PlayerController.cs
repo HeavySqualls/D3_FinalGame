@@ -193,9 +193,9 @@ public class PlayerController : PhysicsObject
                 float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip                   
                 bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip)); // TODO: Implement this better
 
-                if (inWindZone/* && isGrounded*/)
+                if (inWindZone && isGrounded)
                 {
-                    if (pIsFlipped != isWindFromLeft) // If player is facing opposite of wind
+                    if (pIsFlipped != isWindFromLeft || pIsFlipped != !isWindFromLeft) // If player is facing opposite of wind
                     {
                         if (velocity.x < windRatio) // If player is moving with the wind
                         {
@@ -209,7 +209,7 @@ public class PlayerController : PhysicsObject
                             spriteRenderer.flipX = !spriteRenderer.flipX;
                         }
                     }
-                    else if (pIsFlipped == isWindFromLeft) // If player is with the wind
+                    else if (pIsFlipped == isWindFromLeft || pIsFlipped == !isWindFromLeft) // If player is with the wind
                     {
                         if (velocity.x == windRatio || velocity.x > windRatio) // If player is not moving or moving agaisnt the wind
                         {
