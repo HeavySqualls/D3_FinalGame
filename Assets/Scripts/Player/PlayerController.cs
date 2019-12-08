@@ -5,26 +5,25 @@ using UnityEngine;
 public class PlayerController : PhysicsObject
 {
     [Space]
-    [Header("STATUS:")]
+    [Header("INPUT:")]
     public bool isController = false;
-    public bool isInteractable;
+
+    [Space]
+    [Header("MOVEMENT / WIND:")]
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
-    public bool magBootsOn = false;
-    public bool pIsFaceLeft;
-    public bool canFlipSprite = true;
-    public bool backToWind = true;
-    [SerializeField] private bool canJump = true;
+    public float maxSpeed = 2f;
+    public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
 
     public AnimationCurve accelerationCurve;
     public float accelerationTime = 1;
 
-    [Space]
-    [Header("MOVEMENT:")]
-    public float maxSpeed = 2f;
-    public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
     private bool windAffectUnit = true;
+    private bool pIsFaceLeft;
+    private bool canFlipSprite = true;
+    private bool backToWind = true;
+    private bool isRatioPause = false;
     [SerializeField] private float windRatio; // Ratio between the wind power and the players velocity
 
     [Space]
@@ -32,36 +31,17 @@ public class PlayerController : PhysicsObject
     public float jumpTakeoffSpeed = 6f;
     public float hardLandTime = 1f;
     public float heavyLandTime = 1.5f;
-    [SerializeField] bool inAir;
-    [SerializeField] float airTime = 0f;
     [SerializeField] float maxGraceTime = 0.12f;
     [SerializeField] float currentGraceTime;
+    [SerializeField] bool inAir;
+    [SerializeField] float airTime = 0f;
+    private bool canJump = true;
 
     [Space]
     [Header("MAG BOOTS:")]
+    public bool magBootsOn = false;
     public float onGravValue = 10f;
     public ParticleSystem bootSparks;
-
-    [Space]
-    [Header("LEDGE CHECK:")]
-    public float ledgeCheckDistance = 1;
-    public Transform ledgeCheck; // for checking if on the edge of a collider
-    public bool canClimbLedge = false;
-    public float ledgeClimbXOffset1 = 0f;
-    public float ledgeClimbYOffset1 = 0f; 
-    public float ledgeClimbXOffset2 = 0f;
-    public float ledgeClimbYOffset2 = 0f;
-    private Vector2 ledgePos1;
-    private Vector2 ledgePos2;
-    private Vector2 ledgePosBot;
-    private bool ledgeDetected;
-    [SerializeField] private bool isTouchingLedge = false;
-
-    [Space]
-    [Header("WALL CHECK:")]
-    public float wallCheckDistance = 1;
-    public Transform wallCheck; // for checking if against wall
-    private bool isTouchingWall = false;
 
     [Space]
     [Header("GROUND CHECK:")]
@@ -70,6 +50,27 @@ public class PlayerController : PhysicsObject
     public Transform groundCheck; // for determining quick landing jump
     [SerializeField] private bool isTouchingGround = false;
     private int whatIsGround;
+
+    [Space]
+    [Header("WALL CHECK:")]
+    public float wallCheckDistance = 1;
+    public Transform wallCheck; // for checking if against wall
+    [SerializeField] private bool isTouchingWall = false;
+
+    [Space]
+    [Header("LEDGE CHECK:")]
+    public float ledgeCheckDistance = 1;
+    public Transform ledgeCheck; // for checking if on the edge of a collider
+    public bool canClimbLedge = false;
+    public float ledgeClimbXOffset1 = 0f;
+    public float ledgeClimbYOffset1 = 0f;
+    public float ledgeClimbXOffset2 = 0f;
+    public float ledgeClimbYOffset2 = 0f;
+    [SerializeField] private bool isTouchingLedge = false;
+    private Vector2 ledgePos1;
+    private Vector2 ledgePos2;
+    private Vector2 ledgePosBot;
+    private bool ledgeDetected;
 
     [Space]
     [Header("REFERENCES:")]
@@ -117,7 +118,6 @@ public class PlayerController : PhysicsObject
     }
 
 
-
     // ---- LOCOMOTION METHODS ---- //
 
 
@@ -127,25 +127,30 @@ public class PlayerController : PhysicsObject
         {
             Vector2 move = Vector2.zero;
 
-            if (Input.GetAxisRaw(controls.xMove) > 0 || Input.GetAxisRaw(controls.xMove) < 0f)
+            // Determine if there is input
+            if (Input.GetAxisRaw(controls.xMove) > 0 || Input.GetAxisRaw(controls.xMove) < 0f) 
             {
                 isMoving = true;
 
+                // Determine if the player is in a windzone
                 if (inWindZone)
                 {
                     isMovingInWind = true;
                 }
 
+                // Transfer input to the move Vector
                 move.x = Input.GetAxisRaw(controls.xMove); 
             }
 
+            // Determine if input has stopped
             if (Input.GetAxisRaw(controls.xMove) == 0) 
             {
                 isMoving = false;
                 isMovingInWind = false;
             }
 
-            if (isTouchingWall)
+            // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
+            if (isTouchingWall && inWindZone)
                 windAffectUnit = false;
             else
                 windAffectUnit = true;
@@ -153,58 +158,80 @@ public class PlayerController : PhysicsObject
             // If the player is in the windzone without mag boots and not against a wall, add in wind force vector to move vector
             if (inWindZone && !magBootsOn && windAffectUnit)
             {
-                if (velocity.x > 0.001f || velocity.x < -0.001f) // player moving right/left 
+                if (velocity.x > 0 || velocity.x < 0) // player moving right/left 
                 {
                     move.x += windDir.x * windPwr;
                 }
-                else if (velocity.x == 0)
+                else if (velocity.x == 0) // player idle
                 {
                     move.x = windDir.x * windPwr;
                 }
             }
 
+            // Jump methods
             Jump();
             RapidJump();
 
-            animator.SetBool("grounded", isGrounded);
-            animator.SetBool("inWind", inWindZone);
-
-            if (!isMoving)
+            // Determine wind ratio - The velocity the player rests at when idle and being pushed back by the wind 
+            if (inWindZone && !isMoving && windRatio == 0 && !isRatioPause && !magBootsOn)
             {
-                windRatio = velocity.x;
+                StartCoroutine(DetermineWindRatio());
+            }
+            else if (!inWindZone)
+            {
+                windRatio = 0;
             }
 
+            // Determine direction that the sprite will face
             if (canFlipSprite)
             {
-                float minXFlip = 0.001f; // minimum velocity on the x axis to trigger the sprite flip                   
-                bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < -minXFlip)); // TODO: Implement this better
-
                 if (inWindZone && isMovingInWind)
                 {
                     ComputeDirectionOfSpriteInWind();
                 }
-                else if (!inWindZone && flipPlayerSprite)
+                else if (!inWindZone)
                 {
-                    ChangeDirection();
-                    pIsFaceLeft = !pIsFaceLeft;
-                    spriteRenderer.flipX = !spriteRenderer.flipX;
+                    float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
+                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip)); // TODO: Implement this better
+                    if (flipPlayerSprite)
+                    {
+                        ChangeDirection();
+                        pIsFaceLeft = !pIsFaceLeft;
+                        spriteRenderer.flipX = !spriteRenderer.flipX;
+                    }
                 }
             }
 
+            // Animation settings
+            animator.SetBool("grounded", isGrounded);
+            animator.SetBool("inWind", inWindZone);
             animator.SetBool("isBackToWind", backToWind);
             animator.SetBool("isMovingInWind", isMovingInWind);
             animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
 
+            // Send the move Vector will all related forces to the Physics Object
             targetVelocity = move * maxSpeed;
         }
     }
 
+    IEnumerator DetermineWindRatio()
+    {
+        isRatioPause = true;
+
+        yield return new WaitForSeconds(1f);
+
+        windRatio = velocity.x;
+        print(windRatio);
+        isRatioPause = false;
+    }
+
     private void ComputeDirectionOfSpriteInWind()
     {
-        if (windMovingRight)
+        if (windMovingRight & !isTouchingWall)
         {
             if (velocity.x > windRatio && pIsFaceLeft) // If player is moving with the wind - face to the right 
             {
+                print("fuck1");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -217,8 +244,9 @@ public class PlayerController : PhysicsObject
                 else
                     backToWind = true;
             }
-            else if (velocity.x < windRatio && !pIsFaceLeft) // If the player is moving against the wind - face to the left 
+            else if (velocity.x < 0 && !pIsFaceLeft) // If the player is moving against the wind - face to the left 
             {
+                print("fuck2");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -227,8 +255,9 @@ public class PlayerController : PhysicsObject
         }
         else if (!windMovingRight)
         {
-            if (velocity.x > windRatio && pIsFaceLeft) // If the player is moving in to the wind - face to the right
+            if (velocity.x > 0 && pIsFaceLeft && !isTouchingWall) // If the player is moving in to the wind - face to the right
             {
+                print("fuck3");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -241,8 +270,9 @@ public class PlayerController : PhysicsObject
                 else
                     backToWind = false;
             }
-            else if (velocity.x < windRatio && !pIsFaceLeft && isMovingInWind)
+            else if (velocity.x < windRatio && !pIsFaceLeft && isMovingInWind && !isTouchingWall)
             {
+                print("fuck4");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -300,13 +330,12 @@ public class PlayerController : PhysicsObject
     }
 
 
-
     // ---- MAG BOOTS METHODS ---- //
 
 
     public void MagBoots()
     {
-        if (Input.GetButtonUp(controls.magBoots) && !magBootsOn)
+        if (Input.GetButtonUp(controls.magBoots) && !magBootsOn && !canClimbLedge)
         {
             print("MagBoots Activated: " + magBootsOn);
 
@@ -322,7 +351,7 @@ public class PlayerController : PhysicsObject
                 ripPP.CauseRipple(groundCheck, 12f, 0.5f);
             }
         }
-        else if (Input.GetButtonUp(controls.magBoots) && magBootsOn)
+        else if (Input.GetButtonUp(controls.magBoots) && magBootsOn && !canClimbLedge)
         {
             print("MagBoots Activated: " + magBootsOn);
             magBootsOn = false;
@@ -343,7 +372,6 @@ public class PlayerController : PhysicsObject
         gravityModifier = onGravValue;
         EnableMovement(true);
     }
-
 
 
     // ---- LEDGE CLIMB METHODS ---- //
@@ -369,7 +397,7 @@ public class PlayerController : PhysicsObject
             }
 
             EnableMovement(false);
-            //canFlip = false;
+            canFlipSprite = false;
 
             animator.SetBool("canClimbLedge", canClimbLedge);
         }
@@ -380,16 +408,16 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    public void FinishLedgeClimb()
+    public void FinishLedgeClimb() // Called from the animator
     {
         transform.position = ledgePos2;
         EnableMovement(true);
         ledgeDetected = false;
         canClimbLedge = false;
         canJump = true;
+        canFlipSprite = true;
         animator.SetBool("canClimbLedge", canClimbLedge);
     }
-
 
 
     // ---- JUMP METHODS ---- //
@@ -449,8 +477,6 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    // TODO: Player does not hard land on medium height falls if he just walks off the edge. 
-    //       Look in to adding something that detects that player did not jump before falling? 
     void TrackAirTime() 
     {
         if (inAir)
@@ -510,6 +536,4 @@ public class PlayerController : PhysicsObject
         
         EnableMovement(true);
     }
-
-
 }

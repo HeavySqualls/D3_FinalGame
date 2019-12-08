@@ -122,7 +122,7 @@ public class PhysicsObject : MonoBehaviour
 
                 // THIS IS WHERE THE PLAYER IS DETERMINED TO BE ON A WALL OR NOT
                 //if (currentNormal.x < minWallNormalX || currentNormal.x > maxWallNormalX && hitBufferList[i].collider.gameObject.tag == "Platform")
-                //{                                 
+                //{
                 //    rb2d.velocity = Vector2.zero;
                 //    isOnWall = true;
                 //    print("On Wall");
