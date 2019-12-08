@@ -137,6 +137,11 @@ public class PlayerController : PhysicsObject
                 {
                     isMovingInWind = true;
                 }
+                else
+                {
+                    isMovingInWind = false;
+                    windRatio = 0;
+                }
 
                 // Transfer input to the move Vector
                 move.x = Input.GetAxisRaw(controls.xMove); 
@@ -165,22 +170,20 @@ public class PlayerController : PhysicsObject
                 else if (velocity.x == 0) // player idle
                 {
                     move.x = windDir.x * windPwr;
+
+                    // Determine wind ratio - The peak velocity that the player rests at when idle and being pushed back by the wind 
+                    if (windRatio == 0)
+                    {
+                        windRatio = move.x * maxSpeed;
+                        print(windRatio);
+                    }
+                    
                 }
             }
 
             // Jump methods
             Jump();
             RapidJump();
-
-            // Determine wind ratio - The velocity the player rests at when idle and being pushed back by the wind 
-            if (inWindZone && !isMoving && windRatio == 0 && !isRatioPause && !magBootsOn)
-            {
-                StartCoroutine(DetermineWindRatio());
-            }
-            else if (!inWindZone)
-            {
-                windRatio = 0;
-            }
 
             // Determine direction that the sprite will face
             if (canFlipSprite)
@@ -192,7 +195,7 @@ public class PlayerController : PhysicsObject
                 else if (!inWindZone)
                 {
                     float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
-                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip)); // TODO: Implement this better
+                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
                     if (flipPlayerSprite)
                     {
                         ChangeDirection();
@@ -212,17 +215,6 @@ public class PlayerController : PhysicsObject
             // Send the move Vector will all related forces to the Physics Object
             targetVelocity = move * maxSpeed;
         }
-    }
-
-    IEnumerator DetermineWindRatio()
-    {
-        isRatioPause = true;
-
-        yield return new WaitForSeconds(1f);
-
-        windRatio = velocity.x;
-        print(windRatio);
-        isRatioPause = false;
     }
 
     private void ComputeDirectionOfSpriteInWind()
@@ -255,7 +247,7 @@ public class PlayerController : PhysicsObject
         }
         else if (!windMovingRight)
         {
-            if (velocity.x > 0 && pIsFaceLeft && !isTouchingWall) // If the player is moving in to the wind - face to the right
+            if (velocity.x > 0 && pIsFaceLeft && !isTouchingWall) // If the player is moving against the wind - face to the right
             {
                 print("fuck3");
                 ChangeDirection();
@@ -270,7 +262,7 @@ public class PlayerController : PhysicsObject
                 else
                     backToWind = false;
             }
-            else if (velocity.x < windRatio && !pIsFaceLeft && isMovingInWind && !isTouchingWall)
+            else if (velocity.x < windRatio && !pIsFaceLeft && isMovingInWind && !isTouchingWall) // If the player is moving with the wind - face to the left
             {
                 print("fuck4");
                 ChangeDirection();

@@ -10,5 +10,8 @@ public class WindArea : MonoBehaviour
     [Tooltip("A value of above 1 will not allow the player to move forward at all.")]
     public float strength = 0f;
 
+    [Tooltip("")]
+    public float windRatio = 0f;
+
     public Vector3 direction;
 }
