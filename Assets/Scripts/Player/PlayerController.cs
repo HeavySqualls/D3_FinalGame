@@ -277,7 +277,20 @@ public class PlayerController : PhysicsObject
     {
         if (canMove)
         {
-            isTouchingGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+            RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+            if (hit.collider != null)
+            {
+                isTouchingGround = true;
+                var go = hit.collider.gameObject;
+
+                if (go.GetComponent<DissolvingPlatform>())
+                {
+                    go.GetComponent<DissolvingPlatform>().CallEnumerator();
+                }
+            }
+            else
+                isTouchingGround = false;
+
             Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
 
             isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, whatIsGround);
