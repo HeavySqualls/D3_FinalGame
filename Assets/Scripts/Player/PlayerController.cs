@@ -23,7 +23,6 @@ public class PlayerController : PhysicsObject
     private bool pIsFaceLeft;
     private bool canFlipSprite = true;
     private bool backToWind = true;
-    private bool isRatioPause = false;
     [SerializeField] private float windRatio; // Ratio between the wind power and the players velocity
 
     [Space]
@@ -31,6 +30,8 @@ public class PlayerController : PhysicsObject
     public float jumpTakeoffSpeed = 6f;
     public float hardLandTime = 1f;
     public float heavyLandTime = 1.5f;
+    public float jumpDelayTime = 0.02f;
+    [SerializeField] float delayTime;
     [SerializeField] float maxGraceTime = 0.12f;
     [SerializeField] float currentGraceTime;
     [SerializeField] bool inAir;
@@ -112,7 +113,7 @@ public class PlayerController : PhysicsObject
         CheckSurroundings();
         ComputeVelocity();
         MagBoots();
-        JumpTimer();
+        GraceJumpTimer();
         CheckLedgeClimb();
         TrackAirTime();
     }
@@ -455,21 +456,29 @@ public class PlayerController : PhysicsObject
 
     public void RapidJump()
     {
-        if (isTouchingGround && !isGrounded && canJump)
+        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump))
         {
-            if (Input.GetButtonDown(controls.jump))
-            {
-                velocity.y = jumpTakeoffSpeed;
-                animator.SetTrigger("jumping");
-                currentGraceTime = 0;
-
-                StopTrackAirTime();
-                inAir = true;
-            }
+            StartCoroutine(QuickJumpTimer());
         }
     }
 
-    void JumpTimer()
+    IEnumerator QuickJumpTimer()
+    {
+        yield return new WaitForSeconds(jumpDelayTime);
+
+        if (isGrounded)
+        {
+            print("quick jump!");
+            velocity.y = jumpTakeoffSpeed;
+            animator.SetTrigger("jumping");
+            currentGraceTime = 0;
+            StopTrackAirTime();
+            inAir = true;
+        }
+
+    }
+
+    void GraceJumpTimer()
     {
         if (!isGrounded)
         {
