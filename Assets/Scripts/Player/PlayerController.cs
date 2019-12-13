@@ -13,6 +13,7 @@ public class PlayerController : PhysicsObject
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
+    [SerializeField] float currentSpeed = 0;
     public float maxSpeed = 2f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
 
@@ -31,7 +32,6 @@ public class PlayerController : PhysicsObject
     public float hardLandTime = 1f;
     public float heavyLandTime = 1.5f;
     public float jumpDelayTime = 0.02f;
-    [SerializeField] float delayTime;
     [SerializeField] float maxGraceTime = 0.12f;
     [SerializeField] float currentGraceTime;
     [SerializeField] bool inAir;
@@ -49,7 +49,6 @@ public class PlayerController : PhysicsObject
     public Vector3 bottom;
     public float groundCheckDistance = 1.75f;
     public Transform groundCheck; // for determining quick landing jump
-    [SerializeField] private bool isTouchingGround = false;
     private int whatIsGround;
 
     [Space]
@@ -121,12 +120,17 @@ public class PlayerController : PhysicsObject
 
     // ---- LOCOMOTION METHODS ---- //
 
+    float value;
+    float timeFromZeroToMax = 10f;
 
     protected override void ComputeVelocity()
     {
         if (canMove)
         {
             Vector2 move = Vector2.zero;
+
+            float moveTowards = 0;
+            float changeRatePerSecond = 1 / timeFromZeroToMax * Time.deltaTime;
 
             // Determine if there is input
             if (Input.GetAxisRaw(controls.xMove) > 0 || Input.GetAxisRaw(controls.xMove) < 0f) 
@@ -144,8 +148,19 @@ public class PlayerController : PhysicsObject
                     windRatio = 0;
                 }
 
+                if (Input.GetAxisRaw(controls.xMove) > 0)
+                {
+                    value = 1f;
+                }
+                else if (Input.GetAxisRaw(controls.xMove) < 0f)
+                {
+                    value = -1f;
+                }
+
+                move.x = Mathf.MoveTowards(value, maxSpeed, changeRatePerSecond);
+
                 // Transfer input to the move Vector
-                move.x = Input.GetAxisRaw(controls.xMove); 
+                //move.x = Input.GetAxisRaw(controls.xMove); 
             }
 
             // Determine if input has stopped
@@ -281,7 +296,6 @@ public class PlayerController : PhysicsObject
             RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
             if (hit.collider != null)
             {
-                isTouchingGround = true;
                 var go = hit.collider.gameObject;
 
                 if (go.GetComponent<DissolvingPlatform>())
@@ -289,8 +303,6 @@ public class PlayerController : PhysicsObject
                     go.GetComponent<DissolvingPlatform>().CallEnumerator();
                 }
             }
-            else
-                isTouchingGround = false;
 
             Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
 
@@ -454,9 +466,11 @@ public class PlayerController : PhysicsObject
         }
     }
 
+    bool quickJump = true;
+
     public void RapidJump()
     {
-        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump))
+        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
         {
             StartCoroutine(QuickJumpTimer());
         }
@@ -464,18 +478,25 @@ public class PlayerController : PhysicsObject
 
     IEnumerator QuickJumpTimer()
     {
+        quickJump = false;
+
         yield return new WaitForSeconds(jumpDelayTime);
 
         if (isGrounded)
         {
-            print("quick jump!");
+            print("Quick jump!");
             velocity.y = jumpTakeoffSpeed;
             animator.SetTrigger("jumping");
             currentGraceTime = 0;
             StopTrackAirTime();
             inAir = true;
         }
+        else
+        {
+            print("Missed quick jump!");
+        }
 
+        quickJump = true;
     }
 
     void GraceJumpTimer()
