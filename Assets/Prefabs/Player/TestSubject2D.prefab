@@ -161,12 +161,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
-  isController: 0
+  isController: 1
   canMove: 1
   isMoving: 0
   isMovingInWind: 0
-  maxSpeed: 12
+  maxSpeed: 3.5
   accessibleDirection: {x: 0, y: 0}
+  accelSpeed: 5
+  windRatio: 0
   accelerationCurve:
     serializedVersion: 2
     m_Curve:
@@ -191,11 +193,10 @@ MonoBehaviour:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
-  accelerationTime: 1
-  windRatio: 0
   jumpTakeoffSpeed: 26
   hardLandTime: 1
   heavyLandTime: 1.5
+  jumpDelayTime: 0.02
   maxGraceTime: 0.12
   currentGraceTime: 0
   inAir: 0
@@ -207,7 +208,6 @@ MonoBehaviour:
   bottom: {x: 0, y: 0, z: 0}
   groundCheckDistance: 0.75
   groundCheck: {fileID: 450504362977715217}
-  isTouchingGround: 0
   wallCheckDistance: 0.75
   wallCheck: {fileID: 8395342489049737418}
   isTouchingWall: 0

@@ -9910,8 +9910,8 @@ ParticleSystem:
       maxColor: {r: 0.8962264, g: 0.8645203, b: 0.6552599, a: 0.40392157}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.6886792, g: 0.59876573, b: 0.4450427, a: 0.5647059}
-        key1: {r: 0.6603774, g: 0.5773605, b: 0.43298328, a: 0.54901963}
+        key0: {r: 0.6886792, g: 0.59876573, b: 0.4450427, a: 0.69411767}
+        key1: {r: 0.6603774, g: 0.5773605, b: 0.43298328, a: 0.8392157}
         key2: {r: 0, g: 0, b: 0, a: 0}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
@@ -9941,7 +9941,7 @@ ParticleSystem:
         serializedVersion: 2
         key0: {r: 0.8867924, g: 0.8668872, b: 0.6148985, a: 0.40392157}
         key1: {r: 0.9209124, g: 0.92145056, b: 0.6741805, a: 0.77254903}
-        key2: {r: 0.9523336, g: 0.9716981, b: 0.7287736, a: 0.46666667}
+        key2: {r: 0.9523336, g: 0.9716981, b: 0.7287736, a: 0.7411765}
         key3: {r: 0, g: 0, b: 0, a: 0}
         key4: {r: 0, g: 0, b: 0, a: 0}
         key5: {r: 0, g: 0, b: 0, a: 0}
@@ -10351,7 +10351,7 @@ ParticleSystem:
     radiusThickness: 1
     donutRadius: 0.2
     m_Position: {x: 0, y: -10, z: 7}
-    m_Rotation: {x: 90, y: -90, z: 0}
+    m_Rotation: {x: 90, y: 90, z: 180}
     m_Scale: {x: 1, y: 1, z: 1}
     placementMode: 0
     m_MeshMaterialIndex: 0
@@ -28896,7 +28896,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3228338166906890414}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -138, y: 0, z: 0}
+  m_LocalPosition: {x: -225, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3508059485947782617}
@@ -28928,7 +28928,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3228338167181365612}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -138, y: 0, z: 0}
+  m_LocalPosition: {x: -225, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 3508059485947782617}
@@ -28947,7 +28947,7 @@ BoxCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -18.354538, y: 6}
+  m_Offset: {x: -165.3697, y: 6}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -28958,7 +28958,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 141.10165, y: 18}
+  m_Size: {x: 284.6542, y: 18}
   m_EdgeRadius: 0
 --- !u!114 &3228338167181365611
 MonoBehaviour:
@@ -28973,7 +28973,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fromLeft: 1
-  strength: 0.7
+  strength: 0.4
   isBorasWind: 1
   direction: {x: 1, y: 0, z: 0}
 --- !u!1 &3508059485947782622
@@ -29027,8 +29027,8 @@ MonoBehaviour:
   isBlowing: 0
   blowTimeStart: 8
   blowTime: 0
-  intervalTime: 5
-  speed: 50
+  intervalTime: 0.05
+  speed: 113
   startPos: {fileID: 3228338166906890413}
   detectSyst: {fileID: 2991372628088347951}
   windArea: {fileID: 3228338167181365612}

@@ -13,18 +13,17 @@ public class PlayerController : PhysicsObject
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
-    [SerializeField] float currentSpeed = 0;
     public float maxSpeed = 2f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
-
-    public AnimationCurve accelerationCurve;
-    public float accelerationTime = 1;
-
+    public float accelSpeed = 1;
+    private float timeFromZeroToMax = 2.5f;
+    private float accelRatePerSecond;
     private bool windAffectUnit = true;
     private bool pIsFaceLeft;
     private bool canFlipSprite = true;
     private bool backToWind = true;
     [SerializeField] private float windRatio; // Ratio between the wind power and the players velocity
+    public AnimationCurve accelerationCurve;
 
     [Space]
     [Header("JUMP:")]
@@ -86,6 +85,8 @@ public class PlayerController : PhysicsObject
         direction = Vector2.right;
         accessibleDirection = direction;
         ripPP = Camera.main.GetComponent<RipplePostProcessor>();
+
+        accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeed;
     }
 
     void Start()
@@ -120,72 +121,86 @@ public class PlayerController : PhysicsObject
 
     // ---- LOCOMOTION METHODS ---- //
 
-    float value;
-    float timeFromZeroToMax = 10f;
+    Vector2 move;
+    bool skid = false;
+
+    IEnumerator PlayerSkid()
+    {
+        print("Skidding");
+
+        skid = true;
+
+        yield return new WaitForSeconds(0.2f);
+
+        move.x = 0;
+        canMove = true;
+        skid = false;
+    }
 
     protected override void ComputeVelocity()
     {
         if (canMove)
         {
-            Vector2 move = Vector2.zero;
-
-            float moveTowards = 0;
-            float changeRatePerSecond = 1 / timeFromZeroToMax * Time.deltaTime;
-
             // Determine if there is input
             if (Input.GetAxisRaw(controls.xMove) > 0 || Input.GetAxisRaw(controls.xMove) < 0f) 
             {
                 isMoving = true;
 
-                // Determine if the player is in a windzone
-                if (inWindZone)
+                if (Input.GetAxisRaw(controls.xMove) > 0) // Moving Right
+                {
+                    if (velocity.x < 0 && !skid) // reset back to 0 for immediate sprite flip
+                    {
+                        canMove = false;
+                        StartCoroutine(PlayerSkid());                     
+                    }
+
+                    move.x += accelRatePerSecond * Time.deltaTime;
+                }
+                else if (Input.GetAxisRaw(controls.xMove) < 0f) // Moving Left
+                {
+                    if (velocity.x > 0 && !skid)// reset back to 0 for immediate sprite flip
+                    {
+                        canMove = false;
+                        StartCoroutine(PlayerSkid());
+                    }
+
+                    move.x -= accelRatePerSecond * Time.deltaTime;
+                }
+
+                // Add force from wind to players move.x if applicable
+                if (inWindZone && windAffectUnit)
                 {
                     isMovingInWind = true;
-                }
-                else
-                {
-                    isMovingInWind = false;
-                    windRatio = 0;
-                }
 
-                if (Input.GetAxisRaw(controls.xMove) > 0)
-                {
-                    value = 1f;
+                    if (magBootsOn)
+                    {
+                        move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
+                    }
+                    else if (windMovingRight)
+                    {
+                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), maxSpeed / (windDir.x * windPwr));                      
+                    }
+                    else if (!windMovingRight)
+                    {
+                        move.x = Mathf.Clamp(move.x, maxSpeed / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
+                    }
                 }
-                else if (Input.GetAxisRaw(controls.xMove) < 0f)
+                else if (!inWindZone)
                 {
-                    value = -1f;
+                    move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
                 }
-
-                move.x = Mathf.MoveTowards(value, maxSpeed, changeRatePerSecond);
-
-                // Transfer input to the move Vector
-                //move.x = Input.GetAxisRaw(controls.xMove); 
             }
 
             // Determine if input has stopped
-            if (Input.GetAxisRaw(controls.xMove) == 0) 
+            if (Input.GetAxisRaw(controls.xMove) == 0 && !skid) // player idle
             {
-                isMoving = false;
-                isMovingInWind = false;
-            }
+                print("ooopd");
 
-            // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
-            if (isTouchingWall && inWindZone)
-                windAffectUnit = false;
-            else
-                windAffectUnit = true;
-
-            // If the player is in the windzone without mag boots and not against a wall, add in wind force vector to move vector
-            if (inWindZone && !magBootsOn && windAffectUnit)
-            {
-                if (velocity.x > 0 || velocity.x < 0) // player moving right/left 
+                if (inWindZone && !magBootsOn)
                 {
-                    move.x += windDir.x * windPwr;
-                }
-                else if (velocity.x == 0) // player idle
-                {
-                    move.x = windDir.x * windPwr;
+                    move.x = windDir.x / windPwr;
+                    isMoving = false;
+                    isMovingInWind = false;
 
                     // Determine wind ratio - The peak velocity that the player rests at when idle and being pushed back by the wind 
                     if (windRatio == 0)
@@ -193,13 +208,21 @@ public class PlayerController : PhysicsObject
                         windRatio = move.x * maxSpeed;
                         print(windRatio);
                     }
-                    
+                }
+                else
+                {
+                    windRatio = 0;
+                    move.x = 0;
+                    isMoving = false;
+                    isMovingInWind = false;
                 }
             }
 
-            // Jump methods
-            Jump();
-            RapidJump();
+            // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
+            if (isTouchingWall && inWindZone)
+                windAffectUnit = false;
+            else
+                windAffectUnit = true;
 
             // Determine direction that the sprite will face
             if (canFlipSprite)
@@ -222,6 +245,7 @@ public class PlayerController : PhysicsObject
             }
 
             // Animation settings
+            animator.SetBool("isSkid", skid);
             animator.SetBool("grounded", isGrounded);
             animator.SetBool("inWind", inWindZone);
             animator.SetBool("isBackToWind", backToWind);
@@ -231,6 +255,10 @@ public class PlayerController : PhysicsObject
             // Send the move Vector will all related forces to the Physics Object
             targetVelocity = move * maxSpeed;
         }
+
+        // Jump methods
+        Jump();
+        RapidJump();
     }
 
     private void ComputeDirectionOfSpriteInWind()
@@ -239,7 +267,7 @@ public class PlayerController : PhysicsObject
         {
             if (velocity.x > windRatio && pIsFaceLeft) // If player is moving with the wind - face to the right 
             {
-                print("fuck1");
+                //print("fuck1");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -254,7 +282,7 @@ public class PlayerController : PhysicsObject
             }
             else if (velocity.x < 0 && !pIsFaceLeft) // If the player is moving against the wind - face to the left 
             {
-                print("fuck2");
+                //print("fuck2");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -265,7 +293,7 @@ public class PlayerController : PhysicsObject
         {
             if (velocity.x > 0 && pIsFaceLeft && !isTouchingWall) // If the player is moving against the wind - face to the right
             {
-                print("fuck3");
+                //print("fuck3");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -280,7 +308,7 @@ public class PlayerController : PhysicsObject
             }
             else if (velocity.x < windRatio && !pIsFaceLeft && isMovingInWind && !isTouchingWall) // If the player is moving with the wind - face to the left
             {
-                print("fuck4");
+                //print("fuck4");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;

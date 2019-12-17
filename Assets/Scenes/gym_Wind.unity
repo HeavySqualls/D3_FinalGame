@@ -2368,6 +2368,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fromLeft: 1
   strength: 0.9
+  isBorasWind: 0
   direction: {x: 1, y: 0, z: 0}
 --- !u!4 &1296435103
 Transform:
@@ -3463,6 +3464,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   fromLeft: 0
   strength: 1
+  isBorasWind: 0
   direction: {x: -1, y: 0, z: 0}
 --- !u!4 &1968811896
 Transform:
@@ -4064,11 +4066,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357722, guid: 2ad598378404af64e8c629d59ff14cdc,
+    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
-      propertyPath: respawnZone
-      value: 
-      objectReference: {fileID: 2135247972}
+      propertyPath: isController
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ad598378404af64e8c629d59ff14cdc, type: 3}
 --- !u!1001 &1394112631990953307
