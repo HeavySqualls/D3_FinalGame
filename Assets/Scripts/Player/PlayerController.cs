@@ -118,6 +118,19 @@ public class PlayerController : PhysicsObject
         TrackAirTime();
     }
 
+    public float GetAnimTime()
+    {
+        if (animator != null)
+        {
+            AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
+
+            if (clipInfo.Length > 0 && clipInfo != null)
+            {
+                return clipInfo[0].clip.length;
+            }
+        }
+        return 0;    
+    }
 
     // ---- LOCOMOTION METHODS ---- //
 
@@ -127,14 +140,17 @@ public class PlayerController : PhysicsObject
     IEnumerator PlayerSkid()
     {
         print("Skidding");
-
+        canFlipSprite = false;
         skid = true;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(GetAnimTime() / 4);
 
+        canFlipSprite = true;
+        skid = false;
         move.x = 0;
         canMove = true;
-        skid = false;
+
+        yield break;
     }
 
     protected override void ComputeVelocity()
@@ -148,23 +164,23 @@ public class PlayerController : PhysicsObject
 
                 if (Input.GetAxisRaw(controls.xMove) > 0) // Moving Right
                 {
-                    if (velocity.x < 0 && !skid) // reset back to 0 for immediate sprite flip
-                    {
+                    if (direction == Vector2.left && velocity.x < -10)
+                    {                    
+                        StartCoroutine(PlayerSkid());       
                         canMove = false;
-                        StartCoroutine(PlayerSkid());                     
                     }
 
                     move.x += accelRatePerSecond * Time.deltaTime;
                 }
                 else if (Input.GetAxisRaw(controls.xMove) < 0f) // Moving Left
                 {
-                    if (velocity.x > 0 && !skid)// reset back to 0 for immediate sprite flip
-                    {
-                        canMove = false;
+                    if (direction == Vector2.right && velocity.x > 10)
+                    {                     
                         StartCoroutine(PlayerSkid());
+                        canMove = false;
                     }
 
-                    move.x -= accelRatePerSecond * Time.deltaTime;
+                    move.x -= accelRatePerSecond * Time.deltaTime;              
                 }
 
                 // Add force from wind to players move.x if applicable
@@ -189,13 +205,9 @@ public class PlayerController : PhysicsObject
                 {
                     move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
                 }
-            }
-
-            // Determine if input has stopped
-            if (Input.GetAxisRaw(controls.xMove) == 0 && !skid) // player idle
+            }         
+            else if (Input.GetAxisRaw(controls.xMove) == 0 && !skid)  // Determine if input has stopped
             {
-                print("ooopd");
-
                 if (inWindZone && !magBootsOn)
                 {
                     move.x = windDir.x / windPwr;
@@ -212,9 +224,30 @@ public class PlayerController : PhysicsObject
                 else
                 {
                     windRatio = 0;
-                    move.x = 0;
-                    isMoving = false;
-                    isMovingInWind = false;
+
+                    if (move.x != 0)
+                    {
+                        if (direction == Vector2.left)
+                        {
+                            move.x += accelRatePerSecond * Time.deltaTime;
+
+                            if (move.x >= 0)
+                            {                                
+                                move.x = 0;
+                                isMoving = false;
+                            }
+                        }
+                        else if (direction == Vector2.right)
+                        {
+                            move.x -= accelRatePerSecond * Time.deltaTime;
+
+                            if (move.x <= 0)
+                            {
+                                move.x = 0;
+                                isMoving = false;
+                            }
+                        }
+                    }
                 }
             }
 
@@ -373,6 +406,7 @@ public class PlayerController : PhysicsObject
     {
         yield return new WaitForSeconds(0.5f);
         windAffectUnit = true;
+        yield break;
     }
 
 
@@ -417,6 +451,7 @@ public class PlayerController : PhysicsObject
 
         gravityModifier = onGravValue;
         EnableMovement(true);
+        yield break;
     }
 
 
@@ -525,6 +560,7 @@ public class PlayerController : PhysicsObject
         }
 
         quickJump = true;
+        yield break;
     }
 
     void GraceJumpTimer()
@@ -551,20 +587,20 @@ public class PlayerController : PhysicsObject
                 if (airTime > hardLandTime) // Light hard landing 
                 {
                     animator.SetTrigger("land");
-                    StartCoroutine(LandingPause(animator.GetCurrentAnimatorStateInfo(0).length));
+                    StartCoroutine(LandingPause(GetAnimTime()));
                     ripPP.CauseRipple(groundCheck, 12f, 0.8f);
                 }
                 else if (airTime > heavyLandTime) // Heavy hard landing 
                 {
                     animator.SetTrigger("land");
-                    StartCoroutine(LandingPause(animator.GetCurrentAnimatorStateInfo(0).length + 0.5f));
+                    StartCoroutine(LandingPause(GetAnimTime() + 0.5f));
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
                 }
 
                 if (magBootsOn) // Landing with Mag Boots engaged
                 {
                     animator.SetTrigger("land");
-                    StartCoroutine(LandingPause(animator.GetCurrentAnimatorStateInfo(0).length));
+                    StartCoroutine(LandingPause(GetAnimTime()));
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
 
                     ParticleSystem ps = Instantiate(bootSparks, transform.position, transform.rotation) as ParticleSystem;
