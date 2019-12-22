@@ -16,8 +16,10 @@ public class PlayerController : PhysicsObject
     public float maxSpeed = 2f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
     public float accelSpeed = 1;
+    public float decelSpeed = 1;
     private float timeFromZeroToMax = 2.5f;
     private float accelRatePerSecond;
+    private float decelRatePerSecond;
     private bool windAffectUnit = true;
     private bool pIsFaceLeft;
     private bool canFlipSprite = true;
@@ -87,6 +89,7 @@ public class PlayerController : PhysicsObject
         ripPP = Camera.main.GetComponent<RipplePostProcessor>();
 
         accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeed;
+        decelRatePerSecond = (maxSpeed / timeFromZeroToMax) * decelSpeed;
     }
 
     void Start()
@@ -147,8 +150,6 @@ public class PlayerController : PhysicsObject
 
         canFlipSprite = true;
         skid = false;
-        move.x = 0;
-        canMove = true;
 
         yield break;
     }
@@ -167,7 +168,6 @@ public class PlayerController : PhysicsObject
                     if (direction == Vector2.left && velocity.x < -10)
                     {                    
                         StartCoroutine(PlayerSkid());       
-                        canMove = false;
                     }
 
                     move.x += accelRatePerSecond * Time.deltaTime;
@@ -177,7 +177,6 @@ public class PlayerController : PhysicsObject
                     if (direction == Vector2.right && velocity.x > 10)
                     {                     
                         StartCoroutine(PlayerSkid());
-                        canMove = false;
                     }
 
                     move.x -= accelRatePerSecond * Time.deltaTime;              
@@ -206,7 +205,7 @@ public class PlayerController : PhysicsObject
                     move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
                 }
             }         
-            else if (Input.GetAxisRaw(controls.xMove) == 0 && !skid)  // Determine if input has stopped
+            else if (Input.GetAxisRaw(controls.xMove) == 0)  // Determine if input has stopped
             {
                 if (inWindZone && !magBootsOn)
                 {
@@ -229,7 +228,7 @@ public class PlayerController : PhysicsObject
                     {
                         if (direction == Vector2.left)
                         {
-                            move.x += accelRatePerSecond * Time.deltaTime;
+                            move.x += decelRatePerSecond * Time.deltaTime;
 
                             if (move.x >= 0)
                             {                                
@@ -239,7 +238,7 @@ public class PlayerController : PhysicsObject
                         }
                         else if (direction == Vector2.right)
                         {
-                            move.x -= accelRatePerSecond * Time.deltaTime;
+                            move.x -= decelRatePerSecond * Time.deltaTime;
 
                             if (move.x <= 0)
                             {

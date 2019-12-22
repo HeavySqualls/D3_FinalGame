@@ -32,7 +32,7 @@ public class PlayerCombat : MonoBehaviour
             {
                 SetAttackStats(2, 2, 8);
                 pCon.animator.SetTrigger("punch");
-                StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
+                StartCoroutine(AttackCoolDown(pCon.GetAnimTime() / 4));
             }
 
             // Boot Launch
@@ -40,7 +40,7 @@ public class PlayerCombat : MonoBehaviour
             {
                 SetAttackStats(0, 0, 35);
                 pCon.animator.SetTrigger("kick");
-                StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
+                StartCoroutine(AttackCoolDown(pCon.GetAnimTime()/ 4));
             }
         }
     }
