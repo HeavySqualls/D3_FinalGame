@@ -161,13 +161,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
-  isController: 1
+  isController: 0
   canMove: 1
   isMoving: 0
   isMovingInWind: 0
   maxSpeed: 3.5
   accessibleDirection: {x: 0, y: 0}
-  accelSpeed: 5
+  accelSpeed: 4
+  decelSpeed: 6
   windRatio: 0
   accelerationCurve:
     serializedVersion: 2
