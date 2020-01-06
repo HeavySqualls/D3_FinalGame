@@ -207,18 +207,26 @@ public class PlayerController : PhysicsObject
             }         
             else if (Input.GetAxisRaw(controls.xMove) == 0)  // Determine if input has stopped
             {
-                if (inWindZone && !magBootsOn)
+                if (inWindZone) // If movement has stopped and player is in a windzone
                 {
-                    move.x = windDir.x / windPwr;
+                    if (!magBootsOn) // If the player does not have boots activated - add wind force to idle player
+                    {
+                        move.x = windDir.x / windPwr;
+
+                        // Determine wind ratio - The peak velocity that the player rests at when idle and being pushed back by the wind 
+                        if (windRatio == 0)
+                        {
+                            windRatio = move.x * maxSpeed;
+                            print(windRatio);
+                        }
+                    }
+                    else // If the player HAS boots activated, they do not move 
+                    {
+                        move.x = 0;
+                    }
+
                     isMoving = false;
                     isMovingInWind = false;
-
-                    // Determine wind ratio - The peak velocity that the player rests at when idle and being pushed back by the wind 
-                    if (windRatio == 0)
-                    {
-                        windRatio = move.x * maxSpeed;
-                        print(windRatio);
-                    }
                 }
                 else
                 {
