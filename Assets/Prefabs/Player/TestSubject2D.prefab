@@ -128,6 +128,11 @@ MonoBehaviour:
   damage: 2
   knockback: 2
   knockUp: 6
+  canAttack: 1
+  comboAttacking: 0
+  maxComboTime: 0.5
+  timeBetweenCombos: 0
+  comboNum: 1
 --- !u!114 &1242993176099357722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,12 +177,12 @@ MonoBehaviour:
   isMovingInWind: 0
   maxSpeed: 3.75
   accessibleDirection: {x: 0, y: 0}
+  inAir: 0
   jumpTakeoffSpeed: 26
   hardLandTime: 1
   heavyLandTime: 1.5
   jumpDelayTime: 0.02
   maxGraceTime: 0.12
-  inAir: 0
   jumpHoldTimeMax: 0.33
   magBootsOn: 0
   onGravValue: 25
@@ -188,10 +193,9 @@ MonoBehaviour:
   groundCheck: {fileID: 450504362977715217}
   wallCheckDistance: 0.75
   wallCheck: {fileID: 8395342489049737418}
-  isTouchingWall: 0
+  canClimbLedge: 0
   ledgeCheckDistance: 0.75
   ledgeCheck: {fileID: 792494948184693284}
-  canClimbLedge: 0
   ledgeClimbXOffset1: -0.2
   ledgeClimbYOffset1: 0.55
   ledgeClimbXOffset2: 1.7

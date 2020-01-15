@@ -9,7 +9,12 @@ public class PlayerCombat : MonoBehaviour
     public float knockback;
     public float knockUp;
 
-    private bool canAttack = true;
+    [SerializeField] private bool canAttack = true;
+    [SerializeField] private bool comboAttacking = false;
+
+    public float maxComboTime = 0.5f;
+    [SerializeField] private float timeBetweenCombos = 0;
+    [SerializeField] private int comboNum = 1;
 
     PlayerController pCon;
 
@@ -21,6 +26,22 @@ public class PlayerCombat : MonoBehaviour
     void Update()
     {
         Attacks();
+        AttackTimer();
+    }
+
+    private void AttackTimer()
+    {
+        if (comboAttacking)
+        {
+            timeBetweenCombos += Time.deltaTime;
+
+            if (timeBetweenCombos > maxComboTime)
+            {
+                timeBetweenCombos = 0;
+                comboNum = 1;
+                comboAttacking = false;
+            }
+        }
     }
 
     private void Attacks()
@@ -28,11 +49,25 @@ public class PlayerCombat : MonoBehaviour
         if (canAttack)
         {
             // Punch
-            if (Input.GetButtonUp(pCon.controls.punch))
+            if (Input.GetButtonUp(pCon.controls.punch) && comboAttacking && comboNum == 2)
             {
+                timeBetweenCombos = 0;
+                SetAttackStats(2, 2, 8);
+                pCon.animator.SetTrigger("punch2");
+                StartCoroutine(AttackCoolDown(pCon.GetAnimTime() / 4));
+
+                comboNum = 1;
+            }
+            else if (Input.GetButtonUp(pCon.controls.punch) && comboNum == 1)
+            {
+                comboAttacking = true;
+                timeBetweenCombos = 0;
+
                 SetAttackStats(2, 2, 8);
                 pCon.animator.SetTrigger("punch");
                 StartCoroutine(AttackCoolDown(pCon.GetAnimTime() / 4));
+
+                comboNum = 2;
             }
 
             // Boot Launch
