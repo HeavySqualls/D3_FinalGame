@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class PlayerController : PhysicsObject
 {
+    public float timeAtMaxSpeed = 0;
+    public float skidTimeLimit = 2f;
+    public bool isLeft = false;
+
     [Space]
     [Header("INPUT:")]
     public bool isController = false;
@@ -14,6 +18,7 @@ public class PlayerController : PhysicsObject
     public bool isMoving = false;
     public bool isMovingInWind = false;
     public float maxSpeed = 2f;
+    private float currentSpeed;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
     public float accelSpeed = 1;
     public float decelSpeed = 1;
@@ -26,6 +31,7 @@ public class PlayerController : PhysicsObject
     private bool backToWind = true;
     [SerializeField] private float windRatio; // Ratio between the wind power and the players velocity
     public AnimationCurve accelerationCurve;
+    private Vector2 oldDirection;
 
     [Space]
     [Header("JUMP:")]
@@ -137,13 +143,12 @@ public class PlayerController : PhysicsObject
 
     // ---- LOCOMOTION METHODS ---- //
 
-    Vector2 move;
+    public Vector2 move;
     bool skid = false;
 
     IEnumerator PlayerSkid()
     {
         print("Skidding");
-        canFlipSprite = false;
         skid = true;
 
         yield return new WaitForSeconds(GetAnimTime() / 4);
@@ -158,28 +163,47 @@ public class PlayerController : PhysicsObject
     {
         if (canMove)
         {
-            // Determine if there is input
-            if (Input.GetAxisRaw(controls.xMove) > 0 || Input.GetAxisRaw(controls.xMove) < 0f) 
+            if (velocity.x <= -maxSpeed || velocity.x >= maxSpeed)
             {
-                isMoving = true;
+                timeAtMaxSpeed += 0.1f;
 
-                if (Input.GetAxisRaw(controls.xMove) > 0) // Moving Right
+                if (timeAtMaxSpeed > skidTimeLimit)
                 {
-                    if (direction == Vector2.left && velocity.x < -10)
-                    {                    
-                        StartCoroutine(PlayerSkid());       
+                    timeAtMaxSpeed = skidTimeLimit;
+                }
+            }
+            else if (velocity.x > -maxSpeed || velocity.x < maxSpeed)
+            {
+                timeAtMaxSpeed = 0;
+            }
+
+            // Determine if there is input
+            if (Input.GetAxisRaw(controls.xMove) > 0f || Input.GetAxisRaw(controls.xMove) < 0f) 
+            {
+                isMoving = true;              
+
+                if (Input.GetAxisRaw(controls.xMove) > 0f) // Moving Right
+                {
+                    if (timeAtMaxSpeed == skidTimeLimit && skid == false && isLeft)
+                    {
+                        canFlipSprite = false;                    
+                        timeAtMaxSpeed = 0;
+                        StartCoroutine(PlayerSkid());
                     }
 
                     move.x += accelRatePerSecond * Time.deltaTime;
                 }
                 else if (Input.GetAxisRaw(controls.xMove) < 0f) // Moving Left
                 {
-                    if (direction == Vector2.right && velocity.x > 10)
-                    {                     
-                        StartCoroutine(PlayerSkid());
+                    if (timeAtMaxSpeed == skidTimeLimit && skid == false && !isLeft)
+                    {
+                        print("2");
+                        canFlipSprite = false;
+                        timeAtMaxSpeed = 0;
+                        StartCoroutine(PlayerSkid());                      
                     }
 
-                    move.x -= accelRatePerSecond * Time.deltaTime;              
+                    move.x -= accelRatePerSecond * Time.deltaTime;                                
                 }
 
                 // Add force from wind to players move.x if applicable
@@ -225,8 +249,11 @@ public class PlayerController : PhysicsObject
                         move.x = 0;
                     }
 
-                    isMoving = false;
-                    isMovingInWind = false;
+                    if (isMoving)
+                    {                   
+                        isMoving = false;
+                        isMovingInWind = false;
+                    }
                 }
                 else
                 {
@@ -235,23 +262,25 @@ public class PlayerController : PhysicsObject
                     if (move.x != 0)
                     {
                         if (direction == Vector2.left)
-                        {
+                        {                            
                             move.x += decelRatePerSecond * Time.deltaTime;
 
                             if (move.x >= 0)
-                            {                                
+                            {                              
                                 move.x = 0;
                                 isMoving = false;
+                                canFlipSprite = true;
                             }
                         }
                         else if (direction == Vector2.right)
-                        {
+                        {                           
                             move.x -= decelRatePerSecond * Time.deltaTime;
 
                             if (move.x <= 0)
                             {
                                 move.x = 0;
                                 isMoving = false;
+                                canFlipSprite = true;
                             }
                         }
                     }
@@ -275,8 +304,10 @@ public class PlayerController : PhysicsObject
                 {
                     float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
                     bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+
                     if (flipPlayerSprite)
                     {
+                        print("flip");
                         ChangeDirection();
                         pIsFaceLeft = !pIsFaceLeft;
                         spriteRenderer.flipX = !spriteRenderer.flipX;
@@ -393,9 +424,15 @@ public class PlayerController : PhysicsObject
         if (canFlipSprite)
         {
             if (direction == Vector2.right)
+            {
                 direction = Vector2.left;
+                isLeft = true;
+            }             
             else
+            {
                 direction = Vector2.right;
+                isLeft = false;
+            }               
 
             accessibleDirection = direction;
         }
