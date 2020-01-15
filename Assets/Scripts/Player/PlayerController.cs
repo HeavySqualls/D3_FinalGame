@@ -4,79 +4,102 @@ using UnityEngine;
 
 public class PlayerController : PhysicsObject
 {
-    public float timeAtMaxSpeed = 0;
-    public float skidTimeLimit = 2f;
-    public bool isLeft = false;
-
     [Space]
     [Header("INPUT:")]
     public bool isController = false;
 
     [Space]
     [Header("ACCEL/DECEL SPEEDS:")]
+    [Tooltip("Speed of acceleration when not at max speed or in air.")]
     public float accelSpeedNormal = 1.5f;
+    [Tooltip("Speed of acceleration when player is moving at max speed.")]
     public float accelSpeedMaxSpeed = 1;
+    [Tooltip("Speed of acceleration when player is in the air.")]
     public float accelSpeedAir = 1.5f;
+    [Tooltip("Speed of decceleration when player has stopped moving.")]
     public float decelSpeed = 1;
+    [Tooltip("Time it takes while moving at full speed to enable a slide on direction change.")]
+    public float skidTimeLimit = 2f;
+    [Tooltip("Time it takes to reach full speed.")]
+    private float timeFromZeroToMax = 2.5f;
+    private float accelRatePerSecond;
+    private float decelRatePerSecond;
+    private float timeAtMaxSpeed = 0;
+    private bool isLeft = false;
 
     [Space]
     [Header("MOVEMENT / WIND:")]
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
-    public float maxSpeed = 2f;
+    [Tooltip("Maximum movement speed.")]
+    public float maxSpeed = 3.75f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
-    private float timeFromZeroToMax = 2.5f;
-    private float accelRatePerSecond;
-    private float decelRatePerSecond;
     private bool windAffectUnit = true;
     private bool pIsFaceLeft;
     private bool canFlipSprite = true;
     private bool backToWind = true;
-    [SerializeField] private float windRatio; // Ratio between the wind power and the players velocity
-    public AnimationCurve accelerationCurve;
+    private float windRatio; // Ratio between the wind power and the players velocity
 
     [Space]
     [Header("JUMP:")]
+    public bool inAir;
+    [Tooltip("Initial vertical boost speed.")]
     public float jumpTakeoffSpeed = 6f;
+    [Tooltip("Time in air required to enable the 'Hard Landing' animation.")]
     public float hardLandTime = 1f;
+    [Tooltip("Time in air required to enable the 'Heavy Landing' animation.")]
     public float heavyLandTime = 1.5f;
+    [Tooltip("Maximum time for the 'Quick Jump' - buffer time between button press while in the air and the player landing on the ground to trigger a quick jump.")]
     public float jumpDelayTime = 0.02f;
-    [SerializeField] float maxGraceTime = 0.12f;
-    [SerializeField] float currentGraceTime;
-    [SerializeField] bool inAir;
-    [SerializeField] float airTime = 0f;
+    [Tooltip("Time from when the player leaves the ground without jumping until they are no longer allowed to jump.")]
+    public float maxGraceTime = 0.12f;
+    [Tooltip("Time it takes while holding the jump button to enable the 'Jump Flip' animation.")]
+    public float jumpHoldTimeMax = 1.5f;
+    private bool isPressingJumpButton = false;
+    private float currentGraceTime;
+    private float airTime = 0f;
+    private float jumpHoldTime = 0;
     private bool canJump = true;
+    private bool quickJump = true;
 
     [Space]
     [Header("MAG BOOTS:")]
     public bool magBootsOn = false;
+    [Tooltip("Rate at which the player gets pulled down towards the ground with the magnetic boots enabled.")]
     public float onGravValue = 10f;
     public ParticleSystem bootSparks;
 
     [Space]
     [Header("GROUND CHECK:")]
     public Vector3 bottom;
+    [Tooltip("Distance of ground check raycast from the bottom of the player sprite.")]
     public float groundCheckDistance = 1.75f;
     public Transform groundCheck; // for determining quick landing jump
     private int whatIsGround;
 
     [Space]
     [Header("WALL CHECK:")]
+    [Tooltip("Distance of the wall check raycast from the chest of the player sprite.")]
     public float wallCheckDistance = 1;
     public Transform wallCheck; // for checking if against wall
-    [SerializeField] private bool isTouchingWall = false;
+    private bool isTouchingWall = false;
 
     [Space]
     [Header("LEDGE CHECK:")]
+    public bool canClimbLedge = false;
+    [Tooltip("Distance of the ledge check raycast from the head of the player sprite.")]
     public float ledgeCheckDistance = 1;
     public Transform ledgeCheck; // for checking if on the edge of a collider
-    public bool canClimbLedge = false;
+    [Tooltip("Position of the player sprites x axis when hanging from a wall (right).")]
     public float ledgeClimbXOffset1 = 0f;
+    [Tooltip("Position of the player sprites y axis when hanging from a wall (right).")]
     public float ledgeClimbYOffset1 = 0f;
+    [Tooltip("Position of the player sprites x axis when hanging from a wall (left).")]
     public float ledgeClimbXOffset2 = 0f;
+    [Tooltip("Position of the player sprites y axis when hanging from a wall (left).")]
     public float ledgeClimbYOffset2 = 0f;
-    [SerializeField] private bool isTouchingLedge = false;
+    private bool isTouchingLedge = false;
     private Vector2 ledgePos1;
     private Vector2 ledgePos2;
     private Vector2 ledgePosBot;
@@ -189,7 +212,6 @@ public class PlayerController : PhysicsObject
 
                 if (timeAtMaxSpeed > skidTimeLimit)
                 {
-
                     timeAtMaxSpeed = skidTimeLimit;
                 }
             }
@@ -559,15 +581,23 @@ public class PlayerController : PhysicsObject
     {
         if (!magBootsOn)
         {
-            if (Input.GetButtonDown(controls.jump) && currentGraceTime > 0 && canJump)
+            if (Input.GetButtonDown(controls.jump))
             {
-                velocity.y = jumpTakeoffSpeed;
-                currentGraceTime = 0;
-                canJump = false;
-                animator.SetTrigger("jumping");
+                isPressingJumpButton = true;
+
+                if (currentGraceTime > 0 && canJump)
+                {
+                    velocity.y = jumpTakeoffSpeed;
+                    currentGraceTime = 0;
+                    canJump = false;
+                    animator.SetTrigger("jumping");
+                }
             }
             else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
             {
+                isPressingJumpButton = false;
+                canJump = true;
+
                 if (velocity.y > 0)
                 {
                     velocity.y = velocity.y * 0.5f;
@@ -575,13 +605,23 @@ public class PlayerController : PhysicsObject
             }
         }
 
-        if (Input.GetButtonUp(controls.jump))
+        // Start timer to determine jump height and proper animation
+        if (isPressingJumpButton)
         {
-            canJump = true;
+            jumpHoldTime += Time.deltaTime;
+
+            if (jumpHoldTime > jumpHoldTimeMax)
+            {
+                print("flip jump");
+                animator.SetTrigger("jumpingFlip");
+                isPressingJumpButton = false;
+            }
+        }
+        else
+        {
+            jumpHoldTime = 0;
         }
     }
-
-    bool quickJump = true;
 
     public void RapidJump()
     {
