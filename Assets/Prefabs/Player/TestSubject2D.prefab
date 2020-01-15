@@ -161,14 +161,19 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
+  timeAtMaxSpeed: 0
+  skidTimeLimit: 12
+  isLeft: 0
   isController: 0
+  accelSpeedNormal: 5.45
+  accelSpeedMaxSpeed: 4
+  accelSpeedAir: 5.35
+  decelSpeed: 6
   canMove: 1
   isMoving: 0
   isMovingInWind: 0
-  maxSpeed: 3.5
+  maxSpeed: 3.75
   accessibleDirection: {x: 0, y: 0}
-  accelSpeed: 4
-  decelSpeed: 6
   windRatio: 0
   accelerationCurve:
     serializedVersion: 2
@@ -222,6 +227,7 @@ MonoBehaviour:
   isTouchingLedge: 0
   animator: {fileID: 0}
   controls: {fileID: 118447264074416066}
+  move: {x: 0, y: 0}
 --- !u!114 &118447264074416066
 MonoBehaviour:
   m_ObjectHideFlags: 0

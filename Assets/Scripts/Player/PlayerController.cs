@@ -13,15 +13,19 @@ public class PlayerController : PhysicsObject
     public bool isController = false;
 
     [Space]
+    [Header("ACCEL/DECEL SPEEDS:")]
+    public float accelSpeedNormal = 1.5f;
+    public float accelSpeedMaxSpeed = 1;
+    public float accelSpeedAir = 1.5f;
+    public float decelSpeed = 1;
+
+    [Space]
     [Header("MOVEMENT / WIND:")]
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
     public float maxSpeed = 2f;
-    private float currentSpeed;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
-    public float accelSpeed = 1;
-    public float decelSpeed = 1;
     private float timeFromZeroToMax = 2.5f;
     private float accelRatePerSecond;
     private float decelRatePerSecond;
@@ -31,7 +35,6 @@ public class PlayerController : PhysicsObject
     private bool backToWind = true;
     [SerializeField] private float windRatio; // Ratio between the wind power and the players velocity
     public AnimationCurve accelerationCurve;
-    private Vector2 oldDirection;
 
     [Space]
     [Header("JUMP:")]
@@ -94,7 +97,7 @@ public class PlayerController : PhysicsObject
         accessibleDirection = direction;
         ripPP = Camera.main.GetComponent<RipplePostProcessor>();
 
-        accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeed;
+        accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedMaxSpeed;
         decelRatePerSecond = (maxSpeed / timeFromZeroToMax) * decelSpeed;
     }
 
@@ -144,17 +147,18 @@ public class PlayerController : PhysicsObject
     // ---- LOCOMOTION METHODS ---- //
 
     public Vector2 move;
-    bool skid = false;
+    bool isSkidding = false;
+    bool isAtMaxSpeed = false;
 
     IEnumerator PlayerSkid()
     {
         print("Skidding");
-        skid = true;
+        isSkidding = true;
 
         yield return new WaitForSeconds(GetAnimTime() / 4);
 
         canFlipSprite = true;
-        skid = false;
+        isSkidding = false;
 
         yield break;
     }
@@ -163,12 +167,29 @@ public class PlayerController : PhysicsObject
     {
         if (canMove)
         {
+            // Checks to determine what acceleration speed the player will have depending on the situation
+            if (inAir) // if the player is in the air
+            {
+                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedAir;
+            }
+            else if (isAtMaxSpeed) // if the player is running at max speed for "x" seconds
+            {
+                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedMaxSpeed;
+            }
+            else
+            {
+                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedNormal;
+            }
+
+            // Check to see if player is moving at max speed, and start counting seconds until the skid time limit is reached 
+            // - then when player changes direction, they will skid 
             if (velocity.x <= -maxSpeed || velocity.x >= maxSpeed)
             {
                 timeAtMaxSpeed += 0.1f;
 
                 if (timeAtMaxSpeed > skidTimeLimit)
                 {
+
                     timeAtMaxSpeed = skidTimeLimit;
                 }
             }
@@ -184,7 +205,7 @@ public class PlayerController : PhysicsObject
 
                 if (Input.GetAxisRaw(controls.xMove) > 0f) // Moving Right
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && skid == false && isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && isSkidding == false && isLeft)
                     {
                         canFlipSprite = false;                    
                         timeAtMaxSpeed = 0;
@@ -195,7 +216,7 @@ public class PlayerController : PhysicsObject
                 }
                 else if (Input.GetAxisRaw(controls.xMove) < 0f) // Moving Left
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && skid == false && !isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && isSkidding == false && !isLeft)
                     {
                         print("2");
                         canFlipSprite = false;
@@ -316,7 +337,7 @@ public class PlayerController : PhysicsObject
             }
 
             // Animation settings
-            animator.SetBool("isSkid", skid);
+            animator.SetBool("isSkid", isSkidding);
             animator.SetBool("grounded", isGrounded);
             animator.SetBool("inWind", inWindZone);
             animator.SetBool("isBackToWind", backToWind);
@@ -338,53 +359,40 @@ public class PlayerController : PhysicsObject
         {
             if (velocity.x > windRatio && pIsFaceLeft) // If player is moving with the wind - face to the right 
             {
-                //print("fuck1");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
-                backToWind = true;
-            }
-            else if (velocity.x == windRatio && !isMovingInWind) // If the player is not moving, but being pushed with the wind - continue facing in what ever direction they were in, but with idle animation
-            {
-                if (pIsFaceLeft)
-                    backToWind = false;
-                else
-                    backToWind = true;
             }
             else if (velocity.x < 0 && !pIsFaceLeft) // If the player is moving against the wind - face to the left 
             {
-                //print("fuck2");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
-                backToWind = false;
             }
         }
         else if (!windMovingRight)
         {
             if (velocity.x > 0 && pIsFaceLeft && !isTouchingWall) // If the player is moving against the wind - face to the right
             {
-                //print("fuck3");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
-                backToWind = false;
-            }
-            else if (velocity.x == windRatio && !isMovingInWind) // If the player is not moving, but being pushed with the wind - continue facing in what ever direction they were in, but with idle animation
-            {
-                if (pIsFaceLeft)
-                    backToWind = true;
-                else
-                    backToWind = false;
             }
             else if (velocity.x < windRatio && !pIsFaceLeft && isMovingInWind && !isTouchingWall) // If the player is moving with the wind - face to the left
             {
-                //print("fuck4");
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
-                backToWind = true;
             }
+        }
+
+        if (direction != windDir)
+        {
+            backToWind = false;
+        }
+        else if (direction == windDir)
+        {
+            backToWind = true;
         }
     }
 
