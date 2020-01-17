@@ -173,10 +173,10 @@ MonoBehaviour:
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
   isController: 1
-  accelSpeedNormal: 6
-  accelSpeedMaxSpeed: 4
+  accelSpeedNormal: 7
+  accelSpeedMaxSpeed: 4.25
   accelSpeedAir: 5.35
-  decelSpeed: 6
+  decelSpeed: 6.25
   skidTimeLimit: 12
   canMove: 1
   isMoving: 0
@@ -188,8 +188,9 @@ MonoBehaviour:
   hardLandTime: 1
   heavyLandTime: 1.5
   jumpDelayTime: 0.02
+  quickJumpDelay: 0.02
   maxGraceTime: 0.12
-  jumpHoldTimeMax: 0.33
+  jumpHoldTimeMax: 0.5
   magBootsOn: 0
   onGravValue: 25
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,

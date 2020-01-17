@@ -137,10 +137,12 @@ public class PlayerCombat : MonoBehaviour
     {
         canAttack = false;
         //pCon.CanFlipSprite();
+        pCon.canMove = false;
 
         yield return new WaitForSeconds(_time);
 
         //pCon.CanFlipSprite();
+        pCon.canMove = true;
         canAttack = true;
 
     }

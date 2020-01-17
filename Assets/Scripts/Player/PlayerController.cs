@@ -50,8 +50,10 @@ public class PlayerController : PhysicsObject
     public float hardLandTime = 1f;
     [Tooltip("Time in air required to enable the 'Heavy Landing' animation.")]
     public float heavyLandTime = 1.5f;
-    [Tooltip("Maximum time for the 'Quick Jump' - buffer time between button press while in the air and the player landing on the ground to trigger a quick jump.")]
+    [Tooltip("Time between the jump button pressed and the jump velocity added to the player sprite.")]
     public float jumpDelayTime = 0.02f;
+    [Tooltip("Maximum time for the 'Quick Jump' - buffer time between button press while in the air and the player landing on the ground to trigger a quick jump.")]
+    public float quickJumpDelay = 0.02f;
     [Tooltip("Time from when the player leaves the ground without jumping until they are no longer allowed to jump.")]
     public float maxGraceTime = 0.12f;
     [Tooltip("Time it takes while holding the jump button to enable the 'Jump Flip' animation.")]
@@ -82,8 +84,12 @@ public class PlayerController : PhysicsObject
     [Header("WALL CHECK:")]
     [Tooltip("Distance of the wall check raycast from the chest of the player sprite.")]
     public float wallCheckDistance = 1;
+    public float wallSlidingSpeed;
+    public Vector2 wallJumpDirection;
+    public float wallJumpForce;
     public Transform wallCheck; // for checking if against wall
     private bool isTouchingWall = false;
+    private bool isWallSliding = false;
 
     [Space]
     [Header("LEDGE CHECK:")]
@@ -143,11 +149,12 @@ public class PlayerController : PhysicsObject
     {
         base.Update();
         CheckSurroundings();
+        CheckIfWallSliding();
+        TrackAirTime();
         ComputeVelocity();
         MagBoots();
         GraceJumpTimer();
         CheckLedgeClimb();
-        TrackAirTime();
     }
 
     public float GetAnimTime()
@@ -180,7 +187,7 @@ public class PlayerController : PhysicsObject
         print("Skidding");
         isSkidding = true;
 
-        yield return new WaitForSeconds(GetAnimTime() / 4);
+        yield return new WaitForSeconds(GetAnimTime() / 4.25f);
 
         canFlipSprite = true;
         isSkidding = false;
@@ -339,7 +346,7 @@ public class PlayerController : PhysicsObject
                 windAffectUnit = true;
 
             // Determine direction that the sprite will face
-            if (canFlipSprite)
+            if (canFlipSprite && !isWallSliding)
             {
                 if (inWindZone && isMovingInWind)
                 {
@@ -361,6 +368,8 @@ public class PlayerController : PhysicsObject
             }
 
             // Animation settings
+            animator.SetBool("isMoving", isMoving);
+            animator.SetBool("isWallSliding", isWallSliding);
             animator.SetBool("isSkid", isSkidding);
             animator.SetBool("grounded", isGrounded);
             animator.SetBool("inWind", inWindZone);
@@ -478,6 +487,20 @@ public class PlayerController : PhysicsObject
             canFlipSprite = true;
     }
 
+    private void CheckIfWallSliding()
+    {
+        if (isTouchingWall && !isGrounded && isTouchingLedge && velocity.y < 0)
+        {
+            isWallSliding = true;
+            gravityModifier = wallSlidingSpeed;
+        }
+        else
+        {
+            isWallSliding = false;
+            gravityModifier = gravStart;
+        }
+    }
+
     private IEnumerator LeaveWallCountdown()
     {
         yield return new WaitForSeconds(0.5f);
@@ -587,9 +610,10 @@ public class PlayerController : PhysicsObject
             {
                 isPressingJumpButton = true;
 
-                if (currentGraceTime > 0 && canJump)
+                if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
-                    velocity.y = jumpTakeoffSpeed;
+                    //velocity.y = jumpTakeoffSpeed;
+                    StartCoroutine(JumpDelay());
                     currentGraceTime = 0;
                     canJump = false;
                     animator.SetTrigger("jumping");
@@ -633,11 +657,18 @@ public class PlayerController : PhysicsObject
         }
     }
 
+    IEnumerator JumpDelay()
+    {
+        yield return new WaitForSeconds(jumpDelayTime);
+        velocity.y = jumpTakeoffSpeed;
+        yield break;
+    }
+
     IEnumerator QuickJumpTimer()
     {
         quickJump = false;
 
-        yield return new WaitForSeconds(jumpDelayTime);
+        yield return new WaitForSeconds(quickJumpDelay);
 
         if (isGrounded)
         {
@@ -700,7 +731,7 @@ public class PlayerController : PhysicsObject
                     ParticleSystem ps = Instantiate(bootSparks, transform.position, transform.rotation) as ParticleSystem;
                     Destroy(ps.gameObject, ps.main.startLifetime.constantMax);
                 }
-
+               
                 airTime = 0;
                 inAir = false;
             }
@@ -724,6 +755,10 @@ public class PlayerController : PhysicsObject
     private IEnumerator LandingPause(float _pauseTime)
     {
         EnableMovement(false);
+        isMoving = false;
+        velocity.x = 0;
+        move.x = 0;
+        animator.SetBool("isMoving", isMoving);
 
         yield return new WaitForSeconds(_pauseTime);
         
