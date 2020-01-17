@@ -137,9 +137,6 @@ public class PlayerController : PhysicsObject
         }
         else
             Debug.Log("Player does not have the controls component attached!");
-
-        //speed * accelerationCurve.Evaluate(accelerationTime)
-        //if(accelerationTime+Time.deltaTime < 1) accelerationTime = Mathf.Min(accelerationTime+Time.deltaTime, 1);
     }
 
     protected override void Update()
@@ -157,13 +154,18 @@ public class PlayerController : PhysicsObject
     {
         if (animator != null)
         {
+            //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
+
+            //AnimatorClipInfo[] clipInfo = animator.GetNextAnimatorClipInfo(0);
             AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
 
+            //return clipInfo[0].clip.length;
             if (clipInfo.Length > 0 && clipInfo != null)
             {
                 return clipInfo[0].clip.length;
             }
         }
+
         return 0;    
     }
 

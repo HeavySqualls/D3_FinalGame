@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 1242993176099357727}
   - component: {fileID: 1242993176099357726}
   - component: {fileID: 1242993176099357729}
-  - component: {fileID: 8313365752785423527}
   - component: {fileID: 1242993176099357722}
+  - component: {fileID: 8313365752785423527}
   - component: {fileID: 1242993176099357725}
   - component: {fileID: 118447264074416066}
   - component: {fileID: 1242993176099357723}
@@ -113,26 +113,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
---- !u!114 &8313365752785423527
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242993176099357728}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4aafd260a57a4464ba86a3828537aabb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  damage: 2
-  knockback: 2
-  knockUp: 6
-  canAttack: 1
-  comboAttacking: 0
-  maxComboTime: 0.5
-  timeBetweenCombos: 0
-  comboNum: 1
 --- !u!114 &1242993176099357722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -148,6 +128,32 @@ MonoBehaviour:
   windZone: {fileID: 0}
   respawnZone: {fileID: 0}
   unit: {fileID: 1242993176099357725}
+--- !u!114 &8313365752785423527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242993176099357728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4aafd260a57a4464ba86a3828537aabb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  maxComboTime: 0.7
+  attackSpacing: 0.2
+  p1_damage: 2
+  p1_knockback: 2
+  p1_knockUp: 8
+  p2_damage: 2
+  p2_knockback: 3
+  p2_knockUp: 9
+  p3_damage: 3
+  p3_knockback: 6
+  p3_knockUp: 16
+  b_damage: 0
+  b_knockback: 0
+  b_knockUp: 35
 --- !u!114 &1242993176099357725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -166,8 +172,8 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
-  isController: 0
-  accelSpeedNormal: 5.45
+  isController: 1
+  accelSpeedNormal: 6
   accelSpeedMaxSpeed: 4
   accelSpeedAir: 5.35
   decelSpeed: 6

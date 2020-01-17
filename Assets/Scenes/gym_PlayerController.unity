@@ -1878,6 +1878,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 636745550, guid: 02aa91859d9e97e45b269d0d1943fadf, type: 3}
+      propertyPath: m_Offset.y
+      value: 11.731013
+      objectReference: {fileID: 0}
+    - target: {fileID: 636745550, guid: 02aa91859d9e97e45b269d0d1943fadf, type: 3}
+      propertyPath: m_Size.y
+      value: 29.06661
+      objectReference: {fileID: 0}
     - target: {fileID: 2379283292502815457, guid: 02aa91859d9e97e45b269d0d1943fadf,
         type: 3}
       propertyPath: m_Name
@@ -1937,14 +1945,6 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 636745550, guid: 02aa91859d9e97e45b269d0d1943fadf, type: 3}
-      propertyPath: m_Offset.y
-      value: 11.731013
-      objectReference: {fileID: 0}
-    - target: {fileID: 636745550, guid: 02aa91859d9e97e45b269d0d1943fadf, type: 3}
-      propertyPath: m_Size.y
-      value: 29.06661
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 02aa91859d9e97e45b269d0d1943fadf, type: 3}
@@ -3212,11 +3212,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1242993176099357728, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: m_Name
-      value: TestSubject2D
-      objectReference: {fileID: 0}
     - target: {fileID: 1242993176099357727, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3272,15 +3267,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
+    - target: {fileID: 1242993176099357728, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
-      propertyPath: isController
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
-        type: 3}
-      propertyPath: jumpDelayTime
-      value: 0.08
+      propertyPath: m_Name
+      value: TestSubject2D
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ad598378404af64e8c629d59ff14cdc, type: 3}

@@ -4,32 +4,76 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    public float damage;
-
-    public float knockback;
-    public float knockUp;
-
-    [SerializeField] private bool canAttack = true;
-    [SerializeField] private bool comboAttacking = false;
-
+    [Header("STATES:")]
+    [Tooltip("The time between attacks required to continue the combo chain.")]
     public float maxComboTime = 0.5f;
-    [SerializeField] private float timeBetweenCombos = 0;
-    [SerializeField] private int comboNum = 1;
+    [Tooltip("The minumum time between the player is able to register a second attack.")]
+    public float attackSpacing = 0.2f;
+    private bool canAttack = true;
+    private bool comboAttacking = false;
+    private float timeBetweenCombos = 0;
+    private int comboNum = 1;
+    private float damage;
+    private float knockback;
+    private float knockup;
 
-    PlayerController pCon;
+    [Space]
+    [Header("PUNCH 1:")]
+    public float p1_damage;
+    public float p1_knockback;
+    public float p1_knockUp;
+
+    [Space]
+    [Header("PUNCH 2:")]
+    public float p2_damage;
+    public float p2_knockback;
+    public float p2_knockUp;
+
+    [Space]
+    [Header("PUNCH 3:")]
+    public float p3_damage;
+    public float p3_knockback;
+    public float p3_knockUp;
+
+    [Space]
+    [Header("BOOT KICK:")]
+    public float b_damage;
+    public float b_knockback;
+    public float b_knockUp;
+
+    [Space]
+    [Header("REFERENCES:")]
+    private Animator animator;
+    private PlayerController pCon;
 
     void Start() 
     {
         pCon = GetComponent<PlayerController>();
+        animator = pCon.animator;
     }
 
     void Update()
     {
         Attacks();
-        AttackTimer();
+        ComboTimer();
     }
 
-    private void AttackTimer()
+    public float GetAnimTime()
+    {
+        if (animator != null)
+        {
+            AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
+
+            if (clipInfo.Length > 0 && clipInfo != null)
+            {
+                return clipInfo[0].clip.length;
+            }
+        }
+
+        return 0;
+    }
+
+    private void ComboTimer()
     {
         if (comboAttacking)
         {
@@ -49,33 +93,42 @@ public class PlayerCombat : MonoBehaviour
         if (canAttack)
         {
             // Punch
-            if (Input.GetButtonUp(pCon.controls.punch) && comboAttacking && comboNum == 2)
+            if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 3)
             {
                 timeBetweenCombos = 0;
-                SetAttackStats(2, 2, 8);
-                pCon.animator.SetTrigger("punch2");
-                StartCoroutine(AttackCoolDown(pCon.GetAnimTime() / 4));
+                SetAttackStats(p3_damage, p3_knockback, p3_knockUp);
+                pCon.animator.SetTrigger("punch3");
+                StartCoroutine(AttackCoolDown(attackSpacing));
 
                 comboNum = 1;
             }
-            else if (Input.GetButtonUp(pCon.controls.punch) && comboNum == 1)
+            else if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 2)
+            {
+                timeBetweenCombos = 0;
+                SetAttackStats(p2_damage, p2_knockback, p2_knockUp);
+                pCon.animator.SetTrigger("punch2");
+                StartCoroutine(AttackCoolDown(attackSpacing));
+
+                comboNum = 3;
+            }
+            else if (Input.GetButtonDown(pCon.controls.punch) && comboNum == 1)
             {
                 comboAttacking = true;
                 timeBetweenCombos = 0;
 
-                SetAttackStats(2, 2, 8);
-                pCon.animator.SetTrigger("punch");
-                StartCoroutine(AttackCoolDown(pCon.GetAnimTime() / 4));
+                SetAttackStats(p1_damage, p1_knockback, p1_knockUp);
+                pCon.animator.SetTrigger("punch1");
+                StartCoroutine(AttackCoolDown(attackSpacing));
 
                 comboNum = 2;
             }
 
             // Boot Launch
-            if (Input.GetButtonUp(pCon.controls.launch))
+            if (Input.GetButton(pCon.controls.launch))
             {
-                SetAttackStats(0, 0, 35);
+                SetAttackStats(b_damage, b_knockback, b_knockUp);
                 pCon.animator.SetTrigger("kick");
-                StartCoroutine(AttackCoolDown(pCon.GetAnimTime()/ 4));
+                StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
             }
         }
     }
@@ -83,11 +136,11 @@ public class PlayerCombat : MonoBehaviour
     IEnumerator AttackCoolDown(float _time)
     {
         canAttack = false;
-        pCon.CanFlipSprite();
+        //pCon.CanFlipSprite();
 
         yield return new WaitForSeconds(_time);
 
-        pCon.CanFlipSprite();
+        //pCon.CanFlipSprite();
         canAttack = true;
 
     }
@@ -96,7 +149,7 @@ public class PlayerCombat : MonoBehaviour
     {
         damage = _dmg;
         knockback = _knkBk;
-        knockUp = _knkUp;
+        knockup = _knkUp;
     }
 
     public void CanAttack() // Called from the animator
@@ -119,7 +172,7 @@ public class PlayerCombat : MonoBehaviour
                 // Apply knockback to enemy 
                 if (hitObj.GetComponent<Knockback>() != null)
                 {
-                    hitObj.GetComponent<Knockback>().IsKnocked(pCon.accessibleDirection, damage, knockback, knockUp);
+                    hitObj.GetComponent<Knockback>().IsKnocked(pCon.accessibleDirection, damage, knockback, knockup);
                 }
                 else
                 {
