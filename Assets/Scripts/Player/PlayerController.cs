@@ -236,7 +236,7 @@ public class PlayerController : PhysicsObject
 
                 if (Input.GetAxisRaw(controls.xMove) > 0f) // Moving Right
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && isSkidding == false && isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft)
                     {
                         canFlipSprite = false;                    
                         timeAtMaxSpeed = 0;
@@ -247,7 +247,7 @@ public class PlayerController : PhysicsObject
                 }
                 else if (Input.GetAxisRaw(controls.xMove) < 0f) // Moving Left
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && isSkidding == false && !isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft)
                     {
                         print("2");
                         canFlipSprite = false;
@@ -369,7 +369,6 @@ public class PlayerController : PhysicsObject
 
             // Animation settings
             animator.SetBool("isMoving", isMoving);
-            animator.SetBool("isWallSliding", isWallSliding);
             animator.SetBool("isSkid", isSkidding);
             animator.SetBool("grounded", isGrounded);
             animator.SetBool("inWind", inWindZone);
@@ -489,16 +488,23 @@ public class PlayerController : PhysicsObject
 
     private void CheckIfWallSliding()
     {
-        if (isTouchingWall && !isGrounded && isTouchingLedge && velocity.y < 0)
+        if (isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
         {
-            isWallSliding = true;
+            if (!isWallSliding)
+            {
+                isWallSliding = true;
+                print("WALLSLIDINNNG!!!");
+            }
+
             gravityModifier = wallSlidingSpeed;
         }
         else
-        {
+        {         
             isWallSliding = false;
             gravityModifier = gravStart;
         }
+
+        animator.SetBool("isWallSliding", isWallSliding);
     }
 
     private IEnumerator LeaveWallCountdown()
