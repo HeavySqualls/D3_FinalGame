@@ -142,21 +142,5 @@ public class PhysicsObject : MonoBehaviour
 
         rb2d.position = rb2d.position + _move.normalized * distance;
     }
-
-    public IEnumerator IFlashRed(SpriteRenderer _thisFlashRenderer)
-    {
-        _thisFlashRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        _thisFlashRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.2f);
-        _thisFlashRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        _thisFlashRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.2f);
-        _thisFlashRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        _thisFlashRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.2f);
-    }
 }
 

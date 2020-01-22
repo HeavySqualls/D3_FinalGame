@@ -5,9 +5,13 @@ using UnityEngine;
 public class WindOnUnit : MonoBehaviour
 {
     public WindArea windZone;
-    public Transform respawnZone;
 
-    public PhysicsObject unit;
+    private PhysicsObject unit;
+
+    void Start()
+    {
+        unit = GetComponent<PhysicsObject>();
+    }
 
     void OnTriggerEnter2D(Collider2D coll)
     {
@@ -20,25 +24,6 @@ public class WindOnUnit : MonoBehaviour
 
             unit.inWindZone = true;
             unit.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft);
-        }
-
-
-        // DEATH 
-        
-        if (coll.gameObject.tag == "DeathZone")
-        {
-            print("Dead");
-
-            if (unit.GetComponent<PlayerController>())
-            {
-                unit.gameObject.transform.position = respawnZone.position;
-                StartCoroutine(unit.IFlashRed(this.GetComponent<SpriteRenderer>()));
-            }
-
-            if (unit.GetComponent<EnemyController>())
-            {
-                unit.GetComponent<EnemyController>().Killed();
-            }
         }
     }
 

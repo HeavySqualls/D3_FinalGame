@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 1242993176099357727}
   - component: {fileID: 1242993176099357726}
   - component: {fileID: 1242993176099357729}
+  - component: {fileID: 2085862403468343296}
   - component: {fileID: 1242993176099357722}
   - component: {fileID: 8313365752785423527}
   - component: {fileID: 1242993176099357725}
@@ -113,6 +114,18 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 4
+--- !u!114 &2085862403468343296
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1242993176099357728}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ef8bd70bb644fd849ba4daeb0c1094b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &1242993176099357722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -126,8 +139,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windZone: {fileID: 0}
-  respawnZone: {fileID: 0}
-  unit: {fileID: 1242993176099357725}
 --- !u!114 &8313365752785423527
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -172,7 +183,8 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
-  isController: 1
+  respawnZone: {fileID: 0}
+  isController: 0
   accelSpeedNormal: 7
   accelSpeedMaxSpeed: 4.25
   accelSpeedAir: 5.35

@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerController : PhysicsObject
 {
+    public Transform respawnZone;
+
     [Space]
     [Header("INPUT:")]
     public bool isController = false;

@@ -21,7 +21,7 @@ public class DissolvingPlatform : MonoBehaviour
         flashTime = flashTimeStart;
     }
 
-    public void CallEnumerator()
+    public void CallEnumerator() // TODO: Make this detect its own collisions - OnCollision check for physics object and if so, dissolve
     {
         print("Hello");
 
