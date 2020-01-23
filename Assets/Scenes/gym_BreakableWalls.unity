@@ -240,8 +240,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &32334685
 Rigidbody2D:
   serializedVersion: 4
@@ -358,8 +356,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &37906691
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -501,8 +497,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &40496337
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -728,8 +722,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &116818409
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -956,8 +948,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &226581430
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1033,7 +1023,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 362636146}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.121995926, y: 1.735, z: 0}
+  m_LocalPosition: {x: 0.13, y: 1.735, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 722619392}
@@ -1099,8 +1089,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &362636151
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1242,8 +1230,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &363447673
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1385,8 +1371,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &386522468
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1597,8 +1581,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &671096310
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1716,6 +1698,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startHP: 7
+  shakeDuration: 0.5
+  decreasePoint: 0.2
+  shakeSpeed: 0.07
+  rotationAngle: 3
   wallPieces: []
 --- !u!4 &722619392
 Transform:
@@ -1725,7 +1711,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 722619388}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 36.14, y: 10.5, z: 0}
+  m_LocalPosition: {x: 37.72, y: 10.5, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 116818405}
@@ -1837,8 +1823,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &763488285
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2105,8 +2089,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &852245691
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2248,8 +2230,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &930352237
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2416,8 +2396,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &971751096
 Rigidbody2D:
   serializedVersion: 4
@@ -2466,7 +2444,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1008499158}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 43.01, y: 10.48, z: 0}
+  m_LocalPosition: {x: 40.14, y: 10.48, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 32334680}
@@ -2522,6 +2500,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startHP: 7
+  shakeDuration: 0.5
+  decreasePoint: 0.2
+  shakeSpeed: 0.07
+  rotationAngle: 3
   wallPieces: []
 --- !u!114 &1008499162
 MonoBehaviour:
@@ -2656,8 +2638,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1011088654
 Rigidbody2D:
   serializedVersion: 4
@@ -2774,8 +2754,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1021089471
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -2917,8 +2895,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1087542848
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3060,8 +3036,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1142890311
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3228,8 +3202,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1168967975
 Rigidbody2D:
   serializedVersion: 4
@@ -3346,8 +3318,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1171869529
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3465,6 +3435,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   startHP: 7
+  shakeDuration: 0.5
+  decreasePoint: 0.2
+  shakeSpeed: 0.07
+  rotationAngle: 3
   wallPieces: []
 --- !u!4 &1174814819
 Transform:
@@ -3586,8 +3560,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1190239644
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3729,8 +3701,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1257915189
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -3897,8 +3867,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1332458279
 Rigidbody2D:
   serializedVersion: 4
@@ -4040,8 +4008,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1406041309
 Rigidbody2D:
   serializedVersion: 4
@@ -4183,8 +4149,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1577874798
 Rigidbody2D:
   serializedVersion: 4
@@ -4301,8 +4265,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1593441044
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4469,8 +4431,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1620154696
 Rigidbody2D:
   serializedVersion: 4
@@ -4599,8 +4559,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1776011983
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -4767,8 +4725,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1810899469
 Rigidbody2D:
   serializedVersion: 4
@@ -4885,8 +4841,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &1811855010
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5158,8 +5112,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &1895448164
 Rigidbody2D:
   serializedVersion: 4
@@ -5301,8 +5253,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!50 &2020541720
 Rigidbody2D:
   serializedVersion: 4
@@ -5419,8 +5369,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &2100898690
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -5562,8 +5510,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isHit: 0
-  shakeDuration: 0.5
-  decreasePoint: 0.2
 --- !u!23 &2116587333
 MeshRenderer:
   m_ObjectHideFlags: 0

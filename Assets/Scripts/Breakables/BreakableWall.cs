@@ -7,6 +7,15 @@ public class BreakableWall : MonoBehaviour
     public float startHP;
     private float currentHP;
 
+    [Tooltip("The length of time the object will shake.")]
+    public float shakeDuration;
+    [Tooltip("The point during the shake at which the shake strength will begin to decrease back to 0.")]
+    public float decreasePoint;
+    [Tooltip("The speed at which the objects will shake.")]
+    public float shakeSpeed;
+    [Tooltip("The max angle at which the objects will rotate when shaken.")]
+    public float rotationAngle;
+
     public List<Transform> wallPieces = new List<Transform>();
 
     BoxCollider2D boxCollider;
@@ -50,10 +59,8 @@ public class BreakableWall : MonoBehaviour
         {
             foreach (Transform breakablePiece in wallPieces)
             {
-                breakablePiece.GetComponent<BreakablePiece>().isHit = true;
+                breakablePiece.GetComponent<BreakablePiece>().ShakeGameObject(breakablePiece.gameObject, shakeDuration, decreasePoint, shakeSpeed, rotationAngle, false);
             }
         }
-
-
     }
 }
