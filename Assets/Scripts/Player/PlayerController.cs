@@ -439,9 +439,9 @@ public class PlayerController : PhysicsObject
             {
                 var go = hit.collider.gameObject;
 
-                if (go.GetComponent<DissolvingPlatform>())
+                if (go.GetComponent<BreakableObject>() && go.GetComponent<BreakableObject>().isPlatform && !go.GetComponent<BreakableObject>().isFallingApart)
                 {
-                    go.GetComponent<DissolvingPlatform>().CallEnumerator();
+                    go.GetComponent<BreakableObject>().TriggerPlatformCollapse();
                 }
             }
 

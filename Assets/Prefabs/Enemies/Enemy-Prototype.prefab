@@ -9,7 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6881064431387336162}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: EyeRange
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -39,7 +39,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6881064431796451245}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: GroundDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -76,7 +76,7 @@ GameObject:
   - component: {fileID: 7661305291666514634}
   - component: {fileID: 6881064432472772096}
   - component: {fileID: 6881064432472772099}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: Enemy-Prototype
   m_TagString: Enemy
   m_Icon: {fileID: 0}
@@ -199,8 +199,8 @@ MonoBehaviour:
   groundDetection: {fileID: 6881064431796451245}
   x: 0
   y: 0
-  knockbackLength: 0.5
-  knockbackCount: 0
+  knockbackTimeLength: 0
+  currentKnockBackTime: 0
 --- !u!114 &7661305291666514634
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -213,7 +213,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 989f2e212723405408c2cefcdaa2b20a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obj: {fileID: 6881064432472772098}
+  go: {fileID: 0}
 --- !u!61 &6881064432472772096
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -270,7 +270,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6881064432867424541}
-  m_Layer: 11
+  m_Layer: 15
   m_Name: WallDetection
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -29,6 +29,8 @@ public class ShakeManager : MonoBehaviour
         while (counter < _totalShakeDuration)
         {
             counter += Time.deltaTime;
+            //Debug.Log(counter);
+
             float decreaseSpeed = speed;
             float decreaseAngle = angleRot;
 
@@ -51,43 +53,43 @@ public class ShakeManager : MonoBehaviour
             yield return null;
 
 
-            //Check if we have reached the decreasePoint then start decreasing  decreaseSpeed value
-            if (counter >= _decreasePoint)
-            {
-                //Debug.Log("Decreasing shake");
+            ////Check if we have reached the decreasePoint then start decreasing  decreaseSpeed value
+            //if (counter >= _decreasePoint)
+            //{
+            //    //Debug.Log("Decreasing shake");
 
-                //Reset counter to 0 
-                counter = 0f;
-                while (counter <= _decreasePoint)
-                {
-                    counter += Time.deltaTime;
-                    decreaseSpeed = Mathf.Lerp(speed, 0, counter / _decreasePoint);
-                    decreaseAngle = Mathf.Lerp(angleRot, 0, counter / _decreasePoint);
+            //    //Reset counter to 0 
+            //    counter = 0f;
+            //    while (counter <= _decreasePoint)
+            //    {
+            //        counter += Time.deltaTime;
+            //        decreaseSpeed = Mathf.Lerp(speed, 0, counter / _decreasePoint);
+            //        decreaseAngle = Mathf.Lerp(angleRot, 0, counter / _decreasePoint);
 
-                    //Debug.Log("Decrease Value: " + decreaseSpeed);
+            //        //Debug.Log("Decrease Value: " + decreaseSpeed);
 
-                    //Shake GameObject
-                    if (_objectIs2D)
-                    {
-                        //Don't Translate the Z Axis if 2D Object
-                        Vector3 tempPos = defaultPos + UnityEngine.Random.insideUnitSphere * decreaseSpeed;
-                        tempPos.z = defaultPos.z;
-                        objTransform.position = tempPos;
+            //        //Shake GameObject
+            //        if (_objectIs2D)
+            //        {
+            //            //Don't Translate the Z Axis if 2D Object
+            //            Vector3 tempPos = defaultPos + UnityEngine.Random.insideUnitSphere * decreaseSpeed;
+            //            tempPos.z = defaultPos.z;
+            //            objTransform.position = tempPos;
 
-                        //Only Rotate the Z axis if 2D
-                        objTransform.rotation = defaultRot * Quaternion.AngleAxis(UnityEngine.Random.Range(-decreaseAngle, decreaseAngle), new Vector3(0f, 0f, 1f));
-                    }
-                    else
-                    {
-                        objTransform.position = defaultPos + UnityEngine.Random.insideUnitSphere * decreaseSpeed;
-                        objTransform.rotation = defaultRot * Quaternion.AngleAxis(UnityEngine.Random.Range(-decreaseAngle, decreaseAngle), new Vector3(1f, 1f, 1f));
-                    }
-                    yield return null;
-                }
+            //            //Only Rotate the Z axis if 2D
+            //            objTransform.rotation = defaultRot * Quaternion.AngleAxis(UnityEngine.Random.Range(-decreaseAngle, decreaseAngle), new Vector3(0f, 0f, 1f));
+            //        }
+            //        else
+            //        {
+            //            objTransform.position = defaultPos + UnityEngine.Random.insideUnitSphere * decreaseSpeed;
+            //            objTransform.rotation = defaultRot * Quaternion.AngleAxis(UnityEngine.Random.Range(-decreaseAngle, decreaseAngle), new Vector3(1f, 1f, 1f));
+            //        }
+            //        yield return null;
+            //    }
 
-                //Break from the outer loop
-                break;
-            }
+            //    //Break from the outer loop
+            //    break;
+            //}
         }
         objTransform.position = defaultPos; //Reset to original postion
         objTransform.rotation = defaultRot;//Reset to original rotation

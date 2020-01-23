@@ -14,9 +14,9 @@ public class RecieveDamage : MonoBehaviour
         {
             hitObj = go.GetComponent<EnemyController>();
         }
-        else if (go.GetComponent<BreakableWall>())
+        else if (go.GetComponent<BreakableObject>())
         {
-            hitObj = go.GetComponent<BreakableWall>();
+            hitObj = go.GetComponent<BreakableObject>();
         }
     }
 

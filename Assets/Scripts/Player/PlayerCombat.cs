@@ -161,7 +161,7 @@ public class PlayerCombat : MonoBehaviour
 
     public void CastForEnemies() // Called from the animator
     {
-        LayerMask enemyMask = LayerMask.GetMask("Enemies");
+        LayerMask enemyMask = LayerMask.GetMask("InteractableObjects");
         RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 1f, pCon.accessibleDirection, 1f, enemyMask);
         foreach (RaycastHit2D hit in hits)
         {
@@ -178,7 +178,7 @@ public class PlayerCombat : MonoBehaviour
                 }
                 else
                 {
-                    Debug.Log("No Knockback component on object!");
+                    Debug.Log("No Recieve Damage component on object!");
                 }           
             }
         }

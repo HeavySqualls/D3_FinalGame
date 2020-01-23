@@ -31,6 +31,7 @@ public class PhysicsObject : MonoBehaviour
     protected Vector2 windDir;
     protected float windPwr;
     protected bool windMovingRight;
+    //protected LayerMask layerMask;
 
     void OnEnable()
     {
@@ -40,8 +41,10 @@ public class PhysicsObject : MonoBehaviour
 
     void Start()
     {
+        //layerMask = LayerMask.GetMask([8]);
+
         contactFilter.useTriggers = false; // not checking collisions against triggers
-        contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(8)); // only grabs collisions on the layer that the player is on (see project settings > physics2d)
+        contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(8)); // only grabs collisions on the layer the specified layer (see project settings > physics2d)
         contactFilter.useLayerMask = true;
     }
 
