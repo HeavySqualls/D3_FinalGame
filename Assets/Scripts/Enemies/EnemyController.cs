@@ -45,7 +45,9 @@ public class EnemyController : PhysicsObject
     private BoxCollider2D coll;
 
     [SerializeField] private float x;
-    [SerializeField] private float y; 
+    [SerializeField] private float y;
+    public float knockbackTimeLength;
+    [SerializeField] float currentKnockBackTime;
 
     void Start()
     {
@@ -55,12 +57,25 @@ public class EnemyController : PhysicsObject
         baseMoveSpeed = baseMoveSpeedStart;
         currentHP = startHP;
 
+        currentKnockBackTime = knockbackTimeLength;
+
         this.currentState = State.Patrolling;
     }
 
     protected override void Update()
     {
         base.Update();
+
+        if (isHit)
+        {
+            currentKnockBackTime -= Time.deltaTime;
+
+            if (currentKnockBackTime <= 0 && isGrounded)
+            {
+                currentKnockBackTime = knockbackTimeLength;
+                currentState = State.Patrolling;
+            }
+        }
 
         switch (this.currentState)
         {

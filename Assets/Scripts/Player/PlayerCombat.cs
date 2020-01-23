@@ -167,18 +167,18 @@ public class PlayerCombat : MonoBehaviour
         {
             var hitObj = hit.collider.gameObject;
 
-            if (hitObj.tag == "Enemy")
+            if (hitObj.GetComponent<RecieveDamage>())
             {
                 print("hit: " + hitObj.name);
 
                 // Apply knockback to enemy 
-                if (hitObj.GetComponent<Knockback>() != null)
+                if (hitObj.GetComponent<RecieveDamage>() != null)
                 {
-                    hitObj.GetComponent<Knockback>().IsKnocked(pCon.accessibleDirection, damage, knockback, knockup);
+                    hitObj.GetComponent<RecieveDamage>().GetHit(pCon.accessibleDirection, damage, knockback, knockup);
                 }
                 else
                 {
-                    Debug.Log("No Knockback component on enemy!");
+                    Debug.Log("No Knockback component on object!");
                 }           
             }
         }

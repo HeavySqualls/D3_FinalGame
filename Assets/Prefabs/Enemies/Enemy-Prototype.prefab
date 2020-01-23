@@ -71,9 +71,9 @@ GameObject:
   - component: {fileID: 6881064432472772127}
   - component: {fileID: 6881064432472772126}
   - component: {fileID: 6881064432472772097}
-  - component: {fileID: 6881064432472772124}
   - component: {fileID: 1901980479299743710}
   - component: {fileID: 6881064432472772125}
+  - component: {fileID: 7661305291666514634}
   - component: {fileID: 6881064432472772096}
   - component: {fileID: 6881064432472772099}
   m_Layer: 11
@@ -146,21 +146,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &6881064432472772124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6881064432472772098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 54b800ab5316de44089dfcef1a0989cd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  knockbackLength: 0.5
-  knockbackCount: 0
-  eCon: {fileID: 6881064432472772125}
 --- !u!114 &1901980479299743710
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -174,8 +159,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windZone: {fileID: 0}
-  respawnZone: {fileID: 0}
-  unit: {fileID: 6881064432472772125}
 --- !u!114 &6881064432472772125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,7 +184,7 @@ MonoBehaviour:
   huntSpeed: 10
   damageOutput: 2
   currentHP: 0
-  hpStart: 10
+  startHP: 10
   baseMoveSpeed: 0
   baseMoveSpeedStart: 50
   pauseTime: 2
@@ -216,6 +199,21 @@ MonoBehaviour:
   groundDetection: {fileID: 6881064431796451245}
   x: 0
   y: 0
+  knockbackLength: 0.5
+  knockbackCount: 0
+--- !u!114 &7661305291666514634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6881064432472772098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 989f2e212723405408c2cefcdaa2b20a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  obj: {fileID: 6881064432472772098}
 --- !u!61 &6881064432472772096
 BoxCollider2D:
   m_ObjectHideFlags: 0
