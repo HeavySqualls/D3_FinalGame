@@ -18,7 +18,7 @@ public class EnemyController : PhysicsObject
     public float huntSpeed = 3f;
     public int damageOutput = 2;
     public float currentHP;
-    [SerializeField] float hpStart = 10f;
+    [SerializeField] float startHP = 10f;
     [SerializeField] float baseMoveSpeed;
     [SerializeField] float baseMoveSpeedStart = 50f;
 
@@ -53,7 +53,7 @@ public class EnemyController : PhysicsObject
         coll = GetComponent<BoxCollider2D>();
 
         baseMoveSpeed = baseMoveSpeedStart;
-        currentHP = hpStart;
+        currentHP = startHP;
 
         this.currentState = State.Patrolling;
     }
@@ -256,7 +256,7 @@ public class EnemyController : PhysicsObject
         {
             mR.enabled = true;
             coll.enabled = true;
-            currentHP = hpStart;
+            currentHP = startHP;
             gravityModifier = gravStart;
             transform.position = respawnZone.position;
             move = Vector2.zero;
