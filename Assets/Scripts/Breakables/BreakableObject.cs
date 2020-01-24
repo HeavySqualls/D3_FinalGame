@@ -99,11 +99,19 @@ public class BreakableObject : MonoBehaviour
         if (earlyBreakPieces.Count > 0)
         {
             foreach (BreakablePiece ebp in earlyBreakPieces)
-            {              
-                ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-                ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+            {
+                StartCoroutine(EarlyBreakDrop(ebp));
+                //ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+                //ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
             }
         }    
+    }
+
+    IEnumerator EarlyBreakDrop(BreakablePiece _ebp)
+    {
+        yield return new WaitForSeconds(Random.Range(0.1f, 0.8f));
+        _ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+        _ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
     }
 
     IEnumerator RespawnCounter(List<BreakablePiece> _list)
