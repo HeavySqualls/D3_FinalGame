@@ -5,6 +5,7 @@ using UnityEngine;
 public class BreakablePiece : MonoBehaviour
 {
     private bool isShake = false;
+    public bool isEarlyBreakPiece = false;
 
     public Vector3 startingPos; // TODO: ---- >> for respawning ledges
 
@@ -35,6 +36,8 @@ public class BreakablePiece : MonoBehaviour
     //    }
     //}
 
+
+    // Basic object shake for attackable objects
     public void ShakeGameObject(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
     {
         if (isShake)
@@ -48,6 +51,8 @@ public class BreakablePiece : MonoBehaviour
         StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
     }
 
+
+    // Logic for destroying the basic object after being attacked
     public void DestroyObject(Vector2 _dir, float _dmg, float _knockback, float _knockUp, bool _isPlatform)
     {
         rb2D.bodyType = RigidbodyType2D.Dynamic;
@@ -64,6 +69,8 @@ public class BreakablePiece : MonoBehaviour
         Destroy(gameObject, Random.Range(0.5f, 1.5f));
     }
 
+
+    // Shake + Drop for crumbling platforms
     public void ShakeAndDrop(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
     {
         StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
