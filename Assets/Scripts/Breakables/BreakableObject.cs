@@ -109,7 +109,7 @@ public class BreakableObject : MonoBehaviour
 
     IEnumerator EarlyBreakDrop(BreakablePiece _ebp)
     {
-        yield return new WaitForSeconds(Random.Range(0.1f, 0.8f));
+        yield return new WaitForSeconds(Random.Range(0.04f, 0.8f));
         _ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
         _ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
     }
