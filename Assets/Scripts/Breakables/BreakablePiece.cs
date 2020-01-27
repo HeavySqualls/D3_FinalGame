@@ -7,7 +7,8 @@ public class BreakablePiece : MonoBehaviour
     private bool isShake = false;
     public bool isEarlyBreakPiece = false;
 
-    public Vector3 startingPos; // TODO: ---- >> for respawning ledges
+    public Vector3 startingPos;
+    public Quaternion startingTrans;
 
     public BoxCollider2D boxColl;
     public MeshRenderer meshRenderer;
@@ -24,6 +25,7 @@ public class BreakablePiece : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
 
         startingPos = transform.position;
+        startingTrans = transform.rotation;
         shakeMan = Toolbox.GetInstance().GetShakeManager();
     }
 
@@ -37,7 +39,7 @@ public class BreakablePiece : MonoBehaviour
     //}
 
 
-    // Basic object shake for attackable objects
+    // Shake object for attackable object pieces
     public void ShakeGameObject(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
     {
         if (isShake)
@@ -52,14 +54,14 @@ public class BreakablePiece : MonoBehaviour
     }
 
 
-    // Logic for destroying the basic object after being attacked
-    public void DestroyObject(Vector2 _dir, float _dmg, float _knockback, float _knockUp, bool _isPlatform)
+    // Logic for destroying the basic object piece after being attacked
+    public void DestroyObject(Vector2 _dir, bool _isPlatform)
     {
         rb2D.bodyType = RigidbodyType2D.Dynamic;
 
         if (!_isPlatform)
         {
-            rb2D.AddForce(_dir * Random.Range(1f, 15f), ForceMode2D.Impulse);
+            rb2D.AddForce(_dir * Random.Range(1f, 6f), ForceMode2D.Impulse);
         }
         else
         {
@@ -70,8 +72,8 @@ public class BreakablePiece : MonoBehaviour
     }
 
 
-    // Shake + Drop for crumbling platforms
-    public void ShakeAndDrop(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
+    // Shake object for crumbling platform pieces
+    public void ShakePlatform(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
     {
         StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
     }

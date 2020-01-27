@@ -10,6 +10,7 @@ public class BreakableObject : MonoBehaviour
     public bool isPlatform = false;
     [Tooltip("Will this object respawn?")]
     public bool isRespawnable = false;
+    [HideInInspector]
     public bool isFallingApart = false;
 
     [Space]
@@ -29,21 +30,24 @@ public class BreakableObject : MonoBehaviour
     public float rotationAngle;
     [Tooltip("The time it takes for the platform to respawn.")]
     public float respawnTime;
+    private bool hitByBoulder = false;
+    private Vector2 boulderHitFromDirection;
 
     [Space]
     [Header("OBJECT PIECES:")]
-    public List<BreakablePiece> objPieces = new List<BreakablePiece>();
-    public List<BreakablePiece> earlyBreakPieces = new List<BreakablePiece>();
+    [SerializeField] List<BreakablePiece> objPieces = new List<BreakablePiece>();
+    [SerializeField] List<BreakablePiece> earlyBreakPieces = new List<BreakablePiece>();
     BoxCollider2D boxCollider;
 
     void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
+        currentHP = startHP;
 
         FindEveryChild(gameObject.transform);
-        currentHP = startHP;
     }
 
+    // Finds every child in the game object with a BreakablePiece component and adds it to the list 
     private void FindEveryChild (Transform parent)
     {
         int count = parent.childCount;
@@ -57,24 +61,34 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
+    // Determines if this object has been hit by a rolling object, if so get direction of the rolling object and destroy this object
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.collider.gameObject.GetComponent<RollingObject>())
+        {
+            hitByBoulder = true;
+            boulderHitFromDirection = other.collider.gameObject.GetComponent<RollingObject>().direction;
+            StartCoroutine(CollapseAndRespawnCounter());
+        }
+    }
+
+    // Implements damage to the object with variables passed on by the RecieveDamage component 
     public void TakeDamage(Vector2 _hitDir, float _dmg, float _knockback, float _knockUp)
     {
         currentHP -= _dmg;
 
-        Debug.Log("Wall is shaking!");
-
-        if (currentHP <= 0f)
+        if (currentHP <= 0f) // if object has no more hit points, destroy
         {
             Debug.Log("Wall is broken");
             boxCollider.enabled = false;
             foreach (BreakablePiece bp in objPieces)
             {
-                bp.DestroyObject(_hitDir, _dmg, _knockback, _knockUp, isPlatform);
+                bp.DestroyObject(_hitDir, isPlatform);
             }
 
             Destroy(gameObject, 3f);
         }
-        else
+        else // if object still has hit points, shake
         {
             foreach (BreakablePiece bp in objPieces)
             {
@@ -83,17 +97,14 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
+    // Shake platform and then trigger platform collapse & respawn coroutine
     public void TriggerPlatformCollapse()
     {
-        Debug.Log("Platform is collapsing!");
-
         isFallingApart = true;
-
-        StartCoroutine(RespawnCounter(objPieces));
 
         foreach (BreakablePiece bp in objPieces)
         {
-            bp.ShakeAndDrop(bp.gameObject, platformShakeDuration, decreasePoint, shakeSpeed, rotationAngle, false);
+            bp.ShakePlatform(bp.gameObject, platformShakeDuration, decreasePoint, shakeSpeed, rotationAngle, false);
         }
 
         if (earlyBreakPieces.Count > 0)
@@ -101,34 +112,85 @@ public class BreakableObject : MonoBehaviour
             foreach (BreakablePiece ebp in earlyBreakPieces)
             {
                 StartCoroutine(EarlyBreakDrop(ebp));
-                //ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-                //ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
             }
-        }    
+        }
+
+        StartCoroutine(CollapseAndRespawnCounter());
     }
 
+    // Drop the pre-selected early drop pieces when the player lands on the platform
     IEnumerator EarlyBreakDrop(BreakablePiece _ebp)
     {
         yield return new WaitForSeconds(Random.Range(0.04f, 0.8f));
         _ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
         _ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+
+        yield break;
     }
 
-    IEnumerator RespawnCounter(List<BreakablePiece> _list)
+
+    IEnumerator CollapseAndRespawnCounter()
     {
-        yield return new WaitForSeconds(platformShakeDuration);
+        if (!hitByBoulder)
+        {
+            yield return new WaitForSeconds(platformShakeDuration);
+        }
 
         boxCollider.enabled = false;
 
-        foreach (BreakablePiece bp in _list)
+        if (hitByBoulder) // if hit by a boulder...
         {
-            bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-            bp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+            if (isPlatform)
+            {
+                foreach (BreakablePiece bp in objPieces)
+                {
+                    bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+                    bp.rb2D.gravityScale = 2f;
+                    bp.boxColl.enabled = true;
+                }
+
+                if (earlyBreakPieces.Count > 0)
+                {
+                    foreach (BreakablePiece ebp in earlyBreakPieces)
+                    {
+                        ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+                        ebp.rb2D.gravityScale = 2f;
+                        ebp.boxColl.enabled = true;
+                    }
+                }
+            }
+            else
+            {
+                foreach (BreakablePiece bp in objPieces)
+                {
+                    bp.DestroyObject(boulderHitFromDirection, isPlatform);
+                }
+
+                if (earlyBreakPieces.Count > 0)
+                {
+                    foreach (BreakablePiece ebp in earlyBreakPieces)
+                    {
+                        ebp.DestroyObject(boulderHitFromDirection, isPlatform);
+                    }
+                }
+
+                yield break; // end coroutine - object is destroyed
+            }
+
+        }
+        else // if NOT hit by a boulder... let gravity take its course
+        {
+            foreach (BreakablePiece bp in objPieces)
+            {
+                bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+                bp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+            }
         }
 
+        // wait for a few seconds - then hide breakable pieces
         yield return new WaitForSeconds(Random.Range(1, 5));
 
-        foreach (BreakablePiece bp in _list)
+        foreach (BreakablePiece bp in objPieces)
         {
             bp.meshRenderer.enabled = false;
             bp.boxColl.enabled = false;
@@ -143,28 +205,44 @@ public class BreakableObject : MonoBehaviour
             }
         }
 
-        yield return new WaitForSeconds(respawnTime);
-
-        isFallingApart = false;
-        boxCollider.enabled = true;
-
-        foreach (BreakablePiece bp in _list)
+        // if the object IS respawnable, wait the chosen amount of time, then reset in the original starting position
+        if (isRespawnable)
         {
-            bp.rb2D.velocity = Vector2.zero;
-            bp.rb2D.bodyType = RigidbodyType2D.Kinematic;
-            bp.gameObject.transform.position = bp.startingPos;
-            bp.meshRenderer.enabled = true;
-        }
+            yield return new WaitForSeconds(respawnTime);
 
-        if (earlyBreakPieces.Count > 0)
-        {
-            foreach (BreakablePiece ebp in earlyBreakPieces)
+            isFallingApart = false;
+            boxCollider.enabled = true;
+
+            foreach (BreakablePiece bp in objPieces)
             {
-                ebp.rb2D.velocity = Vector2.zero;
-                ebp.rb2D.bodyType = RigidbodyType2D.Kinematic;
-                ebp.gameObject.transform.position = ebp.startingPos;
-                ebp.meshRenderer.enabled = true;
+                bp.rb2D.velocity = Vector2.zero;
+                bp.rb2D.angularVelocity = 0f;
+                bp.rb2D.bodyType = RigidbodyType2D.Kinematic;
+                bp.gameObject.transform.position = bp.startingPos;
+                bp.gameObject.transform.rotation = bp.startingTrans;
+                bp.meshRenderer.enabled = true;
+            }
+
+            if (earlyBreakPieces.Count > 0)
+            {
+                foreach (BreakablePiece ebp in earlyBreakPieces)
+                {
+                    ebp.rb2D.velocity = Vector2.zero;
+                    ebp.rb2D.angularVelocity = 0f;
+                    ebp.rb2D.bodyType = RigidbodyType2D.Kinematic;
+                    ebp.gameObject.transform.position = ebp.startingPos;
+                    ebp.gameObject.transform.rotation = ebp.startingTrans;
+                    ebp.meshRenderer.enabled = true;
+                }
             }
         }
+        else // If the object is NOT respawnable, destroy
+        {
+            Destroy(gameObject);
+        }
+
+        hitByBoulder = false;
+
+        yield break;
     }
 }

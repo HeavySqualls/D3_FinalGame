@@ -161,8 +161,8 @@ public class PlayerCombat : MonoBehaviour
 
     public void CastForEnemies() // Called from the animator
     {
-        LayerMask enemyMask = LayerMask.GetMask("InteractableObjects");
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 1f, pCon.accessibleDirection, 1f, enemyMask);
+        LayerMask interactableLayerMask = LayerMask.GetMask("InteractableObjects");
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 1f, pCon.accessibleDirection, 1f, interactableLayerMask);
         foreach (RaycastHit2D hit in hits)
         {
             var hitObj = hit.collider.gameObject;

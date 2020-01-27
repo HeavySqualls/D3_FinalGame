@@ -55,6 +55,8 @@ public class ShakeManager : MonoBehaviour
         objTransform.position = defaultPos; //Reset to original postion
         objTransform.rotation = defaultRot;//Reset to original rotation
         //Debug.Log("Done!");
+
+        yield break;
     }
 }
 

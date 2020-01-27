@@ -18,6 +18,10 @@ public class RecieveDamage : MonoBehaviour
         {
             hitObj = go.GetComponent<BreakableObject>();
         }
+        else if (go.GetComponent<RollingObject>())
+        {
+            hitObj = go.GetComponent<RollingObject>();
+        }
     }
 
     public void GetHit(Vector2 _hitDirection, float _dmg, float _knockback, float _knockUp)

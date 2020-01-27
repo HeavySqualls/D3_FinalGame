@@ -443,6 +443,13 @@ public class PlayerController : PhysicsObject
                 {
                     go.GetComponent<BreakableObject>().TriggerPlatformCollapse();
                 }
+                else if (go.GetComponent<BreakableFloor>())
+                {
+                    if (inAir)
+                    {
+                        go.GetComponent<BreakableFloor>().TriggerFloorShake();
+                    }             
+                }
             }
 
             Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
