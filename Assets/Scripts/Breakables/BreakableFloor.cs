@@ -19,10 +19,13 @@ public class BreakableFloor : MonoBehaviour
 
     [Space]
     [Header("WEIGHT VARIABLES:")]
+    [Tooltip("The delay before the items get weighed - to give a brief moment before the floor collapses.")]
+    public float weighWaitTime;
     [Tooltip("The max amount of weight allowed on the floor.")]
     public float totalAllowableWeight;
     [SerializeField] List<Rigidbody2D> objectsOnFloor;
     private float totalWeight;
+    private bool isWeighing = false;
     Vector2 offset;
 
     [Space]
@@ -59,7 +62,7 @@ public class BreakableFloor : MonoBehaviour
     // Shakes the floor when the player lands on it
     public void TriggerFloorShake()
     {
-        Debug.Log("Platform is collapsing!");
+        Debug.Log("Floor is shaking!");
 
         foreach (BreakablePiece bp in objPieces)
         {
@@ -68,10 +71,13 @@ public class BreakableFloor : MonoBehaviour
     }
 
     // When another objects collider interacts with this collider, 
-    void OnCollisionEnter2D (Collision2D other)
+    void OnCollisionStay2D (Collision2D other)
     {
-        // Determine total weight on floor
-        DetermineWeight();
+        if (!isWeighing)
+        {
+            // Determine total weight on floor
+            StartCoroutine(WeighDelay());
+        }
 
         // If the weight exceeds the total allowable weight,
         if (totalWeight > totalAllowableWeight)
@@ -87,6 +93,18 @@ public class BreakableFloor : MonoBehaviour
 
             Destroy(gameObject, destroySeconds);
         }
+        else
+        {
+            isWeighing = false;
+        }
+    }
+
+    IEnumerator WeighDelay()
+    {
+        isWeighing = true;
+        yield return new WaitForSeconds(weighWaitTime);
+        DetermineWeight();
+        yield break;
     }
 
     private void DetermineWeight()

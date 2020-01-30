@@ -90,8 +90,9 @@ public class PlayerController : PhysicsObject
     public Vector2 wallJumpDirection;
     public float wallJumpForce;
     public Transform wallCheck; // for checking if against wall
+    public bool isWallSliding = false;
     private bool isTouchingWall = false;
-    private bool isWallSliding = false;
+    private bool canWallSlide = true;
 
     [Space]
     [Header("LEDGE CHECK:")]
@@ -135,6 +136,7 @@ public class PlayerController : PhysicsObject
     void Start()
     {
         whatIsGround = LayerMask.GetMask("Ground");
+        //whatIsWall = LayerMask.GetMask("Interactables");
 
         if (controls != null)
         {
@@ -432,22 +434,27 @@ public class PlayerController : PhysicsObject
 
     private void CheckSurroundings()
     {
+        if (isGrounded)
+        {
+            canWallSlide = true;
+        }
+
         if (canMove)
         {
-            RaycastHit2D hit = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
-            if (hit.collider != null)
+            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+            if (hitGround.collider != null)
             {
-                var go = hit.collider.gameObject;
+                var goGround = hitGround.collider.gameObject;
 
-                if (go.GetComponent<BreakableObject>() && go.GetComponent<BreakableObject>().isPlatform && !go.GetComponent<BreakableObject>().isFallingApart)
+                if (goGround.GetComponent<BreakableObject>() && goGround.GetComponent<BreakableObject>().isPlatform && !goGround.GetComponent<BreakableObject>().isFallingApart)
                 {
-                    go.GetComponent<BreakableObject>().TriggerPlatformCollapse();
+                    goGround.GetComponent<BreakableObject>().TriggerPlatformCollapse();
                 }
-                else if (go.GetComponent<BreakableFloor>())
+                else if (goGround.GetComponent<BreakableFloor>())
                 {
                     if (inAir)
                     {
-                        go.GetComponent<BreakableFloor>().TriggerFloorShake();
+                        goGround.GetComponent<BreakableFloor>().TriggerFloorShake();
                     }             
                 }
             }
@@ -460,10 +467,27 @@ public class PlayerController : PhysicsObject
             isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, whatIsGround);
             Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
 
+            // Check for ledge grab
             if (isTouchingWall && !isTouchingLedge && !ledgeDetected)// << ----------- OPTION TO PUT MANUAL LEDGE GRAB HERE 
             {
                 ledgeDetected = true;
                 ledgePosBot = wallCheck.position;
+            }
+
+            // Check for crumbling wall
+            if (isWallSliding)
+            {
+                RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, whatIsGround);
+                if (hitWall.collider != null)
+                {
+                    var goWall = hitWall.collider.gameObject;
+
+                    if (goWall.GetComponent<BreakableObject>())
+                    {
+                        goWall.GetComponent<BreakableObject>().TriggerPlatformCollapse();
+                        canWallSlide = false;                  
+                    }
+                }
             }
         }
     }
@@ -497,18 +521,17 @@ public class PlayerController : PhysicsObject
 
     private void CheckIfWallSliding()
     {
-        if (isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
+        if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
         {
             if (!isWallSliding)
             {
                 isWallSliding = true;
-                print("WALLSLIDINNNG!!!");
             }
 
             gravityModifier = wallSlidingSpeed;
         }
         else
-        {         
+        {
             isWallSliding = false;
             gravityModifier = gravStart;
         }
@@ -625,7 +648,7 @@ public class PlayerController : PhysicsObject
             {
                 isPressingJumpButton = true;
 
-                if (currentGraceTime > 0 && canJump || isWallSliding)
+                if (currentGraceTime > 0 && canJump || isWallSliding /*&& isMoving == true*/)
                 {
                     //velocity.y = jumpTakeoffSpeed;
                     StartCoroutine(JumpDelay());
@@ -672,9 +695,38 @@ public class PlayerController : PhysicsObject
         }
     }
 
+    private void PushOffWall()
+    {
+        if (direction == Vector2.right)
+        {
+            move.x -= 5f;
+            move.y += 6f;
+        }
+        else
+        {
+            move.x += 5f;
+            move.y += 6f;
+        }
+
+        targetVelocity = move * maxSpeed/* * Time.deltaTime*/;
+    }
+
     IEnumerator JumpDelay()
     {
         yield return new WaitForSeconds(jumpDelayTime);
+
+        if (isWallSliding)
+        {
+            PushOffWall();
+            //if (direction == Vector2.right)
+            //{
+            //    move.x -= 10f;
+            //}
+            //else
+            //{
+            //    move.x += 10f;
+            //}
+        }
         velocity.y = jumpTakeoffSpeed;
         yield break;
     }

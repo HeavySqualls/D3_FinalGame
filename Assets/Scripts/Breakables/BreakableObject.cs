@@ -8,6 +8,8 @@ public class BreakableObject : MonoBehaviour
     [Header("TYPE:")]
     [Tooltip("Is this object a platform?")]
     public bool isPlatform = false;
+    [Tooltip("Is this object a crumbling wall?")]
+    public bool isCrumblingWall = false;
     [Tooltip("Will this object respawn?")]
     public bool isRespawnable = false;
     [HideInInspector]
@@ -114,7 +116,6 @@ public class BreakableObject : MonoBehaviour
                 StartCoroutine(EarlyBreakDrop(ebp));
             }
         }
-
         StartCoroutine(CollapseAndRespawnCounter());
     }
 
@@ -183,7 +184,11 @@ public class BreakableObject : MonoBehaviour
             foreach (BreakablePiece bp in objPieces)
             {
                 bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-                bp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+                bp.boxColl.enabled = true;
+                if (isPlatform)
+                {
+                    bp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+                }
             }
         }
 
@@ -218,6 +223,10 @@ public class BreakableObject : MonoBehaviour
                 bp.rb2D.velocity = Vector2.zero;
                 bp.rb2D.angularVelocity = 0f;
                 bp.rb2D.bodyType = RigidbodyType2D.Kinematic;
+                if (isCrumblingWall)
+                {
+                    bp.boxColl.enabled = true;
+                }
                 bp.gameObject.transform.position = bp.startingPos;
                 bp.gameObject.transform.rotation = bp.startingTrans;
                 bp.meshRenderer.enabled = true;
@@ -230,6 +239,10 @@ public class BreakableObject : MonoBehaviour
                     ebp.rb2D.velocity = Vector2.zero;
                     ebp.rb2D.angularVelocity = 0f;
                     ebp.rb2D.bodyType = RigidbodyType2D.Kinematic;
+                    if (isCrumblingWall)
+                    {
+                        ebp.boxColl.enabled = true;
+                    }
                     ebp.gameObject.transform.position = ebp.startingPos;
                     ebp.gameObject.transform.rotation = ebp.startingTrans;
                     ebp.meshRenderer.enabled = true;

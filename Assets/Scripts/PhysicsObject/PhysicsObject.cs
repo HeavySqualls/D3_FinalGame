@@ -18,7 +18,7 @@ public class PhysicsObject : MonoBehaviour
     protected float maxWallNormalX = 0.5f;
     protected float minGroundNormalY = 0.65f; // 
 
-    protected Vector2 direction;
+    [SerializeField] protected Vector2 direction;
     protected Vector2 groundNormal;
     protected Rigidbody2D rb2d;
     protected ContactFilter2D contactFilter;

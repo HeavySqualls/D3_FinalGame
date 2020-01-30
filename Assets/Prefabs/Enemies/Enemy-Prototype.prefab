@@ -72,8 +72,8 @@ GameObject:
   - component: {fileID: 6881064432472772126}
   - component: {fileID: 6881064432472772097}
   - component: {fileID: 1901980479299743710}
-  - component: {fileID: 6881064432472772125}
   - component: {fileID: 7661305291666514634}
+  - component: {fileID: 6881064432472772125}
   - component: {fileID: 6881064432472772096}
   - component: {fileID: 6881064432472772099}
   m_Layer: 15
@@ -97,6 +97,7 @@ Transform:
   - {fileID: 6881064431387336162}
   - {fileID: 6881064432867424541}
   - {fileID: 6881064431796451245}
+  - {fileID: 49100204153294740}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -159,6 +160,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   windZone: {fileID: 0}
+--- !u!114 &7661305291666514634
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6881064432472772098}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 989f2e212723405408c2cefcdaa2b20a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  go: {fileID: 6881064432472772098}
 --- !u!114 &6881064432472772125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,11 +196,13 @@ MonoBehaviour:
   isHit: 0
   patrolSpeed: 3
   huntSpeed: 10
-  damageOutput: 2
-  currentHP: 0
-  startHP: 10
   baseMoveSpeed: 0
   baseMoveSpeedStart: 50
+  stunTime: 0.2
+  damageOutput: 2
+  cooldown: 1
+  currentHP: 0
+  startHP: 10
   pauseTime: 2
   move: {x: 0, y: 0}
   newDirection: {x: 0, y: 0}
@@ -197,23 +213,11 @@ MonoBehaviour:
   eyeRange: {fileID: 6881064431387336162}
   wallDetection: {fileID: 6881064432867424541}
   groundDetection: {fileID: 6881064431796451245}
-  x: 0
-  y: 0
-  knockbackTimeLength: 0
+  meleeCheck: {fileID: 49100204153294740}
+  knockBack: 0
+  knockUp: 0
+  knockbackTimeLength: 0.2
   currentKnockBackTime: 0
---- !u!114 &7661305291666514634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6881064432472772098}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 989f2e212723405408c2cefcdaa2b20a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  go: {fileID: 0}
 --- !u!61 &6881064432472772096
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -290,4 +294,34 @@ Transform:
   m_Children: []
   m_Father: {fileID: 6881064432472772127}
   m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &8954794311135207725
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 49100204153294740}
+  m_Layer: 15
+  m_Name: MeleeRange
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &49100204153294740
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8954794311135207725}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.118, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 6881064432472772127}
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
