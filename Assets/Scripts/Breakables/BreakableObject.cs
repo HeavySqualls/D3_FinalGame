@@ -10,6 +10,8 @@ public class BreakableObject : MonoBehaviour
     public bool isPlatform = false;
     [Tooltip("Is this object a crumbling wall?")]
     public bool isCrumblingWall = false;
+    [Tooltip("Is this object a breakable floor?")]
+    public bool isBreakableFloor = false;
     [Tooltip("Will this object respawn?")]
     public bool isRespawnable = false;
     [HideInInspector]
@@ -22,8 +24,7 @@ public class BreakableObject : MonoBehaviour
     [Tooltip("The length of time the object will shake.")]
     public float shakeDuration;
     [Tooltip("The length of time the platform will shake.")]
-    public float platformShakeDuration;
-    public float earlyPlatformShakeDuration;
+    public float earlyShakeDuration;
     [Tooltip("The point during the shake at which the shake strength will begin to decrease back to 0.")]
     public float decreasePoint;
     [Tooltip("The speed at which the objects will shake.")]
@@ -32,16 +33,16 @@ public class BreakableObject : MonoBehaviour
     public float rotationAngle;
     [Tooltip("The time it takes for the platform to respawn.")]
     public float respawnTime;
-    private bool hitByBoulder = false;
+    private bool hitByRollingObject = false;
     private Vector2 boulderHitFromDirection;
 
     [Space]
     [Header("OBJECT PIECES:")]
-    [SerializeField] List<BreakablePiece> objPieces = new List<BreakablePiece>();
-    [SerializeField] List<BreakablePiece> earlyBreakPieces = new List<BreakablePiece>();
-    BoxCollider2D boxCollider;
+    public List<BreakablePiece> objPieces = new List<BreakablePiece>();
+    public List<BreakablePiece> earlyBreakPieces = new List<BreakablePiece>();
+    protected BoxCollider2D boxCollider;
 
-    void Start()
+    protected virtual void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
         currentHP = startHP;
@@ -63,12 +64,12 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
-    // Determines if this object has been hit by a rolling object, if so get direction of the rolling object and destroy this object
+    // Determines if this object has been hit by a rolling object & is somthing other than a breakable floor, if so get direction of the rolling object and destroy this object
     void OnCollisionEnter2D(Collision2D other)
     {
-        if (other.collider.gameObject.GetComponent<RollingObject>())
+        if (other.collider.gameObject.GetComponent<RollingObject>() && !isBreakableFloor && !isCrumblingWall)
         {
-            hitByBoulder = true;
+            hitByRollingObject = true;
             boulderHitFromDirection = other.collider.gameObject.GetComponent<RollingObject>().direction;
             StartCoroutine(CollapseAndRespawnCounter());
         }
@@ -85,7 +86,7 @@ public class BreakableObject : MonoBehaviour
             boxCollider.enabled = false;
             foreach (BreakablePiece bp in objPieces)
             {
-                bp.DestroyObject(_hitDir, isPlatform);
+                bp.BlowOutPiece(_hitDir, isPlatform);
             }
 
             Destroy(gameObject, 3f);
@@ -99,14 +100,88 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
+
+    // Shakes the floor when the player lands on it
+    public void TriggerObjectShake()
+    {
+        Debug.Log("Floor is shaking!");
+
+        ShakeObject();
+    }
+
+
     // Shake platform and then trigger platform collapse & respawn coroutine
     public void TriggerPlatformCollapse()
     {
         isFallingApart = true;
+        ShakeObject();
 
+        StartCoroutine(CollapseAndRespawnCounter());
+    }
+
+
+    // Drop the pre-selected early drop pieces when the player lands on the platform
+    IEnumerator EarlyBreakDrop(BreakablePiece _ebp)
+    {
+        yield return new WaitForSeconds(Random.Range(0.04f, 0.8f));
+        _ebp.boxColl.enabled = true;
+        _ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+        _ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+
+        yield break;
+    }
+
+
+    protected IEnumerator CollapseAndRespawnCounter()
+    {
+        // If the object has not been hit by a rolling object, wait for shake to finish
+        if (!hitByRollingObject)
+        {
+            yield return new WaitForSeconds(shakeDuration);
+        }
+
+        // Disable box collider on parent object
+        boxCollider.enabled = false;
+
+        // If the object has been hit by a rolling object
+        if (hitByRollingObject && !isPlatform)
+        {
+            BlowOutObject();
+        }
+        else // let gravity take its course...
+        {
+            DropObject();
+        }
+
+        yield return new WaitForSeconds(Random.Range(1, 5)); // wait for a few seconds - then hide breakable pieces
+
+        HideObject();
+
+        // if the object IS respawnable, wait the chosen amount of time, then reset in the original starting position
+        if (isRespawnable)
+        {
+            yield return new WaitForSeconds(respawnTime);
+
+            isFallingApart = false;
+            boxCollider.enabled = true;
+
+            RespawnObject();
+        }
+        else // If the object is NOT respawnable, destroy
+        {
+            Destroy(gameObject);
+        }
+
+        hitByRollingObject = false;
+
+        yield break;
+    }
+
+    private void ShakeObject()
+    {
         foreach (BreakablePiece bp in objPieces)
         {
-            bp.ShakePlatform(bp.gameObject, platformShakeDuration, decreasePoint, shakeSpeed, rotationAngle, false);
+            bp.ShakePlatform(bp.gameObject, shakeDuration, decreasePoint, shakeSpeed, rotationAngle, false);
         }
 
         if (earlyBreakPieces.Count > 0)
@@ -116,85 +191,46 @@ public class BreakableObject : MonoBehaviour
                 StartCoroutine(EarlyBreakDrop(ebp));
             }
         }
-        StartCoroutine(CollapseAndRespawnCounter());
     }
 
-    // Drop the pre-selected early drop pieces when the player lands on the platform
-    IEnumerator EarlyBreakDrop(BreakablePiece _ebp)
+    private void DropObject()
     {
-        yield return new WaitForSeconds(Random.Range(0.04f, 0.8f));
-        _ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-        _ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+        foreach (BreakablePiece bp in objPieces)
+        {
+            bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+            bp.rb2D.gravityScale = 2f;
+            bp.boxColl.enabled = true;
+        }
 
-        yield break;
+        if (earlyBreakPieces.Count > 0)
+        {
+            foreach (BreakablePiece ebp in earlyBreakPieces)
+            {
+                ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
+                ebp.rb2D.gravityScale = 2f;
+                ebp.boxColl.enabled = true;
+            }
+        }
     }
 
-
-    IEnumerator CollapseAndRespawnCounter()
+    private void BlowOutObject()
     {
-        if (!hitByBoulder)
+        foreach (BreakablePiece bp in objPieces)
         {
-            yield return new WaitForSeconds(platformShakeDuration);
+            bp.BlowOutPiece(boulderHitFromDirection, isPlatform);
         }
 
-        boxCollider.enabled = false;
-
-        if (hitByBoulder) // if hit by a boulder...
+        if (earlyBreakPieces.Count > 0)
         {
-            if (isPlatform)
+            foreach (BreakablePiece ebp in earlyBreakPieces)
             {
-                foreach (BreakablePiece bp in objPieces)
-                {
-                    bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-                    bp.rb2D.gravityScale = 2f;
-                    bp.boxColl.enabled = true;
-                }
-
-                if (earlyBreakPieces.Count > 0)
-                {
-                    foreach (BreakablePiece ebp in earlyBreakPieces)
-                    {
-                        ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-                        ebp.rb2D.gravityScale = 2f;
-                        ebp.boxColl.enabled = true;
-                    }
-                }
-            }
-            else
-            {
-                foreach (BreakablePiece bp in objPieces)
-                {
-                    bp.DestroyObject(boulderHitFromDirection, isPlatform);
-                }
-
-                if (earlyBreakPieces.Count > 0)
-                {
-                    foreach (BreakablePiece ebp in earlyBreakPieces)
-                    {
-                        ebp.DestroyObject(boulderHitFromDirection, isPlatform);
-                    }
-                }
-
-                yield break; // end coroutine - object is destroyed
-            }
-
-        }
-        else // if NOT hit by a boulder... let gravity take its course
-        {
-            foreach (BreakablePiece bp in objPieces)
-            {
-                bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-                bp.boxColl.enabled = true;
-                if (isPlatform)
-                {
-                    bp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
-                }
+                ebp.BlowOutPiece(boulderHitFromDirection, isPlatform);
             }
         }
+    }
 
-        // wait for a few seconds - then hide breakable pieces
-        yield return new WaitForSeconds(Random.Range(1, 5));
-
+    private void HideObject()
+    {
         foreach (BreakablePiece bp in objPieces)
         {
             bp.meshRenderer.enabled = false;
@@ -209,53 +245,39 @@ public class BreakableObject : MonoBehaviour
                 ebp.boxColl.enabled = false;
             }
         }
+    }
 
-        // if the object IS respawnable, wait the chosen amount of time, then reset in the original starting position
-        if (isRespawnable)
+    private void RespawnObject()
+    {
+        foreach (BreakablePiece bp in objPieces)
         {
-            yield return new WaitForSeconds(respawnTime);
-
-            isFallingApart = false;
-            boxCollider.enabled = true;
-
-            foreach (BreakablePiece bp in objPieces)
+            bp.rb2D.velocity = Vector2.zero;
+            bp.rb2D.angularVelocity = 0f;
+            bp.rb2D.bodyType = RigidbodyType2D.Kinematic;
+            if (isCrumblingWall)
             {
-                bp.rb2D.velocity = Vector2.zero;
-                bp.rb2D.angularVelocity = 0f;
-                bp.rb2D.bodyType = RigidbodyType2D.Kinematic;
+                bp.boxColl.enabled = true;
+            }
+            bp.gameObject.transform.position = bp.startingPos;
+            bp.gameObject.transform.rotation = bp.startingTrans;
+            bp.meshRenderer.enabled = true;
+        }
+
+        if (earlyBreakPieces.Count > 0)
+        {
+            foreach (BreakablePiece ebp in earlyBreakPieces)
+            {
+                ebp.rb2D.velocity = Vector2.zero;
+                ebp.rb2D.angularVelocity = 0f;
+                ebp.rb2D.bodyType = RigidbodyType2D.Kinematic;
                 if (isCrumblingWall)
                 {
-                    bp.boxColl.enabled = true;
+                    ebp.boxColl.enabled = true;
                 }
-                bp.gameObject.transform.position = bp.startingPos;
-                bp.gameObject.transform.rotation = bp.startingTrans;
-                bp.meshRenderer.enabled = true;
-            }
-
-            if (earlyBreakPieces.Count > 0)
-            {
-                foreach (BreakablePiece ebp in earlyBreakPieces)
-                {
-                    ebp.rb2D.velocity = Vector2.zero;
-                    ebp.rb2D.angularVelocity = 0f;
-                    ebp.rb2D.bodyType = RigidbodyType2D.Kinematic;
-                    if (isCrumblingWall)
-                    {
-                        ebp.boxColl.enabled = true;
-                    }
-                    ebp.gameObject.transform.position = ebp.startingPos;
-                    ebp.gameObject.transform.rotation = ebp.startingTrans;
-                    ebp.meshRenderer.enabled = true;
-                }
+                ebp.gameObject.transform.position = ebp.startingPos;
+                ebp.gameObject.transform.rotation = ebp.startingTrans;
+                ebp.meshRenderer.enabled = true;
             }
         }
-        else // If the object is NOT respawnable, destroy
-        {
-            Destroy(gameObject);
-        }
-
-        hitByBoulder = false;
-
-        yield break;
     }
 }

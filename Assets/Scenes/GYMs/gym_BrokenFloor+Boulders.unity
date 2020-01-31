@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -383,12 +384,12 @@ PrefabInstance:
     - target: {fileID: 5450159667817792162, guid: 46aa535b1c0f4ca4582872fa0c2e881a,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 27.36
+      value: 46.09
       objectReference: {fileID: 0}
     - target: {fileID: 5450159667817792162, guid: 46aa535b1c0f4ca4582872fa0c2e881a,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 9.72
+      value: 9.48
       objectReference: {fileID: 0}
     - target: {fileID: 5450159667817792162, guid: 46aa535b1c0f4ca4582872fa0c2e881a,
         type: 3}
@@ -467,8 +468,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 795965558}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -654,6 +656,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -759,6 +762,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -864,6 +868,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -941,7 +946,7 @@ PrefabInstance:
     - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
       propertyPath: isController
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1242993176099357727, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
@@ -1318,6 +1323,21 @@ PrefabInstance:
         type: 3}
       propertyPath: weighWaitTime
       value: 0.01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
+        type: 3}
+      propertyPath: isPlatform
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
+        type: 3}
+      propertyPath: isBreakableFloor
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
+        type: 3}
+      propertyPath: isRespawnable
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3515fbafc5c1be42968c1851a206cba, type: 3}

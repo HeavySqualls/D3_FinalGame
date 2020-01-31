@@ -73,6 +73,11 @@ public class EnemyController : PhysicsObject
     {
         base.Update();
 
+        if (inWindZone && !isGrounded)
+        {
+            this.currentState = State.InAirInWind;
+        }
+
         switch (this.currentState)
         {
             case State.Patrolling:
@@ -236,12 +241,12 @@ public class EnemyController : PhysicsObject
 
     private void InAirInWind()
     {
-        gravityModifier = 5f; // <<--- Gets reset to start grav when landed 
+        gravityModifier = 5.5f; // <<--- Gets reset to start grav when landed 
 
         targetVelocity.x = 0;
         move.x = 0;
 
-        move.x += (windDir.x * windPwr * 2000);
+        move.x += (windDir.x * windPwr * 2500);
 
         if (isGrounded)
         {
@@ -343,6 +348,7 @@ public class EnemyController : PhysicsObject
 
             RaycastHit2D againstPlayer = Physics2D.Raycast(meleeCheck.position, direction * 1, 1, player);
             Debug.DrawRay(meleeCheck.position, direction * 1, Color.green);
+
             if (againstPlayer.collider != null )
             {
                 if (playerInSight.collider.GetComponent<PlayerController>())

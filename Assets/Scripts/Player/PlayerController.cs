@@ -454,7 +454,7 @@ public class PlayerController : PhysicsObject
                 {
                     if (inAir)
                     {
-                        goGround.GetComponent<BreakableFloor>().TriggerFloorShake();
+                        goGround.GetComponent<BreakableFloor>().TriggerObjectShake();
                     }             
                 }
             }
@@ -648,9 +648,8 @@ public class PlayerController : PhysicsObject
             {
                 isPressingJumpButton = true;
 
-                if (currentGraceTime > 0 && canJump || isWallSliding /*&& isMoving == true*/)
+                if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
-                    //velocity.y = jumpTakeoffSpeed;
                     StartCoroutine(JumpDelay());
                     currentGraceTime = 0;
                     canJump = false;
@@ -708,7 +707,7 @@ public class PlayerController : PhysicsObject
             move.y += 6f;
         }
 
-        targetVelocity = move * maxSpeed/* * Time.deltaTime*/;
+        targetVelocity = move * maxSpeed;
     }
 
     IEnumerator JumpDelay()
@@ -718,14 +717,6 @@ public class PlayerController : PhysicsObject
         if (isWallSliding)
         {
             PushOffWall();
-            //if (direction == Vector2.right)
-            //{
-            //    move.x -= 10f;
-            //}
-            //else
-            //{
-            //    move.x += 10f;
-            //}
         }
         velocity.y = jumpTakeoffSpeed;
         yield break;
