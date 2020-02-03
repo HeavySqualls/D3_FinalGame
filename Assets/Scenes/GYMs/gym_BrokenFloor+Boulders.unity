@@ -571,6 +571,28 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1051117295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 4986201647451639384, guid: b3515fbafc5c1be42968c1851a206cba,
+    type: 3}
+  m_PrefabInstance: {fileID: 4986201646059317100}
+  m_PrefabAsset: {fileID: 0}
+--- !u!58 &1051117300
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051117295}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.5343604}
+  serializedVersion: 2
+  m_Radius: 1.0343606
 --- !u!4 &1654517487 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5450159667817792162, guid: 46aa535b1c0f4ca4582872fa0c2e881a,
@@ -1102,6 +1124,21 @@ PrefabInstance:
       propertyPath: m_Name
       value: BreakablePlatform
       objectReference: {fileID: 0}
+    - target: {fileID: 1542062172966458955, guid: bf9156e2919ded0438e13d97db150af9,
+        type: 3}
+      propertyPath: shakeDuration
+      value: 1.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1542062172966458955, guid: bf9156e2919ded0438e13d97db150af9,
+        type: 3}
+      propertyPath: earlyShakeDuration
+      value: 0.2
+      objectReference: {fileID: 0}
+    - target: {fileID: 1542062172966458955, guid: bf9156e2919ded0438e13d97db150af9,
+        type: 3}
+      propertyPath: isRespawnable
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf9156e2919ded0438e13d97db150af9, type: 3}
 --- !u!1001 &3939607544779750518
@@ -1322,7 +1359,7 @@ PrefabInstance:
     - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
         type: 3}
       propertyPath: weighWaitTime
-      value: 0.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
         type: 3}
@@ -1337,6 +1374,11 @@ PrefabInstance:
     - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
         type: 3}
       propertyPath: isRespawnable
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
+        type: 3}
+      propertyPath: respawnTime
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []

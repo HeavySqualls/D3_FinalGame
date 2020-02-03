@@ -15,9 +15,9 @@ public class BreakableFloor : BreakableObject
     public float weighWaitTime;
     [Tooltip("The max amount of weight allowed on the floor.")]
     public float totalAllowableWeight;
-    [SerializeField] List<Rigidbody2D> objectsOnFloor;
-    private float totalWeight;
-    private bool isWeighing = false;
+    [SerializeField] List<WeightData> objectsOnFloor = new List<WeightData>();
+    [SerializeField] private float totalWeight;
+    [SerializeField] private bool isWeighing = false;
     Vector2 offset;
 
     protected override void Start()
@@ -25,55 +25,49 @@ public class BreakableFloor : BreakableObject
         base.Start();
 
         offset = new Vector2(transform.position.x, transform.position.y + 1);
-
-        objectsOnFloor = new List<Rigidbody2D>();
     }
 
     // When another objects collider interacts with this collider, 
-    void OnCollisionStay2D (Collision2D other)
+    void OnTriggerEnter2D (Collider2D other)
     {
-        if (!isWeighing)
-        {
-            // Determine total weight on floor
-            StartCoroutine(WeighDelay());
-        }
+        WeightData newObj = other.gameObject.GetComponent<WeightData>();
 
-        // If the weight exceeds the total allowable weight,
-        if (totalWeight > totalAllowableWeight)
+        if (newObj != null)
         {
-            StartCoroutine(CollapseAndRespawnCounter());
-        }
-        else
-        {
-            isWeighing = false;
+            objectsOnFloor.Add(newObj);
+            DetermineWeight();
+            hitByHeavyObject = true;
         }
     }
 
     IEnumerator WeighDelay()
     {
-        isWeighing = true;
         yield return new WaitForSeconds(weighWaitTime);
+        
         DetermineWeight();
         yield break;
     }
 
     private void DetermineWeight()
     {
-        totalWeight = 0;
-
-        Collider2D[] objects = Physics2D.OverlapBoxAll(offset, boxCollider.size, 0);
-
-        for (int i = 0; i < objects.Length; i++)
-        {
-            if (objects[i].gameObject.GetComponent<Rigidbody2D>())
-            {
-                objectsOnFloor.Add(objects[i].GetComponent<Rigidbody2D>());
-            }
-        }
+        isWeighing = true;       
 
         for (int i = 0; i < objectsOnFloor.Count; i++)
         {
-            totalWeight += objectsOnFloor[i].mass;
+            totalWeight += objectsOnFloor[i].objWeight;
+        }
+
+        // If the weight exceeds the total allowable weight,
+        if (totalWeight > totalAllowableWeight)
+        {
+            StartCoroutine(CollapseAndRespawnCounter());
+            objectsOnFloor.Clear();
+            totalWeight = 0;
+            isWeighing = false;
+        }
+        else
+        {
+            isWeighing = false;
         }
     }
 
@@ -83,3 +77,57 @@ public class BreakableFloor : BreakableObject
     //    Gizmos.DrawCube(offset, boxCollider.size);
     //}
 }
+
+// When another objects collider interacts with this collider, 
+//void OnCollisionStay2D(Collision2D other)
+//{
+//    if (!isWeighing)
+//    {
+//        StartCoroutine(WeighDelay());
+//    }
+//}
+
+//IEnumerator WeighDelay()
+//{
+//    isWeighing = true;
+
+//    yield return new WaitForSeconds(weighWaitTime);
+
+//    DetermineWeight();
+//    yield break;
+//}
+
+//private void DetermineWeight()
+//{
+//    totalWeight = 0;
+
+//    Collider2D[] objects = Physics2D.OverlapBoxAll(offset, boxCollider.size, 0);
+
+//    for (int i = 0; i < objects.Length; i++)
+//    {
+//        WeightData objData = objects[i].GetComponent<WeightData>();
+
+//        if (objData != null)
+//        {
+//            objectsOnFloor.Add(objData.objWeight);
+//        }
+//    }
+
+//    for (int i = 0; i < objectsOnFloor.Count; i++)
+//    {
+//        totalWeight += objectsOnFloor[i];
+//    }
+
+//    // If the weight exceeds the total allowable weight,
+//    if (totalWeight > totalAllowableWeight && !isFallingApart)
+//    {
+//        StartCoroutine(CollapseAndRespawnCounter());
+//        objectsOnFloor.Clear();
+//        totalWeight = 0;
+//        isWeighing = false;
+//    }
+//    else
+//    {
+//        isWeighing = false;
+//    }
+//}

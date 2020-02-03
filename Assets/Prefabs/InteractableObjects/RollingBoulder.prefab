@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: 4793189376774202760}
   - component: {fileID: 4793189376774202767}
   - component: {fileID: 4793189376774202762}
+  - component: {fileID: 8562354850688866686}
   - component: {fileID: 6692439455308140483}
   - component: {fileID: 6489563049418923245}
   - component: {fileID: 4793189376774202766}
@@ -58,6 +59,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -98,6 +100,19 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.5
+--- !u!114 &8562354850688866686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4793189376774202765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3bdaebd5cf733b84c9b6c45ac607e0f3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objWeight: 2
 --- !u!114 &6692439455308140483
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -123,6 +138,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b64c6687d230e904aa5a8a00b54f9cdc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  direction: {x: 0, y: 0}
 --- !u!50 &4793189376774202766
 Rigidbody2D:
   serializedVersion: 4

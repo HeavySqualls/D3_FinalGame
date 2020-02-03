@@ -31,7 +31,6 @@ public class BreakablePiece : MonoBehaviour
     {
         if (isShake)
         {
-            print("ShakyShaky");
             StopCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
             isShake = false;
         }
@@ -39,6 +38,11 @@ public class BreakablePiece : MonoBehaviour
         isShake = true;
 
         StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
+    }
+
+    public void DropPiece()
+    {
+        StartCoroutine(Drop());
     }
 
 
@@ -62,5 +66,16 @@ public class BreakablePiece : MonoBehaviour
     public void ShakePlatform(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
     {
         StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
+    }
+
+    IEnumerator Drop()
+    {
+        yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
+
+        rb2D.bodyType = RigidbodyType2D.Dynamic;
+        rb2D.gravityScale = 2f;
+        boxColl.enabled = true;
+
+        yield break;
     }
 }

@@ -33,7 +33,7 @@ public class BreakableObject : MonoBehaviour
     public float rotationAngle;
     [Tooltip("The time it takes for the platform to respawn.")]
     public float respawnTime;
-    private bool hitByRollingObject = false;
+    public bool hitByHeavyObject = false;
     private Vector2 boulderHitFromDirection;
 
     [Space]
@@ -69,7 +69,7 @@ public class BreakableObject : MonoBehaviour
     {
         if (other.collider.gameObject.GetComponent<RollingObject>() && !isBreakableFloor && !isCrumblingWall)
         {
-            hitByRollingObject = true;
+            hitByHeavyObject = true;
             boulderHitFromDirection = other.collider.gameObject.GetComponent<RollingObject>().direction;
             StartCoroutine(CollapseAndRespawnCounter());
         }
@@ -113,7 +113,7 @@ public class BreakableObject : MonoBehaviour
     // Shake platform and then trigger platform collapse & respawn coroutine
     public void TriggerPlatformCollapse()
     {
-        isFallingApart = true;
+        
         ShakeObject();
 
         StartCoroutine(CollapseAndRespawnCounter());
@@ -134,8 +134,10 @@ public class BreakableObject : MonoBehaviour
 
     protected IEnumerator CollapseAndRespawnCounter()
     {
+        isFallingApart = true;
+
         // If the object has not been hit by a rolling object, wait for shake to finish
-        if (!hitByRollingObject)
+        if (!hitByHeavyObject)
         {
             yield return new WaitForSeconds(shakeDuration);
         }
@@ -144,7 +146,7 @@ public class BreakableObject : MonoBehaviour
         boxCollider.enabled = false;
 
         // If the object has been hit by a rolling object
-        if (hitByRollingObject && !isPlatform)
+        if (hitByHeavyObject && !isPlatform && !isBreakableFloor)
         {
             BlowOutObject();
         }
@@ -153,9 +155,11 @@ public class BreakableObject : MonoBehaviour
             DropObject();
         }
 
-        yield return new WaitForSeconds(Random.Range(1, 5)); // wait for a few seconds - then hide breakable pieces
+        yield return new WaitForSeconds(Random.Range(1, 2)); // wait for a few seconds - then hide breakable pieces
 
         HideObject();
+
+        hitByHeavyObject = false;
 
         // if the object IS respawnable, wait the chosen amount of time, then reset in the original starting position
         if (isRespawnable)
@@ -166,19 +170,21 @@ public class BreakableObject : MonoBehaviour
             boxCollider.enabled = true;
 
             RespawnObject();
+            yield break;
         }
         else // If the object is NOT respawnable, destroy
         {
             Destroy(gameObject);
         }
 
-        hitByRollingObject = false;
+        
 
         yield break;
     }
 
     private void ShakeObject()
     {
+        Debug.Log("Shake Object");
         foreach (BreakablePiece bp in objPieces)
         {
             bp.ShakePlatform(bp.gameObject, shakeDuration, decreasePoint, shakeSpeed, rotationAngle, false);
@@ -195,26 +201,24 @@ public class BreakableObject : MonoBehaviour
 
     private void DropObject()
     {
+        Debug.Log("Drop Object");
         foreach (BreakablePiece bp in objPieces)
         {
-            bp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-            bp.rb2D.gravityScale = 2f;
-            bp.boxColl.enabled = true;
+            bp.DropPiece();
         }
 
         if (earlyBreakPieces.Count > 0)
         {
             foreach (BreakablePiece ebp in earlyBreakPieces)
             {
-                ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-                ebp.rb2D.gravityScale = 2f;
-                ebp.boxColl.enabled = true;
+                ebp.DropPiece();
             }
         }
     }
 
     private void BlowOutObject()
     {
+        Debug.Log("Blow Out Object");
         foreach (BreakablePiece bp in objPieces)
         {
             bp.BlowOutPiece(boulderHitFromDirection, isPlatform);
@@ -231,6 +235,7 @@ public class BreakableObject : MonoBehaviour
 
     private void HideObject()
     {
+        Debug.Log("Hide Object");
         foreach (BreakablePiece bp in objPieces)
         {
             bp.meshRenderer.enabled = false;
@@ -249,6 +254,7 @@ public class BreakableObject : MonoBehaviour
 
     private void RespawnObject()
     {
+        Debug.Log("Respawn Object");
         foreach (BreakablePiece bp in objPieces)
         {
             bp.rb2D.velocity = Vector2.zero;
@@ -279,5 +285,7 @@ public class BreakableObject : MonoBehaviour
                 ebp.meshRenderer.enabled = true;
             }
         }
+
+        hitByHeavyObject = false;
     }
 }
