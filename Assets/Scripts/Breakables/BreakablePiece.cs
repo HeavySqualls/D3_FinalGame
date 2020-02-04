@@ -1,28 +1,27 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BreakablePiece : MonoBehaviour
 {
-    private bool isShake = false;
+    [Tooltip("Will this piece fall appart before the rest of the object?")]
     public bool isEarlyBreakPiece = false;
+    private bool isShake = false;
 
-    public Vector3 startingPos;
-    public Quaternion startingTrans;
-
-    public BoxCollider2D boxColl;
-    public MeshRenderer meshRenderer;
-    public Rigidbody2D rb2D;
-    ShakeManager shakeMan;
+    private Vector3 startingPos;
+    private Quaternion startingTrans;
+    private BoxCollider2D boxColl;
+    private MeshRenderer meshRenderer;
+    private Rigidbody2D rb2D;
+    private ShakeManager shakeMan;
 
     void Start()
     {      
         boxColl = GetComponent<BoxCollider2D>();
         meshRenderer = GetComponent<MeshRenderer>();
         rb2D = GetComponent<Rigidbody2D>();
-
         startingPos = transform.position;
         startingTrans = transform.rotation;
+
         shakeMan = Toolbox.GetInstance().GetShakeManager();
     }
 
@@ -40,9 +39,21 @@ public class BreakablePiece : MonoBehaviour
         StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
     }
 
+    // Drop this individual piece 
     public void DropPiece()
     {
         StartCoroutine(Drop());
+    }
+
+    IEnumerator Drop()
+    {
+        yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
+        print("piece dropping");
+        rb2D.bodyType = RigidbodyType2D.Dynamic;
+        rb2D.gravityScale = 2f;
+        boxColl.enabled = true;
+
+        yield break;
     }
 
 
@@ -68,14 +79,27 @@ public class BreakablePiece : MonoBehaviour
         StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
     }
 
-    IEnumerator Drop()
+    // Hide piece from sight & collisions
+    public void HidePiece()
     {
-        //yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
-        print("piece dropping");
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
-        rb2D.gravityScale = 2f;
-        boxColl.enabled = true;
+        meshRenderer.enabled = false;
+        boxColl.enabled = false;
+    }
 
-        yield break;
+    // Respawn the piece in its original place
+    public void RespawnPiece(bool _isCrumblingWall)
+    {
+        rb2D.velocity = Vector2.zero;
+        rb2D.angularVelocity = 0f;
+        rb2D.bodyType = RigidbodyType2D.Kinematic;
+
+        if (_isCrumblingWall)
+        {
+            boxColl.enabled = true;
+        }
+
+        gameObject.transform.position = startingPos;
+        gameObject.transform.rotation = startingTrans;
+        meshRenderer.enabled = true;
     }
 }

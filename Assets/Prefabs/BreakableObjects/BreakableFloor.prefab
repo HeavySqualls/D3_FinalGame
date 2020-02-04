@@ -57,6 +57,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -203,6 +204,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -349,6 +351,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -495,6 +498,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -641,6 +645,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -787,6 +792,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -933,6 +939,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1079,6 +1086,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1225,6 +1233,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1371,6 +1380,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1517,6 +1527,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
@@ -1618,6 +1629,7 @@ GameObject:
   - component: {fileID: 4986201647451639387}
   - component: {fileID: 4986201647451639386}
   - component: {fileID: 4986201647451639385}
+  - component: {fileID: 1051117300}
   m_Layer: 8
   m_Name: BreakableFloor
   m_TagString: Untagged
@@ -1676,14 +1688,26 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4227e7c0714ab3a45bf8eec2d508edf8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  destroySeconds: 1
+  isPlatform: 0
+  isCrumblingWall: 0
+  isBreakableFloor: 1
+  isRespawnable: 1
+  isFallingApart: 0
+  startHP: 0
   shakeDuration: 0.5
+  earlyShakeDuration: 0
   decreasePoint: 0.2
   shakeSpeed: 0.07
   rotationAngle: 0.6
-  totalAllowableWeight: 1
-  objectsOnFloor: []
+  respawnTime: 1
+  hitByHeavyObject: 0
   objPieces: []
+  earlyBreakPieces: []
+  destroySeconds: 1
+  weighWaitTime: 0
+  totalAllowableWeight: 4
+  objectsOnFloor: []
+  totalWeight: 0
 --- !u!61 &4986201647451639385
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1710,6 +1734,22 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4.1191864, y: 0.9988957}
   m_EdgeRadius: 0
+--- !u!58 &1051117300
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4986201647451639384}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0.5343604}
+  serializedVersion: 2
+  m_Radius: 1.0343606
 --- !u!1 &4986201647592590870
 GameObject:
   m_ObjectHideFlags: 0
@@ -1767,6 +1807,7 @@ MeshRenderer:
   m_MotionVectors: 1
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:

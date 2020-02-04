@@ -13,7 +13,7 @@ public class BreakableFloor : BreakableObject
     [Header("WEIGHT VARIABLES:")]
     [Tooltip("The delay before the items get weighed - to give a brief moment before the floor collapses.")]
     public float weighWaitTime;
-    [Tooltip("The max amount of weight allowed on the floor.")]
+    [Tooltip("The max amount of weight allowed on the floor before it collapses.")]
     public float totalAllowableWeight;
     [SerializeField] List<WeightData> objectsOnFloor = new List<WeightData>();
     [SerializeField] private float totalWeight;
@@ -65,64 +65,3 @@ public class BreakableFloor : BreakableObject
         }
     }
 }
-
-// When another objects collider interacts with this collider, 
-//void OnCollisionStay2D(Collision2D other)
-//{
-//    if (!isWeighing)
-//    {
-//        StartCoroutine(WeighDelay());
-//    }
-//}
-
-//IEnumerator WeighDelay()
-//{
-//    isWeighing = true;
-
-//    yield return new WaitForSeconds(weighWaitTime);
-
-//    DetermineWeight();
-//    yield break;
-//}
-
-//private void DetermineWeight()
-//{
-//    totalWeight = 0;
-
-//    Collider2D[] objects = Physics2D.OverlapBoxAll(offset, boxCollider.size, 0);
-
-//    for (int i = 0; i < objects.Length; i++)
-//    {
-//        WeightData objData = objects[i].GetComponent<WeightData>();
-
-//        if (objData != null)
-//        {
-//            objectsOnFloor.Add(objData.objWeight);
-//        }
-//    }
-
-//    for (int i = 0; i < objectsOnFloor.Count; i++)
-//    {
-//        totalWeight += objectsOnFloor[i];
-//    }
-
-//    // If the weight exceeds the total allowable weight,
-//    if (totalWeight > totalAllowableWeight && !isFallingApart)
-//    {
-//        StartCoroutine(CollapseAndRespawnCounter());
-//        objectsOnFloor.Clear();
-//        totalWeight = 0;
-//        isWeighing = false;
-//    }
-//    else
-//    {
-//        isWeighing = false;
-//    }
-
-
-//private void OnDrawGizmos()
-//{
-//    Gizmos.color = Color.red;
-//    Gizmos.DrawCube(offset, boxCollider.size);
-//}
-//}

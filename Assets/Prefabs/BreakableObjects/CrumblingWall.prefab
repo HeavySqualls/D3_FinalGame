@@ -94,12 +94,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c79a309742bbb4f93e47a1b3175576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
+  isEarlyBreakPiece: 0
 --- !u!61 &1456697536568317263
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -242,11 +237,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1456697537159726557
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -389,11 +379,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1456697537195731185
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -536,11 +521,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1456697537245688216
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -682,12 +662,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c79a309742bbb4f93e47a1b3175576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
+  isEarlyBreakPiece: 0
 --- !u!61 &1456697537257890186
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -829,12 +804,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c79a309742bbb4f93e47a1b3175576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
+  isEarlyBreakPiece: 0
 --- !u!61 &1456697537360838140
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -977,11 +947,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1456697537664837746
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1123,12 +1088,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 53c79a309742bbb4f93e47a1b3175576, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
+  isEarlyBreakPiece: 0
 --- !u!61 &1456697537861673787
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1257,6 +1217,7 @@ MonoBehaviour:
   shakeSpeed: 0.1
   rotationAngle: 2.5
   respawnTime: 1
+  hitByHeavyObject: 0
   objPieces: []
   earlyBreakPieces: []
 --- !u!61 &1456697537879356722
@@ -1380,11 +1341,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1456697537920472788
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1527,11 +1483,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1456697538054921658
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1674,11 +1625,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1456697538367782696
 BoxCollider2D:
   m_ObjectHideFlags: 0

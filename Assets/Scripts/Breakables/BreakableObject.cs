@@ -123,10 +123,8 @@ public class BreakableObject : MonoBehaviour
     // Drop the pre-selected early drop pieces when the player lands on the platform
     IEnumerator EarlyBreakDrop(BreakablePiece _ebp)
     {
-        yield return new WaitForSeconds(Random.Range(0.04f, 0.8f));
-        _ebp.boxColl.enabled = true;
-        _ebp.rb2D.bodyType = RigidbodyType2D.Dynamic;
-        _ebp.rb2D.AddForce(Vector2.down * Random.Range(250f, 450f));
+        yield return new WaitForSeconds(0.04f);
+        _ebp.DropPiece();
 
         yield break;
     }
@@ -238,16 +236,14 @@ public class BreakableObject : MonoBehaviour
         Debug.Log("Hide Object");
         foreach (BreakablePiece bp in objPieces)
         {
-            bp.meshRenderer.enabled = false;
-            bp.boxColl.enabled = false;
+            bp.HidePiece();
         }
 
         if (earlyBreakPieces.Count > 0)
         {
             foreach (BreakablePiece ebp in earlyBreakPieces)
             {
-                ebp.meshRenderer.enabled = false;
-                ebp.boxColl.enabled = false;
+                ebp.HidePiece();
             }
         }
     }
@@ -257,32 +253,14 @@ public class BreakableObject : MonoBehaviour
         Debug.Log("Respawn Object");
         foreach (BreakablePiece bp in objPieces)
         {
-            bp.rb2D.velocity = Vector2.zero;
-            bp.rb2D.angularVelocity = 0f;
-            bp.rb2D.bodyType = RigidbodyType2D.Kinematic;
-            if (isCrumblingWall)
-            {
-                bp.boxColl.enabled = true;
-            }
-            bp.gameObject.transform.position = bp.startingPos;
-            bp.gameObject.transform.rotation = bp.startingTrans;
-            bp.meshRenderer.enabled = true;
+            bp.RespawnPiece(isCrumblingWall);
         }
 
         if (earlyBreakPieces.Count > 0)
         {
             foreach (BreakablePiece ebp in earlyBreakPieces)
             {
-                ebp.rb2D.velocity = Vector2.zero;
-                ebp.rb2D.angularVelocity = 0f;
-                ebp.rb2D.bodyType = RigidbodyType2D.Kinematic;
-                if (isCrumblingWall)
-                {
-                    ebp.boxColl.enabled = true;
-                }
-                ebp.gameObject.transform.position = ebp.startingPos;
-                ebp.gameObject.transform.rotation = ebp.startingTrans;
-                ebp.meshRenderer.enabled = true;
+                ebp.RespawnPiece(isCrumblingWall);
             }
         }
 
