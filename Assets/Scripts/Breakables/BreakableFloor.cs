@@ -17,14 +17,10 @@ public class BreakableFloor : BreakableObject
     public float totalAllowableWeight;
     [SerializeField] List<WeightData> objectsOnFloor = new List<WeightData>();
     [SerializeField] private float totalWeight;
-    [SerializeField] private bool isWeighing = false;
-    Vector2 offset;
 
     protected override void Start()
     {
         base.Start();
-
-        offset = new Vector2(transform.position.x, transform.position.y + 1);
     }
 
     // When another objects collider interacts with this collider, 
@@ -35,22 +31,25 @@ public class BreakableFloor : BreakableObject
         if (newObj != null)
         {
             objectsOnFloor.Add(newObj);
-            DetermineWeight();
             hitByHeavyObject = true;
+            DetermineWeight();
         }
     }
 
-    IEnumerator WeighDelay()
+    void OnTriggerExit2D(Collider2D other)
     {
-        yield return new WaitForSeconds(weighWaitTime);
-        
-        DetermineWeight();
-        yield break;
+        WeightData newObj = other.gameObject.GetComponent<WeightData>();
+
+        if (newObj != null)
+        {
+            objectsOnFloor.Remove(newObj);
+            DetermineWeight();
+        }
     }
 
     private void DetermineWeight()
     {
-        isWeighing = true;       
+        totalWeight = 0;
 
         for (int i = 0; i < objectsOnFloor.Count; i++)
         {
@@ -58,24 +57,13 @@ public class BreakableFloor : BreakableObject
         }
 
         // If the weight exceeds the total allowable weight,
-        if (totalWeight > totalAllowableWeight)
+        if (totalWeight >= totalAllowableWeight)
         {
             StartCoroutine(CollapseAndRespawnCounter());
             objectsOnFloor.Clear();
             totalWeight = 0;
-            isWeighing = false;
-        }
-        else
-        {
-            isWeighing = false;
         }
     }
-
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red;
-    //    Gizmos.DrawCube(offset, boxCollider.size);
-    //}
 }
 
 // When another objects collider interacts with this collider, 
@@ -130,4 +118,11 @@ public class BreakableFloor : BreakableObject
 //    {
 //        isWeighing = false;
 //    }
+
+
+//private void OnDrawGizmos()
+//{
+//    Gizmos.color = Color.red;
+//    Gizmos.DrawCube(offset, boxCollider.size);
+//}
 //}

@@ -70,8 +70,8 @@ public class BreakablePiece : MonoBehaviour
 
     IEnumerator Drop()
     {
-        yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
-
+        //yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
+        print("piece dropping");
         rb2D.bodyType = RigidbodyType2D.Dynamic;
         rb2D.gravityScale = 2f;
         boxColl.enabled = true;

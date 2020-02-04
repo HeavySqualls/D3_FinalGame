@@ -372,6 +372,11 @@ PrefabInstance:
       propertyPath: m_CollisionDetection
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4793189376774202766, guid: c80d933effb997543b43861cce69e90f,
+        type: 3}
+      propertyPath: m_AngularDrag
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c80d933effb997543b43861cce69e90f, type: 3}
 --- !u!1001 &497549209
@@ -738,7 +743,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1988356801}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 20.62, y: 12.3, z: -0.9928326}
+  m_LocalPosition: {x: 20.62, y: 14.260001, z: -0.9928326}
   m_LocalScale: {x: 17.639418, y: 1, z: 2}
   m_Children: []
   m_Father: {fileID: 811409911}
@@ -1067,12 +1072,12 @@ PrefabInstance:
     - target: {fileID: 1542062172966457780, guid: bf9156e2919ded0438e13d97db150af9,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 35.41
+      value: 36.54
       objectReference: {fileID: 0}
     - target: {fileID: 1542062172966457780, guid: bf9156e2919ded0438e13d97db150af9,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 13.19
+      value: 15.12
       objectReference: {fileID: 0}
     - target: {fileID: 1542062172966457780, guid: bf9156e2919ded0438e13d97db150af9,
         type: 3}
@@ -1156,7 +1161,7 @@ PrefabInstance:
     - target: {fileID: 3939607543672601621, guid: bc478e4a228b53647aaafe343a6cc7f6,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 15.27
+      value: 17.230001
       objectReference: {fileID: 0}
     - target: {fileID: 3939607543672601621, guid: bc478e4a228b53647aaafe343a6cc7f6,
         type: 3}
@@ -1225,7 +1230,7 @@ PrefabInstance:
     - target: {fileID: 4793189376774202761, guid: c80d933effb997543b43861cce69e90f,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 16.31
+      value: 11.63
       objectReference: {fileID: 0}
     - target: {fileID: 4793189376774202761, guid: c80d933effb997543b43861cce69e90f,
         type: 3}
@@ -1285,6 +1290,11 @@ PrefabInstance:
     - target: {fileID: 4793189376774202766, guid: c80d933effb997543b43861cce69e90f,
         type: 3}
       propertyPath: m_CollisionDetection
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4793189376774202766, guid: c80d933effb997543b43861cce69e90f,
+        type: 3}
+      propertyPath: m_AngularDrag
       value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -1380,6 +1390,11 @@ PrefabInstance:
         type: 3}
       propertyPath: respawnTime
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
+        type: 3}
+      propertyPath: totalAllowableWeight
+      value: 4
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3515fbafc5c1be42968c1851a206cba, type: 3}
