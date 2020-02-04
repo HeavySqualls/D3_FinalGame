@@ -21,7 +21,6 @@ public class EnemyController : PhysicsObject
 
     [Space]
     [Header("Enemy Combat:")]
-    public float stunTime;
     public int damageOutput = 2;
     public float cooldown;
     public float currentHP;
@@ -53,6 +52,7 @@ public class EnemyController : PhysicsObject
 
     [SerializeField] private float knockBack;
     [SerializeField] private float knockUp;
+    [SerializeField] private float stunTime;
     public float knockbackTimeLength;
     [SerializeField] float currentKnockBackTime;
 
@@ -302,7 +302,7 @@ public class EnemyController : PhysicsObject
             Debug.Log("No Respawn Zone Assigned To " + gameObject.name);
     }
 
-    public void TakeDamage(Vector2 _hitDir, float _damage, float _knockBack, float _knockUp)
+    public void TakeDamage(Vector2 _hitDir, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
         print("Hurt");
         isHit = true;
@@ -310,6 +310,7 @@ public class EnemyController : PhysicsObject
         currentHP -= _damage;
         knockBack = _knockBack;
         knockUp = _knockUp;
+        stunTime = _stunTime;
 
         if (hitDirection == newDirection)
         {

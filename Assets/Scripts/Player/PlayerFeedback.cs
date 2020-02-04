@@ -5,6 +5,8 @@ using UnityEngine;
 public class PlayerFeedback : MonoBehaviour
 {
     private SpriteRenderer spriteRenderer;
+    private float flashDelay = 0.1f;
+    private float flashDuration = 0.4f;
 
     void Start()
     {
@@ -13,17 +15,22 @@ public class PlayerFeedback : MonoBehaviour
 
     public IEnumerator IFlashRed()
     {
-        spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
+        for (float i = 0; i < flashDuration; i += flashDelay)
+        {
+            if (spriteRenderer.color == Color.white)
+            {
+                spriteRenderer.color = Color.red;
+            }
+            else if (spriteRenderer.color == Color.red)
+            {
+                spriteRenderer.color = Color.white;
+            }
+
+            yield return new WaitForSeconds(flashDelay);
+        }
+
         spriteRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.2f);
-        spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        spriteRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.2f);
-        spriteRenderer.color = Color.red;
-        yield return new WaitForSeconds(0.2f);
-        spriteRenderer.color = Color.white;
-        yield return new WaitForSeconds(0.2f);
+
+        yield break;
     }
 }

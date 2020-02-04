@@ -199,6 +199,23 @@ public class PlayerController : PhysicsObject
         yield break;
     }
 
+    public IEnumerator PlayerKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
+    {
+        canJump = false;
+        canMove = false;
+        canWallSlide = false;
+        velocity.y += _knockUp;
+        targetVelocity.x += _knockBack;
+
+        yield return new WaitForSeconds(_stunTime);
+
+        canJump = true;
+        canMove = true;
+        canWallSlide = true;
+        targetVelocity.x = 0;
+        yield break;
+    }
+
     protected override void ComputeVelocity()
     {
         if (canMove)

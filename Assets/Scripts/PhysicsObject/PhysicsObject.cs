@@ -50,7 +50,8 @@ public class PhysicsObject : MonoBehaviour
 
     protected virtual void Update()
     {
-        targetVelocity = Vector2.zero;
+        //TODO: Why do I need this??
+        //targetVelocity = Vector2.zero;
         ComputeVelocity();
     }
 

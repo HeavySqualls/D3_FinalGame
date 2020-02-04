@@ -7,28 +7,34 @@ public class Interact_Base : MonoBehaviour
     public bool isInteractable = true;
     public bool isInstantPickup = false;
 
+    // Class attached to the player
+    [SerializeField] protected PlayerHandleInteract pThatHitMe;
 
     public virtual void OnTriggerEnter2D(Collider2D other)
     {
-        PlayerHitInteractable pHitI = other.GetComponent<PlayerHitInteractable>();
+        pThatHitMe = other.GetComponent<PlayerHandleInteract>();
 
-        if (pHitI != null && isInteractable)
+        if (pThatHitMe != null)
         {
-            //pHitI.OnInteracted(other, this);
-            //pCon = other.GetComponent<PlayerController>();
+            pThatHitMe.Interaction(this);
+        }
+        else
+        {
+            return;
         }
     }
 
     public virtual void OnTriggerExit2D(Collider2D other)
     {
-        PlayerHitInteractable pHitI = other.GetComponent<PlayerHitInteractable>();
+        pThatHitMe = other.GetComponent<PlayerHandleInteract>();
 
-        if (pHitI != null)
+        if (pThatHitMe != null)
         {
-            //interactKey.enabled = false;
-            //other.GetComponent<PlayerController>().interactableItem = null;
-            //pCon = null;
-            //pHitI = null;
+            pThatHitMe = null;
+        }
+        else
+        {
+            return;
         }
     }
 

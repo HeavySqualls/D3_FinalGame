@@ -16,30 +16,35 @@ public class PlayerCombat : MonoBehaviour
     private float damage;
     private float knockback;
     private float knockup;
+    private float stunTime;
 
     [Space]
     [Header("PUNCH 1:")]
     public float p1_damage;
     public float p1_knockback;
     public float p1_knockUp;
+    public float p1_stunTime;
 
     [Space]
     [Header("PUNCH 2:")]
     public float p2_damage;
     public float p2_knockback;
     public float p2_knockUp;
+    public float p2_stunTime;
 
     [Space]
     [Header("PUNCH 3:")]
     public float p3_damage;
     public float p3_knockback;
     public float p3_knockUp;
+    public float p3_stunTime;
 
     [Space]
     [Header("BOOT KICK:")]
     public float b_damage;
     public float b_knockback;
     public float b_knockUp;
+    public float b_stunTime;
 
     [Space]
     [Header("REFERENCES:")]
@@ -96,7 +101,7 @@ public class PlayerCombat : MonoBehaviour
             if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 3)
             {
                 timeBetweenCombos = 0;
-                SetAttackStats(p3_damage, p3_knockback, p3_knockUp);
+                SetAttackStats(p3_damage, p3_knockback, p3_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch3");
                 StartCoroutine(AttackCoolDown(attackSpacing));
 
@@ -105,7 +110,7 @@ public class PlayerCombat : MonoBehaviour
             else if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 2)
             {
                 timeBetweenCombos = 0;
-                SetAttackStats(p2_damage, p2_knockback, p2_knockUp);
+                SetAttackStats(p2_damage, p2_knockback, p2_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch2");
                 StartCoroutine(AttackCoolDown(attackSpacing));
 
@@ -116,7 +121,7 @@ public class PlayerCombat : MonoBehaviour
                 comboAttacking = true;
                 timeBetweenCombos = 0;
 
-                SetAttackStats(p1_damage, p1_knockback, p1_knockUp);
+                SetAttackStats(p1_damage, p1_knockback, p1_knockUp, p1_stunTime);
                 pCon.animator.SetTrigger("punch1");
                 StartCoroutine(AttackCoolDown(attackSpacing));
 
@@ -126,7 +131,7 @@ public class PlayerCombat : MonoBehaviour
             // Boot Launch
             if (Input.GetButton(pCon.controls.launch))
             {
-                SetAttackStats(b_damage, b_knockback, b_knockUp);
+                SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
                 pCon.animator.SetTrigger("kick");
                 StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
             }
@@ -147,11 +152,12 @@ public class PlayerCombat : MonoBehaviour
 
     }
 
-    void SetAttackStats(float _dmg, float _knkBk, float _knkUp)
+    void SetAttackStats(float _dmg, float _knkBk, float _knkUp, float _stunTime)
     {
         damage = _dmg;
         knockback = _knkBk;
         knockup = _knkUp;
+        stunTime = _stunTime;
     }
 
     public void CanAttack() // Called from the animator
@@ -174,7 +180,8 @@ public class PlayerCombat : MonoBehaviour
                 // Apply knockback to enemy 
                 if (hitObj.GetComponent<RecieveDamage>() != null)
                 {
-                    hitObj.GetComponent<RecieveDamage>().GetHit(pCon.accessibleDirection, damage, knockback, knockup);
+                    hitObj.GetComponent<RecieveDamage>().GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
+                    pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
                 }
                 else
                 {

@@ -4,26 +4,35 @@ using UnityEngine;
 
 public class PlayerHandleInteract : MonoBehaviour
 {
-    public GameObject interactableItem;
+    //[Space]
+    //[Header("PLAYER STATS:")]
+    //public float hpStart;
+    //public float hpCurrent;
+
+    private PlayerController pCon;
+    private PlayerFeedback pFeedBack;
 
     void Start()
     {
-        
+        pFeedBack = GetComponent<PlayerFeedback>();
+        pCon = GetComponent<PlayerController>();
     }
 
-    void Update()
+    public void Interaction(Interact_Base _interactableItem)
     {
-        Interaction();
-    }
-
-    private void Interaction()
-    {
-        if (interactableItem != null)
+        if (_interactableItem != null)
         {
-            if (interactableItem.GetComponent<>())
+            if (_interactableItem.GetComponent<Spikes_Interactable>())
             {
-
+                Debug.Log("Spikes damage player.");
+                StartCoroutine(pFeedBack.IFlashRed());
             }
         }
+    }
+
+    public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
+    {
+        //hpCurrent -= _damage;
+        StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
     }
 }

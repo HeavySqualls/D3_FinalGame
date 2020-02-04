@@ -76,7 +76,7 @@ public class BreakableObject : MonoBehaviour
     }
 
     // Implements damage to the object with variables passed on by the RecieveDamage component 
-    public void TakeDamage(Vector2 _hitDir, float _dmg, float _knockback, float _knockUp)
+    public void TakeDamage(Vector2 _hitDir, float _dmg, float _knockback, float _knockUp, float _stunned)
     {
         currentHP -= _dmg;
 
