@@ -334,8 +334,8 @@ public class EnemyController : PhysicsObject
         yield break;
     }
 
-    // ---- COLLISION/PLAYER CHECKS ---- //
 
+    // ---- COLLISION/PLAYER CHECKS ---- //
 
     private void PlayerCheckCast(Vector2 direction)
     {
