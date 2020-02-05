@@ -133,8 +133,9 @@ public class PlayerController : PhysicsObject
         decelRatePerSecond = (maxSpeed / timeFromZeroToMax) * decelSpeed;
     }
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
         whatIsGround = LayerMask.GetMask("Ground");
         //whatIsWall = LayerMask.GetMask("Interactables");
 

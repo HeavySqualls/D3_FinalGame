@@ -131,7 +131,7 @@ PrefabInstance:
     - target: {fileID: 9187589965507116528, guid: b97b00a572c9dfb43ad5c57e03eb0612,
         type: 3}
       propertyPath: field of view
-      value: 60
+      value: 45.7
       objectReference: {fileID: 0}
     - target: {fileID: 9187589965507116529, guid: b97b00a572c9dfb43ad5c57e03eb0612,
         type: 3}
@@ -933,6 +933,22 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 1242993175089327294}
   m_PrefabAsset: {fileID: 0}
+--- !u!70 &1699834369
+CapsuleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1699834355}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.34}
+  m_Size: {x: 0.7, y: 2.15}
+  m_Direction: 0
 --- !u!1 &1871075315
 GameObject:
   m_ObjectHideFlags: 0
@@ -1066,8 +1082,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1937668336}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 40.6, y: 16.332, z: -0.9928326}
-  m_LocalScale: {x: 18.486357, y: 0.481, z: 2}
+  m_LocalPosition: {x: 40.64, y: 16.452, z: -0.9928326}
+  m_LocalScale: {x: 18.246035, y: 0.400673, z: 2}
   m_Children: []
   m_Father: {fileID: 811409911}
   m_RootOrder: 6
@@ -1504,6 +1520,11 @@ PrefabInstance:
       propertyPath: m_Size.y
       value: 2.172226
       objectReference: {fileID: 0}
+    - target: {fileID: 1242993176099357724, guid: 2ad598378404af64e8c629d59ff14cdc,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
       propertyPath: groundCheckDistance
@@ -1671,7 +1692,7 @@ PrefabInstance:
     - target: {fileID: 1542062172966458955, guid: bf9156e2919ded0438e13d97db150af9,
         type: 3}
       propertyPath: shakeDuration
-      value: 1.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1542062172966458955, guid: bf9156e2919ded0438e13d97db150af9,
         type: 3}
@@ -1683,6 +1704,16 @@ PrefabInstance:
       propertyPath: isRespawnable
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1542062172966458955, guid: bf9156e2919ded0438e13d97db150af9,
+        type: 3}
+      propertyPath: vibrato
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 1542062172966458955, guid: bf9156e2919ded0438e13d97db150af9,
+        type: 3}
+      propertyPath: elasticity
+      value: 0.01
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf9156e2919ded0438e13d97db150af9, type: 3}
 --- !u!1001 &3939607544779750518
@@ -1692,6 +1723,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 3939607543672601620, guid: bc478e4a228b53647aaafe343a6cc7f6,
+        type: 3}
+      propertyPath: vibrato
+      value: 8
+      objectReference: {fileID: 0}
     - target: {fileID: 3939607543672601621, guid: bc478e4a228b53647aaafe343a6cc7f6,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1889,6 +1925,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: BreakableFloor
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
+        type: 3}
+      propertyPath: shakeDuration
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4986201647451639386, guid: b3515fbafc5c1be42968c1851a206cba,
+        type: 3}
+      propertyPath: vibrato
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b3515fbafc5c1be42968c1851a206cba, type: 3}

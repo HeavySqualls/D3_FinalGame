@@ -16,7 +16,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected float minWallNormalX = 0.8f;
     protected float maxWallNormalX = 0.5f;
-    protected float minGroundNormalY = 0.65f; // 
+    protected float minGroundNormalY = 0.65f;
 
     [SerializeField] protected Vector2 direction;
     protected Vector2 groundNormal;
@@ -31,7 +31,7 @@ public class PhysicsObject : MonoBehaviour
     protected Vector2 windDir;
     protected float windPwr;
     protected bool windMovingRight;
-    //protected LayerMask layerMask;
+    public LayerMask layerMask;
 
     void OnEnable()
     {
@@ -39,13 +39,12 @@ public class PhysicsObject : MonoBehaviour
         gravityModifier = gravStart;
     }
 
-    void Start()
+    protected virtual void Start()
     {
-        //layerMask = LayerMask.GetMask([8]);
+        layerMask = ~((1 << 16));
 
         contactFilter.useTriggers = false; // not checking collisions against triggers
-        contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(8)); // only grabs collisions on the layer the specified layer (see project settings > physics2d)
-        contactFilter.useLayerMask = true;
+        contactFilter.SetLayerMask(layerMask); // only grabs collisions on the layer the specified layer (see project settings > physics2d)
     }
 
     protected virtual void Update()

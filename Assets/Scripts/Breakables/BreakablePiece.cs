@@ -1,18 +1,20 @@
 ﻿using System.Collections;
 using UnityEngine;
+using DG.Tweening;
 
 public class BreakablePiece : MonoBehaviour
 {
     [Tooltip("Will this piece fall appart before the rest of the object?")]
     public bool isEarlyBreakPiece = false;
-    private bool isShake = false;
+    bool isShake = false;
 
-    private Vector3 startingPos;
-    private Quaternion startingTrans;
-    private BoxCollider2D boxColl;
-    private MeshRenderer meshRenderer;
-    private Rigidbody2D rb2D;
-    private ShakeManager shakeMan;
+    Vector3 startingPos;
+    Quaternion startingTrans;
+    BoxCollider2D boxColl;
+    MeshRenderer meshRenderer;
+    Rigidbody2D rb2D;
+
+    Tween shakeTween;
 
     void Start()
     {      
@@ -21,23 +23,8 @@ public class BreakablePiece : MonoBehaviour
         rb2D = GetComponent<Rigidbody2D>();
         startingPos = transform.position;
         startingTrans = transform.rotation;
-
-        shakeMan = Toolbox.GetInstance().GetShakeManager();
     }
 
-    // Shake object for attackable object pieces
-    public void ShakeGameObject(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
-    {
-        if (isShake)
-        {
-            StopCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
-            isShake = false;
-        }
-
-        isShake = true;
-
-        StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
-    }
 
     // Drop this individual piece 
     public void DropPiece()
@@ -72,11 +59,15 @@ public class BreakablePiece : MonoBehaviour
         }
     }
 
-
     // Shake object for crumbling platform pieces
-    public void ShakePlatform(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
+    public void ShakePiece(GameObject _objectToShake, float _shakeDuration, int _vibrato, float _elasticity)
     {
-        StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
+        if (shakeTween != null)
+        {
+            shakeTween.Kill();
+        }
+        _objectToShake.transform.position = startingPos;
+        shakeTween = _objectToShake.transform.DOPunchPosition(UnityEngine.Random.insideUnitSphere, _shakeDuration, _vibrato, _elasticity);
     }
 
     // Hide piece from sight & collisions

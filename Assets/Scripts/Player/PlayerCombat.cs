@@ -9,6 +9,7 @@ public class PlayerCombat : MonoBehaviour
     public float maxComboTime = 0.5f;
     [Tooltip("The minumum time between the player is able to register a second attack.")]
     public float attackSpacing = 0.2f;
+
     private bool canAttack = true;
     private bool comboAttacking = false;
     private float timeBetweenCombos = 0;
@@ -181,7 +182,7 @@ public class PlayerCombat : MonoBehaviour
                 if (hitObj.GetComponent<RecieveDamage>() != null)
                 {
                     hitObj.GetComponent<RecieveDamage>().GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
-                    pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
+                    pCon.PlayerKnocked(pCon.accessibleDirection, 20, 6f, 0.2f);
                 }
                 else
                 {
