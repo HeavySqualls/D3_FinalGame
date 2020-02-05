@@ -90,7 +90,7 @@ GameObject:
   - component: {fileID: 5911422691129527045}
   - component: {fileID: 5911422691129527066}
   - component: {fileID: 5911422691129527067}
-  - component: {fileID: 5911422691129527044}
+  - component: {fileID: 8090357070185354321}
   - component: {fileID: 5911422691129527064}
   m_Layer: 15
   m_Name: DangerousDebris(Wall)
@@ -167,7 +167,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &5911422691129527044
+--- !u!114 &8090357070185354321
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -176,16 +176,16 @@ MonoBehaviour:
   m_GameObject: {fileID: 5911422691129527065}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbd2f07bc05201649a38979b69b91ac8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ae1d9f0eae02dc4592552ba9c24c1d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isInteractable: 1
   isInstantPickup: 0
   pThatHitMe: {fileID: 0}
   damage: 2
-  knockBack: 20
-  knockUp: 2
-  stunTime: 0.5
+  knockBack: 15
+  knockUp: 0
+  stunTime: 0.2
   hitDirection: {x: -1, y: 0}
   damageDelay: 0.5
 --- !u!61 &5911422691129527064

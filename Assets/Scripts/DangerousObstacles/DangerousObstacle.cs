@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Spikes_Interactable : Interact_Base
+public class DangerousObstacle : Interact_Base
 {
     [Tooltip("How much damage will this object cause? (put 0 if none)")]
     public float damage;

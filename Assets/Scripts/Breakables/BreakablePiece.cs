@@ -60,14 +60,15 @@ public class BreakablePiece : MonoBehaviour
     }
 
     // Shake object for crumbling platform pieces
-    public void ShakePiece(GameObject _objectToShake, float _shakeDuration, int _vibrato, float _elasticity)
+    public void ShakePiece(GameObject _objectToShake, float _shakeDuration, float _strength, int _vibrato)
     {
         if (shakeTween != null)
         {
             shakeTween.Kill();
         }
         _objectToShake.transform.position = startingPos;
-        shakeTween = _objectToShake.transform.DOPunchPosition(UnityEngine.Random.insideUnitSphere, _shakeDuration, _vibrato, _elasticity);
+        //shakeTween = _objectToShake.transform.DOPunchPosition(UnityEngine.Random.insideUnitSphere * 0.25f, _shakeDuration, _vibrato, _elasticity);
+        shakeTween = _objectToShake.transform.DOShakePosition(_shakeDuration, _strength, _vibrato, 2f, false, true);
     }
 
     // Hide piece from sight & collisions

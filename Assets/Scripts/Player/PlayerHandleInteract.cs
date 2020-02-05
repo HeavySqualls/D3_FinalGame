@@ -22,9 +22,9 @@ public class PlayerHandleInteract : MonoBehaviour
     {
         if (_interactableItem != null)
         {
-            if (_interactableItem.GetComponent<Spikes_Interactable>())
+            if (_interactableItem.GetComponent<DangerousObstacle>() || _interactableItem.GetComponent<ToxicSpill>())
             {
-                Debug.Log("Spikes damage player.");
+                print("flash");
                 StartCoroutine(pFeedBack.IFlashRed());
             }
         }

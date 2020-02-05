@@ -95,11 +95,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062172259022388
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -242,11 +237,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062172324711306
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -389,11 +379,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062172378940145
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -536,11 +521,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062172407894755
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -683,11 +663,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062172422774407
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -830,11 +805,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062172758091430
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -953,16 +923,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isPlatform: 1
   isCrumblingWall: 0
+  isBreakableFloor: 0
   isRespawnable: 1
   isFallingApart: 0
   startHP: 7
-  shakeDuration: 2
-  platformShakeDuration: 0.5
-  earlyPlatformShakeDuration: 0
-  decreasePoint: 0.01
-  shakeSpeed: 0.1
-  rotationAngle: 3
+  shakeDuration: 1
+  vibrato: 10
+  strength: 0.1
   respawnTime: 3
+  hitByHeavyObject: 0
   objPieces: []
   earlyBreakPieces:
   - {fileID: 1542062172378940146}
@@ -1090,11 +1059,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 1
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062172982067264
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1237,11 +1201,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062173074240943
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1384,11 +1343,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062173330950921
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1531,11 +1485,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062173430176851
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -1678,11 +1627,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isEarlyBreakPiece: 0
-  startingPos: {x: 0, y: 0, z: 0}
-  startingTrans: {x: 0, y: 0, z: 0, w: 0}
-  boxColl: {fileID: 0}
-  meshRenderer: {fileID: 0}
-  rb2D: {fileID: 0}
 --- !u!61 &1542062173746151105
 BoxCollider2D:
   m_ObjectHideFlags: 0

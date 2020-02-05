@@ -485,7 +485,7 @@ GameObject:
   - component: {fileID: 1526872899321337681}
   - component: {fileID: 1526872899321337694}
   - component: {fileID: 1526872899321337695}
-  - component: {fileID: 1526872899321337680}
+  - component: {fileID: 2951912151491898933}
   - component: {fileID: 1526872899321337692}
   m_Layer: 15
   m_Name: DangerousDebris
@@ -562,7 +562,7 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!114 &1526872899321337680
+--- !u!114 &2951912151491898933
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -571,7 +571,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1526872899321337693}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dbd2f07bc05201649a38979b69b91ac8, type: 3}
+  m_Script: {fileID: 11500000, guid: 8ae1d9f0eae02dc4592552ba9c24c1d0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   isInteractable: 1
@@ -579,10 +579,10 @@ MonoBehaviour:
   pThatHitMe: {fileID: 0}
   damage: 2
   knockBack: 0
-  knockUp: 18
-  stunTime: 0
+  knockUp: 20
+  stunTime: 0.2
   hitDirection: {x: 0, y: 0}
-  damageDelay: 1.5
+  damageDelay: 1
 --- !u!61 &1526872899321337692
 BoxCollider2D:
   m_ObjectHideFlags: 0

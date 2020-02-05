@@ -26,7 +26,7 @@ public class BreakableObject : MonoBehaviour
     [Tooltip("The number of shakes that will occur during the duration of the shake.")]
     public int vibrato;
     [Tooltip("The degree of visual elasticity of the objects being shaken.")]
-    public float elasticity;
+    public float strength;
     [Tooltip("The time it takes for the platform to respawn.")]
     public float respawnTime;
     public bool hitByHeavyObject = false;
@@ -91,7 +91,7 @@ public class BreakableObject : MonoBehaviour
         {
             foreach (BreakablePiece bp in objPieces)
             {
-                bp.ShakePiece(bp.gameObject, shakeDuration, vibrato, elasticity);
+                bp.ShakePiece(bp.gameObject, shakeDuration, strength, vibrato);
             }
         }
     }
@@ -181,7 +181,7 @@ public class BreakableObject : MonoBehaviour
         Debug.Log("Shake Object");
         foreach (BreakablePiece bp in objPieces)
         {
-            bp.ShakePiece(bp.gameObject, shakeDuration, vibrato, elasticity);
+            bp.ShakePiece(bp.gameObject, shakeDuration, strength, vibrato);
         }
 
         if (earlyBreakPieces.Count > 0)
