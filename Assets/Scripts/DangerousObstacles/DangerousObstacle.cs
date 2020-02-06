@@ -21,9 +21,9 @@ public class DangerousObstacle : Interact_Base
 
     [Tooltip("Spikes and debris that will become bloodied")]
     public HashSet<MeshRenderer> spikeMeshes = new HashSet<MeshRenderer>();
+
     void Start()
     {
-        //mr = GetComponent<MeshRenderer>();
         FindEveryChild(gameObject.transform);
     }
 
@@ -47,8 +47,6 @@ public class DangerousObstacle : Interact_Base
         {
             spikeMR.material.SetColor("_Color", Color.red);
         }
-
-        //mr.material.SetColor("_Color", Color.red);
     }
 
     void OnTriggerStay2D(Collider2D other)
@@ -59,16 +57,6 @@ public class DangerousObstacle : Interact_Base
         {
             StartCoroutine(DamageDelay());
         }
-    }
-
-    public override void OnTriggerExit2D(Collider2D other)
-    {
-        base.OnTriggerExit2D(other);
-    }
-
-    public override void OnInteracted()
-    {
-        base.OnInteracted();
     }
 
     IEnumerator DamageDelay()

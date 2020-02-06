@@ -137,7 +137,6 @@ public class PlayerController : PhysicsObject
     {
         base.Start();
         whatIsGround = LayerMask.GetMask("Ground");
-        //whatIsWall = LayerMask.GetMask("Interactables");
 
         if (controls != null)
         {
@@ -162,16 +161,12 @@ public class PlayerController : PhysicsObject
         CheckLedgeClimb();
     }
 
-    public float GetAnimTime()
+    public float GetAnimTime() //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
     {
         if (animator != null)
         {
-            //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
-
-            //AnimatorClipInfo[] clipInfo = animator.GetNextAnimatorClipInfo(0);
             AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
 
-            //return clipInfo[0].clip.length;
             if (clipInfo.Length > 0 && clipInfo != null)
             {
                 return clipInfo[0].clip.length;
@@ -541,12 +536,17 @@ public class PlayerController : PhysicsObject
     {
         if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
         {
-            if (!isWallSliding)
-            {
-                isWallSliding = true;
-            }
-
+            isWallSliding = true;
             gravityModifier = wallSlidingSpeed;
+            //if (Input.GetAxisRaw(controls.xMove) > 0f  && direction == Vector2.right || Input.GetAxisRaw(controls.xMove) < 0f && direction == Vector2.left)
+            //{
+            //    isWallSliding = true;
+            //    gravityModifier = wallSlidingSpeed;
+            //}
+            //else
+            //{
+            //    StartCoroutine(WallReleaseTimer());
+            //}
         }
         else
         {
@@ -557,13 +557,12 @@ public class PlayerController : PhysicsObject
         animator.SetBool("isWallSliding", isWallSliding);
     }
 
-    private IEnumerator LeaveWallCountdown()
+    IEnumerator WallReleaseTimer()
     {
-        yield return new WaitForSeconds(0.5f);
-        windAffectUnit = true;
-        yield break;
+        yield return new WaitForSeconds(0.3f);
+        isWallSliding = false;
+        gravityModifier = gravStart;
     }
-
 
     // ---- MAG BOOTS METHODS ---- //
 
@@ -668,10 +667,20 @@ public class PlayerController : PhysicsObject
 
                 if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
-                    StartCoroutine(JumpDelay());
-                    currentGraceTime = 0;
-                    canJump = false;
-                    animator.SetTrigger("jumping");
+                    if (isWallSliding)
+                    {
+                        if (Input.GetAxisRaw(controls.xMove) > 0f && direction == Vector2.left || Input.GetAxisRaw(controls.xMove) < 0f && direction == Vector2.right)
+                        {
+                            StartCoroutine(JumpDelay());
+                        }
+                    }
+                    else
+                    {
+                        StartCoroutine(JumpDelay());
+                        currentGraceTime = 0;
+                        canJump = false;
+                        animator.SetTrigger("jumping");
+                    }
                 }
             }
             else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
@@ -714,6 +723,8 @@ public class PlayerController : PhysicsObject
 
     private void PushOffWall()
     {
+        Debug.Log("WALL JUMP");
+
         if (direction == Vector2.right)
         {
             move.x -= 5f;
@@ -725,7 +736,7 @@ public class PlayerController : PhysicsObject
             move.y += 6f;
         }
 
-        targetVelocity = move * maxSpeed;
+        targetVelocity += move * maxSpeed;
     }
 
     IEnumerator JumpDelay()

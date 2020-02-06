@@ -49,8 +49,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected virtual void Update()
     {
-        //TODO: Why do I need this??
-        //targetVelocity = Vector2.zero;
+        targetVelocity = Vector2.zero; // for hard landings to stop movement
         ComputeVelocity();
     }
 

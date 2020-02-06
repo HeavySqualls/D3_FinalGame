@@ -129,6 +129,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8bd70bb644fd849ba4daeb0c1094b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  flashDuration: 0.4
+  shakeDuration: 0.8
+  shakeStrength: 0.25
+  vibrato: 9
+  randomness: 2
+  cam: {fileID: 0}
 --- !u!114 &1242993176099357722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -184,15 +190,19 @@ MonoBehaviour:
   p1_damage: 2
   p1_knockback: 2
   p1_knockUp: 8
+  p1_stunTime: 0
   p2_damage: 2
   p2_knockback: 3
   p2_knockUp: 9
+  p2_stunTime: 0
   p3_damage: 3
   p3_knockback: 6
   p3_knockUp: 16
+  p3_stunTime: 0
   b_damage: 0
   b_knockback: 0
   b_knockUp: 35
+  b_stunTime: 0
 --- !u!114 &1242993176099357725
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -212,8 +222,11 @@ MonoBehaviour:
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
   direction: {x: 0, y: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 0
   respawnZone: {fileID: 0}
-  isController: 1
+  isController: 0
   accelSpeedNormal: 7
   accelSpeedMaxSpeed: 4.25
   accelSpeedAir: 5.35
