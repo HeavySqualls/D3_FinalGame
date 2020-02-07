@@ -47,9 +47,16 @@ public class PhysicsObject : MonoBehaviour
         contactFilter.SetLayerMask(layerMask); // only grabs collisions on the layer the specified layer (see project settings > physics2d)
     }
 
+    public bool isWallJumping = false;
+
     protected virtual void Update()
     {
-        targetVelocity = Vector2.zero; // for hard landings to stop movement
+        //TODO: Find out why this is preventing me from being able to wall jump properly and how to fix it
+        if (!isWallJumping)
+        {
+            targetVelocity = Vector2.zero; // for hard landings to stop movement
+        }
+
         ComputeVelocity();
     }
 

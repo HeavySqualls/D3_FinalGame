@@ -214,7 +214,11 @@ public class PlayerController : PhysicsObject
 
     protected override void ComputeVelocity()
     {
-        if (canMove)
+        if (isWallJumping || isWallSliding)
+        {
+            
+        }
+        else if (canMove)
         {
             // Checks to determine what acceleration speed the player will have depending on the situation
             if (inAir) // if the player is in the air
@@ -384,18 +388,18 @@ public class PlayerController : PhysicsObject
                 }
             }
 
-            // Animation settings
-            animator.SetBool("isMoving", isMoving);
-            animator.SetBool("isSkid", isSkidding);
-            animator.SetBool("grounded", isGrounded);
-            animator.SetBool("inWind", inWindZone);
-            animator.SetBool("isBackToWind", backToWind);
-            animator.SetBool("isMovingInWind", isMovingInWind);
-            animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
-
             // Send the move Vector will all related forces to the Physics Object
             targetVelocity = move * maxSpeed;
         }
+
+        // Animation settings
+        animator.SetBool("isMoving", isMoving);
+        animator.SetBool("isSkid", isSkidding);
+        animator.SetBool("grounded", isGrounded);
+        animator.SetBool("inWind", inWindZone);
+        animator.SetBool("isBackToWind", backToWind);
+        animator.SetBool("isMovingInWind", isMovingInWind);
+        animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
 
         // Jump methods
         Jump();
@@ -538,15 +542,6 @@ public class PlayerController : PhysicsObject
         {
             isWallSliding = true;
             gravityModifier = wallSlidingSpeed;
-            //if (Input.GetAxisRaw(controls.xMove) > 0f  && direction == Vector2.right || Input.GetAxisRaw(controls.xMove) < 0f && direction == Vector2.left)
-            //{
-            //    isWallSliding = true;
-            //    gravityModifier = wallSlidingSpeed;
-            //}
-            //else
-            //{
-            //    StartCoroutine(WallReleaseTimer());
-            //}
         }
         else
         {
@@ -657,8 +652,28 @@ public class PlayerController : PhysicsObject
 
     // ---- JUMP METHODS ---- //
 
+    float currentJumpDelayTime = 0;
+
     private void Jump()
     {
+        if (currentJumpDelayTime > 0)
+        {
+            currentJumpDelayTime -= Time.deltaTime;
+
+            if (currentJumpDelayTime < 0)
+            {
+                if (isWallSliding)
+                {
+                    StartCoroutine(WallJumpTimer());
+                    PushOffWall();
+                }
+
+                velocity.y = jumpTakeoffSpeed;
+
+                currentJumpDelayTime = 0;
+            }
+        }
+
         if (!magBootsOn)
         {
             if (Input.GetButtonDown(controls.jump))
@@ -667,20 +682,10 @@ public class PlayerController : PhysicsObject
 
                 if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
-                    if (isWallSliding)
-                    {
-                        if (Input.GetAxisRaw(controls.xMove) > 0f && direction == Vector2.left || Input.GetAxisRaw(controls.xMove) < 0f && direction == Vector2.right)
-                        {
-                            StartCoroutine(JumpDelay());
-                        }
-                    }
-                    else
-                    {
-                        StartCoroutine(JumpDelay());
-                        currentGraceTime = 0;
-                        canJump = false;
-                        animator.SetTrigger("jumping");
-                    }
+                    currentJumpDelayTime = jumpDelayTime;
+                    currentGraceTime = 0;
+                    canJump = false;
+                    animator.SetTrigger("jumping");
                 }
             }
             else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
@@ -721,34 +726,33 @@ public class PlayerController : PhysicsObject
         }
     }
 
+    IEnumerator WallJumpTimer()
+    {
+        isWallJumping = true;
+        canMove = false;
+
+        yield return new WaitForSeconds(0.2f);
+
+        canMove = true;
+        isWallJumping = false;
+    }
+
     private void PushOffWall()
     {
         Debug.Log("WALL JUMP");
 
         if (direction == Vector2.right)
         {
-            move.x -= 5f;
-            move.y += 6f;
+            targetVelocity.x = 0;
+            move.x -= 3.5f;
+            targetVelocity.x += move.x * maxSpeed;
         }
         else
         {
-            move.x += 5f;
-            move.y += 6f;
+            targetVelocity.x = 0;
+            move.x += 3.5f;
+            targetVelocity.x += move.x * maxSpeed;
         }
-
-        targetVelocity += move * maxSpeed;
-    }
-
-    IEnumerator JumpDelay()
-    {
-        yield return new WaitForSeconds(jumpDelayTime);
-
-        if (isWallSliding)
-        {
-            PushOffWall();
-        }
-        velocity.y = jumpTakeoffSpeed;
-        yield break;
     }
 
     IEnumerator QuickJumpTimer()

@@ -1,17 +1,27 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Kryz.CharacterStats;
 
 
 //TUTORIAL: https://www.youtube.com/watch?v=4JewzU_phTM
 
 public class InventoryManager : MonoBehaviour
 {
+    public CharacterStat strength;
+    public CharacterStat agility;
+    public CharacterStat intellect;
+    public CharacterStat vitality;
+
+    [SerializeField] StatPanel statPanel;
     [SerializeField] Inventory inventory;
     [SerializeField] EquipmentPanel equipPanel;
 
     private void Awake()
     {
+        statPanel.SetStats(strength, agility, intellect, vitality);
+        statPanel.UpdateStatValues();
+
         // ... ok, some one clicked an item in Inventory.cs, lets equip it! 
         inventory.OnItemRightClickedEvent += EquipFromInventory;
 
@@ -47,7 +57,11 @@ public class InventoryManager : MonoBehaviour
                 if (previousItem != null) // if there was an item in the equipment slot before adding this one
                 {
                     inventory.AddItem(previousItem); // add the previous item in the slot back in to the inventory 
+                    previousItem.Unequip(this);
+                    statPanel.UpdateStatValues();
                 }
+                _item.Equip(this);
+                statPanel.UpdateStatValues();
             }
             else
             {
@@ -60,6 +74,8 @@ public class InventoryManager : MonoBehaviour
     {
         if (!inventory.IsFull() && equipPanel.RemoveItem(_item))
         {
+            _item.Unequip(this);
+            statPanel.UpdateStatValues();
             inventory.AddItem(_item);
             print("unequipped");
         }
