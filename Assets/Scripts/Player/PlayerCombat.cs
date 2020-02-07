@@ -142,15 +142,12 @@ public class PlayerCombat : MonoBehaviour
     IEnumerator AttackCoolDown(float _time)
     {
         canAttack = false;
-        //pCon.CanFlipSprite();
         pCon.canMove = false;
 
         yield return new WaitForSeconds(_time);
 
-        //pCon.CanFlipSprite();
         pCon.canMove = true;
         canAttack = true;
-
     }
 
     void SetAttackStats(float _dmg, float _knkBk, float _knkUp, float _stunTime)
