@@ -60,10 +60,11 @@ public class PlayerController : PhysicsObject
     public float maxGraceTime = 0.12f;
     [Tooltip("Time it takes while holding the jump button to enable the 'Jump Flip' animation.")]
     public float jumpHoldTimeMax = 1.5f;
+    public float airDisableTimer = 0.2f;
     private bool isPressingJumpButton = false;
     private float currentGraceTime;
     private float airTime = 0f;
-    private float jumpHoldTime = 0;
+    [SerializeField] float jumpHoldTime = 0;
     private bool canJump = true;
     private bool quickJump = true;
 
@@ -88,7 +89,7 @@ public class PlayerController : PhysicsObject
     public float wallCheckDistance = 1;
     public float wallSlidingSpeed;
     public Vector2 wallJumpDirection;
-    public float wallJumpForce;
+    public float wallJumpForce = 3.25f;
     public Transform wallCheck; // for checking if against wall
     public bool isWallSliding = false;
     private bool isTouchingWall = false;
@@ -149,13 +150,22 @@ public class PlayerController : PhysicsObject
             Debug.Log("Player does not have the controls component attached!");
     }
 
+    float horizontalInput;
+    bool isInputLeftORRight;
+
     protected override void Update()
     {
         base.Update();
+
+        horizontalInput = Input.GetAxisRaw(controls.xMove);
+        isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
+
         CheckSurroundings();
         CheckIfWallSliding();
         TrackAirTime();
         ComputeVelocity();
+        Jump();
+        RapidJump();
         MagBoots();
         GraceJumpTimer();
         CheckLedgeClimb();
@@ -172,7 +182,6 @@ public class PlayerController : PhysicsObject
                 return clipInfo[0].clip.length;
             }
         }
-
         return 0;    
     }
 
@@ -214,15 +223,16 @@ public class PlayerController : PhysicsObject
 
     protected override void ComputeVelocity()
     {
-        if (isWallJumping || isWallSliding)
+        if (isWallJumping && !isInputLeftORRight)
         {
-            
+            return;
         }
         else if (canMove)
         {
             // Checks to determine what acceleration speed the player will have depending on the situation
             if (inAir) // if the player is in the air
             {
+                //move.x = 13f;
                 accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedAir;
             }
             else if (isAtMaxSpeed) // if the player is running at max speed for "x" seconds
@@ -251,7 +261,7 @@ public class PlayerController : PhysicsObject
             }
 
             // Determine if there is input
-            if (Input.GetAxisRaw(controls.xMove) > 0f || Input.GetAxisRaw(controls.xMove) < 0f) 
+            if (isInputLeftORRight) 
             {
                 isMoving = true;              
 
@@ -359,37 +369,36 @@ public class PlayerController : PhysicsObject
                     }
                 }
             }
-
-            // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
-            if (isTouchingWall && inWindZone)
-                windAffectUnit = false;
-            else
-                windAffectUnit = true;
-
-            // Determine direction that the sprite will face
-            if (canFlipSprite && !isWallSliding)
-            {
-                if (inWindZone && isMovingInWind)
-                {
-                    ComputeDirectionOfSpriteInWind();
-                }
-                else if (!inWindZone)
-                {
-                    float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
-                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
-
-                    if (flipPlayerSprite)
-                    {
-                        print("flip");
-                        ChangeDirection();
-                        pIsFaceLeft = !pIsFaceLeft;
-                        spriteRenderer.flipX = !spriteRenderer.flipX;
-                    }
-                }
-            }
-
             // Send the move Vector will all related forces to the Physics Object
             targetVelocity = move * maxSpeed;
+        }
+
+        // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
+        if (isTouchingWall && inWindZone)
+            windAffectUnit = false;
+        else
+            windAffectUnit = true;
+
+        // Determine direction that the sprite will face
+        if (canFlipSprite && !isWallSliding)
+        {
+            if (inWindZone && isMovingInWind)
+            {
+                ComputeDirectionOfSpriteInWind();
+            }
+            else if (!inWindZone)
+            {
+                float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
+                bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+
+                if (flipPlayerSprite)
+                {
+                    print("flip");
+                    ChangeDirection();
+                    pIsFaceLeft = !pIsFaceLeft;
+                    spriteRenderer.flipX = !spriteRenderer.flipX;
+                }
+            }
         }
 
         // Animation settings
@@ -400,10 +409,6 @@ public class PlayerController : PhysicsObject
         animator.SetBool("isBackToWind", backToWind);
         animator.SetBool("isMovingInWind", isMovingInWind);
         animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
-
-        // Jump methods
-        Jump();
-        RapidJump();
     }
 
     private void ComputeDirectionOfSpriteInWind()
@@ -552,12 +557,6 @@ public class PlayerController : PhysicsObject
         animator.SetBool("isWallSliding", isWallSliding);
     }
 
-    IEnumerator WallReleaseTimer()
-    {
-        yield return new WaitForSeconds(0.3f);
-        isWallSliding = false;
-        gravityModifier = gravStart;
-    }
 
     // ---- MAG BOOTS METHODS ---- //
 
@@ -654,26 +653,24 @@ public class PlayerController : PhysicsObject
 
     float currentJumpDelayTime = 0;
 
+    IEnumerator JumpDelayTime()
+    {
+        yield return new WaitForSeconds(jumpDelayTime);
+
+        if (isWallSliding)
+        {
+            StartCoroutine(WallJumpTimer());
+            PushOffWall();
+        }
+        else
+        {
+            velocity.y = jumpTakeoffSpeed;
+        }
+    }
+
+    //TODO: Some where in here the jump needs to be scaled down?
     private void Jump()
     {
-        if (currentJumpDelayTime > 0)
-        {
-            currentJumpDelayTime -= Time.deltaTime;
-
-            if (currentJumpDelayTime < 0)
-            {
-                if (isWallSliding)
-                {
-                    StartCoroutine(WallJumpTimer());
-                    PushOffWall();
-                }
-
-                velocity.y = jumpTakeoffSpeed;
-
-                currentJumpDelayTime = 0;
-            }
-        }
-
         if (!magBootsOn)
         {
             if (Input.GetButtonDown(controls.jump))
@@ -682,7 +679,7 @@ public class PlayerController : PhysicsObject
 
                 if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
-                    currentJumpDelayTime = jumpDelayTime;
+                    StartCoroutine(JumpDelayTime());
                     currentGraceTime = 0;
                     canJump = false;
                     animator.SetTrigger("jumping");
@@ -710,6 +707,7 @@ public class PlayerController : PhysicsObject
                 print("flip jump");
                 animator.SetTrigger("jumpingFlip");
                 isPressingJumpButton = false;
+                jumpHoldTime = 0;
             }
         }
         else
@@ -728,13 +726,24 @@ public class PlayerController : PhysicsObject
 
     IEnumerator WallJumpTimer()
     {
+        velocity.y = 6.5f * maxSpeed;
         isWallJumping = true;
         canMove = false;
 
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(airDisableTimer);
 
-        canMove = true;
         isWallJumping = false;
+        canMove = true;
+
+        if (direction == Vector2.right)
+        {
+            move.x = 14f;
+        }
+        else
+        {
+            move.x = -14f;
+        }
+        
     }
 
     private void PushOffWall()
@@ -744,14 +753,12 @@ public class PlayerController : PhysicsObject
         if (direction == Vector2.right)
         {
             targetVelocity.x = 0;
-            move.x -= 3.5f;
-            targetVelocity.x += move.x * maxSpeed;
+            targetVelocity.x += -wallJumpForce * maxSpeed;
         }
         else
         {
             targetVelocity.x = 0;
-            move.x += 3.5f;
-            targetVelocity.x += move.x * maxSpeed;
+            targetVelocity.x += wallJumpForce * maxSpeed;
         }
     }
 
