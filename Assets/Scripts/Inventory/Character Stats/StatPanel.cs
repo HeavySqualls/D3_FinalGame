@@ -30,6 +30,11 @@ public class StatPanel : MonoBehaviour
         for (int i = 0; i < statDisplays.Length; i++)
         {
             statDisplays[i].gameObject.SetActive(i < stats.Length);
+
+            if (i < stats.Length)
+            {
+                statDisplays[i].Stat = stats[i];
+            }
         }
     }
 
@@ -38,7 +43,7 @@ public class StatPanel : MonoBehaviour
     {
         for (int i = 0; i < stats.Length; i++)
         {
-            statDisplays[i].valueText.text = stats[i].Value.ToString();
+            statDisplays[i].UpdateStatValue();
         }
     }
 
@@ -47,7 +52,7 @@ public class StatPanel : MonoBehaviour
     {
         for (int i = 0; i < statNames.Length; i++)
         {
-            statDisplays[i].nameText.text = statNames[i]; 
+            statDisplays[i].Name = statNames[i]; 
         }
     }
 }

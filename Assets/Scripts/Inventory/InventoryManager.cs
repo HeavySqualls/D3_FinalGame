@@ -39,7 +39,6 @@ public class InventoryManager : MonoBehaviour
 
     private void UnequipFromEquipPanel(sItem _item)
     {
-        print("Da fuq?");
         if (_item is sEquippableItem)
         {
             Unequip((sEquippableItem)_item);
