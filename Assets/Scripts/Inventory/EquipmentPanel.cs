@@ -7,14 +7,28 @@ public class EquipmentPanel : MonoBehaviour
     [SerializeField] Transform equipmentSlotsParent;
     [SerializeField] EquipmentSlot[] equipmentSlots;
 
+    public event Action<ItemSlot> OnPointerEnterEvent;
+    public event Action<ItemSlot> OnPointerExitEvent;
+    public event Action<ItemSlot> OnRightClickEvent; // Item has been selected
+    public event Action<ItemSlot> OnBeginDragEvent;
+    public event Action<ItemSlot> OnEndDragEvent;
+    public event Action<ItemSlot> OnDragEvent;
+    public event Action<ItemSlot> OnDropEvent;
+
     public event Action<sItem> OnItemRightClickedEvent;
 
     private void Start()
     {
         for (int i = 0; i < equipmentSlots.Length; i++)
         {
-            // catches the event from EquipSlot.cs and says "the player right clicked this item"... (see InventoryManager.cs for next step)
-            equipmentSlots[i].OnRightClickEvent += OnItemRightClickedEvent;
+            // catches the events from EquipSlot.cs and says "the player right clicked this item"... (see InventoryManager.cs for next step)
+            equipmentSlots[i].OnPointerEnterEvent += OnPointerEnterEvent;
+            equipmentSlots[i].OnPointerExitEvent += OnPointerExitEvent;
+            equipmentSlots[i].OnRightClickEvent += OnRightClickEvent;
+            equipmentSlots[i].OnBeginDragEvent += OnBeginDragEvent;
+            equipmentSlots[i].OnEndDragEvent += OnEndDragEvent;
+            equipmentSlots[i].OnDragEvent += OnDragEvent;
+            equipmentSlots[i].OnDropEvent += OnDropEvent;
         }
     }
 

@@ -881,7 +881,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -3653385446848040535, guid: 2298cc43ee8983240872e7950a417377,
+  m_Sprite: {fileID: 2604400189081485577, guid: 2298cc43ee8983240872e7950a417377,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -1072,8 +1072,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -1293769609540662952, guid: 2298cc43ee8983240872e7950a417377,
-    type: 3}
+  m_Sprite: {fileID: 51225042845250970, guid: 2298cc43ee8983240872e7950a417377, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -1523,13 +1522,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 664594843}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1607,7 +1606,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 2604400189081485577, guid: 2298cc43ee8983240872e7950a417377,
+  m_Sprite: {fileID: -1293769609540662952, guid: 2298cc43ee8983240872e7950a417377,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -1719,8 +1718,9 @@ RectTransform:
   - {fileID: 1282879011}
   - {fileID: 424816512}
   - {fileID: 821775998}
+  - {fileID: 1271386083}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -1929,7 +1929,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 973461823}
-  toolTip: {fileID: 424816516}
 --- !u!114 &740877863
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2512,7 +2511,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 887004202}
-  toolTip: {fileID: 424816516}
 --- !u!114 &930811144
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2670,7 +2668,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 973461821}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
@@ -2681,7 +2679,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -7105359488417253472, guid: 2298cc43ee8983240872e7950a417377,
+  m_Sprite: {fileID: -3653385446848040535, guid: 2298cc43ee8983240872e7950a417377,
     type: 3}
   m_Type: 0
   m_PreserveAspect: 0
@@ -2854,7 +2852,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 1783960534}
-  toolTip: {fileID: 424816516}
   equipType: 2
 --- !u!1 &1131583369
 GameObject:
@@ -3098,7 +3095,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 2083711215}
-  toolTip: {fileID: 424816516}
   equipType: 0
 --- !u!1 &1224738941
 GameObject:
@@ -3254,6 +3250,79 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1233524779}
   m_CullTransparentMesh: 0
+--- !u!1 &1271386082
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1271386083}
+  - component: {fileID: 1271386085}
+  - component: {fileID: 1271386084}
+  m_Layer: 5
+  m_Name: DraggableItem
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1271386083
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271386082}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.8, y: 0.8, z: 1}
+  m_Children: []
+  m_Father: {fileID: 720271201}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 297, y: -181}
+  m_SizeDelta: {x: 56, y: 56}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1271386084
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271386082}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1271386085
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271386082}
+  m_CullTransparentMesh: 0
 --- !u!1 &1282879010
 GameObject:
   m_ObjectHideFlags: 0
@@ -3313,9 +3382,11 @@ MonoBehaviour:
     BaseValue: 0
   vitality:
     BaseValue: 0
-  statPanel: {fileID: 1786821216}
   inventory: {fileID: 1809208497}
   equipPanel: {fileID: 111487095}
+  statPanel: {fileID: 1786821216}
+  itemTooltip: {fileID: 424816516}
+  draggableItem: {fileID: 1271386084}
 --- !u!1 &1302968670
 GameObject:
   m_ObjectHideFlags: 0
@@ -3498,7 +3569,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 1782984341}
-  toolTip: {fileID: 424816516}
   equipType: 1
 --- !u!1 &1375365752
 GameObject:
@@ -3552,7 +3622,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 417379584}
-  toolTip: {fileID: 424816516}
 --- !u!114 &1375365755
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3633,13 +3702,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1381479004}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -3750,7 +3819,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 1381479006}
-  toolTip: {fileID: 424816516}
   equipType: 3
 --- !u!1 &1443993380
 GameObject:
@@ -3816,7 +3884,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1555214530
 GameObject:
@@ -4020,7 +4088,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 669355485}
-  toolTip: {fileID: 424816516}
 --- !u!114 &1606325571
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4288,7 +4355,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 447195817}
-  toolTip: {fileID: 424816516}
 --- !u!114 &1753193337
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4369,13 +4435,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1782984339}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4442,13 +4508,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1783960532}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -4588,12 +4654,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9694cc33c32bddb4d9fa655c28c6f5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items:
-  - {fileID: 0}
+  startingItems:
   - {fileID: 11400000, guid: 5649b7db49f0e4c4a8c62994a0c0248a, type: 2}
   - {fileID: 11400000, guid: c95ae281f7703994e80a40988ef68643, type: 2}
   - {fileID: 11400000, guid: 922edca22970fe148867ea30b5d20395, type: 2}
   - {fileID: 11400000, guid: faac59bfb201a71438d6a898fc9b3705, type: 2}
+  - {fileID: 11400000, guid: 761a1630784ee27479612965f391c2e2, type: 2}
   - {fileID: 11400000, guid: f12f0e60cdffe51429df90e2ea2fa188, type: 2}
   itemsParent: {fileID: 1010257074}
   itemSlots:
@@ -4735,7 +4801,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 51225042845250970, guid: 2298cc43ee8983240872e7950a417377, type: 3}
+  m_Sprite: {fileID: -7105359488417253472, guid: 2298cc43ee8983240872e7950a417377,
+    type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -4918,7 +4985,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 664594845}
-  toolTip: {fileID: 424816516}
   equipType: 4
 --- !u!1 &2078050151
 GameObject:
@@ -5070,13 +5136,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2083711213}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -5151,7 +5217,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 1913895101}
-  toolTip: {fileID: 424816516}
 --- !u!114 &2083935187
 MonoBehaviour:
   m_ObjectHideFlags: 0

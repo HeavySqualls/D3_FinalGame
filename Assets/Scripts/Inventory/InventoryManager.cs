@@ -1,6 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 using Kryz.CharacterStats;
 
 
@@ -13,35 +12,148 @@ public class InventoryManager : MonoBehaviour
     public CharacterStat intellect;
     public CharacterStat vitality;
 
-    [SerializeField] StatPanel statPanel;
     [SerializeField] Inventory inventory;
     [SerializeField] EquipmentPanel equipPanel;
+    [SerializeField] StatPanel statPanel;
+    [SerializeField] ItemToolTip itemTooltip;
+    [SerializeField] Image draggableItem;
+
+    private ItemSlot draggedSlot;
+
+    private void OnValidate()
+    {
+        if (itemTooltip == null)
+        {
+            itemTooltip = FindObjectOfType<ItemToolTip>();
+        }
+    }
 
     private void Awake()
     {
         statPanel.SetStats(strength, agility, intellect, vitality);
         statPanel.UpdateStatValues();
 
-        // ... ok, some one clicked an item in Inventory.cs, lets equip it! 
-        inventory.OnItemRightClickedEvent += EquipFromInventory;
+        // ---- SET UP EVENTS: ---- //
 
-        // ... ok, some one clicked an item in EquipmentPanel.cs, lets un-equip it! 
-        equipPanel.OnItemRightClickedEvent += UnequipFromEquipPanel;
+        // Right click:
+        inventory.OnRightClickEvent += Equip;
+        equipPanel.OnRightClickEvent += Unequip;
+        // Pointer Enter:
+        inventory.OnPointerEnterEvent += ShowTooltip;
+        equipPanel.OnPointerEnterEvent += ShowTooltip;
+        // Pointer Exit:
+        inventory.OnPointerExitEvent += HideTooltip;
+        equipPanel.OnPointerExitEvent += HideTooltip;
+        // Begin Drag
+        inventory.OnBeginDragEvent += BeginDrag;
+        equipPanel.OnBeginDragEvent += BeginDrag;
+        // End Drag:
+        inventory.OnEndDragEvent += EndDrag;
+        equipPanel.OnEndDragEvent += EndDrag;
+        // Drag 
+        inventory.OnDragEvent += Drag;
+        equipPanel.OnDragEvent += Drag;
+        // Drop
+        inventory.OnDropEvent += Drop;
+        equipPanel.OnDropEvent += Drop;
     }
 
-    private void EquipFromInventory(sItem _item)
+    private void Equip(ItemSlot _itemSlot)
     {
-        if (_item is sEquippableItem)
+        // if the item in the selected equipment slot is an equippable item, equip it!
+        sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
+        if (equippableItem != null)
         {
-            Equip((sEquippableItem)_item);
+            Equip(equippableItem);
         }
     }
 
-    private void UnequipFromEquipPanel(sItem _item)
+    private void Unequip(ItemSlot _itemSlot)
     {
-        if (_item is sEquippableItem)
+        // if the item in the selected equipment slot is an equippable item, unequip it!
+        sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
+        if (equippableItem != null)
         {
-            Unequip((sEquippableItem)_item);
+            Unequip(equippableItem);
+        }
+    }
+
+    private void ShowTooltip(ItemSlot _itemSlot)
+    {
+        // if the item in the selected equipment slot is an equippable item, display the tooltip!
+        sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
+        if (equippableItem != null)
+        {
+            itemTooltip.ShowToolTip(equippableItem);
+        }
+    }
+
+    private void HideTooltip(ItemSlot _itemSlot)
+    {
+        // if the item in the selected equipment slot is an equippable item, hide the tooltip!
+        sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
+        if (equippableItem != null)
+        {
+            itemTooltip.HideToolTip();
+        }
+    }
+
+    private void BeginDrag (ItemSlot _itemSlot)
+    {
+        if (_itemSlot.Item != null)
+        {
+            draggedSlot = _itemSlot;
+            draggableItem.sprite = _itemSlot.Item.icon;
+            draggableItem.transform.position = Input.mousePosition;
+            draggableItem.enabled = true;
+        }
+    }
+
+    private void EndDrag(ItemSlot _itemSlot)
+    {
+        print("End Drag");
+        draggedSlot = null;
+        draggableItem.enabled = false;
+    }
+
+    private void Drag(ItemSlot _itemSlot)
+    {
+        if (draggableItem.enabled)
+        {
+            draggableItem.transform.position = Input.mousePosition;
+        }
+    }
+
+    private void Drop(ItemSlot _dropItemSlot)
+    {
+        // Can the slot that we are dropping the item, recieve the item from the slot that started the drag 
+        // AND 
+        // Can the slot that started the drag recieve the item from the slot that we are dropping the item 
+        if (_dropItemSlot.CanRecieveItem(draggedSlot.Item) && draggedSlot.CanRecieveItem(_dropItemSlot.Item))
+        {
+            sEquippableItem dragItem = draggedSlot.Item as sEquippableItem;
+            sEquippableItem dropItem = _dropItemSlot.Item as sEquippableItem;
+
+            // If we are dragging an item out of an equipment slot 
+            if (draggedSlot is EquipmentSlot)
+            {
+                // Unequip the drag item and equip the item in the drop slot
+                if (dragItem != null) dragItem.Unequip(this);
+                if (dropItem != null) dropItem.Equip(this);
+            }
+            if (_dropItemSlot is EquipmentSlot)
+            {
+                // Unequip the drop item and equip the item in the drag item
+                if (dragItem != null) dragItem.Equip(this);
+                if (dropItem != null) dropItem.Unequip(this);
+            }
+            
+            // Update the stat panel
+            statPanel.UpdateStatValues();
+
+            sItem draggedItem = draggedSlot.Item;
+            draggedSlot.Item = _dropItemSlot.Item;
+            _dropItemSlot.Item = draggedItem;
         }
     }
 
