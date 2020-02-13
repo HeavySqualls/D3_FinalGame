@@ -122,8 +122,17 @@ public class PlayerController : PhysicsObject
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
 
+    //// Input Actions
+    //PlayerInputActions inputActions;
+
+    //// Movement
+    //Vector2 movementInput;
+
     void Awake()
     {
+        //inputActions = new PlayerInputActions();
+        //inputActions.PlayerControls.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         direction = Vector2.right;
@@ -265,7 +274,7 @@ public class PlayerController : PhysicsObject
             {
                 isMoving = true;              
 
-                if (Input.GetAxisRaw(controls.xMove) > 0f) // Moving Right
+                if (horizontalInput > 0f) // Moving Right
                 {
                     if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft)
                     {
@@ -276,7 +285,7 @@ public class PlayerController : PhysicsObject
 
                     move.x += accelRatePerSecond * Time.deltaTime;
                 }
-                else if (Input.GetAxisRaw(controls.xMove) < 0f) // Moving Left
+                else if (horizontalInput < 0f) // Moving Left
                 {
                     if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft)
                     {
@@ -312,7 +321,7 @@ public class PlayerController : PhysicsObject
                     move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
                 }
             }         
-            else if (Input.GetAxisRaw(controls.xMove) == 0)  // Determine if input has stopped
+            else if (!isInputLeftORRight)  // Determine if input has stopped
             {
                 if (inWindZone) // If movement has stopped and player is in a windzone
                 {

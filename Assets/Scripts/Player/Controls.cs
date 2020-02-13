@@ -8,8 +8,24 @@ public class Controls : MonoBehaviour
     public string launch;
     public string magBoots;
 
+    // Input Actions
+    PlayerInputActions inputActions;
+
+    // Movement
+    Vector2 movementInput;
+
+    // Jump
+
+
+    private void Awake()
+    {
+        inputActions = new PlayerInputActions();
+        inputActions.PlayerControls.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
+    }
+
     public void KeyboardControls()
     {
+        //xMove = movementInput.x;
         xMove = "Horizontal";
         jump = "Jump";
         punch = "Punch";
@@ -19,10 +35,20 @@ public class Controls : MonoBehaviour
 
     public void ControllerControls()
     {
-        xMove = "Cont_Hor";
+        //xMove = "Cont_Hor";
         jump = "Jump";
         punch = "Punch";
         launch = "Launch";
         magBoots = "MagBoots";
+    }
+
+    private void OnEnable()
+    {
+        inputActions.Enable();
+    }
+
+    private void OnDisable()
+    {
+        inputActions.Disable();
     }
 }

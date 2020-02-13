@@ -225,6 +225,7 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 0
+  isWallJumping: 0
   respawnZone: {fileID: 0}
   isController: 0
   accelSpeedNormal: 7
@@ -245,6 +246,8 @@ MonoBehaviour:
   quickJumpDelay: 0.02
   maxGraceTime: 0.12
   jumpHoldTimeMax: 0.5
+  airDisableTimer: 0.2
+  jumpHoldTime: 0
   magBootsOn: 0
   onGravValue: 25
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
