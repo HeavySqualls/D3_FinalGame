@@ -2,7 +2,10 @@
 
 public class PlayerHandleInventory : MonoBehaviour
 {
-    [SerializeField] GameObject inventoryGO;
+    [SerializeField] GameObject characterPanelGO;
+    [SerializeField] GameObject itemTooltip;
+    [SerializeField] GameObject statTooltip;
+    [SerializeField] GameObject lootBoxPanel;
     [SerializeField] KeyCode[] toggleInventoryKeys;
 
     void Update()
@@ -11,27 +14,34 @@ public class PlayerHandleInventory : MonoBehaviour
         {
             if (Input.GetKeyDown(toggleInventoryKeys[i]))
             {
-                inventoryGO.SetActive(!inventoryGO.activeSelf);
+                characterPanelGO.SetActive(!characterPanelGO.activeSelf);
 
-                if (inventoryGO.activeSelf)
-                    ShowCursor();
+                if (characterPanelGO.activeSelf)
+                {
+                    ShowMouseCursor();
+                }
                 else
+                {
                     HideMouseCursor();
+                }
 
                 break;
             }
         }
     }
 
-    public void ShowCursor()
+    private void ShowMouseCursor()
     {
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
     }
 
-    public void HideMouseCursor()
+    private void HideMouseCursor()
     {
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
+        itemTooltip.SetActive(false);
+        statTooltip.SetActive(false);
+        lootBoxPanel.SetActive(false);
     }
 }

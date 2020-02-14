@@ -160,6 +160,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f08946fa3bebf07499e17605ee3b9c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  inventory: {fileID: 0}
+  lootBox: {fileID: 0}
+  inputKey: 0
+  pickupItem: {fileID: 0}
 --- !u!114 &3941713676428747812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,8 +249,8 @@ MonoBehaviour:
   jumpDelayTime: 0.02
   quickJumpDelay: 0.02
   maxGraceTime: 0.12
-  jumpHoldTimeMax: 0.5
-  airDisableTimer: 0.2
+  jumpHoldTimeMax: 0.37
+  airDisableTimer: 0.1
   jumpHoldTime: 0
   magBootsOn: 0
   onGravValue: 25
@@ -258,7 +262,7 @@ MonoBehaviour:
   wallCheckDistance: 0.75
   wallSlidingSpeed: 1
   wallJumpDirection: {x: 0, y: 0}
-  wallJumpForce: 0
+  wallJumpForce: 3.25
   wallCheck: {fileID: 8395342489049737418}
   isWallSliding: 0
   canClimbLedge: 0
@@ -286,8 +290,12 @@ MonoBehaviour:
   xMove: 
   jump: 
   punch: 
-  launch: 
+  ability_1: 
+  ability_2: 
+  ability_3: 
   magBoots: 
+  crouch: 
+  interact: 
 --- !u!95 &1242993176099357723
 Animator:
   serializedVersion: 3

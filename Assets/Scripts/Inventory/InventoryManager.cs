@@ -14,6 +14,7 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] Inventory inventory;
     [SerializeField] EquipmentPanel equipPanel;
+    [SerializeField] LootBoxPanel lootPanel;
     [SerializeField] StatPanel statPanel;
     [SerializeField] ItemToolTip itemTooltip;
     [SerializeField] Image draggableItem;
@@ -38,24 +39,31 @@ public class InventoryManager : MonoBehaviour
         // Right click:
         inventory.OnRightClickEvent += Equip;
         equipPanel.OnRightClickEvent += Unequip;
+        lootPanel.OnRightClickEvent += TakeLoot;
         // Pointer Enter:
         inventory.OnPointerEnterEvent += ShowTooltip;
         equipPanel.OnPointerEnterEvent += ShowTooltip;
+        lootPanel.OnPointerEnterEvent += ShowTooltip;
         // Pointer Exit:
         inventory.OnPointerExitEvent += HideTooltip;
         equipPanel.OnPointerExitEvent += HideTooltip;
+        lootPanel.OnPointerExitEvent += HideTooltip;
         // Begin Drag
         inventory.OnBeginDragEvent += BeginDrag;
         equipPanel.OnBeginDragEvent += BeginDrag;
+        lootPanel.OnBeginDragEvent += BeginDrag;
         // End Drag:
         inventory.OnEndDragEvent += EndDrag;
         equipPanel.OnEndDragEvent += EndDrag;
+        lootPanel.OnEndDragEvent += EndDrag;
         // Drag 
         inventory.OnDragEvent += Drag;
         equipPanel.OnDragEvent += Drag;
+        lootPanel.OnDragEvent += Drag;
         // Drop
         inventory.OnDropEvent += Drop;
         equipPanel.OnDropEvent += Drop;
+        lootPanel.OnDropEvent += Drop;
     }
 
     private void Equip(ItemSlot _itemSlot)
@@ -65,6 +73,7 @@ public class InventoryManager : MonoBehaviour
         if (equippableItem != null)
         {
             Equip(equippableItem);
+            itemTooltip.HideToolTip();
         }
     }
 
@@ -72,9 +81,32 @@ public class InventoryManager : MonoBehaviour
     {
         // if the item in the selected equipment slot is an equippable item, unequip it!
         sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
+        
         if (equippableItem != null)
         {
             Unequip(equippableItem);
+
+            itemTooltip.HideToolTip();
+
+            // if the item is from a loot box, remove the item from inside it 
+            if (_itemSlot as LootBoxSlot)
+            {
+                _itemSlot.Item = null;
+            }
+        }
+    }
+
+    private void TakeLoot(ItemSlot _lootSlot)
+    {
+        LootBoxSlot lootSlot = _lootSlot as LootBoxSlot;
+        if (inventory.AddItem(_lootSlot.Item))
+        {
+            lootSlot.IsLooted();
+            itemTooltip.HideToolTip();
+        }
+        else
+        {
+            Debug.Log("No room in inventory!");
         }
     }
 
@@ -153,6 +185,12 @@ public class InventoryManager : MonoBehaviour
 
             sItem draggedItem = draggedSlot.Item;
             draggedSlot.Item = _dropItemSlot.Item;
+
+            if (draggedSlot as LootBoxSlot)
+            {
+                print("slot looted!");
+            }
+
             _dropItemSlot.Item = draggedItem;
         }
     }

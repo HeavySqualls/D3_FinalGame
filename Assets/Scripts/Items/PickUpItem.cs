@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class PickUpItem : MonoBehaviour
 {
+    public bool isLootBox;
+    public bool isOpen;
+
     public sItem item;
     [SerializeField] PlayerHandleInteract pInteract;
     [SerializeField] Material normalMat;
@@ -33,6 +36,7 @@ public class PickUpItem : MonoBehaviour
     {
         if (pInteract != null)
         {
+            pInteract.CloseLootBox();
             pInteract.UnAssignPickUpItem();
             pInteract = null;
             spriteRenderer.material = normalMat;
@@ -41,10 +45,13 @@ public class PickUpItem : MonoBehaviour
 
     public void OnItemPickedUp()
     {
-        spriteRenderer.enabled = false;
-        isEmpty = true;
-        pInteract.UnAssignPickUpItem();
-        pInteract = null;
-        spriteRenderer.material = normalMat;
+        if (!isLootBox)
+        {
+            spriteRenderer.enabled = false;
+            pInteract.UnAssignPickUpItem();
+            pInteract = null;
+            spriteRenderer.material = normalMat;
+            return;
+        }
     }
 }

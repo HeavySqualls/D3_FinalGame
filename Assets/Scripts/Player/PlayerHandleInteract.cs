@@ -5,7 +5,7 @@ using UnityEngine;
 public class PlayerHandleInteract : MonoBehaviour
 {
     [SerializeField] Inventory inventory;
-
+    [SerializeField] LootBoxPanel lootBox;
     //[Space]
     //[Header("PLAYER STATS:")]
     //public float hpStart;
@@ -14,9 +14,11 @@ public class PlayerHandleInteract : MonoBehaviour
     [SerializeField] PickUpItem pickupItem;
     private PlayerController pCon;
     private PlayerFeedback pFeedBack;
+    private PlayerHandleInventory pHandleInventory;
 
     void Start()
     {
+        pHandleInventory = GetComponent<PlayerHandleInventory>();
         pFeedBack = GetComponent<PlayerFeedback>();
         pCon = GetComponent<PlayerController>();
     }
@@ -27,7 +29,15 @@ public class PlayerHandleInteract : MonoBehaviour
         {
             if (pickupItem != null)
             {
-                inventory.AddItem(pickupItem.item);
+                if (pickupItem.isLootBox)
+                {
+                    OpenCloseLootBox();
+                }
+                else
+                {
+                    inventory.AddItem(pickupItem.item);
+                }
+
                 pickupItem.OnItemPickedUp();
             }
             else
@@ -68,4 +78,37 @@ public class PlayerHandleInteract : MonoBehaviour
         pickupItem = null;
     }
 
+    private void OpenCloseLootBox()
+    {
+        if (!pickupItem.isOpen)
+        {
+            lootBox.ViewItems(pickupItem.item);
+            pickupItem.isOpen = true;
+            ShowMouseCursor();
+        }
+        else
+        {
+            lootBox.HideItems();
+            pickupItem.isOpen = false;
+            HideMouseCursor();
+        }
+    }
+
+    public void CloseLootBox()
+    {
+        lootBox.HideItems();
+        pickupItem.isOpen = false;
+    }
+
+    public void ShowMouseCursor()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void HideMouseCursor()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
 }
