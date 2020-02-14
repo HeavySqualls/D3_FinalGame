@@ -16,7 +16,7 @@ public class Interact_Base : MonoBehaviour
 
         if (pThatHitMe != null)
         {
-            pThatHitMe.Interaction(this);
+            pThatHitMe.HitDangerousObstacle(this);
         }
         else
         {

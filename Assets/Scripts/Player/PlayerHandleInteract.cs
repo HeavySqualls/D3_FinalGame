@@ -4,11 +4,14 @@ using UnityEngine;
 
 public class PlayerHandleInteract : MonoBehaviour
 {
+    [SerializeField] Inventory inventory;
+
     //[Space]
     //[Header("PLAYER STATS:")]
     //public float hpStart;
     //public float hpCurrent;
-
+    [SerializeField] KeyCode inputKey;
+    [SerializeField] PickUpItem pickupItem;
     private PlayerController pCon;
     private PlayerFeedback pFeedBack;
 
@@ -18,7 +21,23 @@ public class PlayerHandleInteract : MonoBehaviour
         pCon = GetComponent<PlayerController>();
     }
 
-    public void Interaction(Interact_Base _interactableItem)
+    private void Update()
+    {
+        if (Input.GetKeyDown(inputKey))
+        {
+            if (pickupItem != null)
+            {
+                inventory.AddItem(pickupItem.item);
+                pickupItem.OnItemPickedUp();
+            }
+            else
+            {
+                Debug.Log("Nothing to pick up here!");
+            }
+        }
+    }
+
+    public void HitDangerousObstacle(Interact_Base _interactableItem)
     {
         if (_interactableItem != null)
         {
@@ -35,4 +54,18 @@ public class PlayerHandleInteract : MonoBehaviour
         //hpCurrent -= _damage;
         StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
     }
+
+
+    // Assign Pick up item to player for pick up
+    public void AssignPickUpItem (PickUpItem _pickup)
+    {
+        pickupItem = _pickup;
+    }
+
+    // Remove pick up item from player pick up
+    public void UnAssignPickUpItem()
+    {
+        pickupItem = null;
+    }
+
 }

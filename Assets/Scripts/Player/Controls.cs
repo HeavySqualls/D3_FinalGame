@@ -5,50 +5,32 @@ public class Controls : MonoBehaviour
     public string xMove;
     public string jump;
     public string punch;
-    public string launch;
+    public string ability_1;
+    public string ability_2;
+    public string ability_3;
     public string magBoots;
+    public string crouch;
+    public string interact;
 
-    // Input Actions
-    PlayerInputActions inputActions;
-
-    // Movement
-    Vector2 movementInput;
-
-    // Jump
-
-
-    private void Awake()
+    private void Start()
     {
-        inputActions = new PlayerInputActions();
-        inputActions.PlayerControls.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
+        jump = "Jump";
+        punch = "Punch";
+        ability_1 = "Ability_1";
+        ability_2 = "Ability_2";
+        ability_3 = "Ability_3";
+        magBoots = "MagBoots";
+        crouch = "Crouch";
+        interact = "Interact";
     }
 
-    public void KeyboardControls()
+    public void KeyboardMovement()
     {
-        //xMove = movementInput.x;
         xMove = "Horizontal";
-        jump = "Jump";
-        punch = "Punch";
-        launch = "Launch";
-        magBoots = "MagBoots";
     }
 
-    public void ControllerControls()
+    public void ControllerMovement()
     {
-        //xMove = "Cont_Hor";
-        jump = "Jump";
-        punch = "Punch";
-        launch = "Launch";
-        magBoots = "MagBoots";
-    }
-
-    private void OnEnable()
-    {
-        inputActions.Enable();
-    }
-
-    private void OnDisable()
-    {
-        inputActions.Disable();
+        xMove = "Cont_Hor";
     }
 }

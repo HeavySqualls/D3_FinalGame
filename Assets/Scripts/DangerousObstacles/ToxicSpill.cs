@@ -48,7 +48,7 @@ public class ToxicSpill : Interact_Base
         if (pThatHitMe != null && !isDamageDelay)
         {
             print("oww");
-            pThatHitMe.Interaction(this);
+            pThatHitMe.HitDangerousObstacle(this);
             isDamageDelay = true;
             pThatHitMe.GetComponent<RecieveDamage>().GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
             StartCoroutine(DamageDelay());

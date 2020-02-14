@@ -130,7 +130,7 @@ public class PlayerCombat : MonoBehaviour
             }
 
             // Boot Launch
-            if (Input.GetButton(pCon.controls.launch))
+            if (Input.GetButton(pCon.controls.ability_1))
             {
                 SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
                 pCon.animator.SetTrigger("kick");

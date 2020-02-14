@@ -172,10 +172,12 @@ public class InventoryManager : MonoBehaviour
                     statPanel.UpdateStatValues();
                 }
                 _item.Equip(this);
+
                 statPanel.UpdateStatValues();
             }
             else
             {
+                Debug.Log("Can not equip this item here!");
                 inventory.AddItem(_item); // if we can't add the item to an equipment slot, return it to the inventory 
             }
         }

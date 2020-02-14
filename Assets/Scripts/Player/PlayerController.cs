@@ -151,9 +151,9 @@ public class PlayerController : PhysicsObject
         if (controls != null)
         {
             if (isController)
-                controls.ControllerControls();
+                controls.ControllerMovement();
             else
-                controls.KeyboardControls();
+                controls.KeyboardMovement();
         }
         else
             Debug.Log("Player does not have the controls component attached!");

@@ -71,6 +71,8 @@ public class Inventory : MonoBehaviour
                 return true;
             }
         }
+
+        Debug.Log("No room left in inventory!");
         return false;
     }
 
