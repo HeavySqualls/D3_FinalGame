@@ -5,37 +5,38 @@ using UnityEngine;
 public class PlayerHandleInteract : MonoBehaviour
 {
     [SerializeField] Inventory inventory;
-    [SerializeField] LootBoxPanel lootBox;
-    //[Space]
-    //[Header("PLAYER STATS:")]
-    //public float hpStart;
-    //public float hpCurrent;
-    [SerializeField] KeyCode inputKey;
-    [SerializeField] PickUpItem pickupItem;
+
+    [SerializeField] KeyCode interactKey;
+
+    // Gets assigned when in the trigger zone of a pick up object
+    [SerializeField] PickUpItem pickupItem = null;
+    [SerializeField] LootBoxPanel lootBoxPanel = null;
+
     private PlayerController pCon;
     private PlayerFeedback pFeedBack;
-    private PlayerHandleInventory pHandleInventory;
 
     void Start()
     {
-        pHandleInventory = GetComponent<PlayerHandleInventory>();
         pFeedBack = GetComponent<PlayerFeedback>();
         pCon = GetComponent<PlayerController>();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(inputKey))
+        if (Input.GetKeyDown(interactKey))/*(pCon.controls.interact))*/ //TODO: Why the fuck does this "interact" reference not work??
         {
             if (pickupItem != null)
             {
                 if (pickupItem.isLootBox)
                 {
-                    OpenCloseLootBox();
+                    pickupItem.OpenCloseLootBox();
                 }
                 else
                 {
-                    inventory.AddItem(pickupItem.item);
+                    if (inventory != null)
+                        inventory.AddItem(pickupItem.item);
+                    else                  
+                        Debug.LogError("PlayerHandleInteract does not have a reference to the Inventory.cs component!");                                  
                 }
 
                 pickupItem.OnItemPickedUp();
@@ -67,48 +68,18 @@ public class PlayerHandleInteract : MonoBehaviour
 
 
     // Assign Pick up item to player for pick up
-    public void AssignPickUpItem (PickUpItem _pickup)
+    public void SendPickupItemReferences (PickUpItem _pickup, LootBoxPanel _lootPanel)
     {
         pickupItem = _pickup;
-    }
+
+        if (pickupItem.isLootBox)
+            lootBoxPanel = _lootPanel;
+     }
 
     // Remove pick up item from player pick up
-    public void UnAssignPickUpItem()
+    public void UnAssignPickUpItemReferences()
     {
         pickupItem = null;
-    }
-
-    private void OpenCloseLootBox()
-    {
-        if (!pickupItem.isOpen)
-        {
-            lootBox.ViewItems(pickupItem.item);
-            pickupItem.isOpen = true;
-            ShowMouseCursor();
-        }
-        else
-        {
-            lootBox.HideItems();
-            pickupItem.isOpen = false;
-            HideMouseCursor();
-        }
-    }
-
-    public void CloseLootBox()
-    {
-        lootBox.HideItems();
-        pickupItem.isOpen = false;
-    }
-
-    public void ShowMouseCursor()
-    {
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
-    }
-
-    public void HideMouseCursor()
-    {
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        lootBoxPanel = null;
     }
 }

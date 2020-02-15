@@ -2,11 +2,21 @@
 
 public class PlayerHandleInventory : MonoBehaviour
 {
-    [SerializeField] GameObject characterPanelGO;
+    bool isInventoryOpen = true;
+
+    [SerializeField] GameObject inventory;
+    [SerializeField] GameObject equipmentPanel;
+    [SerializeField] GameObject statsPanel;
     [SerializeField] GameObject itemTooltip;
     [SerializeField] GameObject statTooltip;
     [SerializeField] GameObject lootBoxPanel;
     [SerializeField] KeyCode[] toggleInventoryKeys;
+
+    private void Start()
+    {
+       // TODO: find out why this blocks item from being picked up until the inventory has been enabled - call order issue?
+       // EnableDisableInventory();
+    }
 
     void Update()
     {
@@ -14,9 +24,9 @@ public class PlayerHandleInventory : MonoBehaviour
         {
             if (Input.GetKeyDown(toggleInventoryKeys[i]))
             {
-                characterPanelGO.SetActive(!characterPanelGO.activeSelf);
+                EnableDisableInventory();
 
-                if (characterPanelGO.activeSelf)
+                if (isInventoryOpen)
                 {
                     ShowMouseCursor();
                 }
@@ -43,5 +53,13 @@ public class PlayerHandleInventory : MonoBehaviour
         itemTooltip.SetActive(false);
         statTooltip.SetActive(false);
         lootBoxPanel.SetActive(false);
+    }
+
+    private void EnableDisableInventory()
+    {
+        inventory.SetActive(!inventory.activeSelf);
+        equipmentPanel.SetActive(!equipmentPanel.activeSelf);
+        statsPanel.SetActive(!statsPanel.activeSelf);
+        isInventoryOpen = !isInventoryOpen;
     }
 }

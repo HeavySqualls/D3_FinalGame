@@ -6,19 +6,22 @@ public class PickUpItem : MonoBehaviour
 {
     public bool isLootBox;
     public bool isOpen;
+    private bool isEmpty;
 
     public sItem item;
+
     [SerializeField] PlayerHandleInteract pInteract;
     [SerializeField] Material normalMat;
     [SerializeField] Material highlightMat;
 
-    private SpriteRenderer spriteRenderer;
-    private bool isEmpty;
+    SpriteRenderer spriteRenderer;
+    LootBoxPanel lootBoxPanel;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
+        lootBoxPanel = GetComponentInChildren<LootBoxPanel>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -27,7 +30,7 @@ public class PickUpItem : MonoBehaviour
 
         if (pInteract != null && !isEmpty)
         {
-            pInteract.AssignPickUpItem(this);
+            pInteract.SendPickupItemReferences(this, lootBoxPanel);
             spriteRenderer.material = highlightMat;
         }      
     }
@@ -36,8 +39,8 @@ public class PickUpItem : MonoBehaviour
     {
         if (pInteract != null)
         {
-            pInteract.CloseLootBox();
-            pInteract.UnAssignPickUpItem();
+            CloseLootBox();
+            pInteract.UnAssignPickUpItemReferences();
             pInteract = null;
             spriteRenderer.material = normalMat;
         }
@@ -48,10 +51,47 @@ public class PickUpItem : MonoBehaviour
         if (!isLootBox)
         {
             spriteRenderer.enabled = false;
-            pInteract.UnAssignPickUpItem();
+            pInteract.UnAssignPickUpItemReferences();
             pInteract = null;
             spriteRenderer.material = normalMat;
-            return;
+            Destroy(gameObject);
         }
+    }
+
+    public void OpenCloseLootBox()
+    {
+        if (!isOpen)
+        {
+            lootBoxPanel.ViewItems(item);
+            isOpen = true;
+            ShowMouseCursor();
+        }
+        else
+        {
+            lootBoxPanel.HideItems();
+            isOpen = false;
+            HideMouseCursor();
+        }
+    }
+
+    public void CloseLootBox()
+    {
+        if (isOpen)
+        {
+            lootBoxPanel.HideItems();
+            isOpen = false;
+        }
+    }
+
+    public void ShowMouseCursor()
+    {
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void HideMouseCursor()
+    {
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
     }
 }

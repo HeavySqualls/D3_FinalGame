@@ -56,8 +56,10 @@ public class EnemyController : PhysicsObject
     public float knockbackTimeLength;
     [SerializeField] float currentKnockBackTime;
 
-    void Start()
+    protected override void Start()
     {
+        base.Start();
+
         mR = GetComponent<MeshRenderer>();
         coll = GetComponent<BoxCollider2D>();
 

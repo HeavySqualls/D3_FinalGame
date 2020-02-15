@@ -9,7 +9,7 @@ public class EquipmentPanel : MonoBehaviour
 
     public event Action<ItemSlot> OnPointerEnterEvent;
     public event Action<ItemSlot> OnPointerExitEvent;
-    public event Action<ItemSlot> OnRightClickEvent; // Item has been selected
+    public event Action<ItemSlot> OnRightClickEvent; // Item has been selected.
     public event Action<ItemSlot> OnBeginDragEvent;
     public event Action<ItemSlot> OnEndDragEvent;
     public event Action<ItemSlot> OnDragEvent;

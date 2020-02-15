@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 1242993176099357724}
   - component: {fileID: 1020012711}
   m_Layer: 12
-  m_Name: TestSubject2D
+  m_Name: Wind Digger
   m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,9 +81,9 @@ SpriteRenderer:
   m_AutoUVMaxDistance: 0.5
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingLayerID: -766262129
+  m_SortingLayer: 2
+  m_SortingOrder: 5
   m_Sprite: {fileID: -4085899060697478215, guid: 8226986c4a1a0eb49af388a7293f2077,
     type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
@@ -162,7 +162,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
   lootBox: {fileID: 0}
-  inputKey: 0
+  inputKey: 102
   pickupItem: {fileID: 0}
 --- !u!114 &3941713676428747812
 MonoBehaviour:
@@ -349,7 +349,7 @@ TrailRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1242993176099357728}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1

@@ -101,6 +101,7 @@ public class InventoryManager : MonoBehaviour
         LootBoxSlot lootSlot = _lootSlot as LootBoxSlot;
         if (inventory.AddItem(_lootSlot.Item))
         {
+            Debug.Log(_lootSlot.Item.name + " has been added to your inventory!");
             lootSlot.IsLooted();
             itemTooltip.HideToolTip();
         }
