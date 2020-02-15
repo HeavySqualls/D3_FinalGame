@@ -4,14 +4,21 @@ using UnityEngine;
 
 public class PickUpItem : MonoBehaviour
 {
+    [Tooltip("Is this object a loot box?")]
     public bool isLootBox;
+    [Tooltip("Is this object open?")]
     public bool isOpen;
+    [Tooltip("Is this object empty?")]
     private bool isEmpty;
 
+    [Tooltip("What scriptable object item will be inside this loot box?")]
     public sItem item;
 
+    [Tooltip("This field gets auto-assigned and holds the reference to the player while they are in the trigger zone.")]
     [SerializeField] PlayerHandleInteract pInteract;
+    [Tooltip("Assign the normal material assigned to the asset.")]
     [SerializeField] Material normalMat;
+    [Tooltip("Assign the related highlighed 'Outline' shader for when the player is in the trigger zone.")]
     [SerializeField] Material highlightMat;
 
     SpriteRenderer spriteRenderer;
@@ -30,7 +37,7 @@ public class PickUpItem : MonoBehaviour
 
         if (pInteract != null && !isEmpty)
         {
-            pInteract.SendPickupItemReferences(this, lootBoxPanel);
+            pInteract.RecievePickupItemReferences(this, lootBoxPanel);
             spriteRenderer.material = highlightMat;
         }      
     }
