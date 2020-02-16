@@ -17,9 +17,10 @@ public class InteractableSwitch : MonoBehaviour
     [SerializeField] BlockedDoor door;
 
     SpriteRenderer spriteRenderer;
-
+    Animator animator;
     private void Start()
     {
+        animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
     }
@@ -47,6 +48,14 @@ public class InteractableSwitch : MonoBehaviour
 
     public void OpenCloseDoor()
     {
-        print("door is actuated!");
+        if (!door.isInputBlocked)
+        {
+            print("door is actuated!");
+            door.OpenCloseDoor();
+            isOpen = !isOpen;
+            animator.SetBool("isOpen", isOpen);
+        }
+        else
+            Debug.LogWarning("Door is currently in use... wait for movement to finish.");
     }
 }

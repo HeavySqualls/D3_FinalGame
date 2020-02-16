@@ -21,7 +21,7 @@ public class PlayerFeedback : MonoBehaviour
     public int vibrato = 9;
     [Tooltip("The randomness of the shake postitions.")]
     public float randomness = 2f;
-    public Camera cam;
+    Camera cam;
     Tween shakeTween;
 
     void Start()

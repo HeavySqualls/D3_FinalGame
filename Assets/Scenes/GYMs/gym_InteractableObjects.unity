@@ -2724,6 +2724,7 @@ GameObject:
   - component: {fileID: 976326711}
   - component: {fileID: 976326715}
   - component: {fileID: 976326714}
+  - component: {fileID: 976326716}
   m_Layer: 0
   m_Name: BlockedDoor
   m_TagString: Untagged
@@ -2859,9 +2860,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 55041b95a89ade44e838f8c0a4895c11, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  pInteract: {fileID: 0}
   normalMat: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   highlightMat: {fileID: 2100000, guid: 379a23c7a359c2745ad0dffd668080c9, type: 2}
+  duration: 2.5
+  closedPosition: {x: 15.74, y: 13.45, z: 0.2}
+  openPosition: {x: 15.74, y: 18, z: 0.2}
+--- !u!95 &976326716
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 976326710}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 4e3eef6ffd8172242bd1c25a907b2371, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1010257073
 GameObject:
   m_ObjectHideFlags: 0
@@ -3084,6 +3106,7 @@ GameObject:
   - component: {fileID: 1090109419}
   - component: {fileID: 1090109422}
   - component: {fileID: 1090109421}
+  - component: {fileID: 1090109423}
   m_Layer: 0
   m_Name: Switch
   m_TagString: Untagged
@@ -3130,7 +3153,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 1ce3e020a15d2da4fa22572ef0a9cfd6, type: 3}
+  m_Sprite: {fileID: -291118900411873231, guid: 82e63d4c1f99e9b48b5676d879750928,
+    type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -3187,7 +3211,26 @@ MonoBehaviour:
   pInteract: {fileID: 0}
   normalMat: {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   highlightMat: {fileID: 2100000, guid: 379a23c7a359c2745ad0dffd668080c9, type: 2}
-  door: {fileID: 0}
+  door: {fileID: 976326715}
+--- !u!95 &1090109423
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1090109418}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 7c471c216557fb14180ddd152f4255a7, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &1131583369
 GameObject:
   m_ObjectHideFlags: 0
