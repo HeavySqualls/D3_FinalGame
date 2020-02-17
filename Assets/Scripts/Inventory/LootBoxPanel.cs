@@ -11,7 +11,7 @@ public class LootBoxPanel : MonoBehaviour
     [Tooltip("What scriptable object items will be inside this loot box? - Must be the same number as loot box slots!")]
     [SerializeField] sItem[] startingItems;
     GameObject lootBoxPanel;
-    Transform lootBoxSlotsParent;
+    [SerializeField] Transform lootBoxSlotsParent;
 
     public event Action<ItemSlot> OnPointerEnterEvent;
     public event Action<ItemSlot> OnPointerExitEvent;
@@ -27,6 +27,7 @@ public class LootBoxPanel : MonoBehaviour
 
     private void OnValidate()
     {
+        lootBoxPanel = GetComponent<LootBoxPanel>().gameObject;
         lootBoxSlots = lootBoxSlotsParent.GetComponentsInChildren<LootBoxSlot>();
         inventoryManager = FindObjectOfType<InventoryManager>();
     }
@@ -58,7 +59,10 @@ public class LootBoxPanel : MonoBehaviour
         // For each item we have, assign it to an item slot,
         for (; i < startingItems.Length && i < lootBoxSlots.Length; i++)
         {
-            lootBoxSlots[i].Item = startingItems[i];
+            if (startingItems[i] != null)
+            {
+                lootBoxSlots[i].Item = Instantiate(startingItems[i]);
+            }
         }
 
         // for each remaining slot with no item, set slot to null

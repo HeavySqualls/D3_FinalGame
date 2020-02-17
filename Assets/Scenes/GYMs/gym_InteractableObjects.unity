@@ -2239,6 +2239,12 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 740877860}
   m_CullTransparentMesh: 0
+--- !u!224 &769534271 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 3301433853112589806, guid: 7d05d075b1775534b90bf3d158cd56ea,
+    type: 3}
+  m_PrefabInstance: {fileID: 3301433854706325086}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &795965558
 GameObject:
   m_ObjectHideFlags: 0
@@ -6460,6 +6466,16 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: 5649b7db49f0e4c4a8c62994a0c0248a,
         type: 2}
+    - target: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
+        type: 3}
+      propertyPath: lootBoxSlotsParent
+      value: 
+      objectReference: {fileID: 769534271}
+    - target: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
+        type: 3}
+      propertyPath: inventoryManager
+      value: 
+      objectReference: {fileID: 1282879012}
     - target: {fileID: 3301433854376171110, guid: 7d05d075b1775534b90bf3d158cd56ea,
         type: 3}
       propertyPath: items.Array.size

@@ -164,9 +164,12 @@ public class InventoryManager : MonoBehaviour
 
     private void Drop(ItemSlot _dropItemSlot)
     {
+        if (draggedSlot == null) return;
+
         // Can the slot that we are dropping the item, recieve the item from the slot that started the drag 
         // AND 
         // Can the slot that started the drag recieve the item from the slot that we are dropping the item 
+
         if (_dropItemSlot.CanRecieveItem(draggedSlot.Item) && draggedSlot.CanRecieveItem(_dropItemSlot.Item))
         {
             sEquippableItem dragItem = draggedSlot.Item as sEquippableItem;

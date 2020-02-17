@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class Inventory : MonoBehaviour
+public class Inventory : MonoBehaviour, IItemContainer
 {
-    [SerializeField] List<sItem> startingItems;
+    [SerializeField] sItem[] startingItems;
     [SerializeField] Transform itemsParent;
     [SerializeField] ItemSlot[] itemSlots;
 
@@ -49,9 +49,10 @@ public class Inventory : MonoBehaviour
     {
         int i = 0;
         // For each item we have, assign it to an item slot,
-        for (; i < startingItems.Count && i < itemSlots.Length; i++)
+        for (; i < startingItems.Length && i < itemSlots.Length; i++)
         {
-            itemSlots[i].Item = startingItems[i];
+            if (startingItems[i] != null)
+                itemSlots[i].Item = Instantiate(startingItems[i]);
         }
 
         // for each remaining slot with no item, set slot to null
@@ -76,17 +77,36 @@ public class Inventory : MonoBehaviour
         return false;
     }
 
-    public bool RemoveItem(sItem item)
+    public bool RemoveItem(sItem _item)
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            if (itemSlots[i].Item == item)
+            if (itemSlots[i].Item == _item)
             {
                 itemSlots[i].Item = null;
                 return true;
             }
         }
         return false;
+    }
+
+    public sItem RemoveItem(string _itemID)
+    {
+        // loop through the item slots 
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            sItem item = itemSlots[i].Item;
+
+            // check to see if there is an item in the slot, and if so, does it have the same item ID as the one we are looking for
+            if (item != null && item.ID == _itemID)
+            {
+                // if we find the item we are looking for, remove it from that slot, and return the item reference
+                itemSlots[i].Item = null;
+                return item;
+            }
+        }
+        // if we didnt find anything, return null
+        return null;
     }
 
     public bool IsFull()
@@ -99,5 +119,30 @@ public class Inventory : MonoBehaviour
             }
         }
         return true;
+    }
+
+    public int ItemCount(string _itemID) // look for an item ID instead of a reference
+    {
+        int number = 0;
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i].Item.ID == _itemID)
+            {
+                number++;
+            }
+        }
+        return number;
+    }
+
+    public bool ContainsItem(sItem _item)
+    {
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (itemSlots[i].Item == _item)
+            {
+                return true;
+            }
+        }
+        return false;
     }
 }
