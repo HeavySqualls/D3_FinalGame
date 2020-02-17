@@ -1,11 +1,17 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class LootBoxPanel : MonoBehaviour
 {
-    [SerializeField] Transform lootBoxSlotsParent;
+    [Tooltip("How many slots will this loot box have?")]
     [SerializeField] LootBoxSlot[] lootBoxSlots;
-    [SerializeField] GameObject lootBoxPanel;
+    [Tooltip("What scriptable object items will be inside this loot box? - Must be the same number as loot box slots!")]
+    [SerializeField] sItem[] startingItems;
+    GameObject lootBoxPanel;
+    Transform lootBoxSlotsParent;
 
     public event Action<ItemSlot> OnPointerEnterEvent;
     public event Action<ItemSlot> OnPointerExitEvent;
@@ -17,9 +23,12 @@ public class LootBoxPanel : MonoBehaviour
 
     public event Action<sItem> OnItemRightClickedEvent;
 
+    [SerializeField] InventoryManager inventoryManager;
+
     private void OnValidate()
     {
         lootBoxSlots = lootBoxSlotsParent.GetComponentsInChildren<LootBoxSlot>();
+        inventoryManager = FindObjectOfType<InventoryManager>();
     }
 
     private void Awake()
@@ -40,24 +49,45 @@ public class LootBoxPanel : MonoBehaviour
     private void Start()
     {
         lootBoxPanel.SetActive(false);
+        SetStartingItems();
     }
 
-    public bool ViewItems(sItem item)
+    private void SetStartingItems()
     {
-
-        lootBoxPanel.SetActive(true);
-
-        for (int i = 0; i < lootBoxSlots.Length; i++)
+        int i = 0;
+        // For each item we have, assign it to an item slot,
+        for (; i < startingItems.Length && i < lootBoxSlots.Length; i++)
         {
-            if (lootBoxSlots[i].Item == null && !lootBoxSlots[i].isLooted)
-            {
-                lootBoxSlots[i].Item = item;
-                return true;
-            }
+            lootBoxSlots[i].Item = startingItems[i];
         }
 
-        Debug.Log("No room left in the chest!");
-        return false;
+        // for each remaining slot with no item, set slot to null
+        for (; i < lootBoxSlots.Length; i++)
+        {
+            lootBoxSlots[i].Item = null;
+        }
+
+        if (startingItems.Length > lootBoxSlots.Length)
+        {
+            Debug.LogWarning("More items assigned to loot box " + gameObject.GetComponentInParent<SpriteRenderer>().name + " than there are slots! Not all items will appear.");
+        }
+    }
+
+    public void QuickLoot()
+    {
+        for (int i = 0; i < lootBoxSlots.Length; i++)
+        {
+            if (lootBoxSlots[i].Item != null)
+            {
+                inventoryManager.QuickLoot(lootBoxSlots[i]);
+            }
+        }
+    }
+
+    // Trying to assign an array of items to an array of item slots in a loot crate UI:
+    public void ViewItems() // The array of items passed in to the loot crate UI 
+    {
+        lootBoxPanel.SetActive(true); // Make the UI visible to the player
     }
 
     public void HideItems()

@@ -96,6 +96,11 @@ public class InventoryManager : MonoBehaviour
         }
     }
 
+    public void QuickLoot(ItemSlot _quickLootItemSlot)
+    {
+        TakeLoot(_quickLootItemSlot);
+    }
+
     private void TakeLoot(ItemSlot _lootSlot)
     {
         LootBoxSlot lootSlot = _lootSlot as LootBoxSlot;

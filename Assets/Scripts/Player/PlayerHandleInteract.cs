@@ -7,6 +7,7 @@ public class PlayerHandleInteract : MonoBehaviour
     [SerializeField] Inventory inventory;
 
     [SerializeField] KeyCode interactKey;
+    [SerializeField] KeyCode quickLootKey;
 
     // Gets assigned when in the trigger zone of a pick up object
     [SerializeField] PickUpItem currentPickupItem = null;
@@ -54,6 +55,14 @@ public class PlayerHandleInteract : MonoBehaviour
             if (currentSwtich != null)
             {
                 currentSwtich.OpenCloseDoor();
+            }
+        }
+
+        if (Input.GetKeyDown(quickLootKey) && currentPickupItem != null && currentPickupItem.isOpen)
+        {
+            if (currentPickupItem.item != null)
+            {
+                currentPickupItem.QuickLoot();
             }
         }
     }

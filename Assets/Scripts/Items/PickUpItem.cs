@@ -11,7 +11,7 @@ public class PickUpItem : MonoBehaviour
     [Tooltip("Is this object empty?")]
     private bool isEmpty;
 
-    [Tooltip("What scriptable object item will be inside this loot box?")]
+    [Tooltip("What scriptable object item this item be? - NOT FOR LOOT BOX. FOR SINGLE PIKC UP ITEMS ONLY!")]
     public sItem item;
 
     [Tooltip("This field gets auto-assigned and holds the reference to the player while they are in the trigger zone.")]
@@ -21,8 +21,8 @@ public class PickUpItem : MonoBehaviour
     [Tooltip("Assign the related highlighed 'Outline' shader for when the player is in the trigger zone.")]
     [SerializeField] Material highlightMat;
 
-    SpriteRenderer spriteRenderer;
     LootBoxPanel lootBoxPanel;
+    SpriteRenderer spriteRenderer;
 
     private void Start()
     {
@@ -69,7 +69,7 @@ public class PickUpItem : MonoBehaviour
     {
         if (!isOpen)
         {
-            lootBoxPanel.ViewItems(item);
+            lootBoxPanel.ViewItems();
             isOpen = true;
             ShowMouseCursor();
         }
@@ -79,6 +79,11 @@ public class PickUpItem : MonoBehaviour
             isOpen = false;
             HideMouseCursor();
         }
+    }
+
+    public void QuickLoot()
+    {
+        lootBoxPanel.QuickLoot();
     }
 
     public void CloseLootBox()
