@@ -169,6 +169,7 @@ public class PlayerController : PhysicsObject
         horizontalInput = Input.GetAxisRaw(controls.xMove);
         isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
 
+        CheckIfGroundSliding();
         CheckSurroundings();
         CheckIfWallSliding();
         TrackAirTime();
@@ -411,6 +412,7 @@ public class PlayerController : PhysicsObject
         }
 
         // Animation settings
+        animator.SetBool("isGroundSliding", isGroundSliding);
         animator.SetBool("isMoving", isMoving);
         animator.SetBool("isSkid", isSkidding);
         animator.SetBool("grounded", isGrounded);
@@ -548,6 +550,20 @@ public class PlayerController : PhysicsObject
             canFlipSprite = false;
         else
             canFlipSprite = true;
+    }
+
+    private void CheckIfGroundSliding()
+    {
+        if (isGroundSliding)
+        {
+            print("ground sliding!");
+            canMove = false;
+            targetVelocity = new Vector2(5, 5);
+        }
+        else
+        {
+            canMove = true;
+        }
     }
 
     private void CheckIfWallSliding()
