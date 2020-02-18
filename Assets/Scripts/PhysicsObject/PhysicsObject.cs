@@ -17,8 +17,10 @@ public class PhysicsObject : MonoBehaviour
     protected float minWallNormalX = 0.8f;
     protected float maxWallNormalX = 0.5f;
     protected float minGroundNormalY = 0.65f;
-    protected float slideGroundNormalY = 0.75f;
-    protected bool isGroundSliding;
+    //protected float slideGroundNormalYRight = 0.707f; // 45 degree surface angle
+    //protected float slideGroundNormalYLeft = 0.708f;
+    //protected bool isGroundSliding;
+    //protected Vector2 groundSlidingDirection;
 
     [SerializeField] protected Vector2 direction;
     protected Vector2 groundNormal;
@@ -119,16 +121,27 @@ public class PhysicsObject : MonoBehaviour
             for (int i = 0; i < hitBufferList.Count; i++)
             {
                 Vector2 currentNormal = hitBufferList[i].normal; // returns the normal of each item in the array 
-
+                // print(currentNormal.y);
                 // THIS IS WHERE THE PLAYER IS DETERMINED TO BE ON THE GROUND OR NOT
 
-                if (currentNormal.y < slideGroundNormalY) // unit is in a sliding situation
+                //if (currentNormal.y == slideGroundNormalYRight) // unit is in a sliding situation moving to the right
+                //{
+                //    isGroundSliding = true;
+                //    groundSlidingDirection = Vector2.right;
+                //}
+                //else if (currentNormal.y == slideGroundNormalYLeft) // unit is in a sliding situation moving to the left
+                //{
+                //    isGroundSliding = true;
+                //    groundSlidingDirection = Vector2.left;
+                //}
+                //if (currentNormal.y > slideGroundNormalYRight && currentNormal.y < slideGroundNormalYLeft) // unit is in a sliding situation moving to the right
+                //{
+                //    isGroundSliding = true;
+                //    //groundSlidingDirection = Vector2.right;
+                //}
+                if (currentNormal.y > minGroundNormalY) // checks if the normal of the item is greater than the minimum required angle for it to be considered ground            
                 {
-                    isGroundSliding = true;
-                }
-                else if (currentNormal.y > minGroundNormalY) // checks if the normal of the item is greater than the minimum required angle for it to be considered ground
-                {
-                    isGroundSliding = false;
+                    //isGroundSliding = false;
                     isGrounded = true;
 
                     if (_yMovement)
