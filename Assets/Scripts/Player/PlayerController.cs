@@ -66,11 +66,11 @@ public class PlayerController : PhysicsObject
     public float jumpHoldTimeMax = 1.5f;
     public float airDisableTimer = 0.2f;
     private bool isPressingJumpButton = false;
-    private float currentGraceTime;
+    [SerializeField] private float currentGraceTime;
     private float airTime = 0f;
     [SerializeField] float jumpHoldTime = 0;
     private bool canJump = true;
-    private bool quickJump = true;
+    private bool canQuickJump = true;
 
     [Space]
     [Header("MAG BOOTS:")]
@@ -152,15 +152,17 @@ public class PlayerController : PhysicsObject
         inputActions.PlayerControls.Move.performed -= OnMove;
         inputActions.PlayerControls.Move.performed += OnMove;
 
-        // Jump - Jump started, jump performed, jump cancel 
+        // Jump Started 
         inputActions.PlayerControls.Jump.started -= OnJumpStart;
         inputActions.PlayerControls.Jump.started += OnJumpStart;
 
+        // Jump Performed
         inputActions.PlayerControls.Jump.performed -= OnJumpPerformed;
         inputActions.PlayerControls.Jump.performed += OnJumpPerformed;
 
-        inputActions.PlayerControls.Jump.canceled -= OnJumpCancelled;
-        inputActions.PlayerControls.Jump.canceled += OnJumpCancelled;
+        // Jump Canceled
+        inputActions.PlayerControls.Jump.canceled -= OnJumpCanceled;
+        inputActions.PlayerControls.Jump.canceled += OnJumpCanceled;
 
         // MagBoots - TODO: move this to combat?
         inputActions.PlayerControls.MagneticBoots.performed -= OnMagBoots;
@@ -173,7 +175,7 @@ public class PlayerController : PhysicsObject
         inputActions.PlayerControls.Move.performed -= OnMove;
         inputActions.PlayerControls.Jump.started -= OnJumpStart;
         inputActions.PlayerControls.Jump.performed -= OnJumpPerformed;
-        inputActions.PlayerControls.Jump.canceled -= OnJumpCancelled;
+        inputActions.PlayerControls.Jump.canceled -= OnJumpCanceled;
 
         inputActions.PlayerControls.MagneticBoots.performed -= OnMagBoots;
     }
@@ -219,7 +221,7 @@ public class PlayerController : PhysicsObject
         TrackAirTime();
         ComputeVelocity();
         //Jump();
-        RapidJump();
+        //RapidJump();
         //MagBoots();
         GraceJumpTimer();
         CheckLedgeClimb();
@@ -752,24 +754,30 @@ public class PlayerController : PhysicsObject
 
     // ---- JUMP METHODS ---- //
 
-    float currentJumpDelayTime = 0;
-
-    IEnumerator JumpDelayTime()
+    private void OnJumpStart(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        yield return new WaitForSeconds(jumpDelayTime);
+        if (!magBootsOn)
+        {
+            if (!isGrounded && canJump && canQuickJump)
+            {
+                StartCoroutine(QuickJumpTimer());
+            }
+            else
+            {
+                isPressingJumpButton = true;
 
-        if (isWallSliding)
-        {
-            StartCoroutine(WallJumpTimer());
-            PushOffWall();
-        }
-        else
-        {
-            velocity.y = jumpTakeoffSpeed;
+                if (currentGraceTime > 0 && canJump || isWallSliding)
+                {
+                    StartCoroutine(JumpDelayTime());
+                    currentGraceTime = 0;
+                    canJump = false;
+                    animator.SetTrigger("jumping");
+                }
+            }
         }
     }
 
-    private void OnJumpCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    private void OnJumpCanceled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
         if (!magBootsOn)
         {
@@ -793,35 +801,20 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    private void OnJumpStart(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    float currentJumpDelayTime = 0;
+
+    IEnumerator JumpDelayTime()
     {
-        if (!magBootsOn)
+        yield return new WaitForSeconds(jumpDelayTime);
+
+        if (isWallSliding)
         {
-            if (!isGrounded && canJump && quickJump)
-            {
-                StartCoroutine(QuickJumpTimer());
-            }
-            else
-            {
-                isPressingJumpButton = true;
-
-
-                if (currentGraceTime > 0 && canJump || isWallSliding)
-                {
-                    StartCoroutine(JumpDelayTime());
-                    currentGraceTime = 0;
-                    canJump = false;
-                    animator.SetTrigger("jumping");
-                }
-            }
+            StartCoroutine(WallJumpTimer());
+            PushOffWall();
         }
-    }
-
-    public void RapidJump() // its on action - on jump pressed 
-    {
-        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
+        else
         {
-            StartCoroutine(QuickJumpTimer());
+            velocity.y = jumpTakeoffSpeed;
         }
     }
 
@@ -865,7 +858,7 @@ public class PlayerController : PhysicsObject
 
     IEnumerator QuickJumpTimer()
     {
-        quickJump = false;
+        canQuickJump = false;
 
         yield return new WaitForSeconds(quickJumpDelay);
 
@@ -883,7 +876,7 @@ public class PlayerController : PhysicsObject
             print("Missed quick jump!");
         }
 
-        quickJump = true;
+        canQuickJump = true;
         yield break;
     }
 
