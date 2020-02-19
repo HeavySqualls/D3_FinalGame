@@ -61,7 +61,7 @@ public class PlayerController : PhysicsObject
     [Tooltip("Maximum time for the 'Quick Jump' - buffer time between button press while in the air and the player landing on the ground to trigger a quick jump.")]
     public float quickJumpDelay = 0.02f;
     [Tooltip("Time from when the player leaves the ground without jumping until they are no longer allowed to jump.")]
-    public float graceTimeStart = 0.12f;
+    public float maxGraceTime = 0.12f;
     [Tooltip("Time it takes while holding the jump button to enable the 'Jump Flip' animation.")]
     public float jumpHoldTimeMax = 1.5f;
     public float airDisableTimer = 0.2f;
@@ -698,7 +698,6 @@ public class PlayerController : PhysicsObject
         rb2d.velocity = Vector3.zero;
         ripPP.CauseRipple(groundCheck, 15f, 0.95f);
 
-
         yield return new WaitForSeconds(0.25f);
 
         gravityModifier = onGravValue;
@@ -757,7 +756,7 @@ public class PlayerController : PhysicsObject
 
     private void OnJumpStart(UnityEngine.InputSystem.InputAction.CallbackContext obj)
     {
-        if (currentGraceTime > 0 && !magBootsOn)
+        if (!magBootsOn)
         {
             if (!isGrounded && canJump && canQuickJump)
             {
@@ -767,7 +766,7 @@ public class PlayerController : PhysicsObject
             {
                 isPressingJumpButton = true;
 
-                if (canJump || isWallSliding)
+                if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
                     StartCoroutine(JumpDelayTime());
                     currentGraceTime = 0;
@@ -782,7 +781,6 @@ public class PlayerController : PhysicsObject
     {
         if (!magBootsOn)
         {
-            print("canceled");
             canJump = true;
 
             if (velocity.y > 0)
@@ -800,9 +798,10 @@ public class PlayerController : PhysicsObject
             animator.SetTrigger("jumpingFlip");
             isPressingJumpButton = false;
             jumpHoldTime = 0;
-            canJump = true;
         }
     }
+
+    float currentJumpDelayTime = 0;
 
     IEnumerator JumpDelayTime()
     {
@@ -887,15 +886,10 @@ public class PlayerController : PhysicsObject
         {
             inAir = true;
             currentGraceTime -= Time.deltaTime;
-
-            if (currentGraceTime < 0)
-            {
-                currentGraceTime = 0;
-            }
         }
         else
         {
-            currentGraceTime = graceTimeStart;
+            currentGraceTime = maxGraceTime;
         }
     }
 
