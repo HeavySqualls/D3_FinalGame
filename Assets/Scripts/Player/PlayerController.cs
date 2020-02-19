@@ -127,14 +127,15 @@ public class PlayerController : PhysicsObject
     private SpriteRenderer spriteRenderer;
 
     //// Input Actions
-    PlayerInputActions inputActions;
+    //PlayerInputActions inputActions;
+
+    //// Movement
+    //Vector2 movementInput;
 
     void Awake()
     {
-        inputActions = new PlayerInputActions();
-        InitInputDelegates();
-
-        inputActions.Enable();
+        //inputActions = new PlayerInputActions();
+        //inputActions.PlayerControls.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
@@ -144,48 +145,6 @@ public class PlayerController : PhysicsObject
 
         accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedMaxSpeed;
         decelRatePerSecond = (maxSpeed / timeFromZeroToMax) * decelSpeed;
-    }
-
-    public void InitInputDelegates()
-    {
-        // Movement
-        inputActions.PlayerControls.Move.performed -= OnMove;
-        inputActions.PlayerControls.Move.performed += OnMove;
-
-        // Jump - Jump started, jump performed, jump cancel 
-        inputActions.PlayerControls.Jump.started -= OnJumpStart;
-        inputActions.PlayerControls.Jump.started += OnJumpStart;
-
-        inputActions.PlayerControls.Jump.performed -= OnJumpPerformed;
-        inputActions.PlayerControls.Jump.performed += OnJumpPerformed;
-
-        inputActions.PlayerControls.Jump.canceled -= OnJumpCancelled;
-        inputActions.PlayerControls.Jump.canceled += OnJumpCancelled;
-
-        // MagBoots - TODO: move this to combat?
-        inputActions.PlayerControls.MagneticBoots.performed -= OnMagBoots;
-        inputActions.PlayerControls.MagneticBoots.performed += OnMagBoots;
-    }
-
-
-    public void UninitInputDelegates()
-    {
-        inputActions.PlayerControls.Move.performed -= OnMove;
-        inputActions.PlayerControls.Jump.started -= OnJumpStart;
-        inputActions.PlayerControls.Jump.performed -= OnJumpPerformed;
-        inputActions.PlayerControls.Jump.canceled -= OnJumpCancelled;
-
-        inputActions.PlayerControls.MagneticBoots.performed -= OnMagBoots;
-    }
-
-    private void OnMove(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        horizontalInput = obj.ReadValue<Vector2>().x;
-    }
-
-    private void OnMagBoots(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        MagBoots();
     }
 
     protected override void Start()
@@ -211,6 +170,7 @@ public class PlayerController : PhysicsObject
     {
         base.Update();
 
+        horizontalInput = Input.GetAxisRaw(controls.xMove);
         isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
 
         CheckIfGroundSliding();
@@ -218,14 +178,14 @@ public class PlayerController : PhysicsObject
         CheckIfWallSliding();
         TrackAirTime();
         ComputeVelocity();
-        //Jump();
+        Jump();
         RapidJump();
-        //MagBoots();
+        MagBoots();
         GraceJumpTimer();
         CheckLedgeClimb();
     }
 
-    public float GetAnimTime() //TODO: Convert the dependencies of this to a public float
+    public float GetAnimTime() //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
     {
         if (animator != null)
         {
@@ -456,7 +416,6 @@ public class PlayerController : PhysicsObject
 
         // Animation settings
         animator.SetBool("isGroundSliding", isGroundSliding);
-
         animator.SetBool("isMoving", isMoving);
         animator.SetBool("isSkid", isSkidding);
         animator.SetBool("grounded", isGrounded);
@@ -518,7 +477,7 @@ public class PlayerController : PhysicsObject
             canWallSlide = true;
         }
 
-        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround); // check all the layers 
+        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
         Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
 
         if (hitGround.collider != null)
@@ -527,8 +486,6 @@ public class PlayerController : PhysicsObject
 
             goGround = hitGround.collider.gameObject;
 
-            // if current layer is breakable objects layer - then get component (each type of object needs its own layer)
-            //reakableObject bo = goGround.GetComponent<BreakableObject>() - check if null then conditions in if statement 
             if (goGround.GetComponent<BreakableObject>() && goGround.GetComponent<BreakableObject>().isPlatform && !goGround.GetComponent<BreakableObject>().isFallingApart)
             {
                 goGround.GetComponent<BreakableObject>().TriggerPlatformCollapse();
@@ -664,7 +621,7 @@ public class PlayerController : PhysicsObject
 
     public void MagBoots()
     {
-        if (!magBootsOn && !canClimbLedge)
+        if (Input.GetButtonUp(controls.magBoots) && !magBootsOn && !canClimbLedge)
         {
             print("MagBoots Activated: " + magBootsOn);
 
@@ -680,7 +637,7 @@ public class PlayerController : PhysicsObject
                 ripPP.CauseRipple(groundCheck, 12f, 0.5f);
             }
         }
-        else if (magBootsOn && !canClimbLedge)
+        else if (Input.GetButtonUp(controls.magBoots) && magBootsOn && !canClimbLedge)
         {
             print("MagBoots Activated: " + magBootsOn);
             magBootsOn = false;
@@ -769,42 +726,14 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    private void OnJumpCancelled(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    //TODO: Some where in here the jump needs to be scaled down?
+    private void Jump()
     {
         if (!magBootsOn)
         {
-            canJump = true;
-
-            if (velocity.y > 0)
-            {
-                velocity.y = velocity.y * 0.5f;
-            }
-        }
-    }
-
-    private void OnJumpPerformed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        if (!magBootsOn)
-        {
-            print("flip jump");
-            animator.SetTrigger("jumpingFlip");
-            isPressingJumpButton = false;
-            jumpHoldTime = 0;
-        }
-    }
-
-    private void OnJumpStart(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-        if (!magBootsOn)
-        {
-            if (!isGrounded && canJump && quickJump)
-            {
-                StartCoroutine(QuickJumpTimer());
-            }
-            else
+            if (Input.GetButtonDown(controls.jump))
             {
                 isPressingJumpButton = true;
-
 
                 if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
@@ -814,10 +743,38 @@ public class PlayerController : PhysicsObject
                     animator.SetTrigger("jumping");
                 }
             }
+            else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
+            {
+                isPressingJumpButton = false;
+                canJump = true;
+
+                if (velocity.y > 0)
+                {
+                    velocity.y = velocity.y * 0.5f;
+                }
+            }
+        }
+
+        // Start timer to determine jump height and proper animation
+        if (isPressingJumpButton)
+        {
+            jumpHoldTime += Time.deltaTime;
+
+            if (jumpHoldTime > jumpHoldTimeMax)
+            {
+                print("flip jump");
+                animator.SetTrigger("jumpingFlip");
+                isPressingJumpButton = false;
+                jumpHoldTime = 0;
+            }
+        }
+        else
+        {
+            jumpHoldTime = 0;
         }
     }
 
-    public void RapidJump() // its on action - on jump pressed 
+    public void RapidJump()
     {
         if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
         {

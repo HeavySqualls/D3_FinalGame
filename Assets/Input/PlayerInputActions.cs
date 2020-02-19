@@ -40,7 +40,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""id"": ""c8167935-905c-42a3-aa67-1368206b3943"",
                     ""expectedControlType"": ""Button"",
                     ""processors"": """",
-                    ""interactions"": ""Hold(duration=1.5)""
+                    ""interactions"": """"
                 },
                 {
                     ""name"": ""MagneticBoots"",
@@ -185,7 +185,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""574b18d4-352e-4141-987d-205ab63c381f"",
                     ""path"": ""<Keyboard>/q"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""MagneticBoots"",
@@ -196,7 +196,7 @@ public class @PlayerInputActions : IInputActionCollection, IDisposable
                     ""name"": """",
                     ""id"": ""82a42df4-d28e-41de-b894-e9ce987d2128"",
                     ""path"": ""<Gamepad>/dpad/up"",
-                    ""interactions"": ""Press"",
+                    ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
                     ""action"": ""MagneticBoots"",
