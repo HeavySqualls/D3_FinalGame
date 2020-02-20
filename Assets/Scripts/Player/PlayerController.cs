@@ -831,7 +831,8 @@ public class PlayerController : PhysicsObject
 
     float slidingSurfaceJumpForceY = 28;
 
-    private void PushOffSlidingSurface() // TODO: Figure out why jumping in the opposite direction of the slope causes the player to travel further than jumping with the direction of the slope
+    // TODO: Figure out why jumping in the opposite direction of the slope causes the player to travel further than jumping with the direction of the slope
+    private void PushOffSlidingSurface() 
     {
         isGroundSliding = false;
         canMove = true;
