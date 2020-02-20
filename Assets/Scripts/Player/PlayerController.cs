@@ -5,6 +5,7 @@ using UnityEngine;
 public class PlayerController : PhysicsObject
 {
     public Transform respawnZone;
+    public Vector2 move;
 
     [Space]
     [Header("INPUT:")]
@@ -197,9 +198,8 @@ public class PlayerController : PhysicsObject
         return 0;    
     }
 
-    // ---- LOCOMOTION METHODS ---- //
+    // <<----------------------------------------------------- LOCOMOTION METHODS ------------------------------------------- //
 
-    public Vector2 move;
     bool isSkidding = false;
     bool isAtMaxSpeed = false;
 
@@ -232,6 +232,10 @@ public class PlayerController : PhysicsObject
         targetVelocity.x = 0;
         yield break;
     }
+
+    
+    // <<----------------------------------------------------- COMPUTE VELOCITY (IN AND OUT OF WIND ZONES) ------------------------------------------- //
+
 
     protected override void ComputeVelocity()
     {
@@ -416,20 +420,6 @@ public class PlayerController : PhysicsObject
         animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
     }
 
-    private void FlipSprite()
-    {
-        float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
-        bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
-
-        if (flipPlayerSprite)
-        {
-            print("flip");
-            ChangeDirection();
-            pIsFaceLeft = !pIsFaceLeft;
-            spriteRenderer.flipX = !spriteRenderer.flipX;
-        }
-    }
-
     private void ComputeDirectionOfSpriteInWind()
     {
         if (windMovingRight & !isTouchingWall)
@@ -472,6 +462,10 @@ public class PlayerController : PhysicsObject
             backToWind = true;
         }
     }
+
+
+    // <<----------------------------------------------------- CHECK SURROUNDINGS ------------------------------------------- //
+
 
     private void CheckSurroundings()
     {
@@ -581,10 +575,16 @@ public class PlayerController : PhysicsObject
         }
     }
 
+
+    // <<----------------------------------------------------- GROUND SLIDE ------------------------------------------- //
+
+    private Vector2 slideDirection;
+
     private void GroundSlide(Vector2 _slideDirection)
     {
         canMove = false;
         isGroundSliding = true;
+        slideDirection = _slideDirection;
 
         if (_slideDirection == Vector2.right)
         {
@@ -609,6 +609,41 @@ public class PlayerController : PhysicsObject
         canMove = true;
     }
 
+    // <<----------------------------------------------------- WALL SLIDE ------------------------------------------- //
+
+    private void CheckIfWallSliding()
+    {
+        if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
+        {
+            isWallSliding = true;
+            gravityModifier = wallSlidingSpeed;
+        }
+        else
+        {
+            isWallSliding = false;
+            gravityModifier = gravStart;
+        }
+
+        animator.SetBool("isWallSliding", isWallSliding);
+    }
+
+
+    // <<----------------------------------------------------- CHANGE DIRECTION / FLIP SPRITE ------------------------------------------- //
+
+    private void FlipSprite()
+    {
+        float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
+        bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+
+        if (flipPlayerSprite)
+        {
+            print("flip");
+            ChangeDirection();
+            pIsFaceLeft = !pIsFaceLeft;
+            spriteRenderer.flipX = !spriteRenderer.flipX;
+        }
+    }
+
     private void ChangeDirection()
     {
         if (canFlipSprite)
@@ -628,24 +663,8 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    private void CheckIfWallSliding()
-    {
-        if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
-        {
-            isWallSliding = true;
-            gravityModifier = wallSlidingSpeed;
-        }
-        else
-        {
-            isWallSliding = false;
-            gravityModifier = gravStart;
-        }
 
-        animator.SetBool("isWallSliding", isWallSliding);
-    }
-
-
-    // ---- MAG BOOTS METHODS ---- //
+    // <<-----------------------------------------------------MAG BOOTS METHODS ------------------------------------------- //
 
 
     public void MagBoots()
@@ -690,7 +709,7 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // ---- LEDGE CLIMB METHODS ---- //
+    // <<----------------------------------------------------- LEDGE CLIMB METHODS ------------------------------------------- //
 
 
     private void CheckLedgeClimb()
@@ -736,25 +755,8 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // ---- JUMP METHODS ---- //
+    // <<----------------------------------------------------- JUMP METHODS ------------------------------------------- //
 
-    IEnumerator JumpDelayTime()
-    {
-        yield return new WaitForSeconds(jumpDelayTime);
-
-        if (isWallSliding)
-        {
-            StartCoroutine(WallJumpTimer());
-            PushOffWall();
-        }
-        else
-        {
-            velocity.y = jumpTakeoffSpeed;
-            StopGroundSlide();
-        }
-
-        animator.SetTrigger("jumping");
-    }
 
     private void Jump()
     {
@@ -802,13 +804,43 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    public void RapidJump()
+    IEnumerator JumpDelayTime()
     {
-        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
+        yield return new WaitForSeconds(jumpDelayTime);
+
+        if (isWallSliding)
         {
-            StartCoroutine(QuickJumpTimer());
+            StartCoroutine(WallJumpTimer());
+            PushOffWall();
         }
+         else if (isGroundSliding)
+        {
+            velocity.y = jumpTakeoffSpeed;
+            PushOffSlidingSurface();
+        }
+        else
+        {
+            velocity.y = jumpTakeoffSpeed;
+        }
+
+        animator.SetTrigger("jumping");
     }
+
+
+    // <<----------------------------------------------------- SLIDING SURFACE JUMP ------------------------------------------- //
+
+    float slidingSurfaceJumpForceY = 28;
+
+    private void PushOffSlidingSurface() // TODO: Figure out why jumping in the opposite direction of the slope causes the player to travel further than jumping with the direction of the slope
+    {
+        isGroundSliding = false;
+        canMove = true;
+        velocity.y = slidingSurfaceJumpForceY;
+    }
+
+
+    // <<----------------------------------------------------- WALL JUMP ------------------------------------------- //
+
 
     IEnumerator WallJumpTimer()
     {
@@ -828,8 +860,7 @@ public class PlayerController : PhysicsObject
         else
         {
             move.x = -14f;
-        }
-        
+        }  
     }
 
     private void PushOffWall()
@@ -847,6 +878,10 @@ public class PlayerController : PhysicsObject
             targetVelocity.x += wallJumpForce * maxSpeed;
         }
     }
+
+
+    // <<----------------------------------------------------- ADDITIONAL JUMP METHODS ------------------------------------------- //
+
 
     IEnumerator QuickJumpTimer()
     {
@@ -882,6 +917,14 @@ public class PlayerController : PhysicsObject
         else
         {
             currentGraceTime = maxGraceTime;
+        }
+    }
+
+    public void RapidJump()
+    {
+        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
+        {
+            StartCoroutine(QuickJumpTimer());
         }
     }
 
@@ -931,7 +974,8 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // ---- UTILITY ---- //
+    // <<----------------------------------------------------- UTILITY ------------------------------------------- //
+
 
     public void EnableMovement(bool _enable) // Called by the Animator at the moment
     {

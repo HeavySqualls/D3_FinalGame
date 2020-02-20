@@ -51,7 +51,6 @@ public class PhysicsObject : MonoBehaviour
 
     protected virtual void Update()
     {
-        //TODO: Find out why this is preventing me from being able to wall jump properly and how to fix it
         if (!isWallJumping)
         {
             targetVelocity = Vector2.zero; // for hard landings to stop movement

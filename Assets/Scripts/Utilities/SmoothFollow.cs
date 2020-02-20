@@ -28,18 +28,25 @@ public class SmoothFollow : MonoBehaviour
 
     void FixedUpdate()
     {
-        float interpolation = speed * Time.deltaTime;
+        if (objectToFollow == null)
+        {
+            Debug.LogError("Assign a target to the Smooth Follow component on the Camera Anchor.");
+        }
+        else
+        {
+            float interpolation = speed * Time.deltaTime;
 
-        Vector3 position = transform.position;
-        position.y = Mathf.Lerp(transform.position.y, objectToFollow.transform.position.y - yOffset, interpolation);
-        position.x = Mathf.Lerp(transform.position.x, objectToFollow.transform.position.x, interpolation);
+            Vector3 position = transform.position;
+            position.y = Mathf.Lerp(transform.position.y, objectToFollow.transform.position.y - yOffset, interpolation);
+            position.x = Mathf.Lerp(transform.position.x, objectToFollow.transform.position.x, interpolation);
 
-        transform.position = position;
+            transform.position = position;
 
-        //if (isCamera)
-        //{
-        //    VerticalMovementOffset();
-        //}
+            //if (isCamera)
+            //{
+            //    VerticalMovementOffset();
+            //}
+        }
     }
 
     void VerticalMovementOffset()
