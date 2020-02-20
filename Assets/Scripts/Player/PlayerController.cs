@@ -64,8 +64,9 @@ public class PlayerController : PhysicsObject
     private bool isPressingJumpButton = false;
     private float currentGraceTime;
     private float airTime = 0f;
+    float currentJumpDelayTime = 0;
     [SerializeField] float jumpHoldTime = 0;
-    private bool canJump = true;
+    [SerializeField] private bool canJump = true;
     private bool quickJump = true;
 
     [Space]
@@ -81,7 +82,9 @@ public class PlayerController : PhysicsObject
     [Tooltip("Distance of ground check raycast from the bottom of the player sprite.")]
     public float groundCheckDistance = 1.75f;
     public Transform groundCheck; // for determining quick landing jump
+    public float groundSlideSpeed = 18f;
     private int whatIsGround;
+    private bool isGroundSliding;
 
     [Space]
     [Header("WALL CHECK:")]
@@ -232,27 +235,28 @@ public class PlayerController : PhysicsObject
 
     protected override void ComputeVelocity()
     {
+        // Checks to determine what acceleration speed the player will have depending on the situation
+        if (inAir) // if the player is in the air
+        {
+            accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedAir;
+        }
+        else if (isAtMaxSpeed) // if the player is running at max speed for "x" seconds
+        {
+            accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedMaxSpeed;
+        }
+        else
+        {
+            accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedNormal;
+        }
+
+
+
         if (isWallJumping && !isInputLeftORRight)
         {
             return;
         }
         else if (canMove)
         {
-            // Checks to determine what acceleration speed the player will have depending on the situation
-            if (inAir) // if the player is in the air
-            {
-                //move.x = 13f;
-                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedAir;
-            }
-            else if (isAtMaxSpeed) // if the player is running at max speed for "x" seconds
-            {
-                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedMaxSpeed;
-            }
-            else
-            {
-                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedNormal;
-            }
-
             // Check to see if player is moving at max speed, and start counting seconds until the skid time limit is reached 
             // - then when player changes direction, they will skid 
             if (velocity.x <= -maxSpeed || velocity.x >= maxSpeed)
@@ -379,7 +383,7 @@ public class PlayerController : PhysicsObject
                 }
             }
             // Send the move Vector will all related forces to the Physics Object
-            targetVelocity = move * maxSpeed;
+            targetVelocity = move * maxSpeed; // DO NOT MOVE FROM THIS LOCATION!!
         }
 
         // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
@@ -397,20 +401,12 @@ public class PlayerController : PhysicsObject
             }
             else if (!inWindZone)
             {
-                float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
-                bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
-
-                if (flipPlayerSprite)
-                {
-                    print("flip");
-                    ChangeDirection();
-                    pIsFaceLeft = !pIsFaceLeft;
-                    spriteRenderer.flipX = !spriteRenderer.flipX;
-                }
+                FlipSprite();
             }
         }
 
         // Animation settings
+        animator.SetBool("isGroundSliding", isGroundSliding);
         animator.SetBool("isMoving", isMoving);
         animator.SetBool("isSkid", isSkidding);
         animator.SetBool("grounded", isGrounded);
@@ -418,6 +414,20 @@ public class PlayerController : PhysicsObject
         animator.SetBool("isBackToWind", backToWind);
         animator.SetBool("isMovingInWind", isMovingInWind);
         animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
+    }
+
+    private void FlipSprite()
+    {
+        float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
+        bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+
+        if (flipPlayerSprite)
+        {
+            print("flip");
+            ChangeDirection();
+            pIsFaceLeft = !pIsFaceLeft;
+            spriteRenderer.flipX = !spriteRenderer.flipX;
+        }
     }
 
     private void ComputeDirectionOfSpriteInWind()
@@ -465,60 +475,71 @@ public class PlayerController : PhysicsObject
 
     private void CheckSurroundings()
     {
+        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+        Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
+
+        if (hitGround.collider != null)
+        {
+            int currentLayer = hitGround.collider.gameObject.layer;
+
+            if (currentLayer == breakableObjectsLayer)
+            {
+                BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
+
+                if (bo == null)
+                {
+                    Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
+                }
+                else if (bo.isPlatform && !bo.isFallingApart)
+                {
+                    bo.TriggerPlatformCollapse();
+                }
+            }
+            else if (currentLayer == breakableFloorsLayer)
+            {
+                BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
+
+                if (bf == null)
+                {
+                    Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
+                }
+                else if (inAir)
+                {
+                    bf.TriggerObjectShake();
+                }
+            }
+            else if (currentLayer == slidingSurfaceLayer && !isPressingJumpButton && !magBootsOn)
+            {
+                SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
+
+                if (ss == null)
+                {
+                    Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
+                }
+                else
+                {
+                    GroundSlide(ss.direction);
+                }
+            }
+            else if (currentLayer == groundLayer && isGroundSliding || magBootsOn)
+            {
+                StopGroundSlide();
+            }
+        }
+        else if(hitGround.collider == null && isGroundSliding)
+        {
+            if (direction == Vector2.right)
+            {
+                targetVelocity.x = 16;
+            }
+            else
+            {
+                targetVelocity.x = -16;
+            }
+        }
+
         if (canMove)
         {
-            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
-            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
-
-            if (hitGround.collider != null)
-            {
-                int currentLayer = hitGround.collider.gameObject.layer;
-
-                if (currentLayer == breakableObjectsLayer)
-                {
-                    BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
-
-                    if (bo == null)
-                    {
-                        Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
-                    }
-                    else if (bo.isPlatform && !bo.isFallingApart)
-                    {
-                        bo.TriggerPlatformCollapse();
-                    }
-                }
-                else if (currentLayer == breakableFloorsLayer)
-                {
-                    BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
-
-                    if (bf == null)
-                    {
-                        Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
-                    }
-                    else if (inAir)
-                    {
-                        bf.TriggerObjectShake();
-                    }
-                }
-                //else if (currentLayer == slidingSurfaceLayer)
-                //{
-                //    SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
-
-                //    if (ss == null)
-                //    {
-                //        Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
-                //    }
-                //    else
-                //    {
-                //        GroundSlide(ss.direction);
-                //    }
-                //}
-                ////else if (!goGround.GetComponent<SlidingSurface>()) // if they are no longer on the sliding surface, stop them from sliding
-                ////{
-                ////    isGroundSliding = false;
-                ////}
-            }
-
             isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
             Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
 
@@ -560,6 +581,34 @@ public class PlayerController : PhysicsObject
         }
     }
 
+    private void GroundSlide(Vector2 _slideDirection)
+    {
+        canMove = false;
+        isGroundSliding = true;
+
+        if (_slideDirection == Vector2.right)
+        {
+            targetVelocity.x = groundSlideSpeed;
+        }
+        else
+        {
+            targetVelocity.x = -groundSlideSpeed;
+        }
+
+        velocity.y = -15;
+
+        if (direction != _slideDirection)
+        {
+            FlipSprite();
+        }
+    }
+
+    private void StopGroundSlide()
+    {
+        isGroundSliding = false;
+        canMove = true;
+    }
+
     private void ChangeDirection()
     {
         if (canFlipSprite)
@@ -577,14 +626,6 @@ public class PlayerController : PhysicsObject
 
             accessibleDirection = direction;
         }
-    }
-
-    public void CanFlipSprite()
-    {
-        if (canFlipSprite)
-            canFlipSprite = false;
-        else
-            canFlipSprite = true;
     }
 
     private void CheckIfWallSliding()
@@ -697,8 +738,6 @@ public class PlayerController : PhysicsObject
 
     // ---- JUMP METHODS ---- //
 
-    float currentJumpDelayTime = 0;
-
     IEnumerator JumpDelayTime()
     {
         yield return new WaitForSeconds(jumpDelayTime);
@@ -711,10 +750,12 @@ public class PlayerController : PhysicsObject
         else
         {
             velocity.y = jumpTakeoffSpeed;
+            StopGroundSlide();
         }
+
+        animator.SetTrigger("jumping");
     }
 
-    //TODO: Some where in here the jump needs to be scaled down?
     private void Jump()
     {
         if (!magBootsOn)
@@ -728,7 +769,6 @@ public class PlayerController : PhysicsObject
                     StartCoroutine(JumpDelayTime());
                     currentGraceTime = 0;
                     canJump = false;
-                    animator.SetTrigger("jumping");
                 }
             }
             else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
