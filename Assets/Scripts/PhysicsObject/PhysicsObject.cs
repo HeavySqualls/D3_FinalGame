@@ -17,8 +17,6 @@ public class PhysicsObject : MonoBehaviour
     protected float minWallNormalX = 0.8f;
     protected float maxWallNormalX = 0.5f;
     protected float minGroundNormalY = 0.65f;
-    protected float slideGroundNormalY = 0.75f;
-    protected bool isGroundSliding;
 
     [SerializeField] protected Vector2 direction;
     protected Vector2 groundNormal;
@@ -121,16 +119,9 @@ public class PhysicsObject : MonoBehaviour
                 Vector2 currentNormal = hitBufferList[i].normal; // returns the normal of each item in the array 
 
                 // THIS IS WHERE THE PLAYER IS DETERMINED TO BE ON THE GROUND OR NOT
-
-                if (currentNormal.y < slideGroundNormalY) // unit is in a sliding situation
+                if (currentNormal.y > minGroundNormalY) // checks if the normal of the item is greater than the minimum required angle for it to be considered ground
                 {
-                    isGroundSliding = true;
-                }
-                else if (currentNormal.y > minGroundNormalY) // checks if the normal of the item is greater than the minimum required angle for it to be considered ground
-                {
-                    isGroundSliding = false;
                     isGrounded = true;
-
                     if (_yMovement)
                     {
                         groundNormal = currentNormal;
