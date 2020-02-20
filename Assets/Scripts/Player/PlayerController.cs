@@ -122,17 +122,15 @@ public class PlayerController : PhysicsObject
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
 
-    //// Input Actions
-    //PlayerInputActions inputActions;
 
-    //// Movement
-    //Vector2 movementInput;
+    private LayerMask groundLayerMask;
+    private int groundLayer = 8;
+    private int breakableFloorsLayer = 17;
+    private int slidingSurfaceLayer = 18;
+    private int breakableObjectsLayer = 19;
 
     void Awake()
     {
-        //inputActions = new PlayerInputActions();
-        //inputActions.PlayerControls.Move.performed += ctx => movementInput = ctx.ReadValue<Vector2>();
-
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         direction = Vector2.right;
@@ -147,6 +145,8 @@ public class PlayerController : PhysicsObject
     {
         base.Start();
         whatIsGround = LayerMask.GetMask("Ground");
+
+        groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
 
         if (controls != null)
         {
@@ -465,29 +465,58 @@ public class PlayerController : PhysicsObject
 
     private void CheckSurroundings()
     {
-        if (isGrounded)
-        {
-            canWallSlide = true;
-        }
-
         if (canMove)
         {
-            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
+
             if (hitGround.collider != null)
             {
-                var goGround = hitGround.collider.gameObject;
+                int currentLayer = hitGround.collider.gameObject.layer;
 
-                if (goGround.GetComponent<BreakableObject>() && goGround.GetComponent<BreakableObject>().isPlatform && !goGround.GetComponent<BreakableObject>().isFallingApart)
+                if (currentLayer == breakableObjectsLayer)
                 {
-                    goGround.GetComponent<BreakableObject>().TriggerPlatformCollapse();
-                }
-                else if (goGround.GetComponent<BreakableFloor>())
-                {
-                    if (inAir)
+                    BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
+
+                    if (bo == null)
                     {
-                        goGround.GetComponent<BreakableFloor>().TriggerObjectShake();
-                    }             
+                        Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
+                    }
+                    else if (bo.isPlatform && !bo.isFallingApart)
+                    {
+                        bo.TriggerPlatformCollapse();
+                    }
                 }
+                else if (currentLayer == breakableFloorsLayer)
+                {
+                    BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
+
+                    if (bf == null)
+                    {
+                        Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
+                    }
+                    else if (inAir)
+                    {
+                        bf.TriggerObjectShake();
+                    }
+                }
+                //else if (currentLayer == slidingSurfaceLayer)
+                //{
+                //    SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
+
+                //    if (ss == null)
+                //    {
+                //        Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
+                //    }
+                //    else
+                //    {
+                //        GroundSlide(ss.direction);
+                //    }
+                //}
+                ////else if (!goGround.GetComponent<SlidingSurface>()) // if they are no longer on the sliding surface, stop them from sliding
+                ////{
+                ////    isGroundSliding = false;
+                ////}
             }
 
             Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
@@ -816,6 +845,8 @@ public class PlayerController : PhysicsObject
 
             if (isGrounded)
             {
+                canWallSlide = true;
+
                 if (airTime > hardLandTime) // Light hard landing 
                 {
                     animator.SetTrigger("land");
