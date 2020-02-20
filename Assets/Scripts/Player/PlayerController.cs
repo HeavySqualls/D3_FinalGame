@@ -23,11 +23,7 @@ public class PlayerController : PhysicsObject
     [Tooltip("Time it takes while moving at full speed to enable a slide on direction change.")]
     public float skidTimeLimit = 2f;
     [Tooltip("Time it takes to reach full speed.")]
-    public float timeFromZeroToMax = 2.5f;
-    [Tooltip("Speed that the player will slide along the ground.")]
-    public float groundSlideSpeed = 16f;
-    public bool isGroundSliding = false;
-    public Vector2 groundSlidingDirection;
+    private float timeFromZeroToMax = 2.5f;
     private float accelRatePerSecond;
     private float decelRatePerSecond;
     private float timeAtMaxSpeed = 0;
@@ -246,6 +242,7 @@ public class PlayerController : PhysicsObject
             // Checks to determine what acceleration speed the player will have depending on the situation
             if (inAir) // if the player is in the air
             {
+                //move.x = 13f;
                 accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedAir;
             }
             else if (isAtMaxSpeed) // if the player is running at max speed for "x" seconds
@@ -468,8 +465,6 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    public GameObject goGround;
-
     private void CheckSurroundings()
     {
         if (isGrounded)
@@ -477,38 +472,28 @@ public class PlayerController : PhysicsObject
             canWallSlide = true;
         }
 
-        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
-        Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
-
-        if (hitGround.collider != null)
-        {
-            //TODO: FIND A BETTER WAY TO DO THIS: players collider never actually touches anything so hard to figure out how to enngage with these other objects 
-
-            goGround = hitGround.collider.gameObject;
-
-            if (goGround.GetComponent<BreakableObject>() && goGround.GetComponent<BreakableObject>().isPlatform && !goGround.GetComponent<BreakableObject>().isFallingApart)
-            {
-                goGround.GetComponent<BreakableObject>().TriggerPlatformCollapse();
-            }
-            else if (goGround.GetComponent<BreakableFloor>())
-            {
-                if (inAir)
-                {
-                    goGround.GetComponent<BreakableFloor>().TriggerObjectShake();
-                }
-            }
-            else if (goGround.GetComponent<SlidingSurface>()) // if the player is standing on a sliding surface, make them slide down 
-            {
-                GroundSlide(goGround.GetComponent<SlidingSurface>().direction);
-            }
-            else if (!goGround.GetComponent<SlidingSurface>()) // if they are no longer on the sliding surface, stop them from sliding
-            {
-                isGroundSliding = false;
-            }
-        }
-
         if (canMove)
         {
+            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
+            if (hitGround.collider != null)
+            {
+                var goGround = hitGround.collider.gameObject;
+
+                if (goGround.GetComponent<BreakableObject>() && goGround.GetComponent<BreakableObject>().isPlatform && !goGround.GetComponent<BreakableObject>().isFallingApart)
+                {
+                    goGround.GetComponent<BreakableObject>().TriggerPlatformCollapse();
+                }
+                else if (goGround.GetComponent<BreakableFloor>())
+                {
+                    if (inAir)
+                    {
+                        goGround.GetComponent<BreakableFloor>().TriggerObjectShake();
+                    }             
+                }
+            }
+
+            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
+
             isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, whatIsGround);
             Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
 
@@ -567,31 +552,13 @@ public class PlayerController : PhysicsObject
             canFlipSprite = true;
     }
 
-    public void GroundSlide(Vector2 _slideDirection)
-    {
-        isGroundSliding = true;
-        groundSlidingDirection = _slideDirection;
-    }
-
     private void CheckIfGroundSliding()
     {
         if (isGroundSliding)
         {
+            print("ground sliding!");
             canMove = false;
-
-            if (groundSlidingDirection == Vector2.right)
-            {
-                targetVelocity.x = groundSlideSpeed;
-            }
-            else
-            {
-                targetVelocity.x = -groundSlideSpeed;
-            }
-
-            if (direction != groundSlidingDirection)
-            {
-                CanFlipSprite();
-            }
+            targetVelocity = new Vector2(5, 5);
         }
         else
         {

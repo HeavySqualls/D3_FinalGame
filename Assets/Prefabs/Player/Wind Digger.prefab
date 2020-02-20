@@ -21,7 +21,6 @@ GameObject:
   - component: {fileID: 1242993176099357723}
   - component: {fileID: 1242993176099357724}
   - component: {fileID: 1020012711}
-  - component: {fileID: 5153702552144398883}
   m_Layer: 12
   m_Name: Wind Digger
   m_TagString: Player
@@ -135,6 +134,7 @@ MonoBehaviour:
   shakeStrength: 0.25
   vibrato: 9
   randomness: 2
+  cam: {fileID: 0}
 --- !u!114 &1242993176099357722
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -161,11 +161,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
-  interactKey: 0
-  quickLootKey: 0
-  currentPickupItem: {fileID: 0}
-  currentLootBoxPanel: {fileID: 0}
-  currentSwtich: {fileID: 0}
+  lootBox: {fileID: 0}
+  inputKey: 102
+  pickupItem: {fileID: 0}
 --- !u!114 &3941713676428747812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -324,13 +322,13 @@ BoxCollider2D:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1242993176099357728}
-  m_Enabled: 0
+  m_Enabled: 1
   m_Density: 1
   m_Material: {fileID: 0}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.053182185, y: -0.36632538}
+  m_Offset: {x: 0.009860992, y: -0.36632538}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -341,7 +339,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.12618637, y: 2.0577583}
+  m_Size: {x: 0.72875595, y: 2.0577583}
   m_EdgeRadius: 0
 --- !u!96 &1020012711
 TrailRenderer:
@@ -440,22 +438,6 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!70 &5153702552144398883
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1242993176099357728}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: -0.28}
-  m_Size: {x: 0.97, y: 2.28}
-  m_Direction: 0
 --- !u!1 &2259308185300549265
 GameObject:
   m_ObjectHideFlags: 0
