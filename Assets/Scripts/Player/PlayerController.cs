@@ -519,12 +519,10 @@ public class PlayerController : PhysicsObject
                 ////}
             }
 
-            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
-
-            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, whatIsGround);
+            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
             Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
 
-            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, whatIsGround);
+            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, groundLayerMask);
             Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
 
             // Check for ledge grab
@@ -537,15 +535,25 @@ public class PlayerController : PhysicsObject
             // Check for crumbling wall
             if (isWallSliding)
             {
-                RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, whatIsGround);
+                RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
+
                 if (hitWall.collider != null)
                 {
-                    var goWall = hitWall.collider.gameObject;
+                    int currentLayer = hitWall.collider.gameObject.layer;
 
-                    if (goWall.GetComponent<BreakableObject>())
+                    if (currentLayer == breakableObjectsLayer)
                     {
-                        goWall.GetComponent<BreakableObject>().TriggerPlatformCollapse();
-                        canWallSlide = false;                  
+                        BreakableObject boWall = hitWall.collider.gameObject.GetComponent<BreakableObject>();
+
+                        if (boWall == null)
+                        {
+                            Debug.LogError("Object on Breakable Object layer does not have Breakable Object component!");
+                        }
+                        else
+                        {
+                            boWall.TriggerPlatformCollapse();
+                            canWallSlide = false;
+                        }
                     }
                 }
             }
