@@ -6,27 +6,30 @@ public class RecieveDamage : MonoBehaviour
 {
     [Tooltip("Add in the game object that this script is attached to.")]
     public GameObject go;
-    private dynamic hitObj;
+    private PlayerHandleInteract pCon;
+    private EnemyController enCon;
+    private BreakableObject bO;
+    private RollingObject rO;
 
     void Start()
     {
         if (go != null)
         {
-            if (go.GetComponent<EnemyController>()) //<<------------ if this object is an enemy
+            if (go.GetComponent<PlayerController>()) //<<------ if this object is the player
             {
-                hitObj = go.GetComponent<EnemyController>();
+                pCon = go.GetComponent<PlayerHandleInteract>();
+            }
+            else if (go.GetComponent<EnemyController>()) //<<------------ if this object is an enemy
+            {
+                enCon = go.GetComponent<EnemyController>();
             }
             else if (go.GetComponent<BreakableObject>()) //<<------- if this object is a breakable object
             {
-                hitObj = go.GetComponent<BreakableObject>();
+                bO = go.GetComponent<BreakableObject>();
             }
             else if (go.GetComponent<RollingObject>()) //<<--------- if this object is a rolling object
             {
-                hitObj = go.GetComponent<RollingObject>();
-            }
-            else if (go.GetComponent<PlayerController>()) //<<------ if this object is the player
-            {
-                hitObj = go.GetComponent<PlayerHandleInteract>();
+                rO = go.GetComponent<RollingObject>();
             }
         }
         else
@@ -40,17 +43,66 @@ public class RecieveDamage : MonoBehaviour
     {    
         print(gameObject.name + " hit!");
 
-        if (_hitDirection == Vector2.right) // knock to the left
+        if (enCon != null)
         {
-            hitObj.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+            if (_hitDirection == Vector2.right) // knock to the left
+            {
+                enCon.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.left) // knock to the right 
+            {
+                enCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.zero) // below or above
+            {
+                enCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
         }
-        else if (_hitDirection == Vector2.left) // knock to the right 
+        else if (pCon != null)
         {
-            hitObj.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            if (_hitDirection == Vector2.right) // knock to the left
+            {
+                pCon.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.left) // knock to the right 
+            {
+                pCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.zero) // below or above
+            {
+                pCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
         }
-        else if (_hitDirection == Vector2.zero) // below or above
+        else if (bO != null)
         {
-            hitObj.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            if (_hitDirection == Vector2.right) // knock to the left
+            {
+                bO.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.left) // knock to the right 
+            {
+                bO.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.zero) // below or above
+            {
+                bO.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
         }
+        else if (rO != null)
+        {
+            if (_hitDirection == Vector2.right) // knock to the left
+            {
+                rO.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.left) // knock to the right 
+            {
+                rO.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
+            else if (_hitDirection == Vector2.zero) // below or above
+            {
+                rO.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+            }
+        }
+
     }
 }

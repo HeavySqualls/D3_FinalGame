@@ -284,7 +284,7 @@ public class PlayerController : PhysicsObject
 
                 if (horizontalInput > 0f) // Moving Right
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft && !inWindZone)
                     {
                         canFlipSprite = false;                    
                         timeAtMaxSpeed = 0;
@@ -295,7 +295,7 @@ public class PlayerController : PhysicsObject
                 }
                 else if (horizontalInput < 0f) // Moving Left
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft && !inWindZone)
                     {
                         print("2");
                         canFlipSprite = false;
@@ -317,11 +317,11 @@ public class PlayerController : PhysicsObject
                     }
                     else if (windMovingRight)
                     {
-                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), maxSpeed / (windDir.x * windPwr));                      
+                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), 2.3f / (windDir.x * windPwr));                      
                     }
                     else if (!windMovingRight)
                     {
-                        move.x = Mathf.Clamp(move.x, maxSpeed / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
+                        move.x = Mathf.Clamp(move.x, 2.3f / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
                     }
                 }
                 else if (!inWindZone)

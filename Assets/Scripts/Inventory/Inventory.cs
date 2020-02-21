@@ -35,6 +35,8 @@ public class Inventory : MonoBehaviour, IItemContainer
         }
 
         SetStartingItems();
+
+        gameObject.SetActive(!gameObject.activeSelf);
     }
 
     private void OnValidate()

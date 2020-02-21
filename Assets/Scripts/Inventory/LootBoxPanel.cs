@@ -25,6 +25,8 @@ public class LootBoxPanel : MonoBehaviour
 
     [SerializeField] InventoryManager inventoryManager;
 
+
+
     private void OnValidate()
     {
         lootBoxPanel = GetComponent<LootBoxPanel>().gameObject;
@@ -32,8 +34,11 @@ public class LootBoxPanel : MonoBehaviour
         inventoryManager = FindObjectOfType<InventoryManager>();
     }
 
+
     private void Awake()
     {
+        OnValidate();
+
         for (int i = 0; i < lootBoxSlots.Length; i++)
         {
             // catches the events from EquipSlot.cs and says "the player right clicked this item"... (see InventoryManager.cs for next step)
@@ -88,7 +93,6 @@ public class LootBoxPanel : MonoBehaviour
         }
     }
 
-    // Trying to assign an array of items to an array of item slots in a loot crate UI:
     public void ViewItems() // The array of items passed in to the loot crate UI 
     {
         lootBoxPanel.SetActive(true); // Make the UI visible to the player

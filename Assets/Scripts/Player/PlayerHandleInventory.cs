@@ -2,7 +2,7 @@
 
 public class PlayerHandleInventory : MonoBehaviour
 {
-    bool isInventoryOpen = true;
+    bool isInventoryOpen = false;
 
     [SerializeField] GameObject inventory;
     [SerializeField] GameObject equipmentPanel;
@@ -10,32 +10,28 @@ public class PlayerHandleInventory : MonoBehaviour
     [SerializeField] GameObject itemTooltip;
     [SerializeField] GameObject statTooltip;
     [SerializeField] GameObject lootBoxPanel;
-    [SerializeField] KeyCode[] toggleInventoryKeys;
+    [SerializeField] KeyCode inventoryKey;
 
     private void Start()
     {
-       // TODO: find out why this blocks item from being picked up until the inventory has been enabled - call order issue?
-       // EnableDisableInventory();
+        // TODO: find out why this blocks item from being picked up until the inventory has been enabled - call order issue?
+        // EnableDisableInventory();
+        equipmentPanel.SetActive(!equipmentPanel.activeSelf);
     }
 
     void Update()
     {
-        for (int i = 0; i < toggleInventoryKeys.Length; i++)
+        if (Input.GetKeyDown(inventoryKey))
         {
-            if (Input.GetKeyDown(toggleInventoryKeys[i]))
+            if (isInventoryOpen)
             {
-                EnableDisableInventory();
-
-                if (isInventoryOpen)
-                {
-                    ShowMouseCursor();
-                }
-                else
-                {
-                    HideMouseCursor();
-                }
-
-                break;
+                HideMouseCursor();
+                DisableInventory();
+            }
+            else if (!isInventoryOpen)
+            {
+                ShowMouseCursor();
+                EnableInventory();
             }
         }
     }
@@ -52,14 +48,26 @@ public class PlayerHandleInventory : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         itemTooltip.SetActive(false);
         statTooltip.SetActive(false);
-        lootBoxPanel.SetActive(false);
     }
 
-    private void EnableDisableInventory()
+    private void EnableInventory()
     {
-        inventory.SetActive(!inventory.activeSelf);
-        equipmentPanel.SetActive(!equipmentPanel.activeSelf);
-        statsPanel.SetActive(!statsPanel.activeSelf);
-        isInventoryOpen = !isInventoryOpen;
+        inventory.SetActive(true);
+        equipmentPanel.SetActive(true);
+        statsPanel.SetActive(true);
+        isInventoryOpen = true;
+    }
+
+    private void DisableInventory()
+    {
+        inventory.SetActive(false);
+        equipmentPanel.SetActive(false);
+        statsPanel.SetActive(false);
+        isInventoryOpen = false;
+
+        if (lootBoxPanel.activeSelf == true)
+        {
+            lootBoxPanel.SetActive(false);
+        }
     }
 }

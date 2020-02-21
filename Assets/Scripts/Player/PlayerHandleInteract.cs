@@ -34,7 +34,10 @@ public class PlayerHandleInteract : MonoBehaviour
             {
                 if (currentPickupItem.isLootBox)
                 {
-                    currentPickupItem.OpenCloseLootBox();
+                    if (!currentPickupItem.isOpen)
+                        currentPickupItem.OpenLootBox();
+                    else
+                        currentPickupItem.CloseLootBox();
                 }
                 else
                 {

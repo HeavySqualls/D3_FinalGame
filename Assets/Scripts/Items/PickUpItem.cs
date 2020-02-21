@@ -46,7 +46,9 @@ public class PickUpItem : MonoBehaviour
     {
         if (pInteract != null)
         {
-            CloseLootBox();
+            if (isLootBox)
+                CloseLootBox();
+
             pInteract.UnAssignPickUpItemReferences();
             pInteract = null;
             spriteRenderer.material = normalMat;
@@ -65,34 +67,23 @@ public class PickUpItem : MonoBehaviour
         }
     }
 
-    public void OpenCloseLootBox()
+    public void OpenLootBox()
     {
-        if (!isOpen)
-        {
-            lootBoxPanel.ViewItems();
-            isOpen = true;
-            ShowMouseCursor();
-        }
-        else
-        {
-            lootBoxPanel.HideItems();
-            isOpen = false;
-            HideMouseCursor();
-        }
+        lootBoxPanel.ViewItems();
+        isOpen = true;
+        ShowMouseCursor();
+    }
+
+    public void CloseLootBox()
+    {
+        lootBoxPanel.HideItems();
+        isOpen = false;
+        HideMouseCursor();
     }
 
     public void QuickLoot()
     {
         lootBoxPanel.QuickLoot();
-    }
-
-    public void CloseLootBox()
-    {
-        if (isOpen)
-        {
-            lootBoxPanel.HideItems();
-            isOpen = false;
-        }
     }
 
     public void ShowMouseCursor()

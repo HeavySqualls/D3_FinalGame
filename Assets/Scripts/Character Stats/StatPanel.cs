@@ -8,6 +8,12 @@ public class StatPanel : MonoBehaviour
 
     private CharacterStat[] stats;
 
+    private void Start()
+    {
+
+        gameObject.SetActive(!gameObject.activeSelf);
+    }
+
     private void OnValidate()
     {
         statDisplays = GetComponentsInChildren<StatDisplay>();
