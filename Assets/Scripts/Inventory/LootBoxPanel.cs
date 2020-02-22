@@ -25,8 +25,6 @@ public class LootBoxPanel : MonoBehaviour
 
     [SerializeField] InventoryManager inventoryManager;
 
-
-
     private void OnValidate()
     {
         lootBoxPanel = GetComponent<LootBoxPanel>().gameObject;

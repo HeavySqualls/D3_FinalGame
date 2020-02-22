@@ -10,17 +10,17 @@ public class BreakablePiece : MonoBehaviour
 
     Vector3 startingPos;
     Quaternion startingTrans;
-    BoxCollider2D boxColl;
+    BoxCollider boxColl;
     MeshRenderer meshRenderer;
-    Rigidbody2D rb2D;
+    Rigidbody rb;
 
     Tween shakeTween;
 
     void Start()
     {      
-        boxColl = GetComponent<BoxCollider2D>();
+        boxColl = GetComponent<BoxCollider>();
         meshRenderer = GetComponent<MeshRenderer>();
-        rb2D = GetComponent<Rigidbody2D>();
+        rb = GetComponent<Rigidbody>();
         startingPos = transform.position;
         startingTrans = transform.rotation;
     }
@@ -36,8 +36,8 @@ public class BreakablePiece : MonoBehaviour
     {
         yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
         print("piece dropping");
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
-        rb2D.gravityScale = 2f;
+        rb.isKinematic = false;// RigidbodyType.Dynamic;
+        //rb.useGravity = 2f;
         boxColl.enabled = true;
 
         yield break;
@@ -47,15 +47,15 @@ public class BreakablePiece : MonoBehaviour
     // Logic for destroying the basic object piece after being attacked
     public void BlowOutPiece(Vector2 _dir, bool _isPlatform)
     {
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
+        rb.isKinematic = false;// bodyType = RigidbodyType.Dynamic;
 
         if (!_isPlatform)
         {
-            rb2D.AddForce(_dir * Random.Range(1f, 6f), ForceMode2D.Impulse);
+            rb.AddForce(_dir * Random.Range(1f, 6f), ForceMode.Impulse);
         }
         else
         {
-            rb2D.AddForce(Vector2.down * Random.Range(0.2f, 3f), ForceMode2D.Impulse);
+            rb.AddForce(Vector2.down * Random.Range(0.2f, 3f), ForceMode.Impulse);
         }
     }
 
@@ -81,9 +81,9 @@ public class BreakablePiece : MonoBehaviour
     // Respawn the piece in its original place
     public void RespawnPiece(bool _isCrumblingWall)
     {
-        rb2D.velocity = Vector2.zero;
-        rb2D.angularVelocity = 0f;
-        rb2D.bodyType = RigidbodyType2D.Kinematic;
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = Vector3.zero; //angularVelocity = 0f;
+        rb.isKinematic = true;// bodyType = RigidbodyType.Kinematic;
 
         if (_isCrumblingWall)
         {

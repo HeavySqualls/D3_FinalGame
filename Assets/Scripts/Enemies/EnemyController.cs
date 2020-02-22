@@ -18,6 +18,8 @@ public class EnemyController : PhysicsObject
     public float huntSpeed = 3f;
     [SerializeField] float baseMoveSpeed;
     [SerializeField] float baseMoveSpeedStart = 50f;
+    [SerializeField] float maxMoveSpeed;
+    [SerializeField] float minMoveSpeed;
 
     [Space]
     [Header("Enemy Combat:")]
@@ -101,62 +103,39 @@ public class EnemyController : PhysicsObject
                 this.Dead();
                 break;
         }
-
-        //KnockBack();
     }
 
     void ComputeBaseMoveSpeed()
     {
         if (inWindZone)
         {
-            if (windDir == Vector2.right) // Wind is moving to the right 
+            // Wind is moving to the right 
+            if (windDir == Vector2.right)
             {
-                if (windDir == newDirection)
-                {
+                if (windDir == newDirection) // if we are moving with the wind direction 
                     baseMoveSpeed += windDir.x * windPwr;
-
-                    if (baseMoveSpeed > 60)
-                    {
-                        baseMoveSpeed = 60;
-                    }
-                }
-                else if (windDir != newDirection)
-                {
+                else if (windDir != newDirection) 
                     baseMoveSpeed -= windDir.x * windPwr;
-
-                    if (baseMoveSpeed < 10)
-                    {
-                        baseMoveSpeed = 10;
-                    }
-                }
             }
-            else if (windDir == Vector2.left) // Wind is moving to the left 
+            // Wind is moving to the left
+            else if (windDir == Vector2.left)  
             {
-                if (windDir != newDirection)
-                {
+                if (windDir != newDirection) // if we are moving against the wind direction
                     baseMoveSpeed -= windDir.x * windPwr;
-
-                    if (baseMoveSpeed > 10)
-                    {
-                        baseMoveSpeed = 10;
-                    }
-                }
-                else if (windDir == newDirection)
-                {
+                else if (windDir == newDirection) // if we are moving with the wind direction 
                     baseMoveSpeed += windDir.x * windPwr;
-
-                    if (baseMoveSpeed < 60)
-                    {
-                        baseMoveSpeed = 60;
-                    }
-                }
             }
+
+            if (baseMoveSpeed > maxMoveSpeed) // limit the max base move speed of the enemy
+                baseMoveSpeed = maxMoveSpeed;
+            else if (baseMoveSpeed < minMoveSpeed) // limit the min move speed of the unit
+                baseMoveSpeed = minMoveSpeed; 
         }
         else
         {
             baseMoveSpeed = baseMoveSpeedStart;
         }
-    } // TODO: Find a way to simplify this 
+    }
 
 
 

@@ -41,11 +41,14 @@ public class DangerousObstacle : Interact_Base
     {
         base.OnTriggerEnter2D(other);
 
-        pThatHitMe.GetComponent<RecieveDamage>().GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
-
-        foreach (MeshRenderer spikeMR in spikeMeshes)
+        if (pThatHitMe != null)
         {
-            spikeMR.material.SetColor("_Color", Color.red);
+            pThatHitMe.GetComponent<RecieveDamage>().GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
+
+            foreach (MeshRenderer spikeMR in spikeMeshes)
+            {
+                spikeMR.material.SetColor("_Color", Color.red);
+            }
         }
     }
 
