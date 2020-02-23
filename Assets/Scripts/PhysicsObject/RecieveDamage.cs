@@ -6,7 +6,7 @@ public class RecieveDamage : MonoBehaviour
 {
     [Tooltip("Add in the game object that this script is attached to.")]
     public GameObject go;
-    private PlayerHandleInteract pCon;
+    private PlayerHandleInteract pHandleInteract;
     private EnemyController enCon;
     private BreakableObject bO;
     private RollingObject rO;
@@ -17,7 +17,7 @@ public class RecieveDamage : MonoBehaviour
         {
             if (go.GetComponent<PlayerController>()) //<<------ if this object is the player
             {
-                pCon = go.GetComponent<PlayerHandleInteract>();
+                pHandleInteract = go.GetComponent<PlayerHandleInteract>();
             }
             else if (go.GetComponent<EnemyController>()) //<<------------ if this object is an enemy
             {
@@ -58,19 +58,19 @@ public class RecieveDamage : MonoBehaviour
                 enCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
         }
-        else if (pCon != null)
+        else if (pHandleInteract != null)
         {
             if (_hitDirection == Vector2.right) // knock to the left
             {
-                pCon.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+                pHandleInteract.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
             }
             else if (_hitDirection == Vector2.left) // knock to the right 
             {
-                pCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                pHandleInteract.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
             else if (_hitDirection == Vector2.zero) // below or above
             {
-                pCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                pHandleInteract.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
         }
         else if (bO != null)
@@ -103,6 +103,5 @@ public class RecieveDamage : MonoBehaviour
                 rO.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
         }
-
     }
 }

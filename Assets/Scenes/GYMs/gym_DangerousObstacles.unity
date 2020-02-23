@@ -915,8 +915,13 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
-      propertyPath: isController
-      value: 0
+      propertyPath: decelSpeed
+      value: 8
+      objectReference: {fileID: 0}
+    - target: {fileID: 1242993176099357725, guid: 2ad598378404af64e8c629d59ff14cdc,
+        type: 3}
+      propertyPath: skidTimeLimit
+      value: 15
       objectReference: {fileID: 0}
     - target: {fileID: 1242993176099357727, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
@@ -976,7 +981,7 @@ PrefabInstance:
     - target: {fileID: 1242993176099357728, guid: 2ad598378404af64e8c629d59ff14cdc,
         type: 3}
       propertyPath: m_Name
-      value: TestSubject2D
+      value: Wind Digger
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2ad598378404af64e8c629d59ff14cdc, type: 3}

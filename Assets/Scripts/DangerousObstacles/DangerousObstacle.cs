@@ -4,17 +4,6 @@ using UnityEngine;
 
 public class DangerousObstacle : Interact_Base
 {
-    [Tooltip("How much damage will this object cause? (put 0 if none)")]
-    public float damage;
-    [Tooltip("How far will this object knock another object back? (put 0 if none)")]
-    public float knockBack;
-    [Tooltip("How far will this object knock another object up in the air? (put 0 if none)")]
-    public float knockUp;
-    [Tooltip("How long will this stun the enemy? (put 0 if none)")]
-    public float stunTime;
-    [Tooltip("What direction will this push the interacted object to?")]
-    public Vector2 hitDirection;
-
     [Tooltip("The delay until the interacted object will be attacked again if still standing on the spikes")]
     public float damageDelay = 0.5f;
     private bool isDamageDelay = false;
@@ -41,9 +30,9 @@ public class DangerousObstacle : Interact_Base
     {
         base.OnTriggerEnter2D(other);
 
-        if (pThatHitMe != null)
+        if (pRecieveDamage != null)
         {
-            pThatHitMe.GetComponent<RecieveDamage>().GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
+            pRecieveDamage.GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
 
             foreach (MeshRenderer spikeMR in spikeMeshes)
             {
@@ -54,9 +43,7 @@ public class DangerousObstacle : Interact_Base
 
     void OnTriggerStay2D(Collider2D other)
     {
-        pThatHitMe = other.GetComponent<PlayerHandleInteract>();
-
-        if (pThatHitMe != null && !isDamageDelay)
+        if (pRecieveDamage != null && !isDamageDelay)
         {
             StartCoroutine(DamageDelay());
         }
@@ -68,9 +55,9 @@ public class DangerousObstacle : Interact_Base
 
         yield return new WaitForSeconds(damageDelay);
 
-        if (pThatHitMe != null)
+        if (pRecieveDamage != null)
         {
-            pThatHitMe.GetComponent<RecieveDamage>().GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
+            pRecieveDamage.GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
         }
 
         isDamageDelay = false;

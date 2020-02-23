@@ -10,6 +10,7 @@ public class PlayerCombat : MonoBehaviour
     [Tooltip("The minumum time between the player is able to register a second attack.")]
     public float attackSpacing = 0.2f;
 
+    [SerializeField] Transform hitboxPos;
     private bool canAttack = true;
     private bool comboAttacking = false;
     private float timeBetweenCombos = 0;
@@ -166,7 +167,7 @@ public class PlayerCombat : MonoBehaviour
     public void CastForEnemies() // Called from the animator
     {
         LayerMask interactableLayerMask = LayerMask.GetMask("InteractableObjects");
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 1f, pCon.accessibleDirection, 1f, interactableLayerMask);
+        RaycastHit2D[] hits = Physics2D.CircleCastAll(hitboxPos.position, 0.5f, pCon.accessibleDirection, 1f, interactableLayerMask);
         foreach (RaycastHit2D hit in hits)
         {
             var hitObj = hit.collider.gameObject;
@@ -187,5 +188,11 @@ public class PlayerCombat : MonoBehaviour
                 }           
             }
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(hitboxPos.position, 0.5f);
     }
 }

@@ -176,7 +176,7 @@ public class PlayerController : PhysicsObject
         CheckSurroundings();
         CheckIfWallSliding();
         TrackAirTime();
-        ComputeVelocity();
+        //ComputeVelocity(); // Realised that this was happening twice, here AND in physics object. Disabled it here for now to see the effects. 
         Jump();
         RapidJump();
         MagBoots();
@@ -218,6 +218,7 @@ public class PlayerController : PhysicsObject
 
     public IEnumerator PlayerKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
     {
+        print("Knocked!");
         canJump = false;
         canMove = false;
         canWallSlide = false;

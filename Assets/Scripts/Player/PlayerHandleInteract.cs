@@ -27,7 +27,7 @@ public class PlayerHandleInteract : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(interactKey))/*(pCon.controls.interact))*/ //TODO: Why the fuck does this "interact" reference not work??
+        if (Input.GetKeyDown(interactKey))/*(pCon.controls.interact))*/ //TODO: Why does this "interact" reference not work??
         {
             // If the player is interacting with a pickup object:
             if (currentPickupItem != null)
@@ -71,24 +71,13 @@ public class PlayerHandleInteract : MonoBehaviour
     }
 
 
-    // ---- DANGEROUS OBSTACLES ---- //
-
-    public void HitDangerousObstacle(Interact_Base _interactableItem)
-    {
-        if (_interactableItem != null)
-        {
-            if (_interactableItem.GetComponent<DangerousObstacle>() || _interactableItem.GetComponent<ToxicSpill>())
-            {
-                print("flash");
-                StartCoroutine(pFeedBack.IFlashRed());
-            }
-        }
-    }
+    // ---- HANDLE DAMAGE ---- //
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
         //hpCurrent -= _damage;
         StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
+        StartCoroutine(pFeedBack.IFlashRed());
     }
 
 

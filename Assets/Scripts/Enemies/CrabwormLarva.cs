@@ -4,53 +4,57 @@ using UnityEngine;
 
 public class CrabwormLarva : PhysicsObject
 {
-    public enum State { Patrolling, Attacking, Idle, Hurt, InAirInWind, Dead}
+    public enum State { Patrolling, Hunting, Attacking, Idle, Hurt, InAirInWind, Dead}
 
     [Space]
     [Header("Enemy States:")]
     public State currentState;
     private bool isIdle;
     private bool isPatrolling;
+    private bool isHunting;
+    private bool isStunned;
     private bool isInAirInWind;
-    //private bool isMovingRight = true;
     private bool isHit = false;
+    private bool objectHit = false;
 
     [Space]
     [Header("Enemy Combat:")]
+    [SerializeField] Transform hitboxPos;
     public int damageOutput = 2;
-    public float cooldown;
+    public float attackCooldown = 0.5f;
     public float currentHP;
     [SerializeField] float startHP = 10f;
-    [SerializeField] private float knockBack;
-    [SerializeField] private float knockUp;
-    [SerializeField] private float stunTime;
-    public float knockbackTimeLength;
+    [SerializeField] float knockBack;
+    [SerializeField] float knockUp;
+    [SerializeField] float stunTime;
+    [SerializeField] public float knockbackTimeLength;
     [SerializeField] float currentKnockBackTime;
 
     [Space]
     [Header("Enemy Movement:")]
     public float patrolSpeed = 1.25f;
-    [SerializeField] float baseMoveSpeed;
-    [SerializeField] float baseMoveSpeedStart = 50f;
-    [SerializeField] float maxMoveSpeed;
-    [SerializeField] float minMoveSpeed;
+    [SerializeField] float baseMoveSpeed = 2f;
+    [SerializeField] float huntingMoveSpeed = 5f;
+    [SerializeField] float attackingMoveSpeed = 10f;
+    private float maxMoveSpeed;
+    private float minMoveSpeed;
 
     [Space]
     [Header("Enemy AI:")]
     public float pauseTime = 2f;
-    private float detectionRange = 8f;
-    private float wallDistance = 1f;
-    private float groundDistance = 0.25f;
     [SerializeField] private Vector2 move;
-    //[SerializeField] private Vector2 newDirection;
     [SerializeField] private Vector2 hitDirection;
 
     [Space]
-    [Header("Ray casts:")]
-    public Transform eyeRange;
-    public Transform wallDetection;
-    public Transform groundDetection;
+    [Header("Raycasts:")]
+    [SerializeField] Transform eyeRange;
+    [SerializeField] float eyeRangeDistance = 10f;
+    [SerializeField] Transform wallDetection;
+    [SerializeField] float wallDistance = 1f;
+    [SerializeField] Transform groundDetection;
+    [SerializeField] float groundDistance = 0.25f;
     LayerMask groundLayerMask;
+    LayerMask playerLayerMask;
 
     [Space]
     [Header("Respawn Location:")]
@@ -71,11 +75,15 @@ public class CrabwormLarva : PhysicsObject
         coll = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
 
-        baseMoveSpeed = baseMoveSpeedStart;
         currentKnockBackTime = knockbackTimeLength;
         currentHP = startHP;
 
         groundLayerMask = ((1 << 8));
+        playerLayerMask = ((1 << 12));
+
+        // Set the enemy in the correct direction at Start
+        if (direction == Vector2.zero)
+            direction = Vector2.right;
 
         this.currentState = State.Patrolling;
     }
@@ -93,6 +101,9 @@ public class CrabwormLarva : PhysicsObject
         {
             case State.Patrolling:
                 this.Patrolling();
+                break;
+            case State.Hunting:
+                this.Hunting();
                 break;
             case State.Attacking:
                 this.Attacking();
@@ -115,25 +126,47 @@ public class CrabwormLarva : PhysicsObject
     }
 
 
-    // << --------------------------------------- STATES -------------------------------->> //
+    // << --------------------------------------- STATES -------------------------------- >> //
+
+    // NOTES: - Actual movement of the unit is handled in PhysicsObject, but each state controls 
+    //          how that movement is sent to the physics object.
+    //        - Detection is also individually controlled by the separate states. 
 
     private void Patrolling()
     {
         DetectWallCollisions();
         DetectGroundCollisions();
-        Move();
+        DetectPlayerCollisions();
+        isIdle = false;
         isPatrolling = true;
+        isHunting = false;
+    }
+
+    private void Hunting()
+    {
+        DetectWallCollisions();
+        DetectGroundCollisions();
+        DetectPlayerCollisions();
+        isIdle = false;
+        isPatrolling = false;
+        isHunting = true;
     }
 
     private void Attacking()
     {
-        // lunges at player 
-        Move();
+        DetectWallCollisions();
+        DetectGroundCollisions();
+        CastForPlayer();
+        isIdle = false;
+        isPatrolling = false;
+        isHunting = false;
     }
     
     private void Idle()
     {
-
+        isIdle = true;
+        isPatrolling = false;
+        isHunting = false;
     }
 
     private void Hurt()
@@ -152,39 +185,42 @@ public class CrabwormLarva : PhysicsObject
     }
 
 
-    // << --------------------------------------- ANIMATIONS -------------------------------->> //
+    // << --------------------------------------- ANIMATIONS -------------------------------- >> //
+
     void Animations()
     {
-        animator.SetBool("isPatrolling", isPatrolling);
         animator.SetBool("isIdle", isIdle);
+        animator.SetBool("isPatrolling", isPatrolling);
+        animator.SetBool("isHunting", isHunting);
     }
 
-
-    // << --------------------------------------- MOVEMENT -------------------------------->> //
-
-    void Move()
+    public void AfterAttack()
     {
-        ComputeBaseMoveSpeed();
-
-        if (isGrounded && currentState == State.Patrolling)
-        {
-            if (direction == Vector2.right)
-                move.x = baseMoveSpeed;
-            else
-                move.x = -baseMoveSpeed;
-        }
-        else if (currentState == State.Attacking)
-        {
-            if (direction == Vector2.right)
-                move.x = baseMoveSpeed * 100;
-            else
-                move.x = -baseMoveSpeed * 100;
-        }
-
-        targetVelocity.x = move.x * Time.deltaTime;
+        currentState = State.Idle;
+        StartCoroutine(AfterAttackCoolDown());
     }
 
-    void ComputeBaseMoveSpeed()
+    IEnumerator AfterAttackCoolDown()
+    {
+        yield return new WaitForSeconds(attackCooldown);
+
+        Vector2 targetDirection = gameObject.transform.position - target.transform.position;
+
+        if (direction != targetDirection)
+        {
+            FlipSprite();
+        }
+
+        objectHit = false;
+        currentState = State.Hunting;
+
+        yield break;
+    }
+
+
+    // << --------------------------------------- MOVEMENT -------------------------------- >> //
+
+    protected override void ComputeVelocity()
     {
         if (inWindZone)
         {
@@ -205,92 +241,181 @@ public class CrabwormLarva : PhysicsObject
                     baseMoveSpeed += windDir.x * windPwr;
             }
 
-            // limit the max base move speed of the enemy
+            // limit the max base move speed of the unit in wind
             if (baseMoveSpeed > maxMoveSpeed)
                 baseMoveSpeed = maxMoveSpeed;
-            // limit the min move speed of the unit
+            // limit the min move speed of the unit in wind
             else if (baseMoveSpeed < minMoveSpeed)
                 baseMoveSpeed = minMoveSpeed;
         }
-        else
+
+        Move();
+    }
+
+    void Move()
+    {
+        if (currentState == State.Patrolling)
         {
-            baseMoveSpeed = baseMoveSpeedStart;
+            if (direction == Vector2.right)
+                move.x = baseMoveSpeed;
+            else
+                move.x = -baseMoveSpeed;
         }
+        else if (currentState == State.Hunting)
+        {
+            if (direction == Vector2.right)
+                move.x = huntingMoveSpeed;
+            else
+                move.x = -huntingMoveSpeed;
+        }
+        else if (currentState == State.Attacking)
+        {
+            if (direction == Vector2.right)
+                move.x = attackingMoveSpeed;
+            else
+                move.x = -attackingMoveSpeed; 
+        }
+        else if (currentState == State.Idle)
+        {
+            move.x = 0;
+        }
+
+        // Sends to computed target velocity to physics object to translate in to movement
+        targetVelocity.x = move.x;
     }
 
 
-    // << ------------------------------------- RAYCAST CHECKS -------------------------------->> //
+    // << ------------------------------------- RAYCAST CHECKS -------------------------------- >> //
 
-    void OnTriggerEnter2D(Collider2D other)
+    void DetectPlayerCollisions()
     {
-        PlayerController pCon = other.gameObject.GetComponent<PlayerController>();
+        RaycastHit2D huntingInfo = Physics2D.Raycast(eyeRange.position, direction, eyeRangeDistance, playerLayerMask);
 
-        if (pCon != null)
+        // If we have detected the player and are not currently attacking them
+        if (huntingInfo.collider != null && currentState != State.Attacking)
         {
-            currentState = State.Attacking;
-            animator.SetTrigger("isAttacking");
-            target = pCon.gameObject;
+            target = huntingInfo.collider.gameObject;
+            currentState = State.Hunting;
 
-            Vector2 targetDirection = gameObject.transform.position - target.transform.position;
+            RaycastHit2D attackInfo = Physics2D.Raycast(eyeRange.position, direction, eyeRangeDistance / 2, playerLayerMask);
 
-            if (direction == targetDirection)
+            if (attackInfo.collider != null)
             {
-                FlipSprite();
+                isPatrolling = false;
+                currentState = State.Attacking;
+                animator.SetTrigger("isAttacking");
             }
-        }
-    }
-
-    void OnTriggerExit2D(Collider2D other)
-    {
-        PlayerController pCon = other.gameObject.GetComponent<PlayerController>();
-
-        if (pCon != null)
-        {
-            target = null;
         }
     }
 
     void DetectWallCollisions()
     {
         RaycastHit2D wallInfo = Physics2D.Raycast(wallDetection.position, direction, wallDistance, groundLayerMask);
-        Debug.DrawRay(wallDetection.position, direction * wallDistance, Color.white);
-
-        // If moving right, raycast right - if moving left, raycast left
-        if (direction == Vector2.right)
-            direction = Vector2.right; 
-        else
-            direction = Vector2.left;
 
         // If we have detected a wall && we are NOT detecting a trigger zone
         if (wallInfo.collider != null && !wallInfo.collider.isTrigger)
         {
             FlipSprite();
+
+            if (currentState == State.Hunting)
+            {
+                currentState = State.Patrolling;
+                target = null;
+            }
         }
     }
 
     void DetectGroundCollisions()
     {
         RaycastHit2D groundInfo = Physics2D.Raycast(groundDetection.position, Vector2.down, groundDistance, groundLayerMask);
-        Debug.DrawRay(groundDetection.position, Vector2.down * groundDistance, Color.red);
 
         // Checks for a loss of vertical collision (end of platform)
-        if (!groundInfo.collider.isTrigger)
+        if (!groundInfo.collider && this.currentState != State.Attacking)
         {
-            if (!groundInfo.collider && this.currentState != State.Attacking)
+            FlipSprite();
+
+            if (currentState == State.Hunting)
             {
-                isGrounded = false;
-                FlipSprite();
-            }
-            else
-            {
-                isGrounded = true;
+                currentState = State.Patrolling;
+                target = null;
             }
         }
+    }
 
+    void OnDrawGizmos()
+    {
+        // Hit Box
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(hitboxPos.position, 0.5f);
+
+        // Sight lines
+        Debug.DrawRay(eyeRange.position, direction * eyeRangeDistance, Color.yellow);
+        Debug.DrawRay(eyeRange.position, direction * eyeRangeDistance / 2, Color.red);
+        Debug.DrawRay(wallDetection.position, direction * wallDistance, Color.white);
+        Debug.DrawRay(groundDetection.position, Vector2.down * groundDistance, Color.red);
     }
 
 
-    // << ------------------------------------- FLIP SPRITE -------------------------------->> //
+    // << ------------------------------------- COLLISION CHECKS -------------------------------- >> //
+
+    // Called every frame when in Attacking state 
+    public void CastForPlayer()
+    {
+        if (!objectHit)
+        {
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(hitboxPos.position, 0.5f, direction, 1f, playerLayerMask);
+            foreach (RaycastHit2D hit in hits)
+            {
+                RecieveDamage hitObj = hit.collider.gameObject.GetComponent<RecieveDamage>();
+
+                if (hitObj != null)
+                {
+                    print("hit: " + hitObj.name);
+
+                    hitObj.GetComponent<RecieveDamage>().GetHit(direction, damageOutput, knockBack, knockUp, stunTime);
+                    objectHit = true; // prevents enemy attacking the player every frame - gets reset in AfterAttackCooldown()
+                }
+                else
+                {
+                    Debug.Log("No Recieve Damage component on player!");
+                }
+            }
+        }
+    }
+
+    //TODO: why can I not use this without it being detected by physics object regardless of layer masking??
+
+    //void OnTriggerEnter2D(Collider2D other)
+    //{
+    //    PlayerController pCon = other.gameObject.GetComponent<PlayerController>();
+
+    //    if (pCon != null)
+    //    {
+    //        currentState = State.Attacking;
+    //        animator.SetTrigger("isAttacking");
+    //        target = pCon.gameObject;
+
+    //        Vector2 targetDirection = gameObject.transform.position - target.transform.position;
+
+    //        if (direction == targetDirection)
+    //        {
+    //            FlipSprite();
+    //        }
+    //    }
+    //}
+
+    //void OnTriggerExit2D(Collider2D other)
+    //{
+    //    PlayerController pCon = other.gameObject.GetComponent<PlayerController>();
+
+    //    if (pCon != null)
+    //    {
+    //        target = null;
+    //    }
+    //}
+
+
+    // << ------------------------------------- FLIP SPRITE -------------------------------- >> //
 
     private void FlipSprite()
     {
@@ -300,13 +425,11 @@ public class CrabwormLarva : PhysicsObject
         {
             transform.eulerAngles = new Vector3(0, -180, 0);
             direction = Vector2.left;
-            //isMovingRight = false;
         }
         else
         {
             transform.eulerAngles = new Vector3(0, 0, 0);
             direction = Vector2.right;
-            //isMovingRight = true;
         }
     }
 }
