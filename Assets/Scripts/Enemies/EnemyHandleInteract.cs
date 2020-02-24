@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemyHandleInteract : MonoBehaviour
@@ -12,8 +11,9 @@ public class EnemyHandleInteract : MonoBehaviour
 
     [Space]
     [Header("References:")]
-    CrabwormLarvaController crabLarvaCon;
+    Enemy_Base enemyBase;
 
+    [SerializeField] protected Transform hitboxPos;
 
     // << ------ TODO: Figure out a way to make this more modular to be able to work with all future enemy types
 
@@ -21,17 +21,16 @@ public class EnemyHandleInteract : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        crabLarvaCon = GetComponent<CrabwormLarvaController>();
+        enemyBase = GetComponent<Enemy_Base>();
     }
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
-        crabLarvaCon.currentHP -= _damage;
+        enemyBase.currentHP -= _damage;
         print(gameObject.name + " was damaged!");
 
-        StartCoroutine(crabLarvaCon.UnitKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
+        StartCoroutine(enemyBase.UnitKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
         StartCoroutine(IFlashRed());
-
     }
 
     public IEnumerator IFlashRed()

@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PhysicsObject : MonoBehaviour
 {
     [Space]
-    [Header("PHYSICS OBJECT:")]
-    public bool isOnWall = false;
+    [Header("--- PHYSICS OBJECT ---")]
+    //private bool isOnWall = false;
     public bool isGrounded; 
     public bool inWindZone = false;
     public Vector2 velocity;
@@ -78,7 +77,7 @@ public class PhysicsObject : MonoBehaviour
         velocity.x = targetVelocity.x;
 
         isGrounded = false;
-        isOnWall = false;
+        //isOnWall = false;
 
         Vector2 deltaPosition = velocity * Time.deltaTime;
         Vector2 moveAlongGround = new Vector2(groundNormal.y, -groundNormal.x);

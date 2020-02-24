@@ -1,18 +1,19 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : PhysicsObject
 {
+    [Space]
+    [Header("--- PLAYER CONTROLLER ---")]
     public Transform respawnZone;
     public Vector2 move;
 
     [Space]
-    [Header("INPUT:")]
+    [Header("Input:")]
     public bool isController = false;
 
     [Space]
-    [Header("ACCEL/DECEL SPEEDS:")]
+    [Header("Accel & Deccel Speeds:")]
     [Tooltip("Speed of acceleration when not at max speed or in air.")]
     public float accelSpeedNormal = 1.5f;
     [Tooltip("Speed of acceleration when player is moving at max speed.")]
@@ -31,7 +32,7 @@ public class PlayerController : PhysicsObject
     private bool isLeft = false;
 
     [Space]
-    [Header("MOVEMENT / WIND:")]
+    [Header("Movement & Wind:")]
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
@@ -45,8 +46,9 @@ public class PlayerController : PhysicsObject
     private float windRatio; // Ratio between the wind power and the players velocity
 
     [Space]
-    [Header("JUMP:")]
+    [Header("Jump:")]
     public bool inAir;
+    [SerializeField] private bool canJump = true;
     [Tooltip("Initial vertical boost speed.")]
     public float jumpTakeoffSpeed = 6f;
     [Tooltip("Time in air required to enable the 'Hard Landing' animation.")]
@@ -65,30 +67,26 @@ public class PlayerController : PhysicsObject
     private bool isPressingJumpButton = false;
     private float currentGraceTime;
     private float airTime = 0f;
-    float currentJumpDelayTime = 0;
-    [SerializeField] float jumpHoldTime = 0;
-    [SerializeField] private bool canJump = true;
+    private float jumpHoldTime = 0;
     private bool quickJump = true;
 
     [Space]
-    [Header("MAG BOOTS:")]
+    [Header("Mag Boots:")]
     public bool magBootsOn = false;
     [Tooltip("Rate at which the player gets pulled down towards the ground with the magnetic boots enabled.")]
     public float onGravValue = 10f;
     public ParticleSystem bootSparks;
 
     [Space]
-    [Header("GROUND CHECK:")]
-    public Vector3 bottom;
+    [Header("Ground Check:")]
     [Tooltip("Distance of ground check raycast from the bottom of the player sprite.")]
     public float groundCheckDistance = 1.75f;
     public Transform groundCheck; // for determining quick landing jump
     public float groundSlideSpeed = 18f;
-    private int whatIsGround;
     private bool isGroundSliding;
 
     [Space]
-    [Header("WALL CHECK:")]
+    [Header("Wall Check:")]
     [Tooltip("Distance of the wall check raycast from the chest of the player sprite.")]
     public float wallCheckDistance = 1;
     public float wallSlidingSpeed;
@@ -100,7 +98,7 @@ public class PlayerController : PhysicsObject
     private bool canWallSlide = true;
 
     [Space]
-    [Header("LEDGE CHECK:")]
+    [Header("Ledge Check:")]
     public bool canClimbLedge = false;
     [Tooltip("Distance of the ledge check raycast from the head of the player sprite.")]
     public float ledgeCheckDistance = 1;
@@ -120,12 +118,11 @@ public class PlayerController : PhysicsObject
     private bool ledgeDetected;
 
     [Space]
-    [Header("REFERENCES:")]
+    [Header("References:")]
     public Animator animator;
     public Controls controls;
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
-
 
     private LayerMask groundLayerMask;
     private int groundLayer = 8;
@@ -148,7 +145,6 @@ public class PlayerController : PhysicsObject
     protected override void Start()
     {
         base.Start();
-        whatIsGround = LayerMask.GetMask("Ground");
 
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
 

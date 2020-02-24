@@ -214,7 +214,7 @@ MonoBehaviour:
   p3_knockback: 40
   p3_knockUp: 0
   p3_stunTime: 0.2
-  b_damage: 0
+  b_damage: 2
   b_knockback: 0
   b_knockUp: 2
   b_stunTime: 0.1
@@ -230,7 +230,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d497e3f2e784f2f4e823786439ee42de, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isOnWall: 0
   isGrounded: 0
   inWindZone: 0
   velocity: {x: 0, y: 0}
@@ -243,18 +242,19 @@ MonoBehaviour:
   isWallJumping: 0
   respawnZone: {fileID: 0}
   move: {x: 0, y: 0}
-  isController: 0
-  accelSpeedNormal: 7
+  isController: 1
+  accelSpeedNormal: 15
   accelSpeedMaxSpeed: 4.25
   accelSpeedAir: 5.35
   decelSpeed: 9
-  skidTimeLimit: 15
+  skidTimeLimit: 20
   canMove: 1
   isMoving: 0
   isMovingInWind: 0
   maxSpeed: 3.75
   accessibleDirection: {x: 0, y: 0}
   inAir: 0
+  canJump: 1
   jumpTakeoffSpeed: 26
   hardLandTime: 1
   heavyLandTime: 1.5
@@ -263,13 +263,10 @@ MonoBehaviour:
   maxGraceTime: 0.12
   jumpHoldTimeMax: 0.37
   airDisableTimer: 0.1
-  jumpHoldTime: 0
-  canJump: 1
   magBootsOn: 0
   onGravValue: 25
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
     type: 3}
-  bottom: {x: 0, y: 0, z: 0}
   groundCheckDistance: 0.2
   groundCheck: {fileID: 450504362977715217}
   groundSlideSpeed: 18
@@ -288,6 +285,7 @@ MonoBehaviour:
   ledgeClimbYOffset2: 2.65
   animator: {fileID: 0}
   controls: {fileID: 118447264074416066}
+  isHit: 0
 --- !u!114 &118447264074416066
 MonoBehaviour:
   m_ObjectHideFlags: 0
