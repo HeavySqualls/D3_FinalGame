@@ -239,7 +239,6 @@ public class PlayerController : PhysicsObject
         canJump = true;
         canMove = true;
         canWallSlide = true;
-        //targetVelocity.x = 14;
         yield break;
     }
 

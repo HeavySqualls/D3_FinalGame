@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 
 public class CrabwormLarvaController : Enemy_Base
-{    
+{
     /// <summary>
     /// 
     /// - Actual movement of the unit is handled in PhysicsObject and calculated in Enemy_Base.
@@ -15,13 +15,13 @@ public class CrabwormLarvaController : Enemy_Base
 
     [Space]
     [Header("--- CRABWORM LARVA ---")]
+
+    [Tooltip("The location of the units hit box - activated when attacking.")]
     [SerializeField] Transform hitBoxPos;
 
     protected override void Start()
     {
         base.Start();
-
-        this.currentState = State.Patrolling;
     }
 
     protected override void Update()
@@ -96,6 +96,9 @@ public class CrabwormLarvaController : Enemy_Base
     
     private void Idle()        // Do nothing
     {
+        DetectWallCollisions();
+        DetectGroundCollisions();
+        DetectPlayerCollisions();
         isIdle = true;
         isPatrolling = false;
         isHunting = false;
@@ -108,7 +111,7 @@ public class CrabwormLarvaController : Enemy_Base
         isHunting = false;
     }
 
-    private void InAirInWind()
+    private void InAirInWind()        // Do nothing
     {
 
     }
@@ -183,6 +186,27 @@ public class CrabwormLarvaController : Enemy_Base
         }
     }
 
+    public void AttackCall(GameObject _target)
+    {
+        target = _target;
+
+        Vector2 targetDirection;
+
+        if (target != null)
+        {
+            targetDirection = (transform.position - target.transform.position);
+            targetDirection.x = Mathf.Clamp(targetDirection.x, -1f, 1f);
+
+            if (targetDirection.x > 0 && direction == Vector2.right || targetDirection.x < 0 && direction == Vector2.left)
+            {
+                FlipSprite();
+            }
+        }
+
+        currentState = State.Attacking;
+        animator.SetTrigger("isAttacking");
+    }
+
     void OnDrawGizmos()
     {
         // Hit Box
@@ -232,35 +256,4 @@ public class CrabwormLarvaController : Enemy_Base
             KillUnit();
         }
     }
-
-    //TODO: why can I not use this without it being detected by physics object regardless of layer masking??
-
-    //void OnTriggerEnter2D(Collider2D other)
-    //{
-    //    PlayerController pCon = other.gameObject.GetComponent<PlayerController>();
-
-    //    if (pCon != null)
-    //    {
-    //        currentState = State.Attacking;
-    //        animator.SetTrigger("isAttacking");
-    //        target = pCon.gameObject;
-
-    //        Vector2 targetDirection = gameObject.transform.position - target.transform.position;
-
-    //        if (direction == targetDirection)
-    //        {
-    //            FlipSprite();
-    //        }
-    //    }
-    //}
-
-    //void OnTriggerExit2D(Collider2D other)
-    //{
-    //    PlayerController pCon = other.gameObject.GetComponent<PlayerController>();
-
-    //    if (pCon != null)
-    //    {
-    //        target = null;
-    //    }
-    //}
 }

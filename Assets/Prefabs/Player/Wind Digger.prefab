@@ -201,7 +201,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxComboTime: 0.7
   attackSpacing: 0.2
-  hitboxPos: {fileID: 1636198352}
+  circleCastRadius: 0.5
+  circleCastDistance: 0.85
   p1_damage: 2
   p1_knockback: 25
   p1_knockUp: 0
@@ -242,7 +243,7 @@ MonoBehaviour:
   isWallJumping: 0
   respawnZone: {fileID: 0}
   move: {x: 0, y: 0}
-  isController: 1
+  isController: 0
   accelSpeedNormal: 15
   accelSpeedMaxSpeed: 4.25
   accelSpeedAir: 5.35

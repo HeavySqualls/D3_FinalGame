@@ -137,6 +137,7 @@ GameObject:
   - component: {fileID: 7518789101184596867}
   - component: {fileID: 7518789101184596925}
   - component: {fileID: 7518789101184596924}
+  - component: {fileID: 225567077}
   m_Layer: 13
   m_Name: CrabwormLarvae
   m_TagString: Untagged
@@ -295,7 +296,7 @@ MonoBehaviour:
   isWallJumping: 0
   currentState: 0
   currentHP: 0
-  startHP: 4
+  startHP: 20
   damageOutput: 2
   attackCooldown: 0.25
   knockBack: 30
@@ -304,8 +305,6 @@ MonoBehaviour:
   patrolMoveSpeed: 2
   huntingMoveSpeed: 5
   attackingMoveSpeed: 15
-  maxMoveSpeed: 25
-  minMoveSpeed: 2
   currentMoveSpeed: 0
   eyeRange: {fileID: 7518789099813250741}
   eyeRangeDistance: 15
@@ -314,6 +313,7 @@ MonoBehaviour:
   groundDetection: {fileID: 7518789100519514250}
   groundDistance: 0.25
   respawnZone: {fileID: 0}
+  isPatroller: 0
   hitBoxPos: {fileID: 7518789101042350976}
 --- !u!50 &7518789101184596925
 Rigidbody2D:
@@ -362,3 +362,19 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.22583199, y: 0.17112339}
   m_EdgeRadius: 0
+--- !u!58 &225567077
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7518789101184596871}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: -0.01}
+  serializedVersion: 2
+  m_Radius: 0.1
