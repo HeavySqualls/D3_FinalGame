@@ -216,25 +216,38 @@ public class PlayerController : PhysicsObject
         yield break;
     }
 
+    public bool isHit = false;
+
     public IEnumerator PlayerKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
     {
-        print("Knocked!");
+        print(gameObject.name + " was hit!");
+
+        isHit = true;
+        canFlipSprite = false;
         canJump = false;
         canMove = false;
         canWallSlide = false;
-        velocity.y += _knockUp;
-        targetVelocity.x += _knockBack;
 
-        yield return new WaitForSeconds(_stunTime);
+        float timer = 0.0f;
 
+        while (timer < _stunTime)
+        {
+            velocity.y += _knockUp;
+            targetVelocity.x += _knockBack;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        isHit = false;
+        canFlipSprite = true;
         canJump = true;
         canMove = true;
         canWallSlide = true;
-        targetVelocity.x = 0;
+        //targetVelocity.x = 14;
         yield break;
     }
 
-    
+
     // <<----------------------------------------------------- COMPUTE VELOCITY (IN AND OUT OF WIND ZONES) ------------------------------------------- //
 
 
@@ -253,8 +266,6 @@ public class PlayerController : PhysicsObject
         {
             accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedNormal;
         }
-
-
 
         if (isWallJumping && !isInputLeftORRight)
         {

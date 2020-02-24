@@ -5,23 +5,25 @@ using UnityEngine;
 public class RecieveDamage : MonoBehaviour
 {
     [Tooltip("Add in the game object that this script is attached to.")]
-    public GameObject go;
+    private GameObject go;
     private PlayerHandleInteract pHandleInteract;
-    private EnemyController enCon;
+    private EnemyHandleInteract eHandleInteract;
     private BreakableObject bO;
     private RollingObject rO;
 
     void Start()
     {
+        go = gameObject;
+
         if (go != null)
         {
             if (go.GetComponent<PlayerController>()) //<<------ if this object is the player
             {
                 pHandleInteract = go.GetComponent<PlayerHandleInteract>();
             }
-            else if (go.GetComponent<EnemyController>()) //<<------------ if this object is an enemy
+            else if (go.GetComponent<EnemyHandleInteract>()) //<<------------ if this object is an enemy
             {
-                enCon = go.GetComponent<EnemyController>();
+                eHandleInteract = go.GetComponent<EnemyHandleInteract>();
             }
             else if (go.GetComponent<BreakableObject>()) //<<------- if this object is a breakable object
             {
@@ -43,19 +45,19 @@ public class RecieveDamage : MonoBehaviour
     {    
         print(gameObject.name + " hit!");
 
-        if (enCon != null)
+        if (eHandleInteract != null)
         {
             if (_hitDirection == Vector2.right) // knock to the left
             {
-                enCon.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+                eHandleInteract.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
             }
             else if (_hitDirection == Vector2.left) // knock to the right 
             {
-                enCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                eHandleInteract.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
             else if (_hitDirection == Vector2.zero) // below or above
             {
-                enCon.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                eHandleInteract.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
         }
         else if (pHandleInteract != null)

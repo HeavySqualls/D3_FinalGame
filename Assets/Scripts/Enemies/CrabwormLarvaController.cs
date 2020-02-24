@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CrabwormLarva : PhysicsObject
+public class CrabwormLarvaController : PhysicsObject
 {
     public enum State { Patrolling, Hunting, Attacking, Idle, Hurt, InAirInWind, Dead}
 
@@ -12,18 +12,22 @@ public class CrabwormLarva : PhysicsObject
     private bool isIdle;
     private bool isPatrolling;
     private bool isHunting;
-    private bool isStunned;
+    private bool isDead;
     private bool isInAirInWind;
     private bool isHit = false;
     private bool objectHit = false;
+    private bool isHurt = false;
+
+    [Space]
+    [Header("Unit Health:")]
+    public float currentHP;
+    [SerializeField] float startHP = 10f;
 
     [Space]
     [Header("Enemy Combat:")]
     [SerializeField] Transform hitboxPos;
     public int damageOutput = 2;
     public float attackCooldown = 0.5f;
-    public float currentHP;
-    [SerializeField] float startHP = 10f;
     [SerializeField] float knockBack;
     [SerializeField] float knockUp;
     [SerializeField] float stunTime;
@@ -75,10 +79,10 @@ public class CrabwormLarva : PhysicsObject
         coll = GetComponent<BoxCollider2D>();
         animator = GetComponent<Animator>();
 
-        currentKnockBackTime = knockbackTimeLength;
         currentHP = startHP;
+        currentKnockBackTime = knockbackTimeLength;
 
-        groundLayerMask = ((1 << 8));
+        groundLayerMask = ((1 << 8) | (1<< 19));
         playerLayerMask = ((1 << 12));
 
         // Set the enemy in the correct direction at Start
@@ -171,7 +175,10 @@ public class CrabwormLarva : PhysicsObject
 
     private void Hurt()
     {
-
+        // Do nothing
+        isIdle = false;
+        isPatrolling = false;
+        isHunting = false;
     }
 
     private void InAirInWind()
@@ -181,7 +188,11 @@ public class CrabwormLarva : PhysicsObject
 
     private void Dead()
     {
-
+        isIdle = false;
+        isPatrolling = false;
+        isHunting = false;
+        targetVelocity.x = 0;
+        // Wait to die
     }
 
 
@@ -192,6 +203,39 @@ public class CrabwormLarva : PhysicsObject
         animator.SetBool("isIdle", isIdle);
         animator.SetBool("isPatrolling", isPatrolling);
         animator.SetBool("isHunting", isHunting);
+        animator.SetBool("isHurt", isHurt);
+        animator.SetBool("isDead", isDead);
+    }
+
+
+    // << --------------------------------------- COMBAT -------------------------------- >> //
+
+    public IEnumerator UnitKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
+    {
+        print(gameObject.name + " start coroutine!");
+        isHurt = true;
+        targetVelocity.x = 0;
+
+        currentState = State.Hurt;
+
+        float timer = 0.0f;
+
+        while (timer < _stunTime)
+        {
+            velocity.y += _knockUp;
+            targetVelocity.x += _knockBack;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        isHurt = false;
+
+        if (currentHP <= 0)
+            KillUnit();
+        else
+            AfterAttack();
+
+        yield break;
     }
 
     public void AfterAttack()
@@ -204,17 +248,29 @@ public class CrabwormLarva : PhysicsObject
     {
         yield return new WaitForSeconds(attackCooldown);
 
-        Vector2 targetDirection = gameObject.transform.position - target.transform.position;
+        Vector2 targetDirection;
 
-        if (direction != targetDirection)
+        if (target != null)
         {
-            FlipSprite();
+            targetDirection = gameObject.transform.position - target.transform.position;
+
+            if (direction != targetDirection)
+            {
+                FlipSprite();
+            }
         }
 
         objectHit = false;
         currentState = State.Hunting;
 
         yield break;
+    }
+
+    public void KillUnit()
+    {
+        isDead = true;
+        currentState = State.Dead;
+        Destroy(gameObject, 10f);
     }
 
 
@@ -315,6 +371,13 @@ public class CrabwormLarva : PhysicsObject
         // If we have detected a wall && we are NOT detecting a trigger zone
         if (wallInfo.collider != null && !wallInfo.collider.isTrigger)
         {
+            CrumblingWall crumblingWall = wallInfo.collider.gameObject.GetComponent<CrumblingWall>();
+
+            if (crumblingWall != null)
+            {
+                crumblingWall.TriggerPlatformCollapse();                    
+            }
+
             FlipSprite();
 
             if (currentState == State.Hunting)
@@ -346,9 +409,9 @@ public class CrabwormLarva : PhysicsObject
     {
         // Hit Box
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(hitboxPos.position, 0.5f);
+        Gizmos.DrawWireSphere(hitboxPos.position, 0.35f);
 
-        // Sight lines
+        // Sight Lines
         Debug.DrawRay(eyeRange.position, direction * eyeRangeDistance, Color.yellow);
         Debug.DrawRay(eyeRange.position, direction * eyeRangeDistance / 2, Color.red);
         Debug.DrawRay(wallDetection.position, direction * wallDistance, Color.white);
@@ -363,7 +426,7 @@ public class CrabwormLarva : PhysicsObject
     {
         if (!objectHit)
         {
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(hitboxPos.position, 0.5f, direction, 1f, playerLayerMask);
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(hitboxPos.position, 0.35f, direction, 0f, playerLayerMask);
             foreach (RaycastHit2D hit in hits)
             {
                 RecieveDamage hitObj = hit.collider.gameObject.GetComponent<RecieveDamage>();

@@ -12,6 +12,7 @@ public class PlayerCombat : MonoBehaviour
 
     [SerializeField] Transform hitboxPos;
     private bool canAttack = true;
+    private bool canCast = true;
     private bool comboAttacking = false;
     private float timeBetweenCombos = 0;
     private int comboNum = 1;
@@ -52,9 +53,13 @@ public class PlayerCombat : MonoBehaviour
     [Header("REFERENCES:")]
     private Animator animator;
     private PlayerController pCon;
+    LayerMask interactableLayerMask;
+    int enemyLayer = 13;
+    int interactablesLayer = 15;
 
     void Start() 
     {
+        interactableLayerMask = ((1 << enemyLayer) | (1 << interactablesLayer));
         pCon = GetComponent<PlayerController>();
         animator = pCon.animator;
     }
@@ -106,7 +111,7 @@ public class PlayerCombat : MonoBehaviour
                 SetAttackStats(p3_damage, p3_knockback, p3_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch3");
                 StartCoroutine(AttackCoolDown(attackSpacing));
-
+                StartCoroutine(CastForHit());
                 comboNum = 1;
             }
             else if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 2)
@@ -115,7 +120,7 @@ public class PlayerCombat : MonoBehaviour
                 SetAttackStats(p2_damage, p2_knockback, p2_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch2");
                 StartCoroutine(AttackCoolDown(attackSpacing));
-
+                StartCoroutine(CastForHit());
                 comboNum = 3;
             }
             else if (Input.GetButtonDown(pCon.controls.punch) && comboNum == 1)
@@ -126,7 +131,7 @@ public class PlayerCombat : MonoBehaviour
                 SetAttackStats(p1_damage, p1_knockback, p1_knockUp, p1_stunTime);
                 pCon.animator.SetTrigger("punch1");
                 StartCoroutine(AttackCoolDown(attackSpacing));
-
+                StartCoroutine(CastForHit());
                 comboNum = 2;
             }
 
@@ -136,6 +141,7 @@ public class PlayerCombat : MonoBehaviour
                 SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
                 pCon.animator.SetTrigger("kick");
                 StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
+                StartCoroutine(CastForHit());
             }
         }
     }
@@ -149,6 +155,14 @@ public class PlayerCombat : MonoBehaviour
 
         pCon.canMove = true;
         canAttack = true;
+        canCast = true;
+    }
+
+    IEnumerator CastForHit()
+    {
+        yield return new WaitForSeconds(0.01f);
+        CastForEnemies();
+        canCast = false;
     }
 
     void SetAttackStats(float _dmg, float _knkBk, float _knkUp, float _stunTime)
@@ -159,33 +173,24 @@ public class PlayerCombat : MonoBehaviour
         stunTime = _stunTime;
     }
 
-    public void CanAttack() // Called from the animator
+    public void CastForEnemies()
     {
-        canAttack = true;
-    }
-
-    public void CastForEnemies() // Called from the animator
-    {
-        LayerMask interactableLayerMask = LayerMask.GetMask("InteractableObjects");
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(hitboxPos.position, 0.5f, pCon.accessibleDirection, 1f, interactableLayerMask);
-        foreach (RaycastHit2D hit in hits)
+        if (canCast)
         {
-            var hitObj = hit.collider.gameObject;
+            print("cast");
 
-            if (hitObj.GetComponent<RecieveDamage>())
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(gameObject.transform.position, 0.95f, pCon.accessibleDirection, 0.95f, interactableLayerMask);
+
+            foreach (RaycastHit2D hit in hits)
             {
-                print("hit: " + hitObj.name);
+                RecieveDamage recieveDamage = hit.collider.gameObject.GetComponent<RecieveDamage>();
 
-                // Apply knockback to enemy 
-                if (hitObj.GetComponent<RecieveDamage>() != null)
+                if (recieveDamage != null)
                 {
-                    hitObj.GetComponent<RecieveDamage>().GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
-                    pCon.PlayerKnocked(pCon.accessibleDirection, 20, 6f, 0.2f);
+                    print("hit: " + recieveDamage.name);
+                    recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
+                    //pCon.PlayerKnocked(pCon.accessibleDirection, 20, 6f, 0.2f);
                 }
-                else
-                {
-                    Debug.Log("No Recieve Damage component on object!");
-                }           
             }
         }
     }
@@ -193,6 +198,6 @@ public class PlayerCombat : MonoBehaviour
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(hitboxPos.position, 0.5f);
+        Gizmos.DrawWireSphere(transform.position, 0.85f);
     }
 }

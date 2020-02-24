@@ -75,9 +75,11 @@ public class PlayerHandleInteract : MonoBehaviour
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
-        //hpCurrent -= _damage;
-        StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
-        StartCoroutine(pFeedBack.IFlashRed());
+        if (!pCon.isHit)
+        {
+            StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
+            StartCoroutine(pFeedBack.IFlashRed());
+        }
     }
 
 
