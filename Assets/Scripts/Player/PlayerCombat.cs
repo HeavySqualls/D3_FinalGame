@@ -64,6 +64,7 @@ public class PlayerCombat : MonoBehaviour
     void Start() 
     {
         interactableLayerMask = ((1 << enemyLayer) | (1 << interactablesLayer));
+
         pCon = GetComponent<PlayerController>();
         animator = pCon.animator;
     }
@@ -192,20 +193,18 @@ public class PlayerCombat : MonoBehaviour
     {
         if (canCast)
         {
-            print("cast");
-
             RaycastHit2D[] hits = Physics2D.CircleCastAll(gameObject.transform.position, circleCastRadius, pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
 
             foreach (RaycastHit2D hit in hits)
             {
                 RecieveDamage recieveDamage = hit.collider.gameObject.GetComponent<RecieveDamage>();
 
-                if (recieveDamage != null)
+                if (recieveDamage != null && !hit.collider.isTrigger)
                 {
                     print("hit: " + recieveDamage.name);
                     recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
                     canCast = false;
-                    pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
+                    //pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
                 }
             }
         }

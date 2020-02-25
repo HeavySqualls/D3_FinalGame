@@ -106,7 +106,7 @@ public class Enemy_Base : PhysicsObject
 
     // << --------------------------------------- COMBAT -------------------------------- >> //
 
-    public IEnumerator UnitKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
+    public IEnumerator ThisUnitHit(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
     {
         isHurt = true;
         targetVelocity.x = 0;
@@ -128,7 +128,7 @@ public class Enemy_Base : PhysicsObject
         if (currentHP <= 0)
             KillUnit();
         else
-            AfterAttack();
+            AfterThisUnitWasAttacked();
 
         yield break;
     }
@@ -157,7 +157,7 @@ public class Enemy_Base : PhysicsObject
         yield break;
     }
 
-    protected virtual void AfterAttack()
+    protected virtual void AfterThisUnitWasAttacked()
     {
         // Behaviour handled in specific enemy controller
     }

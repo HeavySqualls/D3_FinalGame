@@ -271,6 +271,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   flashDuration: 0.4
+  enemyBase: {fileID: 7518789101184596867}
+  enemyTurretBase: {fileID: 0}
   hitboxPos: {fileID: 0}
 --- !u!114 &7518789101184596867
 MonoBehaviour:
@@ -313,7 +315,6 @@ MonoBehaviour:
   groundDetection: {fileID: 7518789100519514250}
   groundDistance: 0.25
   respawnZone: {fileID: 0}
-  isPatroller: 0
   hitBoxPos: {fileID: 7518789101042350976}
 --- !u!50 &7518789101184596925
 Rigidbody2D:

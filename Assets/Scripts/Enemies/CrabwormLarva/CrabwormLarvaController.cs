@@ -139,9 +139,9 @@ public class CrabwormLarvaController : Enemy_Base
 
     // << --------------------------------------- COMBAT -------------------------------- >> //
 
-    protected override void AfterAttack()
+    protected override void AfterThisUnitWasAttacked()
     {
-        base.AfterAttack();
+        base.AfterThisUnitWasAttacked();
 
         currentState = State.Idle;
         StartCoroutine(AttackCoolDown());

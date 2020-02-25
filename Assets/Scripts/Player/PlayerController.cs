@@ -590,7 +590,12 @@ public class PlayerController : PhysicsObject
     private void GroundSlide(Vector2 _slideDirection)
     {
         canMove = false;
-        isGroundSliding = true;
+
+        if (!isGroundSliding)
+        {
+            isGroundSliding = true;
+        }
+
         slideDirection = _slideDirection;
 
         if (_slideDirection == Vector2.right)

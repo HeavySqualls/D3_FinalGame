@@ -11,26 +11,36 @@ public class EnemyHandleInteract : MonoBehaviour
 
     [Space]
     [Header("References:")]
-    Enemy_Base enemyBase;
+    [Tooltip("If this is a moving unit, drag the related controller here.")]
+    [SerializeField] Enemy_Base enemyBase;
+    [Tooltip("If this is a turret-style unit, drag the related controller here.")]
+    [SerializeField] Enemy_Turret_Base enemyTurretBase;
 
     [SerializeField] protected Transform hitboxPos;
-
-    // << ------ TODO: Figure out a way to make this more modular to be able to work with all future enemy types
-
 
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        enemyBase = GetComponent<Enemy_Base>();
     }
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
-        enemyBase.currentHP -= _damage;
-        print(gameObject.name + " was damaged!");
+        if (enemyBase != null)
+        {
+            enemyBase.currentHP -= _damage;
+            print(gameObject.name + " was damaged!");
 
-        StartCoroutine(enemyBase.UnitKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
-        StartCoroutine(IFlashRed());
+            StartCoroutine(enemyBase.ThisUnitHit(_hitDirection, _knockBack, _knockUp, _stunTime));
+            StartCoroutine(IFlashRed());
+        }
+        else if (enemyTurretBase != null)
+        {
+            //enemyTurretBase.currentHP -= _damage;
+            print(gameObject.name + " was damaged!");
+
+            enemyTurretBase.ThisUnitHit(_hitDirection, _knockBack, _knockUp, _stunTime);
+            StartCoroutine(IFlashRed());
+        }
     }
 
     public IEnumerator IFlashRed()
