@@ -189,11 +189,14 @@ public class PlayerCombat : MonoBehaviour
         stunTime = _stunTime;
     }
 
+    //RaycastHit2D[] hits = Physics2D.OverlapBoxAll(gameObject.transform.position, Vector2(1, 2), pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
+    public Vector2 boxCast = new Vector2(1, 2);
+
     public void CastForEnemies()
     {
         if (canCast)
         {
-            RaycastHit2D[] hits = Physics2D.CircleCastAll(gameObject.transform.position, circleCastRadius, pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
 
             foreach (RaycastHit2D hit in hits)
             {

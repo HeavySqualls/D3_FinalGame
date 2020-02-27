@@ -35,7 +35,7 @@ public class EnemyHandleInteract : MonoBehaviour
         }
         else if (enemyTurretBase != null)
         {
-            //enemyTurretBase.currentHP -= _damage;
+            enemyTurretBase.currentHP -= _damage;
             print(gameObject.name + " was damaged!");
 
             enemyTurretBase.ThisUnitHit(_hitDirection, _knockBack, _knockUp, _stunTime);

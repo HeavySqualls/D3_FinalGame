@@ -19,6 +19,7 @@ public class Enemy_Turret_Base : MonoBehaviour
     //protected bool objectHit = false;
     protected bool isHurt = false;
     protected bool isCooldown = false;
+    protected bool objectHit = false;
 
     [Space]
     [Header("Unit Health:")]
@@ -55,7 +56,7 @@ public class Enemy_Turret_Base : MonoBehaviour
     protected Vector2 direction;
     protected LayerMask playerLayerMask;
     protected Animator animator;
-    protected GameObject target;
+    public GameObject target;
 
     protected virtual void Start()
     {
@@ -88,7 +89,7 @@ public class Enemy_Turret_Base : MonoBehaviour
             currentState = State.Prone;
 
         isCooldown = false;
-
+        objectHit = false;
         yield break;
     }
 
@@ -99,10 +100,10 @@ public class Enemy_Turret_Base : MonoBehaviour
 
     protected void AfterAttackCooldown()
     {
-        // Behaviour handled in specific enemy controller
+
     }
 
-    protected void KillUnit()
+    protected virtual void KillUnit()
     {
         // Behaviour handled in specific enemy controller
     }
