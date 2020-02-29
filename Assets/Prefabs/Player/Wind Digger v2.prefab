@@ -859,9 +859,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f01fd491d307fa947b9c0754f2bee6af, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemNameText: {fileID: 8207287641034192011}
-  itemSlotText: {fileID: 8207287641711668072}
-  itemStatsText: {fileID: 8207287640831221516}
+  itemNameText: {fileID: 0}
+  itemSlotText: {fileID: 0}
+  itemStatsText: {fileID: 0}
 --- !u!114 &8207287640601089331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1524,7 +1524,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 8207287641054460067}
   valueText: {fileID: 8207287640663969548}
-  toolTip: {fileID: 8207287641261093938}
+  toolTip: {fileID: 0}
 --- !u!114 &8207287641073196511
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1795,9 +1795,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 48c5bbacf9ee70a4abc87cf30d36ccb3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  statNameText: {fileID: 8207287641039512280}
-  statModifiersLabelText: {fileID: 8207287641946677917}
-  statModifiersText: {fileID: 8207287642354500624}
+  statNameText: {fileID: 0}
+  statModifiersLabelText: {fileID: 0}
+  statModifiersText: {fileID: 0}
 --- !u!114 &8207287641261093937
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2121,7 +2121,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 8207287641380874990}
   valueText: {fileID: 8207287641311484064}
-  toolTip: {fileID: 8207287641261093938}
+  toolTip: {fileID: 0}
 --- !u!114 &8207287641316088713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2742,7 +2742,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 8207287642649933933}
   valueText: {fileID: 8207287642389682188}
-  toolTip: {fileID: 8207287641261093938}
+  toolTip: {fileID: 0}
 --- !u!114 &8207287641541413495
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3328,7 +3328,7 @@ GameObject:
   - component: {fileID: 8207287641793360586}
   - component: {fileID: 8207287641793360588}
   m_Layer: 5
-  m_Name: ChestSlot
+  m_Name: HeadSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3403,7 +3403,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287642429019173}
-  equipType: 1
+  equipType: 0
 --- !u!1 &8207287641814798536
 GameObject:
   m_ObjectHideFlags: 0
@@ -3505,7 +3505,7 @@ GameObject:
   - component: {fileID: 8207287641872256737}
   - component: {fileID: 8207287641872256739}
   m_Layer: 5
-  m_Name: Hand2Slot
+  m_Name: HeadSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3580,7 +3580,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287641758943470}
-  equipType: 3
+  equipType: 0
 --- !u!1 &8207287641917273426
 GameObject:
   m_ObjectHideFlags: 0
@@ -3873,7 +3873,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   statPanel: {fileID: 8207287642432848080}
-  itemTooltip: {fileID: 8207287640601089332}
+  itemTooltip: {fileID: 0}
   draggableItem: {fileID: 8207287641917273428}
 --- !u!1 &8207287642010731502
 GameObject:
@@ -4136,7 +4136,7 @@ GameObject:
   - component: {fileID: 8207287642052678633}
   - component: {fileID: 8207287642052678635}
   m_Layer: 5
-  m_Name: Hand1Slot
+  m_Name: HeadSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4211,7 +4211,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287642429876582}
-  equipType: 2
+  equipType: 0
 --- !u!1 &8207287642143814710
 GameObject:
   m_ObjectHideFlags: 0
@@ -4314,7 +4314,7 @@ GameObject:
   - component: {fileID: 8207287642209211396}
   - component: {fileID: 8207287642209211398}
   m_Layer: 5
-  m_Name: BootsSlot
+  m_Name: HeadSlot
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4389,7 +4389,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287641577984813}
-  equipType: 4
+  equipType: 0
 --- !u!1 &8207287642255757917
 GameObject:
   m_ObjectHideFlags: 0
@@ -4979,11 +4979,7 @@ MonoBehaviour:
   - {fileID: 8207287641541413496}
   - {fileID: 8207287641316088714}
   - {fileID: 8207287642683923256}
-  statNames:
-  - Strength
-  - Agility
-  - Intellect
-  - Vitality
+  statNames: []
 --- !u!1 &8207287642455223837
 GameObject:
   m_ObjectHideFlags: 0
@@ -5042,21 +5038,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9694cc33c32bddb4d9fa655c28c6f5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingItems:
-  - {fileID: 0}
-  - {fileID: 11400000, guid: c95ae281f7703994e80a40988ef68643, type: 2}
-  - {fileID: 11400000, guid: 922edca22970fe148867ea30b5d20395, type: 2}
-  - {fileID: 11400000, guid: faac59bfb201a71438d6a898fc9b3705, type: 2}
-  - {fileID: 0}
-  - {fileID: 0}
-  itemsParent: {fileID: 8207287641182189058}
-  itemSlots:
-  - {fileID: 8207287641448750230}
-  - {fileID: 8207287641814798538}
-  - {fileID: 8207287641710260210}
-  - {fileID: 8207287642460971464}
-  - {fileID: 8207287642255993186}
-  - {fileID: 8207287641303054263}
+  startingItems: []
+  itemsParent: {fileID: 0}
+  itemSlots: []
 --- !u!1 &8207287642460971462
 GameObject:
   m_ObjectHideFlags: 0
@@ -5276,7 +5260,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   nameText: {fileID: 8207287642041871675}
   valueText: {fileID: 8207287641937900239}
-  toolTip: {fileID: 8207287641261093938}
+  toolTip: {fileID: 0}
 --- !u!114 &8207287642683923255
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5485,13 +5469,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f08946fa3bebf07499e17605ee3b9c4e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventory: {fileID: 8207287642455223809}
-  interactKey: 102
-  quickLootKey: 114
+  inventory: {fileID: 0}
+  interactKey: 0
+  quickLootKey: 0
   currentPickupItem: {fileID: 0}
   currentLootBoxPanel: {fileID: 0}
   currentSwtich: {fileID: 0}
-  pHandleInventory: {fileID: 8207287641177776633}
+  pHandleInventory: {fileID: 0}
 --- !u!114 &6711178901593303750
 MonoBehaviour:
   m_ObjectHideFlags: 0
