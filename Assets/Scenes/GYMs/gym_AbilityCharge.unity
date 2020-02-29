@@ -217,15 +217,17 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 6828032529398165392, guid: 80bb511f25907bf4c837054372b945fb,
-        type: 3}
-      propertyPath: partSyst
+    - target: {fileID: 248296909, guid: 80bb511f25907bf4c837054372b945fb, type: 3}
+      propertyPath: windDial
       value: 
-      objectReference: {fileID: 1111692709}
-    - target: {fileID: 6828032529398165392, guid: 80bb511f25907bf4c837054372b945fb,
-        type: 3}
-      propertyPath: airInCanStart
-      value: 10
+      objectReference: {fileID: 1323007295}
+    - target: {fileID: 1323007295, guid: 80bb511f25907bf4c837054372b945fb, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1323007297, guid: 80bb511f25907bf4c837054372b945fb, type: 3}
+      propertyPath: m_Color.a
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8207287641073196510, guid: 80bb511f25907bf4c837054372b945fb,
         type: 3}
@@ -864,12 +866,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!198 &1111692709 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 972687261015262294, guid: 80bb511f25907bf4c837054372b945fb,
-    type: 3}
-  m_PrefabInstance: {fileID: 309841722}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1209393784
 GameObject:
   m_ObjectHideFlags: 0
@@ -981,6 +977,12 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6069049005011004196, guid: ab2f499e4424038409ccce5b56d1d972,
     type: 3}
   m_PrefabInstance: {fileID: 290310495}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &1323007295 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 1323007295, guid: 80bb511f25907bf4c837054372b945fb,
+    type: 3}
+  m_PrefabInstance: {fileID: 309841722}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1758839190
 PrefabInstance:

@@ -2,13 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerUI : MonoBehaviour
+public class AirTankController : MonoBehaviour
 {
-    [SerializeField] ParticleSystem partSyst;
-    [SerializeField] float airInCanStart;
+    public bool attacked = false; // to determine when the player attacks - for the wind dial to know when to enable/disable
     public float airInCan;
-    [SerializeField] bool isCharging = false;
+    public float airInCanPercent;
+    [SerializeField] float airInCanStart;
 
+    bool isCharging = false;
+
+    ParticleSystem partSyst;
     PlayerController pCon;
 
     void Start()
@@ -16,6 +19,7 @@ public class PlayerUI : MonoBehaviour
         partSyst = GetComponentInChildren<ParticleSystem>();
         pCon = GetComponent<PlayerController>();
         airInCan = airInCanStart;
+        UpdateAirPercent();
     }
 
     void Update()
@@ -34,11 +38,26 @@ public class PlayerUI : MonoBehaviour
         else if (isCharging)
         {
             airInCan += 2f * Time.deltaTime;
+            UpdateAirPercent();
         }
 
         if (Input.GetKeyDown(KeyCode.B))
         {
             airInCan -= 1;
         }
+    }
+
+    public void UseAirInTank(float _airUsage)
+    {
+        attacked = true;
+
+        airInCan -= _airUsage;
+
+        UpdateAirPercent();
+    }
+
+    private void UpdateAirPercent()
+    {
+        airInCanPercent = airInCan / (airInCanStart);
     }
 }

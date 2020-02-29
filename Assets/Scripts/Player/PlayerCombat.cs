@@ -56,7 +56,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Space]
     [Header("References:")]
-    private PlayerUI pUI;
+    private AirTankController pUI;
     private Animator animator;
     private PlayerController pCon;
     LayerMask interactableLayerMask;
@@ -66,7 +66,7 @@ public class PlayerCombat : MonoBehaviour
     void Start() 
     {
         interactableLayerMask = ((1 << enemyLayer) | (1 << interactablesLayer));
-        pUI = GetComponent<PlayerUI>();
+        pUI = GetComponent<AirTankController>();
         pCon = GetComponent<PlayerController>();
         animator = pCon.animator;
     }
@@ -145,11 +145,11 @@ public class PlayerCombat : MonoBehaviour
             // Boot Launch
             if (Input.GetButton(pCon.controls.ability_1))
             {
-                if (pUI.airInCan > airDrainAmount)
+                if (pUI.airInCan >= airDrainAmount)
                 {
                     SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
                     pCon.animator.SetTrigger("kick");
-                    pUI.airInCan -= airDrainAmount;
+                    pUI.UseAirInTank(airDrainAmount);
                     StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
                     StartCoroutine(CastForHit());
                 }
