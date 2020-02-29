@@ -16,9 +16,11 @@ public class PlayerHandleInteract : MonoBehaviour
 
     private PlayerController pCon;
     private PlayerFeedback pFeedBack;
+    [SerializeField] PlayerHandleInventory pHandleInventory;
 
     void Start()
     {
+        //pHandleInventory = GetComponent<PlayerHandleInventory>();
         pFeedBack = GetComponent<PlayerFeedback>();
         pCon = GetComponent<PlayerController>();
     }
@@ -33,9 +35,15 @@ public class PlayerHandleInteract : MonoBehaviour
                 if (currentPickupItem.isLootBox)
                 {
                     if (!currentPickupItem.isOpen)
+                    {
                         currentPickupItem.OpenLootBox();
+                        pHandleInventory.lootBoxPanel = currentPickupItem.lootBoxPanel.gameObject;
+                    }
                     else
+                    {
                         currentPickupItem.CloseLootBox();
+                        pHandleInventory.lootBoxPanel = null;
+                    }
                 }
                 else
                 {
@@ -61,10 +69,7 @@ public class PlayerHandleInteract : MonoBehaviour
 
         if (Input.GetKeyDown(quickLootKey) && currentPickupItem != null && currentPickupItem.isOpen)
         {
-            if (currentPickupItem.item != null)
-            {
-                currentPickupItem.QuickLoot();
-            }
+            currentPickupItem.QuickLoot();
         }
     }
 

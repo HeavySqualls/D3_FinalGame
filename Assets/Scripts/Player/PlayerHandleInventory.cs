@@ -9,7 +9,7 @@ public class PlayerHandleInventory : MonoBehaviour
     [SerializeField] GameObject statsPanel;
     [SerializeField] GameObject itemTooltip;
     [SerializeField] GameObject statTooltip;
-    [SerializeField] GameObject lootBoxPanel;
+    public GameObject lootBoxPanel;
     [SerializeField] KeyCode inventoryKey;
 
     private void Start()
@@ -65,7 +65,7 @@ public class PlayerHandleInventory : MonoBehaviour
         statsPanel.SetActive(false);
         isInventoryOpen = false;
 
-        if (lootBoxPanel.activeSelf == true)
+        if (lootBoxPanel != null && lootBoxPanel.activeSelf == true)
         {
             lootBoxPanel.SetActive(false);
         }

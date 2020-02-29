@@ -7,9 +7,9 @@ using UnityEngine.Serialization;
 public class LootBoxPanel : MonoBehaviour
 {
     [Tooltip("How many slots will this loot box have?")]
-    [SerializeField] LootBoxSlot[] lootBoxSlots;
+    [SerializeField] LootBoxSlot[] lootBoxSlots = new LootBoxSlot[4];
     [Tooltip("What scriptable object items will be inside this loot box? - Must be the same number as loot box slots!")]
-    [SerializeField] sItem[] startingItems;
+    [SerializeField] sItem[] startingItems = new sItem[4];
     GameObject lootBoxPanel;
     [SerializeField] Transform lootBoxSlotsParent;
 
@@ -37,6 +37,22 @@ public class LootBoxPanel : MonoBehaviour
     {
         OnValidate();
 
+        //for (int i = 0; i < lootBoxSlots.Length; i++)
+        //{
+        //    // catches the events from EquipSlot.cs and says "the player right clicked this item"... (see InventoryManager.cs for next step)
+        //    lootBoxSlots[i].OnPointerEnterEvent += OnPointerEnterEvent;
+        //    lootBoxSlots[i].OnPointerExitEvent += OnPointerExitEvent;
+        //    lootBoxSlots[i].OnRightClickEvent += OnRightClickEvent;
+        //    lootBoxSlots[i].OnBeginDragEvent += OnBeginDragEvent;
+        //    lootBoxSlots[i].OnEndDragEvent += OnEndDragEvent;
+        //    lootBoxSlots[i].OnDragEvent += OnDragEvent;
+        //    lootBoxSlots[i].OnDropEvent += OnDropEvent;
+        //}       
+    }
+
+    private void Start()
+    {
+
         for (int i = 0; i < lootBoxSlots.Length; i++)
         {
             // catches the events from EquipSlot.cs and says "the player right clicked this item"... (see InventoryManager.cs for next step)
@@ -47,11 +63,8 @@ public class LootBoxPanel : MonoBehaviour
             lootBoxSlots[i].OnEndDragEvent += OnEndDragEvent;
             lootBoxSlots[i].OnDragEvent += OnDragEvent;
             lootBoxSlots[i].OnDropEvent += OnDropEvent;
-        }       
-    }
+        }
 
-    private void Start()
-    {
         lootBoxPanel.SetActive(false);
         SetStartingItems();
     }

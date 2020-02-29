@@ -1,9 +1,8 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using UnityEngine.UI;
 using Kryz.CharacterStats;
 
-
-//TUTORIAL: https://www.youtube.com/watch?v=4JewzU_phTM
 
 public class InventoryManager : MonoBehaviour
 {
@@ -14,7 +13,9 @@ public class InventoryManager : MonoBehaviour
 
     [SerializeField] Inventory inventory;
     [SerializeField] EquipmentPanel equipPanel;
-    [SerializeField] LootBoxPanel lootPanel;
+    //[SerializeField] LootBoxPanel lootPanel;
+    [Tooltip("Set all the panels from the loot boxes in the level here.")]
+    [SerializeField] LootBoxPanel[] lootBoxPanels;
     [SerializeField] StatPanel statPanel;
     [SerializeField] ItemToolTip itemTooltip;
     [SerializeField] Image draggableItem;
@@ -27,10 +28,18 @@ public class InventoryManager : MonoBehaviour
         {
             itemTooltip = FindObjectOfType<ItemToolTip>();
         }
+
+        if (lootBoxPanels.Length == 0)
+        {
+            lootBoxPanels = FindObjectsOfType<LootBoxPanel>();
+        }
     }
 
     private void Awake()
     {
+        lootBoxPanels = FindObjectsOfType<LootBoxPanel>();
+
+
         statPanel.SetStats(strength, agility, intellect, vitality);
         statPanel.UpdateStatValues();
 
@@ -39,31 +48,50 @@ public class InventoryManager : MonoBehaviour
         // Right click:
         inventory.OnRightClickEvent += Equip;
         equipPanel.OnRightClickEvent += Unequip;
-        lootPanel.OnRightClickEvent += TakeLoot;
+        //lootPanel.OnRightClickEvent += TakeLoot;
+
         // Pointer Enter:
         inventory.OnPointerEnterEvent += ShowTooltip;
         equipPanel.OnPointerEnterEvent += ShowTooltip;
-        lootPanel.OnPointerEnterEvent += ShowTooltip;
+        //lootPanel.OnPointerEnterEvent += ShowTooltip;
+        
         // Pointer Exit:
         inventory.OnPointerExitEvent += HideTooltip;
         equipPanel.OnPointerExitEvent += HideTooltip;
-        lootPanel.OnPointerExitEvent += HideTooltip;
+        //lootPanel.OnPointerExitEvent += HideTooltip;
+        
         // Begin Drag
         inventory.OnBeginDragEvent += BeginDrag;
         equipPanel.OnBeginDragEvent += BeginDrag;
-        lootPanel.OnBeginDragEvent += BeginDrag;
+        //lootPanel.OnBeginDragEvent += BeginDrag;
+        
         // End Drag:
         inventory.OnEndDragEvent += EndDrag;
         equipPanel.OnEndDragEvent += EndDrag;
-        lootPanel.OnEndDragEvent += EndDrag;
+        //lootPanel.OnEndDragEvent += EndDrag;
+        
         // Drag 
         inventory.OnDragEvent += Drag;
         equipPanel.OnDragEvent += Drag;
-        lootPanel.OnDragEvent += Drag;
+        //lootPanel.OnDragEvent += Drag;
+        
         // Drop
         inventory.OnDropEvent += Drop;
         equipPanel.OnDropEvent += Drop;
-        lootPanel.OnDropEvent += Drop;
+        //lootPanel.OnDropEvent += Drop;
+
+        //Loot Box Panels
+        foreach (LootBoxPanel lbp in lootBoxPanels)
+        {
+            print("Hey!");
+            lbp.OnRightClickEvent += TakeLoot;
+            lbp.OnPointerEnterEvent += ShowTooltip;
+            lbp.OnPointerExitEvent += HideTooltip;
+            lbp.OnBeginDragEvent += BeginDrag;
+            lbp.OnEndDragEvent += EndDrag;
+            lbp.OnDragEvent += Drag;
+            lbp.OnDropEvent += Drop;
+        }
     }
 
     private void Equip(ItemSlot _itemSlot)

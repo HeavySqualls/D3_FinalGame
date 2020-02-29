@@ -21,14 +21,14 @@ public class PickUpItem : MonoBehaviour
     [Tooltip("Assign the related highlighed 'Outline' shader for when the player is in the trigger zone.")]
     [SerializeField] Material highlightMat;
 
-    LootBoxPanel lootBoxPanel;
+    public LootBoxPanel lootBoxPanel;
     SpriteRenderer spriteRenderer;
 
     private void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
-        lootBoxPanel = GetComponentInChildren<LootBoxPanel>();
+        //lootBoxPanel = GetComponentInChildren<LootBoxPanel>();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -83,6 +83,7 @@ public class PickUpItem : MonoBehaviour
 
     public void QuickLoot()
     {
+        print("quick loot!");
         lootBoxPanel.QuickLoot();
     }
 

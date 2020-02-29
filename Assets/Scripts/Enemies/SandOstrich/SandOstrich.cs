@@ -5,24 +5,41 @@ using UnityEngine;
 
 public class SandOstrich : Enemy_Turret_Base
 {
-    private bool isPreBurp = false;
-    public float damageDelay = 1f;
+    [Space]
+    [Header("--- SAND OSTRICH ---")]
+
+    [Space]
+    [Header("States: ")]
     public bool isDamageDelay = false;
     public bool isStartInHole = false;
     public bool isInHole = false;
-    public float holeRadius;
-    public float idleRadius;
+    private bool isPreBurp = false;
+    private bool isTracking = false;
 
-    [SerializeField] RecieveDamage pRecieveDamage;
-    [SerializeField] ParticleSystem partSyst;
-    CircleCollider2D circleCollider;
+    [Space]
+    [Header("Combat: ")]
+    [Tooltip("The transform of the empty game object used to position the units hit box.")]
+    public Transform hitBoxPos;
+    [Tooltip("The time in between getting hit, which the player can get hurt again by this units attack.")]
+    [SerializeField] float damageDelay = 1f;
+    [Tooltip("The current distance the player is to the unit.")]
+    [SerializeField] float distanceToTarget;
+    [Tooltip("The distanceToTarget distance before the unit will enter its burp animation phase.")]
+    [SerializeField] float burpDistance;
+    [Tooltip("The distanceToTarget distance before the unit will enter its flame attack animation phase.")]
+    [SerializeField] float flameDistance;
+
+
+    [Space]
+    [Header("References: ")]
+    RecieveDamage pRecieveDamage;
+    ParticleSystem partSyst;
 
     protected override void Start()
     {
         base.Start();
-        currentState = State.Idle;
 
-        circleCollider = GetComponent<CircleCollider2D>();
+        currentState = State.Idle;
         partSyst = GetComponentInChildren<ParticleSystem>();
 
         if (isStartInHole)
@@ -31,9 +48,7 @@ public class SandOstrich : Enemy_Turret_Base
             isInHole = true;
         }
         else
-        {
             isInHole = false;
-        }
     }
 
     protected override void Update()
@@ -107,28 +122,16 @@ public class SandOstrich : Enemy_Turret_Base
 
     private void Hurt()
     {
-
+        // Do nothing and wait for state change
     }
 
     private void Dead()
     {
-
+        // Do nothing and wait to be destroyed
     }
 
 
     // << --------------------------------------- COMBAT -------------------------------- >> //
-
-    public void ShootFlames() // called from inside the animator (for now)
-    {
-        partSyst.Play();
-    }
-
-    IEnumerator DamageDelay()
-    {
-        yield return new WaitForSeconds(damageDelay);
-
-        isDamageDelay = false;
-    }
 
     private void FaceTarget()
     {
@@ -145,26 +148,6 @@ public class SandOstrich : Enemy_Turret_Base
             }
         }
     }
-
-    protected override void AfterThisUnitWasAttacked()
-    {
-        base.AfterThisUnitWasAttacked();
-        partSyst.Stop();
-        currentState = State.Hurt;
-        animator.SetTrigger("isHit");
-        StartCoroutine(AttackCoolDown());
-    }
-
-    public void DealDamage()
-    {
-        print(gameObject.name + " has hit " + pRecieveDamage.name);
-
-        pRecieveDamage.GetHit(direction, damageOutput, knockBack, knockUp, stunTime);
-        StartCoroutine(DamageDelay());
-        isDamageDelay = true;
-    }
-
-    public Transform hitBoxPos;
 
     public void CastForPlayer() // Called every frame when in Attacking state 
     {
@@ -189,6 +172,36 @@ public class SandOstrich : Enemy_Turret_Base
                 }
             }
         }
+    }
+
+    public void ShootFlames() // called from inside the animator (for now)
+    {
+        partSyst.Play();
+    }
+
+    public void DealDamage()
+    {
+        print(gameObject.name + " has hit " + pRecieveDamage.name);
+
+        pRecieveDamage.GetHit(direction, damageOutput, knockBack, knockUp, stunTime);
+        StartCoroutine(DamageDelay());
+        isDamageDelay = true;
+    }
+
+    IEnumerator DamageDelay()
+    {
+        yield return new WaitForSeconds(damageDelay);
+
+        isDamageDelay = false;
+    }
+
+    protected override void AfterThisUnitWasAttacked()
+    {
+        base.AfterThisUnitWasAttacked();
+        partSyst.Stop();
+        currentState = State.Hurt;
+        animator.SetTrigger("isHit");
+        StartCoroutine(AttackCoolDown());
     }
 
     protected override void KillUnit()
@@ -222,11 +235,6 @@ public class SandOstrich : Enemy_Turret_Base
 
 
     // << ------------------------------------- COLLISION CHECKS -------------------------------- >> //
-
-    bool isTracking = false;
-    [SerializeField] float distanceToTarget;
-    [SerializeField] float burpDistance;
-    [SerializeField] float flameDistance;
 
     private void TrackTargetDistance()
     {

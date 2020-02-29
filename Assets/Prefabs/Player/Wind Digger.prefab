@@ -170,11 +170,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
-  interactKey: 0
-  quickLootKey: 0
+  interactKey: 102
+  quickLootKey: 114
   currentPickupItem: {fileID: 0}
   currentLootBoxPanel: {fileID: 0}
   currentSwtich: {fileID: 0}
+  pHandleInventory: {fileID: 0}
 --- !u!114 &3941713676428747812
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -219,6 +220,7 @@ MonoBehaviour:
   b_knockback: 0
   b_knockUp: 2
   b_stunTime: 0.1
+  boxCast: {x: 1, y: 2}
 --- !u!114 &1242993176099357725
 MonoBehaviour:
   m_ObjectHideFlags: 0
