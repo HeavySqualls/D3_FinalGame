@@ -5,24 +5,32 @@ public class Controls : MonoBehaviour
     public string xMove;
     public string jump;
     public string punch;
-    public string launch;
+    public string ability_1;
+    public string ability_2;
+    public string ability_3;
     public string magBoots;
+    public string crouch;
+    public string interact;
 
-    public void KeyboardControls()
+    private void Start()
     {
-        xMove = "Horizontal";
         jump = "Jump";
         punch = "Punch";
-        launch = "Launch";
+        ability_1 = "Ability_1";
+        ability_2 = "Ability_2";
+        ability_3 = "Ability_3";
         magBoots = "MagBoots";
+        crouch = "Crouch";
+        interact = "Interact";
     }
 
-    public void ControllerControls()
+    public void KeyboardMovement()
+    {
+        xMove = "Horizontal";
+    }
+
+    public void ControllerMovement()
     {
         xMove = "Cont_Hor";
-        jump = "Jump";
-        punch = "Punch";
-        launch = "Launch";
-        magBoots = "MagBoots";
     }
 }

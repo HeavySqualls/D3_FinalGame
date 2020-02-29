@@ -15,12 +15,12 @@ public class WindOnUnit : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D coll)
     {
-        // WIND
+        WindArea _windArea = coll.gameObject.GetComponent<WindArea>();
 
-        if (coll.gameObject.tag == "WindZone")
+        if (_windArea != null)
         {
             print("Entered wind zone");
-            windZone = coll.gameObject.GetComponent<WindArea>();
+            windZone = _windArea;
 
             unit.inWindZone = true;
             unit.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft);
@@ -29,8 +29,12 @@ public class WindOnUnit : MonoBehaviour
 
     void OnTriggerExit2D(Collider2D coll)
     {
-        if (coll.gameObject.tag == "WindZone")
+        WindArea _windArea = coll.gameObject.GetComponent<WindArea>();
+
+        if (_windArea != null)
         {
+            print("Exit Wind Zone");
+
             unit.velocity = Vector3.zero;
             windZone = null;
             unit.inWindZone = false;

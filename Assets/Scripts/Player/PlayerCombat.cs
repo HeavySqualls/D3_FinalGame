@@ -1,53 +1,70 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [Header("STATES:")]
+    [Header("Combat Variables:")]
     [Tooltip("The time between attacks required to continue the combo chain.")]
-    public float maxComboTime = 0.5f;
+    [SerializeField] float maxComboTime = 0.5f;
     [Tooltip("The minumum time between the player is able to register a second attack.")]
-    public float attackSpacing = 0.2f;
+    [SerializeField] float attackSpacing = 0.2f;
+    [Tooltip("The radius of the circle cast to determine size of the hitbox.")]
+    [SerializeField] float circleCastRadius = 0.5f;
+    [Tooltip("The distance from the center of the sprite that the circle cast will appear.")]
+    [SerializeField] float circleCastDistance = 0.85f;
+    float timeBetweenCombos = 0;
+    int comboNum = 1;
+
+    [Space]
+    [Header("States:")]
     private bool canAttack = true;
+    private bool canCast = true;
     private bool comboAttacking = false;
-    private float timeBetweenCombos = 0;
-    private int comboNum = 1;
     private float damage;
     private float knockback;
     private float knockup;
+    private float stunTime;
 
     [Space]
-    [Header("PUNCH 1:")]
+    [Header("Punch 1:")]
     public float p1_damage;
     public float p1_knockback;
     public float p1_knockUp;
+    public float p1_stunTime;
 
     [Space]
-    [Header("PUNCH 2:")]
+    [Header("Punch 2:")]
     public float p2_damage;
     public float p2_knockback;
     public float p2_knockUp;
+    public float p2_stunTime;
 
     [Space]
-    [Header("PUNCH 3:")]
+    [Header("Punch 3:")]
     public float p3_damage;
     public float p3_knockback;
     public float p3_knockUp;
+    public float p3_stunTime;
 
     [Space]
-    [Header("BOOT KICK:")]
+    [Header("Boot Kick:")]
     public float b_damage;
     public float b_knockback;
     public float b_knockUp;
+    public float b_stunTime;
 
     [Space]
-    [Header("REFERENCES:")]
+    [Header("References:")]
     private Animator animator;
     private PlayerController pCon;
+    LayerMask interactableLayerMask;
+    int enemyLayer = 13;
+    int interactablesLayer = 15;
 
     void Start() 
     {
+        interactableLayerMask = ((1 << enemyLayer) | (1 << interactablesLayer));
+
         pCon = GetComponent<PlayerController>();
         animator = pCon.animator;
     }
@@ -96,19 +113,19 @@ public class PlayerCombat : MonoBehaviour
             if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 3)
             {
                 timeBetweenCombos = 0;
-                SetAttackStats(p3_damage, p3_knockback, p3_knockUp);
+                SetAttackStats(p3_damage, p3_knockback, p3_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch3");
                 StartCoroutine(AttackCoolDown(attackSpacing));
-
+                StartCoroutine(CastForHit());
                 comboNum = 1;
             }
             else if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 2)
             {
                 timeBetweenCombos = 0;
-                SetAttackStats(p2_damage, p2_knockback, p2_knockUp);
+                SetAttackStats(p2_damage, p2_knockback, p2_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch2");
                 StartCoroutine(AttackCoolDown(attackSpacing));
-
+                StartCoroutine(CastForHit());
                 comboNum = 3;
             }
             else if (Input.GetButtonDown(pCon.controls.punch) && comboNum == 1)
@@ -116,19 +133,20 @@ public class PlayerCombat : MonoBehaviour
                 comboAttacking = true;
                 timeBetweenCombos = 0;
 
-                SetAttackStats(p1_damage, p1_knockback, p1_knockUp);
+                SetAttackStats(p1_damage, p1_knockback, p1_knockUp, p1_stunTime);
                 pCon.animator.SetTrigger("punch1");
                 StartCoroutine(AttackCoolDown(attackSpacing));
-
+                StartCoroutine(CastForHit());
                 comboNum = 2;
             }
 
             // Boot Launch
-            if (Input.GetButton(pCon.controls.launch))
+            if (Input.GetButton(pCon.controls.ability_1))
             {
-                SetAttackStats(b_damage, b_knockback, b_knockUp);
+                SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
                 pCon.animator.SetTrigger("kick");
                 StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
+                StartCoroutine(CastForHit());
             }
         }
     }
@@ -136,51 +154,65 @@ public class PlayerCombat : MonoBehaviour
     IEnumerator AttackCoolDown(float _time)
     {
         canAttack = false;
-        //pCon.CanFlipSprite();
         pCon.canMove = false;
 
         yield return new WaitForSeconds(_time);
 
-        //pCon.CanFlipSprite();
         pCon.canMove = true;
         canAttack = true;
-
+        canCast = true;
     }
 
-    void SetAttackStats(float _dmg, float _knkBk, float _knkUp)
+    float castTime = 0.2f;
+
+    IEnumerator CastForHit()
+    {
+        yield return new WaitForSeconds(0.01f);
+
+        float timer = 0;
+
+        while (timer < castTime && canCast)
+        {
+            CastForEnemies();
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        canCast = false;
+    }
+
+    void SetAttackStats(float _dmg, float _knkBk, float _knkUp, float _stunTime)
     {
         damage = _dmg;
         knockback = _knkBk;
         knockup = _knkUp;
+        stunTime = _stunTime;
     }
 
-    public void CanAttack() // Called from the animator
+    public void CastForEnemies()
     {
-        canAttack = true;
-    }
-
-    public void CastForEnemies() // Called from the animator
-    {
-        LayerMask interactableLayerMask = LayerMask.GetMask("InteractableObjects");
-        RaycastHit2D[] hits = Physics2D.CircleCastAll(transform.position, 1f, pCon.accessibleDirection, 1f, interactableLayerMask);
-        foreach (RaycastHit2D hit in hits)
+        if (canCast)
         {
-            var hitObj = hit.collider.gameObject;
+            RaycastHit2D[] hits = Physics2D.CircleCastAll(gameObject.transform.position, circleCastRadius, pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
 
-            if (hitObj.GetComponent<RecieveDamage>())
+            foreach (RaycastHit2D hit in hits)
             {
-                print("hit: " + hitObj.name);
+                RecieveDamage recieveDamage = hit.collider.gameObject.GetComponent<RecieveDamage>();
 
-                // Apply knockback to enemy 
-                if (hitObj.GetComponent<RecieveDamage>() != null)
+                if (recieveDamage != null && !hit.collider.isTrigger)
                 {
-                    hitObj.GetComponent<RecieveDamage>().GetHit(pCon.accessibleDirection, damage, knockback, knockup);
+                    print("hit: " + recieveDamage.name);
+                    recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
+                    canCast = false;
+                    //pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
                 }
-                else
-                {
-                    Debug.Log("No Recieve Damage component on object!");
-                }           
             }
         }
+    }
+
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, 0.5f);
     }
 }

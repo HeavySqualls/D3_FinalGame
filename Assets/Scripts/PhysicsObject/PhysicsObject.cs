@@ -1,12 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class PhysicsObject : MonoBehaviour
 {
     [Space]
-    [Header("PHYSICS OBJECT:")]
-    public bool isOnWall = false;
+    [Header("--- PHYSICS OBJECT ---")]
+    //private bool isOnWall = false;
     public bool isGrounded; 
     public bool inWindZone = false;
     public Vector2 velocity;
@@ -16,7 +15,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected float minWallNormalX = 0.8f;
     protected float maxWallNormalX = 0.5f;
-    protected float minGroundNormalY = 0.65f; // 
+    protected float minGroundNormalY = 0.65f;
 
     [SerializeField] protected Vector2 direction;
     protected Vector2 groundNormal;
@@ -31,7 +30,7 @@ public class PhysicsObject : MonoBehaviour
     protected Vector2 windDir;
     protected float windPwr;
     protected bool windMovingRight;
-    //protected LayerMask layerMask;
+    public LayerMask layerMask;
 
     void OnEnable()
     {
@@ -39,18 +38,24 @@ public class PhysicsObject : MonoBehaviour
         gravityModifier = gravStart;
     }
 
-    void Start()
+    protected virtual void Start()
     {
-        //layerMask = LayerMask.GetMask([8]);
+        layerMask = ~((1 << 16) | (1 << 12) | (1 << 13));
 
         contactFilter.useTriggers = false; // not checking collisions against triggers
-        contactFilter.SetLayerMask(Physics2D.GetLayerCollisionMask(8)); // only grabs collisions on the layer the specified layer (see project settings > physics2d)
+        contactFilter.SetLayerMask(layerMask); // only grabs collisions on the layer the specified layer (see project settings > physics2d)
         contactFilter.useLayerMask = true;
     }
 
+    public bool isWallJumping = false;
+
     protected virtual void Update()
     {
-        targetVelocity = Vector2.zero;
+        if (!isWallJumping)
+        {
+            targetVelocity = Vector2.zero; // for hard landings to stop movement
+        }
+
         ComputeVelocity();
     }
 
@@ -72,7 +77,7 @@ public class PhysicsObject : MonoBehaviour
         velocity.x = targetVelocity.x;
 
         isGrounded = false;
-        isOnWall = false;
+        //isOnWall = false;
 
         Vector2 deltaPosition = velocity * Time.deltaTime;
         Vector2 moveAlongGround = new Vector2(groundNormal.y, -groundNormal.x);
@@ -95,7 +100,6 @@ public class PhysicsObject : MonoBehaviour
             // Send out a raycast in the form of the attached collider (in this case a box, with an additional shell radius buffer) 
             // at the projected new position
             int count = rb2d.Cast(_move, contactFilter, hitBuffer, distance + shellRadius);  
-            Debug.DrawRay(transform.position, _move, Color.red);
 
             // Clear old values in hitbuffer list 
             hitBufferList.Clear(); 

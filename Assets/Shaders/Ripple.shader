@@ -20,7 +20,7 @@
  *    THE SOFTWARE.
  */
 
-Shader "PostEffects/Ripple"
+Shader "Custom/PostEffects/Ripple"
 {
 	Properties
 	{

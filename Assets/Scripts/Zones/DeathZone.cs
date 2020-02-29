@@ -21,9 +21,9 @@ public class DeathZone : MonoBehaviour
                 unit.gameObject.transform.position = unit.gameObject.GetComponent<PlayerController>().respawnZone.position;
                 StartCoroutine(unit.gameObject.GetComponent<PlayerFeedback>().IFlashRed());
             }
-            else if (unit.GetComponent<EnemyController>())
+            else if (unit.GetComponent<Enemy_Base>())
             {
-                unit.GetComponent<EnemyController>().Killed();
+                //TODO: Make a respawn or kill condition
             }
         }
     }

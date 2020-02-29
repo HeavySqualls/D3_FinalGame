@@ -27,9 +27,9 @@ TagManager:
   - Particles
   - InteractableObjects
   - Rubble
-  - 
-  - 
-  - 
+  - BreakableFloor
+  - SlidingSurface
+  - BreakableObject
   - 
   - 
   - 
@@ -45,4 +45,10 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 2491940563
+    locked: 0
+  - name: Player
+    uniqueID: 3528705167
     locked: 0

@@ -1,17 +1,19 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : PhysicsObject
 {
+    [Space]
+    [Header("--- PLAYER CONTROLLER ---")]
     public Transform respawnZone;
+    public Vector2 move;
 
     [Space]
-    [Header("INPUT:")]
+    [Header("Input:")]
     public bool isController = false;
 
     [Space]
-    [Header("ACCEL/DECEL SPEEDS:")]
+    [Header("Accel & Deccel Speeds:")]
     [Tooltip("Speed of acceleration when not at max speed or in air.")]
     public float accelSpeedNormal = 1.5f;
     [Tooltip("Speed of acceleration when player is moving at max speed.")]
@@ -30,7 +32,7 @@ public class PlayerController : PhysicsObject
     private bool isLeft = false;
 
     [Space]
-    [Header("MOVEMENT / WIND:")]
+    [Header("Movement & Wind:")]
     public bool canMove = true;
     public bool isMoving = false;
     public bool isMovingInWind = false;
@@ -44,8 +46,9 @@ public class PlayerController : PhysicsObject
     private float windRatio; // Ratio between the wind power and the players velocity
 
     [Space]
-    [Header("JUMP:")]
+    [Header("Jump:")]
     public bool inAir;
+    [SerializeField] private bool canJump = true;
     [Tooltip("Initial vertical boost speed.")]
     public float jumpTakeoffSpeed = 6f;
     [Tooltip("Time in air required to enable the 'Hard Landing' animation.")]
@@ -60,42 +63,42 @@ public class PlayerController : PhysicsObject
     public float maxGraceTime = 0.12f;
     [Tooltip("Time it takes while holding the jump button to enable the 'Jump Flip' animation.")]
     public float jumpHoldTimeMax = 1.5f;
+    public float airDisableTimer = 0.2f;
     private bool isPressingJumpButton = false;
     private float currentGraceTime;
     private float airTime = 0f;
     private float jumpHoldTime = 0;
-    private bool canJump = true;
     private bool quickJump = true;
 
     [Space]
-    [Header("MAG BOOTS:")]
+    [Header("Mag Boots:")]
     public bool magBootsOn = false;
     [Tooltip("Rate at which the player gets pulled down towards the ground with the magnetic boots enabled.")]
     public float onGravValue = 10f;
     public ParticleSystem bootSparks;
 
     [Space]
-    [Header("GROUND CHECK:")]
-    public Vector3 bottom;
+    [Header("Ground Check:")]
     [Tooltip("Distance of ground check raycast from the bottom of the player sprite.")]
     public float groundCheckDistance = 1.75f;
     public Transform groundCheck; // for determining quick landing jump
-    private int whatIsGround;
+    public float groundSlideSpeed = 18f;
+    private bool isGroundSliding;
 
     [Space]
-    [Header("WALL CHECK:")]
+    [Header("Wall Check:")]
     [Tooltip("Distance of the wall check raycast from the chest of the player sprite.")]
     public float wallCheckDistance = 1;
     public float wallSlidingSpeed;
     public Vector2 wallJumpDirection;
-    public float wallJumpForce;
+    public float wallJumpForce = 3.25f;
     public Transform wallCheck; // for checking if against wall
     public bool isWallSliding = false;
     private bool isTouchingWall = false;
     private bool canWallSlide = true;
 
     [Space]
-    [Header("LEDGE CHECK:")]
+    [Header("Ledge Check:")]
     public bool canClimbLedge = false;
     [Tooltip("Distance of the ledge check raycast from the head of the player sprite.")]
     public float ledgeCheckDistance = 1;
@@ -115,11 +118,17 @@ public class PlayerController : PhysicsObject
     private bool ledgeDetected;
 
     [Space]
-    [Header("REFERENCES:")]
+    [Header("References:")]
     public Animator animator;
     public Controls controls;
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
+
+    private LayerMask groundLayerMask;
+    private int groundLayer = 8;
+    private int breakableFloorsLayer = 17;
+    private int slidingSurfaceLayer = 18;
+    private int breakableObjectsLayer = 19;
 
     void Awake()
     {
@@ -133,56 +142,60 @@ public class PlayerController : PhysicsObject
         decelRatePerSecond = (maxSpeed / timeFromZeroToMax) * decelSpeed;
     }
 
-    void Start()
+    protected override void Start()
     {
-        whatIsGround = LayerMask.GetMask("Ground");
-        //whatIsWall = LayerMask.GetMask("Interactables");
+        base.Start();
+
+        groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
 
         if (controls != null)
         {
             if (isController)
-                controls.ControllerControls();
+                controls.ControllerMovement();
             else
-                controls.KeyboardControls();
+                controls.KeyboardMovement();
         }
         else
             Debug.Log("Player does not have the controls component attached!");
     }
 
+    float horizontalInput;
+    bool isInputLeftORRight;
+
     protected override void Update()
     {
         base.Update();
+
+        horizontalInput = Input.GetAxisRaw(controls.xMove);
+        isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
+
         CheckSurroundings();
         CheckIfWallSliding();
         TrackAirTime();
-        ComputeVelocity();
+        //ComputeVelocity(); // Realised that this was happening twice, here AND in physics object. Disabled it here for now to see the effects. 
+        Jump();
+        RapidJump();
         MagBoots();
         GraceJumpTimer();
         CheckLedgeClimb();
     }
 
-    public float GetAnimTime()
+    public float GetAnimTime() //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
     {
         if (animator != null)
         {
-            //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
-
-            //AnimatorClipInfo[] clipInfo = animator.GetNextAnimatorClipInfo(0);
             AnimatorClipInfo[] clipInfo = animator.GetCurrentAnimatorClipInfo(0);
 
-            //return clipInfo[0].clip.length;
             if (clipInfo.Length > 0 && clipInfo != null)
             {
                 return clipInfo[0].clip.length;
             }
         }
-
         return 0;    
     }
 
-    // ---- LOCOMOTION METHODS ---- //
+    // <<----------------------------------------------------- LOCOMOTION METHODS ------------------------------------------- //
 
-    public Vector2 move;
     bool isSkidding = false;
     bool isAtMaxSpeed = false;
 
@@ -199,24 +212,62 @@ public class PlayerController : PhysicsObject
         yield break;
     }
 
+    public bool isHit = false;
+
+    public IEnumerator PlayerKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
+    {
+        print(gameObject.name + " was hit!");
+
+        isHit = true;
+        canFlipSprite = false;
+        canJump = false;
+        canMove = false;
+        canWallSlide = false;
+
+        float timer = 0.0f;
+
+        while (timer < _stunTime)
+        {
+            velocity.y += _knockUp;
+            targetVelocity.x += _knockBack;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        isHit = false;
+        canFlipSprite = true;
+        canJump = true;
+        canMove = true;
+        canWallSlide = true;
+        yield break;
+    }
+
+
+    // <<----------------------------------------------------- COMPUTE VELOCITY (IN AND OUT OF WIND ZONES) ------------------------------------------- //
+
+
     protected override void ComputeVelocity()
     {
-        if (canMove)
+        // Checks to determine what acceleration speed the player will have depending on the situation
+        if (inAir) // if the player is in the air
         {
-            // Checks to determine what acceleration speed the player will have depending on the situation
-            if (inAir) // if the player is in the air
-            {
-                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedAir;
-            }
-            else if (isAtMaxSpeed) // if the player is running at max speed for "x" seconds
-            {
-                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedMaxSpeed;
-            }
-            else
-            {
-                accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedNormal;
-            }
+            accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedAir;
+        }
+        else if (isAtMaxSpeed) // if the player is running at max speed for "x" seconds
+        {
+            accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedMaxSpeed;
+        }
+        else
+        {
+            accelRatePerSecond = (maxSpeed / timeFromZeroToMax) * accelSpeedNormal;
+        }
 
+        if (isWallJumping && !isInputLeftORRight)
+        {
+            return;
+        }
+        else if (canMove)
+        {
             // Check to see if player is moving at max speed, and start counting seconds until the skid time limit is reached 
             // - then when player changes direction, they will skid 
             if (velocity.x <= -maxSpeed || velocity.x >= maxSpeed)
@@ -234,13 +285,13 @@ public class PlayerController : PhysicsObject
             }
 
             // Determine if there is input
-            if (Input.GetAxisRaw(controls.xMove) > 0f || Input.GetAxisRaw(controls.xMove) < 0f) 
+            if (isInputLeftORRight) 
             {
                 isMoving = true;              
 
-                if (Input.GetAxisRaw(controls.xMove) > 0f) // Moving Right
+                if (horizontalInput > 0f) // Moving Right
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft && !inWindZone)
                     {
                         canFlipSprite = false;                    
                         timeAtMaxSpeed = 0;
@@ -249,9 +300,9 @@ public class PlayerController : PhysicsObject
 
                     move.x += accelRatePerSecond * Time.deltaTime;
                 }
-                else if (Input.GetAxisRaw(controls.xMove) < 0f) // Moving Left
+                else if (horizontalInput < 0f) // Moving Left
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft && !inWindZone)
                     {
                         print("2");
                         canFlipSprite = false;
@@ -273,11 +324,11 @@ public class PlayerController : PhysicsObject
                     }
                     else if (windMovingRight)
                     {
-                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), maxSpeed / (windDir.x * windPwr));                      
+                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), 2.3f / (windDir.x * windPwr));                      
                     }
                     else if (!windMovingRight)
                     {
-                        move.x = Mathf.Clamp(move.x, maxSpeed / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
+                        move.x = Mathf.Clamp(move.x, 2.3f / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
                     }
                 }
                 else if (!inWindZone)
@@ -285,7 +336,7 @@ public class PlayerController : PhysicsObject
                     move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
                 }
             }         
-            else if (Input.GetAxisRaw(controls.xMove) == 0)  // Determine if input has stopped
+            else if (!isInputLeftORRight)  // Determine if input has stopped
             {
                 if (inWindZone) // If movement has stopped and player is in a windzone
                 {
@@ -342,51 +393,38 @@ public class PlayerController : PhysicsObject
                     }
                 }
             }
-
-            // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
-            if (isTouchingWall && inWindZone)
-                windAffectUnit = false;
-            else
-                windAffectUnit = true;
-
-            // Determine direction that the sprite will face
-            if (canFlipSprite && !isWallSliding)
-            {
-                if (inWindZone && isMovingInWind)
-                {
-                    ComputeDirectionOfSpriteInWind();
-                }
-                else if (!inWindZone)
-                {
-                    float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
-                    bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
-
-                    if (flipPlayerSprite)
-                    {
-                        print("flip");
-                        ChangeDirection();
-                        pIsFaceLeft = !pIsFaceLeft;
-                        spriteRenderer.flipX = !spriteRenderer.flipX;
-                    }
-                }
-            }
-
-            // Animation settings
-            animator.SetBool("isMoving", isMoving);
-            animator.SetBool("isSkid", isSkidding);
-            animator.SetBool("grounded", isGrounded);
-            animator.SetBool("inWind", inWindZone);
-            animator.SetBool("isBackToWind", backToWind);
-            animator.SetBool("isMovingInWind", isMovingInWind);
-            animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
-
             // Send the move Vector will all related forces to the Physics Object
-            targetVelocity = move * maxSpeed;
+            targetVelocity = move * maxSpeed; // DO NOT MOVE FROM THIS LOCATION!!
         }
 
-        // Jump methods
-        Jump();
-        RapidJump();
+        // Determine if a player is up against a wall - if so, disable the wind effect while they are there 
+        if (isTouchingWall && inWindZone)
+            windAffectUnit = false;
+        else
+            windAffectUnit = true;
+
+        // Determine direction that the sprite will face
+        if (canFlipSprite && !isWallSliding)
+        {
+            if (inWindZone && isMovingInWind)
+            {
+                ComputeDirectionOfSpriteInWind();
+            }
+            else if (!inWindZone)
+            {
+                FlipSprite();
+            }
+        }
+
+        // Animation settings
+        animator.SetBool("isGroundSliding", isGroundSliding);
+        animator.SetBool("isMoving", isMoving);
+        animator.SetBool("isSkid", isSkidding);
+        animator.SetBool("grounded", isGrounded);
+        animator.SetBool("inWind", inWindZone);
+        animator.SetBool("isBackToWind", backToWind);
+        animator.SetBool("isMovingInWind", isMovingInWind);
+        animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
     }
 
     private void ComputeDirectionOfSpriteInWind()
@@ -432,39 +470,81 @@ public class PlayerController : PhysicsObject
         }
     }
 
+
+    // <<----------------------------------------------------- CHECK SURROUNDINGS ------------------------------------------- //
+
+
     private void CheckSurroundings()
     {
-        if (isGrounded)
+        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+        Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
+
+        if (hitGround.collider != null)
         {
-            canWallSlide = true;
+            int currentLayer = hitGround.collider.gameObject.layer;
+
+            if (currentLayer == breakableObjectsLayer)
+            {
+                BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
+
+                if (bo == null)
+                {
+                    Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
+                }
+                else if (bo.isPlatform && !bo.isFallingApart)
+                {
+                    bo.TriggerPlatformCollapse();
+                }
+            }
+            else if (currentLayer == breakableFloorsLayer)
+            {
+                BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
+
+                if (bf == null)
+                {
+                    Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
+                }
+                else if (inAir)
+                {
+                    bf.TriggerObjectShake();
+                }
+            }
+            else if (currentLayer == slidingSurfaceLayer && !isPressingJumpButton && !magBootsOn)
+            {
+                SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
+
+                if (ss == null)
+                {
+                    Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
+                }
+                else
+                {
+                    GroundSlide(ss.direction);
+                }
+            }
+            else if (currentLayer == groundLayer && isGroundSliding || magBootsOn)
+            {
+                StopGroundSlide();
+            }
+        }
+        else if(hitGround.collider == null && isGroundSliding)
+        {
+            if (direction == Vector2.right)
+            {
+                targetVelocity.x = 16;
+            }
+            else
+            {
+                targetVelocity.x = -16;
+            }
         }
 
         if (canMove)
         {
-            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, whatIsGround);
-            if (hitGround.collider != null)
-            {
-                var goGround = hitGround.collider.gameObject;
-
-                if (goGround.GetComponent<BreakableObject>() && goGround.GetComponent<BreakableObject>().isPlatform && !goGround.GetComponent<BreakableObject>().isFallingApart)
-                {
-                    goGround.GetComponent<BreakableObject>().TriggerPlatformCollapse();
-                }
-                else if (goGround.GetComponent<BreakableFloor>())
-                {
-                    if (inAir)
-                    {
-                        goGround.GetComponent<BreakableFloor>().TriggerFloorShake();
-                    }             
-                }
-            }
-
-            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
-
-            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, whatIsGround);
+            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
             Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
 
-            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, whatIsGround);
+            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, groundLayerMask);
             Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
 
             // Check for ledge grab
@@ -477,18 +557,102 @@ public class PlayerController : PhysicsObject
             // Check for crumbling wall
             if (isWallSliding)
             {
-                RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, whatIsGround);
+                RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
+
                 if (hitWall.collider != null)
                 {
-                    var goWall = hitWall.collider.gameObject;
+                    int currentLayer = hitWall.collider.gameObject.layer;
 
-                    if (goWall.GetComponent<BreakableObject>())
+                    if (currentLayer == breakableObjectsLayer)
                     {
-                        goWall.GetComponent<BreakableObject>().TriggerPlatformCollapse();
-                        canWallSlide = false;                  
+                        BreakableObject boWall = hitWall.collider.gameObject.GetComponent<BreakableObject>();
+
+                        if (boWall == null)
+                        {
+                            Debug.LogError("Object on Breakable Object layer does not have Breakable Object component!");
+                        }
+                        else
+                        {
+                            boWall.TriggerPlatformCollapse();
+                            canWallSlide = false;
+                        }
                     }
                 }
             }
+        }
+    }
+
+
+    // <<----------------------------------------------------- GROUND SLIDE ------------------------------------------- //
+
+    private Vector2 slideDirection;
+
+    private void GroundSlide(Vector2 _slideDirection)
+    {
+        canMove = false;
+
+        if (!isGroundSliding)
+        {
+            isGroundSliding = true;
+        }
+
+        slideDirection = _slideDirection;
+
+        if (_slideDirection == Vector2.right)
+        {
+            targetVelocity.x = groundSlideSpeed;
+        }
+        else
+        {
+            targetVelocity.x = -groundSlideSpeed;
+        }
+
+        velocity.y = -15;
+
+        if (direction != _slideDirection)
+        {
+            FlipSprite();
+        }
+    }
+
+    private void StopGroundSlide()
+    {
+        isGroundSliding = false;
+        canMove = true;
+    }
+
+    // <<----------------------------------------------------- WALL SLIDE ------------------------------------------- //
+
+    private void CheckIfWallSliding()
+    {
+        if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
+        {
+            isWallSliding = true;
+            gravityModifier = wallSlidingSpeed;
+        }
+        else
+        {
+            isWallSliding = false;
+            gravityModifier = gravStart;
+        }
+
+        animator.SetBool("isWallSliding", isWallSliding);
+    }
+
+
+    // <<----------------------------------------------------- CHANGE DIRECTION / FLIP SPRITE ------------------------------------------- //
+
+    private void FlipSprite()
+    {
+        float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
+        bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+
+        if (flipPlayerSprite)
+        {
+            print("flip");
+            ChangeDirection();
+            pIsFaceLeft = !pIsFaceLeft;
+            spriteRenderer.flipX = !spriteRenderer.flipX;
         }
     }
 
@@ -511,43 +675,8 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    public void CanFlipSprite()
-    {
-        if (canFlipSprite)
-            canFlipSprite = false;
-        else
-            canFlipSprite = true;
-    }
 
-    private void CheckIfWallSliding()
-    {
-        if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
-        {
-            if (!isWallSliding)
-            {
-                isWallSliding = true;
-            }
-
-            gravityModifier = wallSlidingSpeed;
-        }
-        else
-        {
-            isWallSliding = false;
-            gravityModifier = gravStart;
-        }
-
-        animator.SetBool("isWallSliding", isWallSliding);
-    }
-
-    private IEnumerator LeaveWallCountdown()
-    {
-        yield return new WaitForSeconds(0.5f);
-        windAffectUnit = true;
-        yield break;
-    }
-
-
-    // ---- MAG BOOTS METHODS ---- //
+    // <<-----------------------------------------------------MAG BOOTS METHODS ------------------------------------------- //
 
 
     public void MagBoots()
@@ -592,7 +721,7 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // ---- LEDGE CLIMB METHODS ---- //
+    // <<----------------------------------------------------- LEDGE CLIMB METHODS ------------------------------------------- //
 
 
     private void CheckLedgeClimb()
@@ -638,7 +767,8 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // ---- JUMP METHODS ---- //
+    // <<----------------------------------------------------- JUMP METHODS ------------------------------------------- //
+
 
     private void Jump()
     {
@@ -648,13 +778,11 @@ public class PlayerController : PhysicsObject
             {
                 isPressingJumpButton = true;
 
-                if (currentGraceTime > 0 && canJump || isWallSliding /*&& isMoving == true*/)
+                if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
-                    //velocity.y = jumpTakeoffSpeed;
-                    StartCoroutine(JumpDelay());
+                    StartCoroutine(JumpDelayTime());
                     currentGraceTime = 0;
                     canJump = false;
-                    animator.SetTrigger("jumping");
                 }
             }
             else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
@@ -679,6 +807,7 @@ public class PlayerController : PhysicsObject
                 print("flip jump");
                 animator.SetTrigger("jumpingFlip");
                 isPressingJumpButton = false;
+                jumpHoldTime = 0;
             }
         }
         else
@@ -687,49 +816,85 @@ public class PlayerController : PhysicsObject
         }
     }
 
-    public void RapidJump()
-    {
-        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
-        {
-            StartCoroutine(QuickJumpTimer());
-        }
-    }
-
-    private void PushOffWall()
-    {
-        if (direction == Vector2.right)
-        {
-            move.x -= 5f;
-            move.y += 6f;
-        }
-        else
-        {
-            move.x += 5f;
-            move.y += 6f;
-        }
-
-        targetVelocity = move * maxSpeed/* * Time.deltaTime*/;
-    }
-
-    IEnumerator JumpDelay()
+    IEnumerator JumpDelayTime()
     {
         yield return new WaitForSeconds(jumpDelayTime);
 
         if (isWallSliding)
         {
+            StartCoroutine(WallJumpTimer());
             PushOffWall();
-            //if (direction == Vector2.right)
-            //{
-            //    move.x -= 10f;
-            //}
-            //else
-            //{
-            //    move.x += 10f;
-            //}
         }
-        velocity.y = jumpTakeoffSpeed;
-        yield break;
+         else if (isGroundSliding)
+        {
+            velocity.y = jumpTakeoffSpeed;
+            PushOffSlidingSurface();
+        }
+        else
+        {
+            velocity.y = jumpTakeoffSpeed;
+        }
+
+        animator.SetTrigger("jumping");
     }
+
+
+    // <<----------------------------------------------------- SLIDING SURFACE JUMP ------------------------------------------- //
+
+    float slidingSurfaceJumpForceY = 28;
+
+    // TODO: Figure out why jumping in the opposite direction of the slope causes the player to travel further than jumping with the direction of the slope
+    private void PushOffSlidingSurface() 
+    {
+        isGroundSliding = false;
+        canMove = true;
+        velocity.y = slidingSurfaceJumpForceY;
+    }
+
+
+    // <<----------------------------------------------------- WALL JUMP ------------------------------------------- //
+
+
+    IEnumerator WallJumpTimer()
+    {
+        velocity.y = 6.5f * maxSpeed;
+        isWallJumping = true;
+        canMove = false;
+
+        yield return new WaitForSeconds(airDisableTimer);
+
+        isWallJumping = false;
+        canMove = true;
+
+        if (direction == Vector2.right)
+        {
+            move.x = 14f;
+        }
+        else
+        {
+            move.x = -14f;
+        }  
+    }
+
+    private void PushOffWall()
+    {
+        Debug.Log("WALL JUMP");
+
+        if (direction == Vector2.right)
+        {
+            targetVelocity.x = 0;
+            targetVelocity.x += -wallJumpForce * maxSpeed;
+        }
+        else
+        {
+            targetVelocity.x = 0;
+            targetVelocity.x += wallJumpForce * maxSpeed;
+        }
+    }
+
+
+    // <<----------------------------------------------------- ADDITIONAL JUMP METHODS ------------------------------------------- //
+
 
     IEnumerator QuickJumpTimer()
     {
@@ -768,6 +933,14 @@ public class PlayerController : PhysicsObject
         }
     }
 
+    public void RapidJump()
+    {
+        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
+        {
+            StartCoroutine(QuickJumpTimer());
+        }
+    }
+
     void TrackAirTime() 
     {
         if (inAir)
@@ -776,6 +949,8 @@ public class PlayerController : PhysicsObject
 
             if (isGrounded)
             {
+                canWallSlide = true;
+
                 if (airTime > hardLandTime) // Light hard landing 
                 {
                     animator.SetTrigger("land");
@@ -812,7 +987,8 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // ---- UTILITY ---- //
+    // <<----------------------------------------------------- UTILITY ------------------------------------------- //
+
 
     public void EnableMovement(bool _enable) // Called by the Animator at the moment
     {

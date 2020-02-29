@@ -1,80 +1,97 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using DG.Tweening;
 
 public class BreakablePiece : MonoBehaviour
 {
-    private bool isShake = false;
+    [Tooltip("Will this piece fall appart before the rest of the object?")]
     public bool isEarlyBreakPiece = false;
+    bool isShake = false;
 
-    public Vector3 startingPos;
-    public Quaternion startingTrans;
+    Vector3 startingPos;
+    Quaternion startingTrans;
+    BoxCollider boxColl;
+    MeshRenderer meshRenderer;
+    Rigidbody rb;
 
-    public BoxCollider2D boxColl;
-    public MeshRenderer meshRenderer;
-    public Rigidbody2D rb2D;
-    ShakeManager shakeMan;
-    //int layerMask;
+    Tween shakeTween;
 
     void Start()
-    {
-        //layerMask = LayerMask.GetMask("Player");
-        
-        boxColl = GetComponent<BoxCollider2D>();
+    {      
+        boxColl = GetComponent<BoxCollider>();
         meshRenderer = GetComponent<MeshRenderer>();
-        rb2D = GetComponent<Rigidbody2D>();
-
+        rb = GetComponent<Rigidbody>();
         startingPos = transform.position;
         startingTrans = transform.rotation;
-        shakeMan = Toolbox.GetInstance().GetShakeManager();
     }
 
-    //void OnCollisionEnter2D (Collision2D collision)
-    //{
-    //    if (collision.gameObject.tag == "Player")
-    //    {
-    //        print("foundplayer");
-    //        Physics2D.IgnoreCollision(collision.collider, boxColl);
-    //    }
-    //}
 
-
-    // Shake object for attackable object pieces
-    public void ShakeGameObject(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
+    // Drop this individual piece 
+    public void DropPiece()
     {
-        if (isShake)
-        {
-            StopCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
-            isShake = false;
-        }
+        StartCoroutine(Drop());
+    }
 
-        isShake = true;
+    IEnumerator Drop()
+    {
+        yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
+        print("piece dropping");
+        rb.isKinematic = false;// RigidbodyType.Dynamic;
+        //rb.useGravity = 2f;
+        boxColl.enabled = true;
 
-        StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
+        yield break;
     }
 
 
     // Logic for destroying the basic object piece after being attacked
-    public void DestroyObject(Vector2 _dir, bool _isPlatform)
+    public void BlowOutPiece(Vector2 _dir, bool _isPlatform)
     {
-        rb2D.bodyType = RigidbodyType2D.Dynamic;
+        rb.isKinematic = false;// bodyType = RigidbodyType.Dynamic;
 
         if (!_isPlatform)
         {
-            rb2D.AddForce(_dir * Random.Range(1f, 6f), ForceMode2D.Impulse);
+            rb.AddForce(_dir * Random.Range(1f, 6f), ForceMode.Impulse);
         }
         else
         {
-            rb2D.AddForce(Vector2.down * Random.Range(0.2f, 3f), ForceMode2D.Impulse);
+            rb.AddForce(Vector2.down * Random.Range(0.2f, 3f), ForceMode.Impulse);
         }
-
-        Destroy(gameObject, Random.Range(0.5f, 1.5f));
     }
 
-
     // Shake object for crumbling platform pieces
-    public void ShakePlatform(GameObject _objectToShake, float _shakeDuration, float _decreasePoint, float _shakeSpeed, float _rotAngle, bool _objectIs2D = false)
+    public void ShakePiece(GameObject _objectToShake, float _shakeDuration, float _strength, int _vibrato)
     {
-        StartCoroutine(shakeMan.shakeGameObjectCOR(_objectToShake, _shakeDuration, _decreasePoint, _shakeSpeed, _rotAngle, _objectIs2D));
+        if (shakeTween != null)
+        {
+            shakeTween.Kill();
+        }
+        _objectToShake.transform.position = startingPos;
+        //shakeTween = _objectToShake.transform.DOPunchPosition(UnityEngine.Random.insideUnitSphere * 0.25f, _shakeDuration, _vibrato, _elasticity);
+        shakeTween = _objectToShake.transform.DOShakePosition(_shakeDuration, _strength, _vibrato, 2f, false, true);
+    }
+
+    // Hide piece from sight & collisions
+    public void HidePiece()
+    {
+        meshRenderer.enabled = false;
+        boxColl.enabled = false;
+    }
+
+    // Respawn the piece in its original place
+    public void RespawnPiece(bool _isCrumblingWall)
+    {
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = Vector3.zero; //angularVelocity = 0f;
+        rb.isKinematic = true;// bodyType = RigidbodyType.Kinematic;
+
+        if (_isCrumblingWall)
+        {
+            boxColl.enabled = true;
+        }
+
+        gameObject.transform.position = startingPos;
+        gameObject.transform.rotation = startingTrans;
+        meshRenderer.enabled = true;
     }
 }
