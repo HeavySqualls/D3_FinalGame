@@ -8,13 +8,13 @@ public class ToxicSpill : Interact_Base
     private bool isDamageDelay = false;
 
     public float maxEmmisionPause = 3f;
-    private float emmisionPause = 0f; 
+    private float emmisionPause = 0f;
 
-    ParticleSystem partSyst;
+    [SerializeField] ParticleSystem partSyst;
 
     void Start()
     {
-        partSyst = GetComponent<ParticleSystem>();
+        partSyst = GetComponentInChildren<ParticleSystem>();
     }
 
     void Update()
@@ -32,6 +32,8 @@ public class ToxicSpill : Interact_Base
 
     void OnParticleCollision(GameObject other)
     {
+        print(other.name);
+
         pRecieveDamage = other.GetComponent<RecieveDamage>();
 
         if (pRecieveDamage != null && !isDamageDelay)

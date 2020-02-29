@@ -28,17 +28,13 @@ public class InventoryManager : MonoBehaviour
         {
             itemTooltip = FindObjectOfType<ItemToolTip>();
         }
-
-        if (lootBoxPanels.Length == 0)
-        {
-            lootBoxPanels = FindObjectsOfType<LootBoxPanel>();
-        }
     }
+
+    //TODO: Find out why these events are not getting linked 
 
     private void Awake()
     {
         lootBoxPanels = FindObjectsOfType<LootBoxPanel>();
-
 
         statPanel.SetStats(strength, agility, intellect, vitality);
         statPanel.UpdateStatValues();

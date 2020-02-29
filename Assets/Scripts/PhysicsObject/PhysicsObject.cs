@@ -27,8 +27,8 @@ public class PhysicsObject : MonoBehaviour
     protected const float minMoveDistance = 0.0001f; // Minimum distance the player must be moving in order to trigger movement 
     protected const float shellRadius = 0.04f;
 
-    protected Vector2 windDir;
-    protected float windPwr;
+    public Vector2 windDir;
+    public float windPwr;
     protected bool windMovingRight;
     public LayerMask layerMask;
 

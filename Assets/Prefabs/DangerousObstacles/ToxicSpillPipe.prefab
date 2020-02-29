@@ -40,21 +40,22 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7901702854237957399}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04c62f5e7e6f0014ab4eb30b849c2ca9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isInteractable: 1
-  isInstantPickup: 0
-  pThatHitMe: {fileID: 0}
   damage: 1
   knockBack: 10
   knockUp: -15
   stunTime: 0.5
   hitDirection: {x: -1, y: 0}
+  isInteractable: 1
+  isInstantPickup: 0
+  pRecieveDamage: {fileID: 0}
   damageDelay: 1
   maxEmmisionPause: 3
+  partSyst: {fileID: 0}
 --- !u!198 &7901702854237957397
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -4807,6 +4808,7 @@ GameObject:
   - component: {fileID: 7901702855546823923}
   - component: {fileID: 7901702855546823884}
   - component: {fileID: 7901702855546823885}
+  - component: {fileID: 566886608}
   m_Layer: 0
   m_Name: ToxicSpillPipe
   m_TagString: Untagged
@@ -4890,3 +4892,26 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0.000000059604645, y: 0, z: -0.00000008940697}
+--- !u!114 &566886608
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7901702855546823886}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04c62f5e7e6f0014ab4eb30b849c2ca9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 1
+  knockBack: 10
+  knockUp: -15
+  stunTime: 0.5
+  hitDirection: {x: -1, y: 0}
+  isInteractable: 1
+  isInstantPickup: 0
+  pRecieveDamage: {fileID: 0}
+  damageDelay: 1
+  maxEmmisionPause: 3
+  partSyst: {fileID: 0}
