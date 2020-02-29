@@ -12,6 +12,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] float circleCastRadius = 0.5f;
     [Tooltip("The distance from the center of the sprite that the circle cast will appear.")]
     [SerializeField] float circleCastDistance = 0.85f;
+    [SerializeField] float airDrainAmount = 2f;
     float timeBetweenCombos = 0;
     int comboNum = 1;
 
@@ -55,6 +56,7 @@ public class PlayerCombat : MonoBehaviour
 
     [Space]
     [Header("References:")]
+    private PlayerUI pUI;
     private Animator animator;
     private PlayerController pCon;
     LayerMask interactableLayerMask;
@@ -64,7 +66,7 @@ public class PlayerCombat : MonoBehaviour
     void Start() 
     {
         interactableLayerMask = ((1 << enemyLayer) | (1 << interactablesLayer));
-
+        pUI = GetComponent<PlayerUI>();
         pCon = GetComponent<PlayerController>();
         animator = pCon.animator;
     }
@@ -143,10 +145,18 @@ public class PlayerCombat : MonoBehaviour
             // Boot Launch
             if (Input.GetButton(pCon.controls.ability_1))
             {
-                SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
-                pCon.animator.SetTrigger("kick");
-                StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
-                StartCoroutine(CastForHit());
+                if (pUI.airInCan > airDrainAmount)
+                {
+                    SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
+                    pCon.animator.SetTrigger("kick");
+                    pUI.airInCan -= airDrainAmount;
+                    StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
+                    StartCoroutine(CastForHit());
+                }
+                else
+                {
+                    print("No air left in tank!");
+                }
             }
         }
     }

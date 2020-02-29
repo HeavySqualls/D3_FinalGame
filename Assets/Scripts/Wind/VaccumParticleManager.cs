@@ -9,22 +9,25 @@ public class VaccumParticleManager : MonoBehaviour
     [SerializeField] private ParticleSystem.MainModule vacMain;
 
     [SerializeField] private float startLifeTime;
+    [SerializeField] private float startLifeTimeStart;
+    [SerializeField] private float hemRadiusStart;
     [SerializeField] private float hemRadius;
     [SerializeField] private float time = 0.1f;
 
     void Start()
     {
         vacPart = GetComponent<ParticleSystem>();
+        hemRadius = hemRadiusStart;
         vacShape = vacPart.shape;
         vacMain = vacPart.main;
     }
 
     void Update()
     {
-        time += Time.deltaTime;
-
         if (vacPart.isEmitting)
         {
+            time += Time.deltaTime;
+
             if (time > 0.1f && hemRadius < 5f)
             {
                 startLifeTime += 0.03f;
@@ -37,9 +40,10 @@ public class VaccumParticleManager : MonoBehaviour
         }
         else if (!vacPart.isEmitting)
         {
-            vacMain.startLifetime = 0.2f;
-            vacShape.radius = 2;
-            hemRadius = 2;
+            vacMain.startLifetime = startLifeTimeStart;
+            startLifeTime = startLifeTimeStart;
+            vacShape.radius = hemRadiusStart;
+            hemRadius = hemRadiusStart;
         }
     }
 }
