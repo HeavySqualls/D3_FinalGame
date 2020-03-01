@@ -292,11 +292,13 @@ MonoBehaviour:
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
   direction: {x: 0, y: 0}
+  windDir: {x: 0, y: 0}
+  windPwr: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 0
   isWallJumping: 0
-  currentState: 0
+  currentState: 3
   currentHP: 0
   startHP: 20
   damageOutput: 2

@@ -13,16 +13,11 @@ public class PlayerHandleInteract : MonoBehaviour
 
     // Gets assigned when in the trigger zone of a swtich object
     [SerializeField] InteractableSwitch currentSwtich = null;
-
-    private PlayerController pCon;
-    private PlayerFeedback pFeedBack;
     [SerializeField] PlayerHandleInventory pHandleInventory;
 
     void Start()
     {
-        //pHandleInventory = GetComponent<PlayerHandleInventory>();
-        pFeedBack = GetComponent<PlayerFeedback>();
-        pCon = GetComponent<PlayerController>();
+        pHandleInventory = GetComponent<PlayerHandleInventory>();
     }
 
     private void Update()
@@ -70,18 +65,6 @@ public class PlayerHandleInteract : MonoBehaviour
         if (Input.GetKeyDown(quickLootKey) && currentPickupItem != null && currentPickupItem.isOpen)
         {
             currentPickupItem.QuickLoot();
-        }
-    }
-
-
-    // ---- HANDLE DAMAGE ---- //
-
-    public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
-    {
-        if (!pCon.isHit)
-        {
-            StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
-            StartCoroutine(pFeedBack.IFlashRed());
         }
     }
 

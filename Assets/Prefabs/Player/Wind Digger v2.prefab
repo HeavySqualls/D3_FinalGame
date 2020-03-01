@@ -5341,6 +5341,7 @@ GameObject:
   - component: {fileID: 8840246823808797432}
   - component: {fileID: 6828032529398165392}
   - component: {fileID: 7061341988262114903}
+  - component: {fileID: 4921897074839377781}
   - component: {fileID: 6711178901593303750}
   - component: {fileID: 1787401321161769541}
   - component: {fileID: 8840246823808797439}
@@ -5492,6 +5493,24 @@ MonoBehaviour:
   currentLootBoxPanel: {fileID: 0}
   currentSwtich: {fileID: 0}
   pHandleInventory: {fileID: 8207287641177776633}
+--- !u!114 &4921897074839377781
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8840246823808797378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7b949dadd950d944cbae01e2d625702c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  flashDuration: 0.4
+  currentFlashDelay: 0
+  phase1FlashDelay: 0.1
+  phase2FlashDelay: 0.1
+  phase3FlashDelay: 0.1
+  playerHealthStart: 0
 --- !u!114 &6711178901593303750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5519,7 +5538,7 @@ MonoBehaviour:
   maxComboTime: 0.7
   attackSpacing: 0.2
   circleCastRadius: 0.5
-  circleCastDistance: 0.85
+  circleCastDistance: 1.75
   airDrainAmount: 2
   p1_damage: 2
   p1_knockback: 25

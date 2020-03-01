@@ -141,17 +141,31 @@ public class CrabwormLarvaController : Enemy_Base
 
     protected override void AfterThisUnitWasAttacked()
     {
-        base.AfterThisUnitWasAttacked();
+        if (target != null)
+        {
+            Vector2 targetDirection;
 
-        currentState = State.Idle;
-        StartCoroutine(AttackCoolDown());
+            targetDirection = (transform.position + target.transform.position);
+            targetDirection.x = Mathf.Clamp(targetDirection.x, -1f, 1f);
+
+            if (targetDirection.x < 0 && direction == Vector2.right || targetDirection.x > 0 && direction == Vector2.left)
+            {
+                FlipSprite();
+            }
+
+            currentState = State.Hunting;
+        }
+        else
+        {
+            currentState = State.Patrolling;
+        }
     }
 
     protected override void AfterAttackCooldown()
     {
         base.AfterAttackCooldown();
 
-        currentState = State.Hunting;
+        StartCoroutine(AttackCoolDown());
     }
 
     protected override void KillUnit()

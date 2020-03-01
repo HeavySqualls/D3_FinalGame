@@ -155,6 +155,7 @@ public class PlayerCombat : MonoBehaviour
                 }
                 else
                 {
+                    pUI.UseAirInTank(0);
                     print("No air left in tank!");
                 }
             }
@@ -200,13 +201,28 @@ public class PlayerCombat : MonoBehaviour
     }
 
     //RaycastHit2D[] hits = Physics2D.OverlapBoxAll(gameObject.transform.position, Vector2(1, 2), pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
-    public Vector2 boxCast = new Vector2(1, 2);
-
+    public Vector2 boxCast = new Vector2(1, 3);
+    //private GameObject hitBox;
+    //private bool isCasting = false;
+    //private Vector3 spawnPos;
     public void CastForEnemies()
     {
+        //spawnPos = gameObject.transform.position + gameObject.transform.right * circleCastDistance;
+
         if (canCast)
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
+
+            //if (!isCasting)
+            //{
+            //    hitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //    hitBox.transform.localScale = boxCast;
+            //    hitBox.transform.position = spawnPos;
+            //    hitBox.transform.SetParent(gameObject.transform);
+
+            //    isCasting = true;
+            //    DestroyHitBox();
+            //}
 
             foreach (RaycastHit2D hit in hits)
             {
@@ -222,6 +238,13 @@ public class PlayerCombat : MonoBehaviour
             }
         }
     }
+
+    //IEnumerator DestroyHitBox()
+    //{
+    //    yield return new WaitForSeconds(0.2f);
+    //    Destroy(hitBox);
+    //    isCasting = false;
+    //}
 
     void OnDrawGizmos()
     {

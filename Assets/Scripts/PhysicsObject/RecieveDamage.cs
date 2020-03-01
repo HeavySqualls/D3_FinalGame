@@ -4,7 +4,7 @@ public class RecieveDamage : MonoBehaviour
 {
     [Tooltip("Add in the game object that this script is attached to.")]
     private GameObject go;
-    private PlayerHandleInteract pHandleInteract;
+    private PlayerHealthSystem pHealthSystem;
     private EnemyHandleInteract eHandleInteract;
     private BreakableObject bO;
     private RollingObject rO;
@@ -17,7 +17,7 @@ public class RecieveDamage : MonoBehaviour
         {
             if (go.GetComponent<PlayerController>()) //<<------ if this object is the player
             {
-                pHandleInteract = go.GetComponent<PlayerHandleInteract>();
+                pHealthSystem = go.GetComponent<PlayerHealthSystem>();
             }
             else if (go.GetComponent<EnemyHandleInteract>()) //<<------------ if this object is an enemy
             {
@@ -58,19 +58,19 @@ public class RecieveDamage : MonoBehaviour
                 eHandleInteract.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
         }
-        else if (pHandleInteract != null)
+        else if (pHealthSystem != null)
         {
             if (_hitDirection == Vector2.right) // knock to the left
             {
-                pHandleInteract.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+                pHealthSystem.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
             }
             else if (_hitDirection == Vector2.left) // knock to the right 
             {
-                pHandleInteract.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                pHealthSystem.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
             else if (_hitDirection == Vector2.zero) // below or above
             {
-                pHandleInteract.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                pHealthSystem.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
             }
         }
         else if (bO != null)

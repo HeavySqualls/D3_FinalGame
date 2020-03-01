@@ -135,6 +135,8 @@ public class Enemy_Base : PhysicsObject
 
     protected IEnumerator AttackCoolDown()
     {
+        currentState = State.Idle;
+
         yield return new WaitForSeconds(attackCooldown);
 
         if (target != null)
@@ -148,11 +150,15 @@ public class Enemy_Base : PhysicsObject
             {
                 FlipSprite();
             }
+
+            currentState = State.Hunting;
+        }
+        else
+        {
+            currentState = State.Patrolling;
         }
 
         objectHit = false;
-
-        AfterAttackCooldown();
 
         yield break;
     }

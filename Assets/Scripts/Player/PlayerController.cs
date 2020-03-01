@@ -219,10 +219,10 @@ public class PlayerController : PhysicsObject
         print(gameObject.name + " was hit!");
 
         isHit = true;
-        canFlipSprite = false;
         canJump = false;
         canMove = false;
         canWallSlide = false;
+        //canFlipSprite = false;
 
         float timer = 0.0f;
 
@@ -234,8 +234,9 @@ public class PlayerController : PhysicsObject
             yield return null;
         }
 
+        targetVelocity.x = 0;
         isHit = false;
-        canFlipSprite = true;
+        //canFlipSprite = true;
         canJump = true;
         canMove = true;
         canWallSlide = true;
