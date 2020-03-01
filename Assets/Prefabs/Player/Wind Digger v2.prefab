@@ -5505,11 +5505,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b949dadd950d944cbae01e2d625702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  flashDuration: 0.4
+  flashDuration: 5
   currentFlashDelay: 0
-  phase1FlashDelay: 0.1
-  phase2FlashDelay: 0.1
-  phase3FlashDelay: 0.1
+  phase1FlashDelay: 0.5
+  phase2FlashDelay: 0.35
+  phase3FlashDelay: 0.15
+  currentPhase: 0
   playerHealthStart: 0
 --- !u!114 &6711178901593303750
 MonoBehaviour:

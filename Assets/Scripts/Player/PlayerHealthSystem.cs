@@ -13,7 +13,7 @@ public class PlayerHealthSystem : MonoBehaviour
     [SerializeField] float phase2FlashDelay = 0.5f;
     [SerializeField] float phase3FlashDelay = 0.35f;
 
-    int currentPhase;
+    [SerializeField] int currentPhase;
     int hurtPhase0 = 0;
     int hurtPhase1 = 1;
     int hurtPhase2 = 2;
@@ -23,11 +23,12 @@ public class PlayerHealthSystem : MonoBehaviour
     float playerHealth;
 
     PlayerController pCon;
-    PlayerFeedback pFeedBack;
     Animator animator;
     Camera cam;
     Tween shakeTween;
     SpriteRenderer spriteRenderer;
+
+    private IEnumerator flashCoroutine;
 
     void Start()
     {
@@ -35,40 +36,47 @@ public class PlayerHealthSystem : MonoBehaviour
         cam = Camera.main;
 
         pCon = GetComponent<PlayerController>();
-        pFeedBack = GetComponent<PlayerFeedback>();
         animator = GetComponent<Animator>();
 
         playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;
+
+        flashCoroutine = IFlashRed();
     }
+
 
     // ---- HANDLE DAMAGE ---- //
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
         shakeTween = cam.transform.DOShakePosition(0.8f, 0.25f, 9, 2f, false, true);
+        StopCoroutine("IFlashRed");
 
         if (currentPhase == hurtPhase0)
         {
+            print("Phase 1");
             currentPhase = hurtPhase1;
-            currentFlashDelay = phase1FlashDelay;
+            currentFlashDelay = phase1FlashDelay;      
         }
         else if (currentPhase == hurtPhase1)
         {
+            print("Phase 2");
             currentPhase = hurtPhase2;
             currentFlashDelay = phase2FlashDelay;
-
-            StopCoroutine(IFlashRed());
-            StartCoroutine(IFlashRed());
         }
         else if (currentPhase == hurtPhase2)
         {
+            print("Phase 3");
             currentPhase = hurtPhase3;
             currentFlashDelay = phase3FlashDelay;
-
-            StopCoroutine(IFlashRed());
-            StartCoroutine(IFlashRed());
         }
+        else if (currentPhase == hurtPhase3)
+        {
+            print("PLAYER IS DEAD!");
+            return;
+        }
+
+        StartCoroutine("IFlashRed");
 
         playerHealth -= _damage;
 
@@ -82,6 +90,8 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public IEnumerator IFlashRed()
     {
+        print("Flash");
+
         for (float i = 0; i < flashDuration; i += currentFlashDelay)
         {
             if (spriteRenderer.color == Color.white)
@@ -98,6 +108,7 @@ public class PlayerHealthSystem : MonoBehaviour
 
         if (currentPhase == hurtPhase3)
         {
+            print("Phase 3 to 2");
             currentPhase = hurtPhase2;
             currentFlashDelay = phase2FlashDelay;
 
@@ -118,6 +129,7 @@ public class PlayerHealthSystem : MonoBehaviour
 
         if (currentPhase == hurtPhase2)
         {
+            print("Phase 2 to 1");
             currentPhase = hurtPhase1;
             currentFlashDelay = phase1FlashDelay;
 
@@ -137,7 +149,7 @@ public class PlayerHealthSystem : MonoBehaviour
         }
 
         currentPhase = 0;
-        currentFlashDelay = 0;
+
         spriteRenderer.color = Color.white;
 
         yield break;
