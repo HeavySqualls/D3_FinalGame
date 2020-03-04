@@ -20,34 +20,21 @@ public class LootBoxPanel : MonoBehaviour
     public event Action<ItemSlot> OnEndDragEvent;
     public event Action<ItemSlot> OnDragEvent;
     public event Action<ItemSlot> OnDropEvent;
-
     public event Action<sItem> OnItemRightClickedEvent;
 
-    [SerializeField] InventoryManager inventoryManager;
+    InventoryManager inventoryManager;
 
     private void OnValidate()
     {
         lootBoxPanel = GetComponent<LootBoxPanel>().gameObject;
         lootBoxSlots = lootBoxSlotsParent.GetComponentsInChildren<LootBoxSlot>();
-        inventoryManager = FindObjectOfType<InventoryManager>();
+        inventoryManager = Toolbox.GetInstance().GetPlayerManager().GetInventoryManager();
     }
 
 
     private void Awake()
     {
-        OnValidate();
-
-        //for (int i = 0; i < lootBoxSlots.Length; i++)
-        //{
-        //    // catches the events from EquipSlot.cs and says "the player right clicked this item"... (see InventoryManager.cs for next step)
-        //    lootBoxSlots[i].OnPointerEnterEvent += OnPointerEnterEvent;
-        //    lootBoxSlots[i].OnPointerExitEvent += OnPointerExitEvent;
-        //    lootBoxSlots[i].OnRightClickEvent += OnRightClickEvent;
-        //    lootBoxSlots[i].OnBeginDragEvent += OnBeginDragEvent;
-        //    lootBoxSlots[i].OnEndDragEvent += OnEndDragEvent;
-        //    lootBoxSlots[i].OnDragEvent += OnDragEvent;
-        //    lootBoxSlots[i].OnDropEvent += OnDropEvent;
-        //}       
+        OnValidate();      
     }
 
     private void Start()

@@ -98,6 +98,7 @@ public class Enemy_Base : PhysicsObject
             direction = Vector2.right;
     }
 
+
     protected override void Update()
     {
         base.Update();

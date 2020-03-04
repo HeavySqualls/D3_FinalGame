@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using Kryz.CharacterStats;
 
-
 public class InventoryManager : MonoBehaviour
 {
     public CharacterStat strength;
@@ -22,18 +21,20 @@ public class InventoryManager : MonoBehaviour
 
     private ItemSlot draggedSlot;
 
-    private void OnValidate()
-    {
-        if (itemTooltip == null)
-        {
-            itemTooltip = FindObjectOfType<ItemToolTip>();
-        }
-    }
+    //private void OnValidate()
+    //{
+    //    if (itemTooltip == null)
+    //    {
+    //        itemTooltip = FindObjectOfType<ItemToolTip>();
+    //    }
+    //}
 
     //TODO: Find out why these events are not getting linked 
 
     private void Awake()
     {
+        Toolbox.GetInstance().GetPlayerManager().SetInventoryManager(this);
+
         lootBoxPanels = FindObjectsOfType<LootBoxPanel>();
 
         statPanel.SetStats(strength, agility, intellect, vitality);

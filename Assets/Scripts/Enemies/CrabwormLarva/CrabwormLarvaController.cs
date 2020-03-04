@@ -24,6 +24,8 @@ public class CrabwormLarvaController : Enemy_Base
         base.Start();
     }
 
+
+
     protected override void Update()
     {
         base.Update();

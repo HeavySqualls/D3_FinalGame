@@ -28,8 +28,14 @@ public class PickUpItem : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
+        //Toolbox.GetInstance().GetLevelManager().AddPickups(this);
         //lootBoxPanel = GetComponentInChildren<LootBoxPanel>();
     }
+
+    //private void OnDestroy()
+    //{
+    //    Toolbox.GetInstance().GetLevelManager().RemovePickups(this);
+    //}
 
     private void OnTriggerEnter2D(Collider2D other)
     {
