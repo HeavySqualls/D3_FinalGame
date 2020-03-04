@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections;
 
 public class SmoothFollow : MonoBehaviour
 {
@@ -13,14 +12,13 @@ public class SmoothFollow : MonoBehaviour
 
     public bool isCamera;
 
-    private PlayerController pCon;
+    PlayerController pCon;
 
     void Start()
     {
         if (isCamera)
         {
-            // TODO: Change this reference to grab the player controller from GameManager once implemented!
-            pCon = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+            pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
         }
 
         yOffset = yOffsetStart;
@@ -41,23 +39,6 @@ public class SmoothFollow : MonoBehaviour
             position.x = Mathf.Lerp(transform.position.x, objectToFollow.transform.position.x, interpolation);
 
             transform.position = position;
-
-            //if (isCamera)
-            //{
-            //    VerticalMovementOffset();
-            //}
-        }
-    }
-
-    void VerticalMovementOffset()
-    {
-        if (pCon.velocity.y < -2 && !pCon.isGrounded && pCon.canClimbLedge == false)
-        {
-            yOffset = yOffset - yOffsetRate;
-        }
-        else
-        {
-            yOffset = yOffsetStart;
         }
     }
 }

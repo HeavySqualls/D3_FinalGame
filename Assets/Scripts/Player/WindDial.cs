@@ -25,8 +25,8 @@ public class WindDial : MonoBehaviour
 
     void Start()
     {       
-        pCon = GetComponentInParent<PlayerController>();
-        airCon = GetComponentInParent<AirTankController>();
+        pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
+        airCon = Toolbox.GetInstance().GetPlayerManager().GetAirTankController();
         animator = GetComponentInChildren<Animator>();
 
         windDial.SetActive(false);

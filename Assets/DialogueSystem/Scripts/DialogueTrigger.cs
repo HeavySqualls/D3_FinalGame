@@ -4,15 +4,16 @@ using UnityEngine;
 
 public class DialogueTrigger : MonoBehaviour
 {
-    [SerializeField] ConversationController conversationCon;
-    //TODO: is there simple way for this to automatially find this?
-
+    [Tooltip("Drag in a Scriptable Object conversation.")]
     [SerializeField] sNarrative thisConversation;
+
+    ConversationController conversationCon;
     CircleCollider2D circleCollider;
 
     private void Start()
     {
         circleCollider = GetComponent<CircleCollider2D>();
+        conversationCon = Toolbox.GetInstance().GetDialogueManager().GetConversationController();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

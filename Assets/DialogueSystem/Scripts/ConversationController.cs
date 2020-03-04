@@ -19,9 +19,14 @@ public class ConversationController : MonoBehaviour
     private int activeLineIndex = 0;
     private PlayerController pCon;
 
+    private void Awake()
+    {
+        Toolbox.GetInstance().GetDialogueManager().SetConversationController(this);
+    }
+
     private void Start()
     {
-        pCon = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
     }
 
     private void Update()

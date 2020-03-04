@@ -14,6 +14,11 @@ public class AirTankController : MonoBehaviour
     ParticleSystem partSyst;
     PlayerController pCon;
 
+    private void Awake()
+    {
+        Toolbox.GetInstance().GetPlayerManager().SetAirTankController(this);
+    }
+
     void Start()
     {
         partSyst = GetComponentInChildren<ParticleSystem>();

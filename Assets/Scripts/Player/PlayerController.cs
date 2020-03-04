@@ -132,6 +132,8 @@ public class PlayerController : PhysicsObject
 
     void Awake()
     {
+        Toolbox.GetInstance().GetPlayerManager().SetPlayerController(this);
+
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
         direction = Vector2.right;

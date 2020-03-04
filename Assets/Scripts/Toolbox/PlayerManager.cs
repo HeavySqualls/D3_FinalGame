@@ -10,10 +10,26 @@ public class PlayerManager : MonoBehaviour
 
     InventoryManager inventoryManager;
     PlayerController pCon;
+    AirTankController airTankCon;
 
     public void SetPlayerController(PlayerController _pCon)
     {
         pCon = _pCon;
+    }
+
+    public PlayerController GetPlayerController()
+    {
+        return pCon;
+    }
+
+    public void SetAirTankController(AirTankController _airTankCon)
+    {
+        airTankCon = _airTankCon;
+    }
+
+    public AirTankController GetAirTankController()
+    {
+        return airTankCon;
     }
 
     public void SetInventoryManager(InventoryManager _inMan)
