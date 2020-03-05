@@ -18,7 +18,7 @@ public class Toolbox : MonoBehaviour
     private GameManager _gameManager;
     private LevelManager _levelManager;
     private PlayerManager _playerMan;
-    private DialogueManager _dialogueManager;
+    private DialogueSystemManager _dialogueManager;
 
     void Awake()
     {
@@ -35,7 +35,7 @@ public class Toolbox : MonoBehaviour
         this._gameManager = gameObject.AddComponent<GameManager>();
         this._levelManager = gameObject.AddComponent<LevelManager>();
         this._playerMan = gameObject.AddComponent<PlayerManager>();
-        this._dialogueManager = gameObject.AddComponent<DialogueManager>();
+        this._dialogueManager = gameObject.AddComponent<DialogueSystemManager>();
     }
 
     public GameManager GetGameManager()
@@ -53,7 +53,7 @@ public class Toolbox : MonoBehaviour
         return this._playerMan;
     }
 
-    public DialogueManager GetDialogueManager()
+    public DialogueSystemManager GetDialogueSystemManager()
     {
         return this._dialogueManager;
     }

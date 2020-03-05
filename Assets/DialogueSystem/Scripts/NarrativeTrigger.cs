@@ -5,13 +5,13 @@ public class NarrativeTrigger : MonoBehaviour
     [Tooltip("Drag in a Scriptable Object conversation.")]
     [SerializeField] sNarrative thisConversation;
 
-    DialogueController conversationCon;
+    NarrativeController conversationCon;
     CircleCollider2D circleCollider;
 
     private void Start()
     {
         circleCollider = GetComponent<CircleCollider2D>();
-        conversationCon = Toolbox.GetInstance().GetDialogueManager().GetConversationController();
+        conversationCon = Toolbox.GetInstance().GetDialogueSystemManager().GetConversationController();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -20,7 +20,7 @@ public class NarrativeTrigger : MonoBehaviour
 
         if (playerHandleInteract != null)
         {
-            conversationCon.GetNewConversation(thisConversation);
+            conversationCon.GetNewNarrative(thisConversation);
             circleCollider.enabled = false;
         }
     }

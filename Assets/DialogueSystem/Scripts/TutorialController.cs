@@ -5,22 +5,42 @@ using TMPro;
 
 public class TutorialController : MonoBehaviour
 {
-    [SerializeField] TextMeshProUGUI tutorialTitle;
+    public bool isOpen = false;
+
+    [Header("Tutorial Image:")]
+    [Tooltip("The DisplayPanel GameObject of the tutorial panel.")]
+    [SerializeField] GameObject imagePanel;
+    [Tooltip("The image component of the DisplayPanel game object.")]
     [SerializeField] Image tutorialImage;
+
+    [Space]
+    [Header("Tutorial Title:")]
+    [Tooltip("The TitleText GameObject of the tutorial panel.")]
+    [SerializeField] GameObject title;
+    [Tooltip("The TextMeshPro component of the TitleText game object.")]
+    [SerializeField] TextMeshProUGUI tutorialTitle;
+
+    [Space]
+    [Header("Tutorial Information:")]
+    [Tooltip("The InfoText GameObject of the tutorial panel.")]
+    [SerializeField] GameObject info;
+    [Tooltip("The TextMeshPro component of the InfoText game object.")]
     [SerializeField] TextMeshProUGUI tutorialInfo;
 
-    [SerializeField] GameObject title;
-    [SerializeField] GameObject info;
-    [SerializeField] GameObject imagePanel;
-    [SerializeField] GameObject tutorialPanel;
+    [Space]
+    [Header("Tutorial Input Buttons:")]
     [SerializeField] GameObject purpleButton;
     [SerializeField] GameObject continueButton;
     [SerializeField] GameObject closeButton;
 
+    [Space]
+    [Header("Tutorial References:")]
+    [Tooltip("The GameObject of the tutorial panel.")]
+    [SerializeField] GameObject tutorialPanel;
+    [Tooltip("The Animator of the tutorial panel.")]
     [SerializeField] Animator animator;
-    [SerializeField] DialogueController conversationController;
-
-    public bool isOpen = false;
+    [Tooltip("The NarrativeController component of the Dialogue game object.")]
+    [SerializeField] NarrativeController conversationController;
 
     private void Update()
     {

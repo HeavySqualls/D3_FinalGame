@@ -5,22 +5,28 @@ using TMPro;
 
 public class SpeakerUIController : MonoBehaviour
 {
+    [Header("UI Base References:")]
     public Image portrait;
     public TextMeshProUGUI nameText;
     public TextMeshProUGUI dialogue;
-
-    public float animationTime = 0.5f;
-    public bool isReadyForText = false;
-
     public GameObject dialoguePanelGO;
     public GameObject portraitGO;
+
+    [Space]
+    [Header("UI Input Buttons:")]
     [SerializeField] GameObject purpleButton;
     [SerializeField] GameObject continueButton;
     [SerializeField] GameObject closeButton;
 
+    [Space]
+    [Header("UI Animators:")]
+    [Tooltip("Drag in the animator for the speaker sprite here.")]
     public Animator portraitAnimator;
+    [Tooltip("Drag in the animator for the dialogue box here.")]
     public Animator dialogueBoxAnimator;
-    
+    [Tooltip("The time to wait for the opening animation to finish before enabling the name and dialogue text.")]
+    public float animationTime = 0.3f;
+
     // Tracks the active speaker + update name & portrait
     private sCharacter speaker;
     public sCharacter Speaker
@@ -73,7 +79,7 @@ public class SpeakerUIController : MonoBehaviour
 
     IEnumerator WaitForNameDisplay()
     {
-        yield return new WaitForSeconds(0.3f);
+        yield return new WaitForSeconds(animationTime);
 
         purpleButton.SetActive(true);
         continueButton.SetActive(true);

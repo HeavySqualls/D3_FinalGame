@@ -1,27 +1,25 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class DialogueController : MonoBehaviour
+public class NarrativeController : MonoBehaviour
 {
-    public sNarrative conversation;
+    public sNarrative N;
 
     public GameObject speakerLeft;
     public GameObject speakerRight;
-    public TutorialController tutorialController;
-
-    [SerializeField] float textDelayTime;
-
-    private bool hasDisplayedTutorial = false;
-
     private SpeakerUIController speakerUILeft;
     private SpeakerUIController speakerUIRight;
 
+    public TutorialController tutorialController;
+    private bool hasDisplayedTutorial = false;
+
+    [SerializeField] float textDelayTime;
     private int activeLineIndex = 0;
     private PlayerController pCon;
 
     private void Awake()
     {
-        Toolbox.GetInstance().GetDialogueManager().SetConversationController(this);
+        Toolbox.GetInstance().GetDialogueSystemManager().SetNarrativeController(this);
     }
 
     private void Start()
@@ -31,25 +29,25 @@ public class DialogueController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && conversation != null && !tutorialController.isOpen)
+        if (Input.GetKeyDown(KeyCode.F) && N != null && !tutorialController.isOpen)
         {       
             AdvanceConversation();
         }
     }
 
-    public void GetNewConversation (sNarrative _convo)
+    public void GetNewNarrative (sNarrative _convo)
     {
-        conversation = _convo;
-        StartConversation();
+        N = _convo;
+        StartNarrative();
     }
 
-    private void StartConversation()
+    private void StartNarrative()
     {
         speakerUILeft = speakerLeft.GetComponent<SpeakerUIController>();
         speakerUIRight = speakerRight.GetComponent<SpeakerUIController>();
 
-        speakerUILeft.Speaker = conversation.speakerOnTheLeft;
-        speakerUIRight.Speaker = conversation.speakerOnTheRight;
+        speakerUILeft.Speaker = N.speakerOnTheLeft;
+        speakerUIRight.Speaker = N.speakerOnTheRight;
 
         speakerUILeft.ShowSprite();
         speakerUIRight.ShowSprite();
@@ -57,15 +55,16 @@ public class DialogueController : MonoBehaviour
         pCon.canMove = false;
     }
 
+
     // If the current line that we are interested in is less lines that the number of lines in the conversation, 
     // display it and increase the line index. Otherwise end the conversation. 
     public void AdvanceConversation()
     {
-        if (activeLineIndex < conversation.lines.Length)
+        if (activeLineIndex < N.lines.Length)
         {
-            if (conversation.hasTutorial && conversation.tutorialLine == activeLineIndex && !hasDisplayedTutorial)
+            if (N.hasTutorial && N.tutorialLine == activeLineIndex && !hasDisplayedTutorial)
             {
-                tutorialController.DisplayTutorial(conversation.tutorial);
+                tutorialController.DisplayTutorial(N.tutorial);
                 speakerUIRight.Hide();
                 speakerUILeft.Hide();
                 hasDisplayedTutorial = true;
@@ -87,20 +86,20 @@ public class DialogueController : MonoBehaviour
     // and inactive speaker, and displays the lines accordingly.
     private void DisplayNextLine()
     {
-        Line line = conversation.lines[activeLineIndex];
+        Line line = N.lines[activeLineIndex];
         sCharacter character = line.character;
 
         if (speakerUILeft.SpeakerIs(character))
         {
-            SetDialogue(speakerUILeft, speakerUIRight, line.text);
+            SetNarrativeDialogue(speakerUILeft, speakerUIRight, line.text);
         }
         else
         {
-            SetDialogue(speakerUIRight, speakerUILeft, line.text);
+            SetNarrativeDialogue(speakerUIRight, speakerUILeft, line.text);
         }
     }
 
-    private void SetDialogue(SpeakerUIController _activeSpeakerUI, SpeakerUIController _inactiveSpeakerUI, string _text)
+    private void SetNarrativeDialogue(SpeakerUIController _activeSpeakerUI, SpeakerUIController _inactiveSpeakerUI, string _text)
     {
         _activeSpeakerUI.Dialogue = _text;
         _activeSpeakerUI.Show();
@@ -108,10 +107,10 @@ public class DialogueController : MonoBehaviour
 
         _activeSpeakerUI.Dialogue = "";
         StopAllCoroutines();
-        StartCoroutine(TypeWritterEffect(_text, _activeSpeakerUI));
+        StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
     }
 
-    private IEnumerator TypeWritterEffect(string _text, SpeakerUIController _speakerUI)
+    private IEnumerator TypeWritterEffect_N(string _text, SpeakerUIController _speakerUI)
     {
         yield return new WaitForSeconds(0.3f);
 
@@ -124,9 +123,9 @@ public class DialogueController : MonoBehaviour
 
     public bool CheckIfConversationIsFinished()
     {
-        if (conversation != null)
+        if (N != null)
         {
-            if (activeLineIndex < conversation.lines.Length)
+            if (activeLineIndex < N.lines.Length)
             {
                 return false;
             }
@@ -141,10 +140,13 @@ public class DialogueController : MonoBehaviour
         speakerUIRight.Hide();
         speakerUILeft.HideSprite();
         speakerUIRight.HideSprite();
-        activeLineIndex = 0;
+
         pCon.move.x = 0;
         pCon.canMove = true;
         hasDisplayedTutorial = false;
-        conversation = null;
+        N = null;
+
+        activeLineIndex = 0;
+
     }
 }

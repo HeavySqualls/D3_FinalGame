@@ -1112,7 +1112,7 @@ GameObject:
   - component: {fileID: 6908171024114972008}
   - component: {fileID: 6908171024114972009}
   m_Layer: 5
-  m_Name: CutsceneDialogue_Canvas
+  m_Name: Narrative_Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1287,7 +1287,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 08a80b02c9fb406488669ed0633f39aa, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  conversation: {fileID: 11400000, guid: a8b5a79fb750245419a3dc81ffb0176b, type: 2}
+  N: {fileID: 0}
   speakerLeft: {fileID: 6908171026097589590}
   speakerRight: {fileID: 6908171025020968658}
   tutorialController: {fileID: 6908171024826243911}
@@ -2443,7 +2443,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 75, y: 60}
+  m_SizeDelta: {x: 70, y: 70}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6908171025235980577
 CanvasRenderer:
