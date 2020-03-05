@@ -14,6 +14,9 @@ public class SpeakerUIController : MonoBehaviour
 
     public GameObject dialoguePanelGO;
     public GameObject portraitGO;
+    [SerializeField] GameObject purpleButton;
+    [SerializeField] GameObject continueButton;
+    [SerializeField] GameObject closeButton;
 
     public Animator portraitAnimator;
     public Animator dialogueBoxAnimator;
@@ -60,6 +63,9 @@ public class SpeakerUIController : MonoBehaviour
 
     public void Hide()
     {
+        purpleButton.SetActive(false);
+        continueButton.SetActive(false);
+        closeButton.SetActive(false);
         nameText.enabled = false;
         dialogue.enabled = false;
         dialogueBoxAnimator.SetBool("isOpen", false);
@@ -69,6 +75,9 @@ public class SpeakerUIController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.3f);
 
+        purpleButton.SetActive(true);
+        continueButton.SetActive(true);
+        closeButton.SetActive(true);
         nameText.enabled = !nameText.IsActive();
     }
 

@@ -1,13 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
-public class DialogueTrigger : MonoBehaviour
+public class NarrativeTrigger : MonoBehaviour
 {
     [Tooltip("Drag in a Scriptable Object conversation.")]
     [SerializeField] sNarrative thisConversation;
 
-    ConversationController conversationCon;
+    DialogueController conversationCon;
     CircleCollider2D circleCollider;
 
     private void Start()

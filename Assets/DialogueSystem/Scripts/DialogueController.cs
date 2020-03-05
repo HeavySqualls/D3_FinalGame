@@ -1,17 +1,17 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class ConversationController : MonoBehaviour
+public class DialogueController : MonoBehaviour
 {
     public sNarrative conversation;
 
     public GameObject speakerLeft;
     public GameObject speakerRight;
-    public GameObject continueButton;
     public TutorialController tutorialController;
 
     [SerializeField] float textDelayTime;
+
+    private bool hasDisplayedTutorial = false;
 
     private SpeakerUIController speakerUILeft;
     private SpeakerUIController speakerUIRight;
@@ -31,7 +31,7 @@ public class ConversationController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && conversation != null)
+        if (Input.GetKeyDown(KeyCode.F) && conversation != null && !tutorialController.isOpen)
         {       
             AdvanceConversation();
         }
@@ -55,7 +55,6 @@ public class ConversationController : MonoBehaviour
         speakerUIRight.ShowSprite();
         AdvanceConversation();
         pCon.canMove = false;
-        continueButton.SetActive(!continueButton.activeSelf);
     }
 
     // If the current line that we are interested in is less lines that the number of lines in the conversation, 
@@ -64,26 +63,22 @@ public class ConversationController : MonoBehaviour
     {
         if (activeLineIndex < conversation.lines.Length)
         {
-            DisplayNextLine();
-            activeLineIndex += 1;
+            if (conversation.hasTutorial && conversation.tutorialLine == activeLineIndex && !hasDisplayedTutorial)
+            {
+                tutorialController.DisplayTutorial(conversation.tutorial);
+                speakerUIRight.Hide();
+                speakerUILeft.Hide();
+                hasDisplayedTutorial = true;
+            }
+            else
+            {
+                DisplayNextLine();
+                activeLineIndex += 1;
+            }
         }
         else
         {
-            speakerUILeft.Hide();
-            speakerUIRight.Hide();
-            speakerUILeft.HideSprite();
-            speakerUIRight.HideSprite();
-            activeLineIndex = 0;
-            pCon.move.x = 0;
-            pCon.canMove = true;
-            continueButton.SetActive(!continueButton.activeSelf);
-
-            if (conversation.hasTutorial)
-            {
-                tutorialController.DisplayTutorial(conversation.tutorial);
-            }
-
-            conversation = null;
+            EndResetController();
         }
     }
 
@@ -125,5 +120,31 @@ public class ConversationController : MonoBehaviour
             _speakerUI.Dialogue += letter;
             yield return new WaitForSeconds(textDelayTime);
         }
+    }
+
+    public bool CheckIfConversationIsFinished()
+    {
+        if (conversation != null)
+        {
+            if (activeLineIndex < conversation.lines.Length)
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public void EndResetController()
+    {
+        speakerUILeft.Hide();
+        speakerUIRight.Hide();
+        speakerUILeft.HideSprite();
+        speakerUIRight.HideSprite();
+        activeLineIndex = 0;
+        pCon.move.x = 0;
+        pCon.canMove = true;
+        hasDisplayedTutorial = false;
+        conversation = null;
     }
 }

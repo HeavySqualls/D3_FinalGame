@@ -4,6 +4,7 @@
 [System.Serializable]
 public struct Line
 {
+    [Tooltip("Which character will be speaking this line? Drag in the relative sCharacter.")]
     public sCharacter character;
 
     [TextArea(2, 5)]
@@ -15,11 +16,19 @@ public struct Line
 public class sNarrative : ScriptableObject
 {
     public string narrativeID;
+
+    [Tooltip("Does this Narrative contain a tutorial?")]
     public bool hasTutorial;
+    [Tooltip("Drag in the relative sTutorial for this narrative.")]
     public sTutorial tutorial;
+    [Tooltip("After which line of dialogue will this tutorial be presented?")]
+    public int tutorialLine;
 
-    public sCharacter speakerOnTheRight;
+    [Tooltip("Who will be the speaker on the left?")]
     public sCharacter speakerOnTheLeft;
+    [Tooltip("Who will be the speaker on the right?")]
+    public sCharacter speakerOnTheRight;
 
+    [Tooltip("Input the number of lines desired and add text.")]
     public Line[] lines;
 }

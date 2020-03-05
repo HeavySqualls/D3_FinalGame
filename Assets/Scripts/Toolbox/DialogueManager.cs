@@ -6,14 +6,14 @@ public class DialogueManager : MonoBehaviour
 {
     // Store important information regarding narrative.... stuff...
 
-    ConversationController conversationController;
+    DialogueController conversationController;
 
-    public ConversationController GetConversationController()
+    public DialogueController GetConversationController()
     {
         return conversationController;
     }
 
-    public void SetConversationController(ConversationController _conCon)
+    public void SetConversationController(DialogueController _conCon)
     {
         conversationController = _conCon;
     }
