@@ -28,13 +28,13 @@ public class LootBoxPanel : MonoBehaviour
     {
         lootBoxPanel = GetComponent<LootBoxPanel>().gameObject;
         lootBoxSlots = lootBoxSlotsParent.GetComponentsInChildren<LootBoxSlot>();
-        inventoryManager = Toolbox.GetInstance().GetPlayerManager().GetInventoryManager();
     }
 
 
     private void Awake()
     {
-        OnValidate();      
+        OnValidate();
+        inventoryManager = Toolbox.GetInstance().GetPlayerManager().GetInventoryManager();
     }
 
     private void Start()

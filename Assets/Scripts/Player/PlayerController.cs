@@ -119,8 +119,8 @@ public class PlayerController : PhysicsObject
 
     [Space]
     [Header("References:")]
-    public Animator animator;
     public Controls controls;
+    public Animator animator;
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
 
