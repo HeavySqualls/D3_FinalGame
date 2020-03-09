@@ -10,17 +10,17 @@ public class BreakablePiece : MonoBehaviour
 
     Vector3 startingPos;
     Quaternion startingTrans;
-    BoxCollider boxColl;
+    BoxCollider2D boxColl;
     MeshRenderer meshRenderer;
-    Rigidbody rb;
+    Rigidbody2D rb;
 
     Tween shakeTween;
 
     void Start()
     {      
-        boxColl = GetComponent<BoxCollider>();
+        boxColl = GetComponent<BoxCollider2D>();
         meshRenderer = GetComponent<MeshRenderer>();
-        rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody2D>();
         startingPos = transform.position;
         startingTrans = transform.rotation;
     }
@@ -51,11 +51,11 @@ public class BreakablePiece : MonoBehaviour
 
         if (!_isPlatform)
         {
-            rb.AddForce(_dir * Random.Range(1f, 6f), ForceMode.Impulse);
+            rb.AddForce(_dir * Random.Range(1f, 6f), ForceMode2D.Impulse);
         }
         else
         {
-            rb.AddForce(Vector2.down * Random.Range(0.2f, 3f), ForceMode.Impulse);
+            rb.AddForce(Vector2.down * Random.Range(0.2f, 3f), ForceMode2D.Impulse);
         }
     }
 
@@ -82,8 +82,8 @@ public class BreakablePiece : MonoBehaviour
     public void RespawnPiece(bool _isCrumblingWall)
     {
         rb.velocity = Vector2.zero;
-        rb.angularVelocity = Vector3.zero; //angularVelocity = 0f;
-        rb.isKinematic = true;// bodyType = RigidbodyType.Kinematic;
+        rb.angularVelocity = 0f;/*Vector3.zero;*/
+        /*rb.isKinematic = true;*/rb.bodyType = RigidbodyType2D.Kinematic;
 
         if (_isCrumblingWall)
         {

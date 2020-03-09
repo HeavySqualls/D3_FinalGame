@@ -35,7 +35,7 @@ public class WindOnUnit : MonoBehaviour
         {
             print("Exit Wind Zone");
 
-            unit.velocity = Vector3.zero;
+            //unit.velocity = Vector3.zero;
             windZone = null;
             unit.inWindZone = false;
         }

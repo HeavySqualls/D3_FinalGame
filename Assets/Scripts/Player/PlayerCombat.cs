@@ -11,7 +11,7 @@ public class PlayerCombat : MonoBehaviour
     [Tooltip("The radius of the circle cast to determine size of the hitbox.")]
     [SerializeField] float circleCastRadius = 0.5f;
     [Tooltip("The distance from the center of the sprite that the circle cast will appear.")]
-    [SerializeField] float circleCastDistance = 0.85f;
+    [SerializeField] float castDistance = 0.85f;
     [SerializeField] float airDrainAmount = 2f;
     float timeBetweenCombos = 0;
     int comboNum = 1;
@@ -211,7 +211,7 @@ public class PlayerCombat : MonoBehaviour
 
         if (canCast)
         {
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, castDistance, interactableLayerMask);
 
             //if (!isCasting)
             //{

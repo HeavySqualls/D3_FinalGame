@@ -108,8 +108,7 @@ public class BreakableObject : MonoBehaviour
 
     // Shake platform and then trigger platform collapse & respawn coroutine
     public void TriggerPlatformCollapse()
-    {
-        
+    {       
         ShakeObject();
 
         StartCoroutine(CollapseAndRespawnCounter());
