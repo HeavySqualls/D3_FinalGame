@@ -1574,7 +1574,7 @@ GameObject:
   - component: {fileID: 4986201647451639387}
   - component: {fileID: 4986201647451639386}
   - component: {fileID: 4986201647451639385}
-  - component: {fileID: 1051117300}
+  - component: {fileID: 1052767436687685874}
   m_Layer: 17
   m_Name: BreakableFloor
   m_TagString: Untagged
@@ -1620,7 +1620,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 989f2e212723405408c2cefcdaa2b20a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  go: {fileID: 4986201647451639384}
 --- !u!114 &4986201647451639386
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1648,7 +1647,7 @@ MonoBehaviour:
   earlyBreakPieces: []
   destroySeconds: 1
   weighWaitTime: 0
-  totalAllowableWeight: 4
+  totalAllowableWeight: 1
   objectsOnFloor: []
   totalWeight: 0
 --- !u!61 &4986201647451639385
@@ -1677,8 +1676,8 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 4.1191864, y: 0.9988957}
   m_EdgeRadius: 0
---- !u!58 &1051117300
-CircleCollider2D:
+--- !u!61 &1052767436687685874
+BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1690,9 +1689,19 @@ CircleCollider2D:
   m_IsTrigger: 1
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0.5343604}
+  m_Offset: {x: 0.038129807, y: 0.18406713}
+  m_SpriteTilingProperty:
+    border: {x: 0, y: 0, z: 0, w: 0}
+    pivot: {x: 0, y: 0}
+    oldSize: {x: 0, y: 0}
+    newSize: {x: 0, y: 0}
+    adaptiveTilingThreshold: 0
+    drawMode: 0
+    adaptiveTiling: 0
+  m_AutoTiling: 0
   serializedVersion: 2
-  m_Radius: 1.0343606
+  m_Size: {x: 3.1542397, y: 1.3681343}
+  m_EdgeRadius: 0
 --- !u!1 &4986201647592590870
 GameObject:
   m_ObjectHideFlags: 0

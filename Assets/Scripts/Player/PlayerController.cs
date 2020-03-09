@@ -94,6 +94,7 @@ public class PlayerController : PhysicsObject
     public float wallJumpForce = 3.25f;
     public Transform wallCheck; // for checking if against wall
     public bool isWallSliding = false;
+    public bool isWallJumping = false;
     private bool isTouchingWall = false;
     private bool canWallSlide = true;
 
@@ -171,10 +172,15 @@ public class PlayerController : PhysicsObject
         horizontalInput = Input.GetAxisRaw(controls.xMove);
         isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
 
+        if (!isWallJumping)
+        {
+            targetVelocity = Vector2.zero; // for hard landings to stop movement
+        }
+
         CheckSurroundings();
         CheckIfWallSliding();
         TrackAirTime();
-        //ComputeVelocity(); // Realised that this was happening twice, here AND in physics object. Disabled it here for now to see the effects. 
+        ComputeVelocity(); // Realised that this was happening twice, here AND in physics object. Disabled it here for now to see the effects. 
         Jump();
         RapidJump();
         MagBoots();
@@ -327,10 +333,12 @@ public class PlayerController : PhysicsObject
                     }
                     else if (windMovingRight)
                     {
-                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), 2.3f / (windDir.x * windPwr));                      
+                        print("Right Wind");
+                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), 2.3f / (windDir.x * windPwr));
                     }
                     else if (!windMovingRight)
                     {
+                        print("Left Wind");
                         move.x = Mathf.Clamp(move.x, 2.3f / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
                     }
                 }
@@ -396,6 +404,7 @@ public class PlayerController : PhysicsObject
                     }
                 }
             }
+
             // Send the move Vector will all related forces to the Physics Object
             targetVelocity = move * maxSpeed; // DO NOT MOVE FROM THIS LOCATION!!
         }
@@ -534,11 +543,13 @@ public class PlayerController : PhysicsObject
         {
             if (direction == Vector2.right)
             {
-                targetVelocity.x = 16;
+                //targetVelocity.x = 16;
+                move.x = 16;
             }
             else
             {
-                targetVelocity.x = -16;
+                //targetVelocity.x = -16;
+                move.x = -16;
             }
         }
 
@@ -599,17 +610,22 @@ public class PlayerController : PhysicsObject
             isGroundSliding = true;
         }
 
+        animator.SetBool("isGroundSliding", isGroundSliding);
+
         slideDirection = _slideDirection;
 
         if (_slideDirection == Vector2.right)
         {
-            targetVelocity.x = groundSlideSpeed;
+            //targetVelocity.x = groundSlideSpeed;
+            move.x = groundSlideSpeed;
         }
         else
         {
-            targetVelocity.x = -groundSlideSpeed;
+            //targetVelocity.x = -groundSlideSpeed;
+            move.x = -groundSlideSpeed;
         }
 
+        targetVelocity.x = move.x;
         velocity.y = -15;
 
         if (direction != _slideDirection)
@@ -621,6 +637,8 @@ public class PlayerController : PhysicsObject
     private void StopGroundSlide()
     {
         isGroundSliding = false;
+        //targetVelocity.x = 0;
+        move.x = 0;
         canMove = true;
     }
 
@@ -808,6 +826,7 @@ public class PlayerController : PhysicsObject
             if (jumpHoldTime > jumpHoldTimeMax)
             {
                 print("flip jump");
+
                 animator.SetTrigger("jumpingFlip");
                 isPressingJumpButton = false;
                 jumpHoldTime = 0;
@@ -838,6 +857,7 @@ public class PlayerController : PhysicsObject
             velocity.y = jumpTakeoffSpeed;
         }
 
+        animator.ResetTrigger("jumpingFlip"); // reseting this trigger to prevent it from being stuck in the "true" position
         animator.SetTrigger("jumping");
     }
 
@@ -876,7 +896,7 @@ public class PlayerController : PhysicsObject
         else
         {
             move.x = -14f;
-        }  
+        }
     }
 
     private void PushOffWall()
@@ -885,14 +905,20 @@ public class PlayerController : PhysicsObject
 
         if (direction == Vector2.right)
         {
-            targetVelocity.x = 0;
-            targetVelocity.x += -wallJumpForce * maxSpeed;
+            //targetVelocity.x = 0;
+            //targetVelocity.x += -wallJumpForce * maxSpeed;
+            move.x = 0;
+            move.x += -wallJumpForce * maxSpeed;
         }
         else
         {
-            targetVelocity.x = 0;
-            targetVelocity.x += wallJumpForce * maxSpeed;
+            //targetVelocity.x = 0;
+            //targetVelocity.x += wallJumpForce * maxSpeed;
+            move.x = 0;
+            move.x += wallJumpForce * maxSpeed;
         }
+
+        targetVelocity.x = move.x;
     }
 
 
@@ -1002,7 +1028,7 @@ public class PlayerController : PhysicsObject
     {
         EnableMovement(false);
         isMoving = false;
-        velocity.x = 0;
+        //velocity.x = 0;
         move.x = 0;
         animator.SetBool("isMoving", isMoving);
 

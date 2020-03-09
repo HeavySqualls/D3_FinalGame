@@ -102,6 +102,7 @@ public class Enemy_Base : PhysicsObject
     protected override void Update()
     {
         base.Update();
+        ComputeVelocity();
     }
 
 

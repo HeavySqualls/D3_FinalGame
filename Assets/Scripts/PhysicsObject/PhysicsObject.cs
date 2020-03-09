@@ -47,16 +47,16 @@ public class PhysicsObject : MonoBehaviour
         contactFilter.useLayerMask = true;
     }
 
-    public bool isWallJumping = false;
+    //public bool isWallJumping = false;
 
     protected virtual void Update()
     {
-        if (!isWallJumping)
-        {
-            targetVelocity = Vector2.zero; // for hard landings to stop movement
-        }
+        //if (!isWallJumping)
+        //{
+        //    targetVelocity = Vector2.zero; // for hard landings to stop movement
+        //}
 
-        ComputeVelocity();
+        //ComputeVelocity();
     }
 
     public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource)
