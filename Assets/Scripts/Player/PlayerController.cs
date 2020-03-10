@@ -48,7 +48,7 @@ public class PlayerController : PhysicsObject
     [Space]
     [Header("Jump:")]
     public bool inAir;
-    [SerializeField] private bool canJump = true;
+    public bool canJump = true;
     [Tooltip("Initial vertical boost speed.")]
     public float jumpTakeoffSpeed = 6f;
     [Tooltip("Time in air required to enable the 'Hard Landing' animation.")]
@@ -227,10 +227,7 @@ public class PlayerController : PhysicsObject
         print(gameObject.name + " was hit!");
 
         isHit = true;
-        canJump = false;
-        canMove = false;
-        canWallSlide = false;
-        //canFlipSprite = false;
+        DisablePlayerController();
 
         float timer = 0.0f;
 
@@ -244,13 +241,26 @@ public class PlayerController : PhysicsObject
 
         targetVelocity.x = 0;
         isHit = false;
-        //canFlipSprite = true;
-        canJump = true;
-        canMove = true;
-        canWallSlide = true;
+        EnablePlayerController();
         yield break;
     }
 
+
+    public void DisablePlayerController()
+    {
+        canJump = false;
+        canMove = false;
+        canWallSlide = false;
+        canFlipSprite = false;
+    }
+
+    public void EnablePlayerController()
+    {
+        canFlipSprite = true;
+        canJump = true;
+        canMove = true;
+        canWallSlide = true;
+    }
 
     // <<----------------------------------------------------- COMPUTE VELOCITY (IN AND OUT OF WIND ZONES) ------------------------------------------- //
 
@@ -313,7 +323,6 @@ public class PlayerController : PhysicsObject
                 {
                     if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft && !inWindZone)
                     {
-                        print("2");
                         canFlipSprite = false;
                         timeAtMaxSpeed = 0;
                         StartCoroutine(PlayerSkid());                      
@@ -321,6 +330,8 @@ public class PlayerController : PhysicsObject
 
                     move.x -= accelRatePerSecond * Time.deltaTime;                                
                 }
+
+                //TODO: Find out why this is stronger with a smaller number?
 
                 // Add force from wind to players move.x if applicable
                 if (inWindZone && windAffectUnit)
@@ -534,8 +545,9 @@ public class PlayerController : PhysicsObject
                     GroundSlide(ss.direction);
                 }
             }
-            else if (currentLayer == groundLayer && isGroundSliding || magBootsOn)
+            else if (currentLayer != slidingSurfaceLayer && isGroundSliding || isGroundSliding && magBootsOn)
             {
+                print("Stop");
                 StopGroundSlide();
             }
         }
@@ -551,6 +563,8 @@ public class PlayerController : PhysicsObject
                 //targetVelocity.x = -16;
                 move.x = -16;
             }
+
+            targetVelocity.x = move.x;
         }
 
         if (canMove)
@@ -702,10 +716,8 @@ public class PlayerController : PhysicsObject
 
     public void MagBoots()
     {
-        if (Input.GetButtonUp(controls.magBoots) && !magBootsOn && !canClimbLedge)
+        if (Input.GetButtonDown(controls.magBoots) && !magBootsOn && !canClimbLedge)
         {
-            print("MagBoots Activated: " + magBootsOn);
-
             if (!isGrounded)
             {
                 StartCoroutine(MagBootsOn());
@@ -717,12 +729,14 @@ public class PlayerController : PhysicsObject
                 gravityModifier = onGravValue;
                 ripPP.CauseRipple(groundCheck, 12f, 0.5f);
             }
-        }
-        else if (Input.GetButtonUp(controls.magBoots) && magBootsOn && !canClimbLedge)
-        {
+
             print("MagBoots Activated: " + magBootsOn);
+        }
+        else if (Input.GetButtonDown(controls.magBoots) && magBootsOn && !canClimbLedge)
+        {
             magBootsOn = false;
             gravityModifier = gravStart;
+            print("MagBoots Activated: " + magBootsOn);
         }
     }
 
@@ -905,15 +919,11 @@ public class PlayerController : PhysicsObject
 
         if (direction == Vector2.right)
         {
-            //targetVelocity.x = 0;
-            //targetVelocity.x += -wallJumpForce * maxSpeed;
             move.x = 0;
             move.x += -wallJumpForce * maxSpeed;
         }
         else
         {
-            //targetVelocity.x = 0;
-            //targetVelocity.x += wallJumpForce * maxSpeed;
             move.x = 0;
             move.x += wallJumpForce * maxSpeed;
         }

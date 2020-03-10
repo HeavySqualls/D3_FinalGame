@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class NarrativeController : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class NarrativeController : MonoBehaviour
     public GameObject speakerRight;
     private SpeakerUIController speakerUILeft;
     private SpeakerUIController speakerUIRight;
+    [SerializeField] private Image backgroundImage;
 
     public TutorialController tutorialController;
     private bool hasDisplayedTutorial = false;
@@ -51,6 +53,11 @@ public class NarrativeController : MonoBehaviour
 
         speakerUILeft.ShowSprite();
         speakerUIRight.ShowSprite();
+
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
+        backgroundImage.enabled = true;
         AdvanceConversation();
         pCon.canMove = false;
     }
@@ -140,6 +147,10 @@ public class NarrativeController : MonoBehaviour
         speakerUIRight.Hide();
         speakerUILeft.HideSprite();
         speakerUIRight.HideSprite();
+        backgroundImage.enabled = false;
+
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
 
         pCon.move.x = 0;
         pCon.canMove = true;

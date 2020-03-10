@@ -13,11 +13,12 @@ public class PlayerHandleInteract : MonoBehaviour
 
     // Gets assigned when in the trigger zone of a swtich object
     [SerializeField] InteractableSwitch currentSwtich = null;
-    [SerializeField] PlayerHandleInventory pHandleInventory;
+    [SerializeField] PlayerInventoryHandler pHandleInventory;
 
     void Start()
     {
-        pHandleInventory = GetComponent<PlayerHandleInventory>();
+        pHandleInventory = Toolbox.GetInstance().GetPlayerManager().GetPlayerInventoryHandler();
+        inventory = Toolbox.GetInstance().GetPlayerManager().GetInventoryManager().inventory;
     }
 
     private void Update()

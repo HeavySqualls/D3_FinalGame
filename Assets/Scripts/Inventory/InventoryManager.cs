@@ -10,7 +10,7 @@ public class InventoryManager : MonoBehaviour
     public CharacterStat intellect;
     public CharacterStat vitality;
 
-    [SerializeField] Inventory inventory;
+    public Inventory inventory;
     [SerializeField] EquipmentPanel equipPanel;
     //[SerializeField] LootBoxPanel lootPanel;
     [Tooltip("Set all the panels from the loot boxes in the level here.")]

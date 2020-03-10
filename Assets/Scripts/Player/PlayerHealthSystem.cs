@@ -22,6 +22,9 @@ public class PlayerHealthSystem : MonoBehaviour
     [SerializeField] float playerHealthStart;
     float playerHealth;
 
+    public float respawnTime;
+    bool isDead = false;
+
     PlayerController pCon;
     Animator animator;
     Camera cam;
@@ -49,43 +52,70 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
-        shakeTween = cam.transform.DOShakePosition(0.8f, 0.25f, 9, 2f, false, true);
+        if (!isDead)
+        {
+            shakeTween = cam.transform.DOShakePosition(0.8f, 0.25f, 9, 2f, false, true);
+            StopCoroutine("IFlashRed");
+
+            if (currentPhase == hurtPhase0)
+            {
+                print("Phase 1");
+                currentPhase = hurtPhase1;
+                currentFlashDelay = phase1FlashDelay;
+            }
+            else if (currentPhase == hurtPhase1)
+            {
+                print("Phase 2");
+                currentPhase = hurtPhase2;
+                currentFlashDelay = phase2FlashDelay;
+            }
+            else if (currentPhase == hurtPhase2)
+            {
+                print("Phase 3");
+                currentPhase = hurtPhase3;
+                currentFlashDelay = phase3FlashDelay;
+            }
+            else if (currentPhase == hurtPhase3)
+            {
+                print("PLAYER IS DEAD!");
+                KillPlayer();
+                return;
+            }
+
+            StartCoroutine("IFlashRed");
+
+            playerHealth -= _damage;
+
+            animator.SetTrigger("isHurt");
+
+            if (!pCon.isHit)
+            {
+                StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
+            }
+        }    
+    }
+
+    private void KillPlayer()
+    {
+        isDead = true;
+        pCon.animator.SetBool("isDead", isDead);
+        pCon.DisablePlayerController();
+
         StopCoroutine("IFlashRed");
+        spriteRenderer.color = Color.white;
+        StartCoroutine(RespawnCountdown());
+    }
 
-        if (currentPhase == hurtPhase0)
-        {
-            print("Phase 1");
-            currentPhase = hurtPhase1;
-            currentFlashDelay = phase1FlashDelay;      
-        }
-        else if (currentPhase == hurtPhase1)
-        {
-            print("Phase 2");
-            currentPhase = hurtPhase2;
-            currentFlashDelay = phase2FlashDelay;
-        }
-        else if (currentPhase == hurtPhase2)
-        {
-            print("Phase 3");
-            currentPhase = hurtPhase3;
-            currentFlashDelay = phase3FlashDelay;
-        }
-        else if (currentPhase == hurtPhase3)
-        {
-            print("PLAYER IS DEAD!");
-            return;
-        }
+    private IEnumerator RespawnCountdown()
+    {
+        yield return new WaitForSeconds(respawnTime);
 
-        StartCoroutine("IFlashRed");
-
-        playerHealth -= _damage;
-
-        animator.SetTrigger("isHurt");
-
-        if (!pCon.isHit)
-        {
-            StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
-        }
+        isDead = false;
+        pCon.animator.SetBool("isDead", isDead);
+        gameObject.transform.position = pCon.respawnZone.position;
+        pCon.EnablePlayerController();
+        playerHealth = playerHealthStart;
+        currentPhase = hurtPhase0;
     }
 
     public IEnumerator IFlashRed()

@@ -1,16 +1,16 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    // Store a reference to the player for other classes to access it. 
-
-    // Hold information regarding the players stats, current progress etc...
+    // Store a references to the player related components in scene for other classes to access it. 
 
     InventoryManager inventoryManager;
+    PlayerInventoryHandler pInventoryHandler;
     PlayerController pCon;
     AirTankController airTankCon;
+
+
+    // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
 
     public void SetPlayerController(PlayerController _pCon)
     {
@@ -22,15 +22,8 @@ public class PlayerManager : MonoBehaviour
         return pCon;
     }
 
-    public void SetAirTankController(AirTankController _airTankCon)
-    {
-        airTankCon = _airTankCon;
-    }
 
-    public AirTankController GetAirTankController()
-    {
-        return airTankCon;
-    }
+    // <<--------------------------------------------- SET UP INVENTORY MANAGER ------------------------------------------- >> //
 
     public void SetInventoryManager(InventoryManager _inMan)
     {
@@ -40,6 +33,32 @@ public class PlayerManager : MonoBehaviour
     public InventoryManager GetInventoryManager()
     {
         return inventoryManager;
+    }
+
+
+    // <<--------------------------------------------- SET UP PLAYER HANDLE INVENTORY ------------------------------------------- >> //
+
+    public void SetPlayerInventoryHandler(PlayerInventoryHandler _pInHand)
+    {
+        pInventoryHandler = _pInHand;
+    }
+
+    public PlayerInventoryHandler GetPlayerInventoryHandler()
+    {
+        return pInventoryHandler;
+    }
+
+
+    // <<--------------------------------------------- SET UP AIR TANK CONTROLLER ------------------------------------------- >> //
+
+    public void SetAirTankController(AirTankController _airTankCon)
+    {
+        airTankCon = _airTankCon;
+    }
+
+    public AirTankController GetAirTankController()
+    {
+        return airTankCon;
     }
 
 }
