@@ -4827,7 +4827,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3194496524370276631}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: -1.57, z: 0}
+  m_LocalPosition: {x: 0.09, y: -1.27, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7036694795940340691}
@@ -4855,7 +4855,7 @@ GameObject:
   - component: {fileID: 7036694795940340717}
   - component: {fileID: 7036694795940340695}
   - component: {fileID: 8113414050231226219}
-  - component: {fileID: 5422728089622632065}
+  - component: {fileID: 6638015220834544220}
   m_Layer: 12
   m_Name: Wind Digger v3
   m_TagString: Player
@@ -5081,7 +5081,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
-  direction: {x: -1, y: 0}
+  direction: {x: 1, y: 0}
   windDir: {x: 0, y: 0}
   windPwr: 0
   layerMask:
@@ -5099,7 +5099,7 @@ MonoBehaviour:
   isMoving: 0
   isMovingInWind: 0
   maxSpeed: 3.75
-  accessibleDirection: {x: -1, y: 0}
+  accessibleDirection: {x: 1, y: 0}
   inAir: 0
   canJump: 1
   jumpTakeoffSpeed: 26
@@ -5127,8 +5127,8 @@ MonoBehaviour:
   canClimbLedge: 0
   ledgeCheckDistance: 0.9
   ledgeCheck: {fileID: 8820056755052035560}
-  ledgeClimbXOffset1: -0.1
-  ledgeClimbYOffset1: 0.55
+  ledgeClimbXOffset1: 0.4
+  ledgeClimbYOffset1: 0.5
   ledgeClimbXOffset2: 0.7
   ledgeClimbYOffset2: 2.4
   controls: {fileID: 8159515642940856334}
@@ -5292,8 +5292,8 @@ TrailRenderer:
   m_MinVertexDistance: 0.1
   m_Autodestruct: 0
   m_Emitting: 1
---- !u!61 &5422728089622632065
-BoxCollider2D:
+--- !u!70 &6638015220834544220
+CapsuleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -5305,19 +5305,9 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: -0.027521133, y: -0.36063886}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 4, y: 2.96}
-    newSize: {x: 0.5, y: 0.37}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 0.79864883, y: 2.2387223}
-  m_EdgeRadius: 0
+  m_Offset: {x: 0, y: -0.27}
+  m_Size: {x: 0.81, y: 2.08}
+  m_Direction: 0
 --- !u!1 &8053016423708399965
 GameObject:
   m_ObjectHideFlags: 0

@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using UnityEngine.Timeline;
 using UnityEngine.Playables;
 
 public class CInematicTriggerController : MonoBehaviour
@@ -12,6 +11,7 @@ public class CInematicTriggerController : MonoBehaviour
     void Start()
     {
         circColl = GetComponent<CircleCollider2D>();
+        pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
     }
 
     void Update()
@@ -20,11 +20,7 @@ public class CInematicTriggerController : MonoBehaviour
         {
             cinematicCam.SetActive(false);
 
-            if (pCon != null)
-            {
-                pCon.EnablePlayerController();
-                pCon = null;
-            }
+            pCon.EnablePlayerController();
 
             circColl.enabled = false;
         }
@@ -32,18 +28,15 @@ public class CInematicTriggerController : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        pCon = other.gameObject.GetComponent<PlayerController>();
+        PlayerController pRef = other.gameObject.GetComponent<PlayerController>();
         RollingObject ro = other.GetComponent<RollingObject>();
 
-        if (pCon != null || ro != null)
+        if (pRef != null || ro != null)
         {
             timeLine.Play();
             cinematicCam.SetActive(true);
 
-            if (pCon != null)
-            {
-                pCon.DisablePlayerController();
-            }
+            pCon.DisablePlayerController();
         }
     }
 }
