@@ -1,10 +1,11 @@
 ﻿using UnityEngine;
 using UnityEngine.Playables;
 
-public class CInematicTriggerController : MonoBehaviour
+public class CinematicTriggerController : MonoBehaviour
 {
     public PlayableDirector timeLine;
     public GameObject cinematicCam;
+
     PlayerController pCon;
     CircleCollider2D circColl;
 
@@ -16,7 +17,7 @@ public class CInematicTriggerController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && cinematicCam.activeSelf == true)
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsDown ) && cinematicCam.activeSelf == true)
         {
             cinematicCam.SetActive(false);
 

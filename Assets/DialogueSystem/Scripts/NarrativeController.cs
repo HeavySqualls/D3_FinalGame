@@ -31,7 +31,7 @@ public class NarrativeController : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && N != null && !tutorialController.isOpen)
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && N != null && !tutorialController.isOpen)
         {       
             AdvanceConversation();
         }

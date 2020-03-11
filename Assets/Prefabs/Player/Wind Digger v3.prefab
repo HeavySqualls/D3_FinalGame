@@ -4992,12 +4992,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 0}
-  interactKey: 102
-  quickLootKey: 114
   currentPickupItem: {fileID: 0}
   currentLootBoxPanel: {fileID: 0}
   currentSwtich: {fileID: 0}
-  pHandleInventory: {fileID: 0}
 --- !u!114 &6865621407660703323
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5081,6 +5078,7 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
+  terminalVelocity: 60
   direction: {x: 1, y: 0}
   windDir: {x: 0, y: 0}
   windPwr: 0
@@ -5155,6 +5153,8 @@ MonoBehaviour:
   magBoots: 
   crouch: 
   interact: 
+  inventory: 
+  quickLoot: 
 --- !u!50 &7036694795940340717
 Rigidbody2D:
   serializedVersion: 4

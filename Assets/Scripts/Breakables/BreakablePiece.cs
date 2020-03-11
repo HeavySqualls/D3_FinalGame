@@ -67,8 +67,7 @@ public class BreakablePiece : MonoBehaviour
             shakeTween.Kill();
         }
         _objectToShake.transform.position = startingPos;
-        //shakeTween = _objectToShake.transform.DOPunchPosition(UnityEngine.Random.insideUnitSphere * 0.25f, _shakeDuration, _vibrato, _elasticity);
-        shakeTween = _objectToShake.transform.DOShakePosition(_shakeDuration, _strength, _vibrato, 2f, false, true);
+        shakeTween = _objectToShake.transform.DOShakePosition(_shakeDuration, _strength, _vibrato, 2f, false, false);
     }
 
     // Hide piece from sight & collisions

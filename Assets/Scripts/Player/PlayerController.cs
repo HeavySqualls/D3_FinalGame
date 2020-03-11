@@ -94,6 +94,7 @@ public class PlayerController : PhysicsObject
     public float wallJumpForce = 3.25f;
     public Transform wallCheck; // for checking if against wall
     public bool isWallSliding = false;
+    public float terminalWallSlidingVelocity = 20f;
     public bool isWallJumping = false;
     private bool isTouchingWall = false;
     private bool canWallSlide = true;
@@ -186,6 +187,15 @@ public class PlayerController : PhysicsObject
         MagBoots();
         GraceJumpTimer();
         CheckLedgeClimb();
+
+        if (isWallSliding && velocity.y < -terminalWallSlidingVelocity)
+        {
+            velocity.y = -terminalWallSlidingVelocity;
+        }
+        else if (velocity.y < -terminalVelocity)
+        {
+            velocity.y = -terminalVelocity;
+        }
     }
 
     public float GetAnimTime() //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
@@ -555,12 +565,10 @@ public class PlayerController : PhysicsObject
         {
             if (direction == Vector2.right)
             {
-                //targetVelocity.x = 16;
                 move.x = 16;
             }
             else
             {
-                //targetVelocity.x = -16;
                 move.x = -16;
             }
 
@@ -630,12 +638,10 @@ public class PlayerController : PhysicsObject
 
         if (_slideDirection == Vector2.right)
         {
-            //targetVelocity.x = groundSlideSpeed;
             move.x = groundSlideSpeed;
         }
         else
         {
-            //targetVelocity.x = -groundSlideSpeed;
             move.x = -groundSlideSpeed;
         }
 
@@ -651,7 +657,6 @@ public class PlayerController : PhysicsObject
     private void StopGroundSlide()
     {
         isGroundSliding = false;
-        //targetVelocity.x = 0;
         move.x = 0;
         canMove = true;
     }
@@ -663,6 +668,7 @@ public class PlayerController : PhysicsObject
         if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
         {
             isWallSliding = true;
+            StopTrackAirTime();
             gravityModifier = wallSlidingSpeed;
         }
         else
@@ -897,6 +903,7 @@ public class PlayerController : PhysicsObject
         velocity.y = 6.5f * maxSpeed;
         isWallJumping = true;
         canMove = false;
+        inAir = true;
 
         yield return new WaitForSeconds(airDisableTimer);
 
@@ -1038,7 +1045,6 @@ public class PlayerController : PhysicsObject
     {
         EnableMovement(false);
         isMoving = false;
-        //velocity.x = 0;
         move.x = 0;
         animator.SetBool("isMoving", isMoving);
 

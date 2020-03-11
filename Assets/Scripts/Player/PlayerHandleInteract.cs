@@ -4,26 +4,26 @@ public class PlayerHandleInteract : MonoBehaviour
 {
     [SerializeField] Inventory inventory;
 
-    [SerializeField] KeyCode interactKey;
-    [SerializeField] KeyCode quickLootKey;
-
     // Gets assigned when in the trigger zone of a pick up object
     [SerializeField] PickUpItem currentPickupItem = null;
     [SerializeField] LootBoxPanel currentLootBoxPanel = null;
 
     // Gets assigned when in the trigger zone of a swtich object
     [SerializeField] InteractableSwitch currentSwtich = null;
-    [SerializeField] PlayerInventoryHandler pHandleInventory;
+    PlayerInventoryHandler pInventoryHandler;
+    PlayerController pCon;
+
 
     void Start()
     {
-        pHandleInventory = Toolbox.GetInstance().GetPlayerManager().GetPlayerInventoryHandler();
+        pInventoryHandler = Toolbox.GetInstance().GetPlayerManager().GetPlayerInventoryHandler();
         inventory = Toolbox.GetInstance().GetPlayerManager().GetInventoryManager().inventory;
+        pCon = GetComponent<PlayerController>();
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(interactKey))/*(pCon.controls.interact))*/ //TODO: Why does this "interact" reference not work??
+        if (Input.GetButtonDown(pCon.controls.interact) || Controls.IsDown)
         {
             // If the player is interacting with a pickup object:
             if (currentPickupItem != null)
@@ -33,12 +33,12 @@ public class PlayerHandleInteract : MonoBehaviour
                     if (!currentPickupItem.isOpen)
                     {
                         currentPickupItem.OpenLootBox();
-                        pHandleInventory.lootBoxPanel = currentPickupItem.lootBoxPanel.gameObject;
+                        pInventoryHandler.lootBoxPanel = currentPickupItem.lootBoxPanel.gameObject;
                     }
                     else
                     {
                         currentPickupItem.CloseLootBox();
-                        pHandleInventory.lootBoxPanel = null;
+                        pInventoryHandler.lootBoxPanel = null;
                     }
                 }
                 else
@@ -63,7 +63,7 @@ public class PlayerHandleInteract : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(quickLootKey) && currentPickupItem != null && currentPickupItem.isOpen)
+        if ((Input.GetButtonDown(pCon.controls.quickLoot) || Controls.IsLeft) && currentPickupItem != null && currentPickupItem.isOpen)
         {
             currentPickupItem.QuickLoot();
         }

@@ -11,6 +11,7 @@ public class PhysicsObject : MonoBehaviour
     public Vector2 velocity;
     [SerializeField] protected Vector2 targetVelocity;
     public float gravStart = 6.35f;
+    public float terminalVelocity = 40f;
     protected float gravityModifier;
 
     protected float minWallNormalX = 0.8f;
@@ -51,12 +52,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected virtual void Update()
     {
-        //if (!isWallJumping)
-        //{
-        //    targetVelocity = Vector2.zero; // for hard landings to stop movement
-        //}
 
-        //ComputeVelocity();
     }
 
     public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource)

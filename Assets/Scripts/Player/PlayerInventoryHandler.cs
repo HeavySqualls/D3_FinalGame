@@ -2,15 +2,16 @@
 
 public class PlayerInventoryHandler : MonoBehaviour
 {
-    bool isInventoryOpen = false;
+    public GameObject lootBoxPanel;
 
     [SerializeField] GameObject inventory;
     [SerializeField] GameObject equipmentPanel;
     [SerializeField] GameObject statsPanel;
     [SerializeField] GameObject itemTooltip;
     [SerializeField] GameObject statTooltip;
-    public GameObject lootBoxPanel;
-    [SerializeField] KeyCode inventoryKey;
+
+    bool isInventoryOpen = false;
+    PlayerController pCon;
 
     private void Awake()
     {
@@ -19,14 +20,13 @@ public class PlayerInventoryHandler : MonoBehaviour
 
     private void Start()
     {
-        // TODO: find out why this blocks item from being picked up until the inventory has been enabled - call order issue?
-        // EnableDisableInventory();
+        pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
         equipmentPanel.SetActive(!equipmentPanel.activeSelf);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(inventoryKey))
+        if (Input.GetButtonDown(pCon.controls.inventory) || Controls.IsUp)
         {
             if (isInventoryOpen)
             {

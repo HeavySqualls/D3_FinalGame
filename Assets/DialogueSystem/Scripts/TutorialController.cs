@@ -42,9 +42,16 @@ public class TutorialController : MonoBehaviour
     [Tooltip("The NarrativeController component of the Dialogue game object.")]
     [SerializeField] NarrativeController conversationController;
 
+    PlayerController pCon;
+
+    private void Start()
+    {
+        pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
+    }
+
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.F) && isOpen)
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && isOpen)
         {
             HideTutorial();
         }
