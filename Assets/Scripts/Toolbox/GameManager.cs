@@ -6,7 +6,6 @@ public class GameManager : MonoBehaviour
     [Space]
     [Header("Scene Management:")]
     private int currentLevelIndex;
-    private bool isLastLevel = false;
 
     void OnEnable()
     {
@@ -31,20 +30,17 @@ public class GameManager : MonoBehaviour
 
     // ------ SCENE MANAGEMENT ------ //
 
-
-    public void LevelComplete()
+    public void LoadCustomScene(int _sceneToLoad)
     {
-        if (isLastLevel)
-        {
-            SceneManager.LoadScene(0);
-        }
-        else
-        {
-            SceneManager.LoadScene(currentLevelIndex + 1);
-        }
+        SceneManager.LoadScene(_sceneToLoad);
     }
 
-    public void RestartLevel(bool _ismanualReset)
+    public void LoadNextScene()
+    {
+        SceneManager.LoadScene(currentLevelIndex + 1);
+    }
+
+    public void RestartLevel()
     {
         SceneManager.LoadScene(currentLevelIndex);
     }
@@ -52,6 +48,11 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         SceneManager.LoadScene(0);
+    }
+
+    public void QuitGame()
+    {
+        Application.Quit();
     }
 
 

@@ -13,6 +13,7 @@ public class Controls : MonoBehaviour
     public string interact;
     public string inventory;
     public string quickLoot;
+    public string pauseMenu;
 
     public static bool IsLeft, IsRight, IsUp, IsDown;
     private float _LastX, _LastY;
@@ -29,6 +30,7 @@ public class Controls : MonoBehaviour
         interact = "Interact";
         inventory = "Inventory";
         quickLoot = "QuickLoot";
+        pauseMenu = "PauseMenu";
     }
 
     // ---- FOR DPAD INPUT ----- //
