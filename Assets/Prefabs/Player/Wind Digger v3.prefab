@@ -5089,9 +5089,9 @@ MonoBehaviour:
   move: {x: 0, y: 0}
   isController: 0
   accelSpeedNormal: 15
-  accelSpeedMaxSpeed: 4.25
+  accelSpeedMaxSpeed: 6
   accelSpeedAir: 5.35
-  decelSpeed: 9
+  decelSpeed: 15
   skidTimeLimit: 20
   canMove: 1
   isMoving: 0
@@ -5121,6 +5121,7 @@ MonoBehaviour:
   wallJumpForce: 3.25
   wallCheck: {fileID: 295720888722231046}
   isWallSliding: 0
+  terminalWallSlidingVelocity: 20
   isWallJumping: 0
   canClimbLedge: 0
   ledgeCheckDistance: 0.9
@@ -5155,6 +5156,7 @@ MonoBehaviour:
   interact: 
   inventory: 
   quickLoot: 
+  pauseMenu: 
 --- !u!50 &7036694795940340717
 Rigidbody2D:
   serializedVersion: 4

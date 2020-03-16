@@ -445,7 +445,7 @@ public class PlayerController : PhysicsObject
             }
             else if (!inWindZone)
             {
-                FlipSprite();
+                FlipSpriteBasedOnInput();
             }
         }
 
@@ -552,13 +552,13 @@ public class PlayerController : PhysicsObject
                 }
                 else
                 {
-                    GroundSlide(ss.direction);
+                    SlopeSlide(ss.direction);
                 }
             }
             else if (currentLayer != slidingSurfaceLayer && isGroundSliding || isGroundSliding && magBootsOn)
             {
                 print("Stop");
-                StopGroundSlide();
+                StopSlopeSlide();
             }
         }
         else if(hitGround.collider == null && isGroundSliding)
@@ -619,11 +619,11 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // <<----------------------------------------------------- GROUND SLIDE ------------------------------------------- //
+    // <<----------------------------------------------------- SLOPE SLIDE ------------------------------------------- //
 
     private Vector2 slideDirection;
 
-    private void GroundSlide(Vector2 _slideDirection)
+    private void SlopeSlide(Vector2 _slideDirection)
     {
         canMove = false;
 
@@ -631,6 +631,13 @@ public class PlayerController : PhysicsObject
         {
             isGroundSliding = true;
         }
+
+        if (direction != _slideDirection)
+        {
+            ChangeDirection();
+        }
+
+        canFlipSprite = false;
 
         animator.SetBool("isGroundSliding", isGroundSliding);
 
@@ -647,15 +654,11 @@ public class PlayerController : PhysicsObject
 
         targetVelocity.x = move.x;
         velocity.y = -15;
-
-        if (direction != _slideDirection)
-        {
-            FlipSprite();
-        }
     }
 
-    private void StopGroundSlide()
+    private void StopSlopeSlide()
     {
+        canFlipSprite = true;
         isGroundSliding = false;
         move.x = 0;
         canMove = true;
@@ -683,24 +686,28 @@ public class PlayerController : PhysicsObject
 
     // <<----------------------------------------------------- CHANGE DIRECTION / FLIP SPRITE ------------------------------------------- //
 
-    private void FlipSprite()
+    private void FlipSpriteBasedOnInput()
     {
-        float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
-        bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip) : (velocity.x < minXFlip));
+        //float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
+        //bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip /*&& !isTouchingWall*/) : (velocity.x < minXFlip/* && !isTouchingWall*/));
 
-        if (flipPlayerSprite)
+        // TRYING THIS OUT TO PREVENT PLAYER FROM CHANGING DIRECTIONS WHEN HITTING A WALL BELOW THE WALL CHECK RAYCAST WHILE IN THE AIR 
+        if (canFlipSprite)
         {
-            print("flip");
-            ChangeDirection();
-            pIsFaceLeft = !pIsFaceLeft;
-            spriteRenderer.flipX = !spriteRenderer.flipX;
+            bool flipPlayerSprite = (spriteRenderer.flipX ? (horizontalInput > 0f) : (horizontalInput < 0f));
+
+            if (flipPlayerSprite)
+            {
+                print("flip");
+                ChangeDirection();
+            }
         }
     }
 
     private void ChangeDirection()
     {
-        if (canFlipSprite)
-        {
+        //if (canFlipSprite)
+        //{
             if (direction == Vector2.right)
             {
                 direction = Vector2.left;
@@ -710,10 +717,15 @@ public class PlayerController : PhysicsObject
             {
                 direction = Vector2.right;
                 isLeft = false;
-            }               
+            }
 
-            accessibleDirection = direction;
-        }
+            if (!inWindZone)
+            {
+                pIsFaceLeft = !pIsFaceLeft;
+                spriteRenderer.flipX = !spriteRenderer.flipX;
+                accessibleDirection = direction;
+            }
+        //}
     }
 
 
@@ -884,11 +896,12 @@ public class PlayerController : PhysicsObject
 
     // <<----------------------------------------------------- SLIDING SURFACE JUMP ------------------------------------------- //
 
-    float slidingSurfaceJumpForceY = 28;
+    float slidingSurfaceJumpForceY = 30f;
 
-    // TODO: Figure out why jumping in the opposite direction of the slope causes the player to travel further than jumping with the direction of the slope
     private void PushOffSlidingSurface() 
     {
+        StopSlopeSlide();
+
         isGroundSliding = false;
         canMove = true;
         velocity.y = slidingSurfaceJumpForceY;
@@ -923,6 +936,7 @@ public class PlayerController : PhysicsObject
     private void PushOffWall()
     {
         Debug.Log("WALL JUMP");
+        isTouchingWall = false;
 
         if (direction == Vector2.right)
         {

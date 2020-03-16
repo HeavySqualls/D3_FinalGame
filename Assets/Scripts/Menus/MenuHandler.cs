@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Playables;
+using UnityEngine.SceneManagement;
 
 public class MenuHandler : MonoBehaviour
 {
@@ -22,6 +23,33 @@ public class MenuHandler : MonoBehaviour
 
     GameManager gm;
     PlayerController pCon;
+
+    //void OnEnable()
+    //{
+    //    timeLine.stopped += OnPlayableDirectorStopped;
+    //    SceneManager.sceneLoaded += StartCutscene;
+    //}
+
+    //private void StartCutscene(Scene scene, LoadSceneMode mode)
+    //{
+    //    if (timeLine != null)
+    //    {
+    //        timeLine.Play();
+    //        print("play");
+    //    }
+    //}
+
+    //void OnPlayableDirectorStopped(PlayableDirector aDirector)
+    //{
+    //    if (timeLine == aDirector)
+    //        Debug.Log("PlayableDirector named " + aDirector.name + " is now stopped.");
+    //}
+
+    //void OnDisable()
+    //{
+    //    timeLine.stopped -= OnPlayableDirectorStopped;
+    //    SceneManager.sceneLoaded -= StartCutscene;
+    //}
 
     private void Start()
     {
@@ -70,10 +98,14 @@ public class MenuHandler : MonoBehaviour
         if (PauseMenu.activeSelf && !OptionsMenu.activeSelf)
         {
             Time.timeScale = 0;
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
         }
         else
         {
             Time.timeScale = 1;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
         }
     }
 
