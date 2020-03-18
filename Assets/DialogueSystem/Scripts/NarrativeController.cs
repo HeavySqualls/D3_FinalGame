@@ -4,18 +4,34 @@ using UnityEngine.UI;
 
 public class NarrativeController : MonoBehaviour
 {
+    [Header("Assigned Narrative Scriptable Object")]
+    [Tooltip("The sNarrative will automatically be assigned here by the narrative trigger.")]
     public sNarrative N;
 
+    [Space]
+    [Header("Controller Status:")]
+    [Tooltip("Is there a narrative playing right now?")]
+    public bool isNarrativeEventRunning = false;
+    [Tooltip("The time between displaying individual letters in a dialogue.")]
+    [SerializeField] float textDelayTime;
+    bool isTyping = false;
+
+    [Space]
+    [Header("Speaker References:")]
+    [Tooltip("Who is the speaker on the left?")]
     public GameObject speakerLeft;
+    [Tooltip("Who is the speaker on the right?")]
     public GameObject speakerRight;
     private SpeakerUIController speakerUILeft;
     private SpeakerUIController speakerUIRight;
+
+    [Space]
+    [Header("Tutorial References:")]
+    public TutorialController tutorialController;
+    public bool hasDisplayedTutorial = false;
     [SerializeField] private Image backgroundImage;
 
-    public TutorialController tutorialController;
-    private bool hasDisplayedTutorial = false;
-
-    [SerializeField] float textDelayTime;
+    public int activeTutorialLineIndex = 0;
     private int activeLineIndex = 0;
     private PlayerController pCon;
 
@@ -31,9 +47,20 @@ public class NarrativeController : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && N != null && !tutorialController.isOpen)
-        {       
-            AdvanceConversation();
+        // Check if the correct input was registered, if the narrative is not null, and if the tutorial panel is not open 
+        // (to prevent the narrative from continuing at the same time as the tutorial panel is closed).
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && N != null && !tutorialController.isOpen)       
+        {
+            if (isTyping)
+            {
+                StopAllCoroutines();
+                isTyping = false;
+                activeSpeakerUI.Dialogue = line.text;
+            }
+            else
+            {
+                AdvanceConversation();
+            }
         }
     }
 
@@ -45,6 +72,8 @@ public class NarrativeController : MonoBehaviour
 
     private void StartNarrative()
     {
+        isNarrativeEventRunning = true;
+
         speakerUILeft = speakerLeft.GetComponent<SpeakerUIController>();
         speakerUIRight = speakerRight.GetComponent<SpeakerUIController>();
 
@@ -62,38 +91,65 @@ public class NarrativeController : MonoBehaviour
         pCon.canMove = false;
     }
 
+    bool tutorialsRemaining = true;
+    int tutorialsPlayed;
 
     // If the current line that we are interested in is less lines that the number of lines in the conversation, 
     // display it and increase the line index. Otherwise end the conversation. 
     public void AdvanceConversation()
     {
-        if (activeLineIndex < N.lines.Length)
+        // Check if both the speaker UI's have finished animating (to prevent UI elements from being enabled/disabled
+        // before they are supposed to be)
+        if (!speakerUILeft.isAnimating && !speakerUIRight.isAnimating)
         {
-            if (N.hasTutorial && N.tutorialLine == activeLineIndex && !hasDisplayedTutorial)
+            if (activeLineIndex < N.lines.Length)
             {
-                tutorialController.DisplayTutorial(N.tutorial);
-                speakerUIRight.Hide();
-                speakerUILeft.Hide();
-                hasDisplayedTutorial = true;
+                // If this narrative has tutorials, and there are tutorials remaining to be played, the tutorial line index matches the current line index, 
+                // AND we are not currently displaying a tutorial
+                if (N.hasTutorial && tutorialsRemaining && N.tutorialLines[activeTutorialLineIndex] == activeLineIndex && !hasDisplayedTutorial)
+                {
+                    // Hide speaker UIs
+                    speakerUIRight.Hide();
+                    speakerUILeft.Hide();
+
+                    // Display tutorial that matches the index number of the activeTutorialLineIndex
+                    tutorialController.DisplayTutorial(N.tutorials[activeTutorialLineIndex]);
+
+                    // Increase the line index to select the next index line number to display the following tutorial next time (if applicable)
+                    activeTutorialLineIndex++;
+                    // Increase the number of tutorials we have played so we can track how many are left
+                    tutorialsPlayed++;
+
+                    // Check if we have played all the tutorials the array
+                    if (tutorialsPlayed == N.tutorialLines.Length)
+                    {
+                        tutorialsRemaining = false;
+                    }
+
+                    hasDisplayedTutorial = true;
+                }
+                else
+                {
+                    DisplayNextLine();
+                    activeLineIndex += 1;
+                }
             }
             else
             {
-                DisplayNextLine();
-                activeLineIndex += 1;
+                EndResetController();
             }
-        }
-        else
-        {
-            EndResetController();
         }
     }
 
     // Seach the lines in the conversation and return the active one, get the character and set the active versus
     // inactive by providing the correct characters in the correct order to SetDialogue, which tracks the active
     // and inactive speaker, and displays the lines accordingly.
+    Line line;
+    SpeakerUIController activeSpeakerUI;
+
     private void DisplayNextLine()
     {
-        Line line = N.lines[activeLineIndex];
+        line = N.lines[activeLineIndex];
         sCharacter character = line.character;
 
         if (speakerUILeft.SpeakerIs(character))
@@ -108,6 +164,7 @@ public class NarrativeController : MonoBehaviour
 
     private void SetNarrativeDialogue(SpeakerUIController _activeSpeakerUI, SpeakerUIController _inactiveSpeakerUI, string _text)
     {
+        activeSpeakerUI = _activeSpeakerUI;
         _activeSpeakerUI.Dialogue = _text;
         _activeSpeakerUI.Show();
         _inactiveSpeakerUI.Hide();
@@ -119,6 +176,8 @@ public class NarrativeController : MonoBehaviour
 
     private IEnumerator TypeWritterEffect_N(string _text, SpeakerUIController _speakerUI)
     {
+        isTyping = true;
+
         yield return new WaitForSeconds(0.3f);
 
         foreach (char letter in _text.ToCharArray())
@@ -126,6 +185,8 @@ public class NarrativeController : MonoBehaviour
             _speakerUI.Dialogue += letter;
             yield return new WaitForSeconds(textDelayTime);
         }
+
+        isTyping = false;
     }
 
     public bool CheckIfConversationIsFinished()
@@ -154,10 +215,14 @@ public class NarrativeController : MonoBehaviour
 
         pCon.move.x = 0;
         pCon.canMove = true;
-        hasDisplayedTutorial = false;
         N = null;
 
-        activeLineIndex = 0;
+        hasDisplayedTutorial = false;
+        tutorialsPlayed = 0;
+        tutorialsRemaining = true;
+        activeTutorialLineIndex = 0;
 
+        activeLineIndex = 0;
+        isNarrativeEventRunning = false;
     }
 }

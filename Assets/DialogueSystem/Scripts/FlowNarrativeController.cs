@@ -37,7 +37,7 @@ public class FlowNarrativeController : MonoBehaviour
 
     public void AdvanceConversation()
     {
-        if (activeLineIndex < FN.lines.Length)
+        if (FN != null && activeLineIndex < FN.lines.Length)
         {
             DisplayNextLine();
             activeLineIndex += 1;

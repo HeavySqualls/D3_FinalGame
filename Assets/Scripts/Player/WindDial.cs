@@ -132,7 +132,21 @@ public class WindDial : MonoBehaviour
             else if (pCon.windDir == Vector2.left)
                 windDirectionText.text = " < ";
 
-            windStrengthText.text = (pCon.windPwr * 100f).ToString() + " KM";
+            //windStrengthText.text = (pCon.windPwr * 100f).ToString() + " KM";
+            if (pCon.windPwr == 0.7f)
+                windStrengthText.text = "30 KM";
+            else if (pCon.windPwr == 0.6f)
+                windStrengthText.text = "40 KM";
+            else if (pCon.windPwr == 0.5f)
+                windStrengthText.text = "50 KM";
+            else if (pCon.windPwr == 0.4f)
+                windStrengthText.text = "60 KM";
+            else if (pCon.windPwr == 0.3f)
+                windStrengthText.text = "80 KM";
+            else if (pCon.windPwr == 0.2f)
+                windStrengthText.text = "90 KM";
+            else if (pCon.windPwr == 0.1f)
+                windStrengthText.text = "100 KM";
         }
         else
         {

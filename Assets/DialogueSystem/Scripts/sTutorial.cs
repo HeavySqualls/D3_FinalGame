@@ -11,10 +11,15 @@ public class sTutorial : ScriptableObject
 
     [Tooltip("What is the name of this tutorial?")]
     public string tutorialTitle;
-    [Tooltip("Add in a relative image for the tutorial.")]
-    public Sprite tutorialImage;
+
+    [Tooltip("Add in the relative quote for this tutorial.")]
+    [TextArea(2, 6)]
+    public string tutorialQuote;
 
     [Tooltip("Input the number of lines desired and add text.")]
     [TextArea(2, 6)]
     public string tutorialInfo;
+
+    [Tooltip("Add in a relative image for the tutorial.")]
+    public Sprite tutorialImage;
 }

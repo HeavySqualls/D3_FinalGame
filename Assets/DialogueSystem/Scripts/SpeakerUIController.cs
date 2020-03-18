@@ -59,32 +59,45 @@ public class SpeakerUIController : MonoBehaviour
         return speaker == _character;
     }
 
+    public bool isAnimating = false;
+
     public void Show()
     {
         dialoguePanelGO.SetActive(true);
         dialogue.enabled = true;
         StartCoroutine(WaitForNameDisplay());
-        dialogueBoxAnimator.SetBool("isOpen", gameObject.activeSelf);
+        dialogueBoxAnimator.SetBool("isOpen", true);
     }
 
     public void Hide()
     {
-        purpleButton.SetActive(false);
-        continueButton.SetActive(false);
-        closeButton.SetActive(false);
-        nameText.enabled = false;
-        dialogue.enabled = false;
+        print("hide");
+        HideUIItems();
         dialogueBoxAnimator.SetBool("isOpen", false);
+        StartCoroutine(WaitForAnimationFinish());
     }
 
     IEnumerator WaitForNameDisplay()
     {
+        isAnimating = true;
+
         yield return new WaitForSeconds(animationTime);
 
         purpleButton.SetActive(true);
         continueButton.SetActive(true);
         closeButton.SetActive(true);
-        nameText.enabled = !nameText.IsActive();
+        nameText.enabled = true;
+
+        isAnimating = false;
+    }
+
+    IEnumerator WaitForAnimationFinish()
+    {
+        isAnimating = true;
+
+        yield return new WaitForSeconds(animationTime);
+
+        isAnimating = false;
     }
 
     public void ShowSprite()
@@ -95,5 +108,14 @@ public class SpeakerUIController : MonoBehaviour
     public void HideSprite()
     {
         portraitAnimator.SetBool("showSprite", false);
+    }
+
+    void HideUIItems()
+    {
+        purpleButton.SetActive(false);
+        continueButton.SetActive(false);
+        closeButton.SetActive(false);
+        nameText.enabled = false;
+        dialogue.enabled = false;
     }
 }

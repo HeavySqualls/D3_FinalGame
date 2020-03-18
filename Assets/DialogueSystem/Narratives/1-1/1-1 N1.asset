@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   narrativeID: 1-1N1
   hasTutorial: 1
-  tutorial: {fileID: 11400000, guid: bff8ca9b8b16b854d9b7bd2879be3607, type: 2}
-  tutorialLine: 3
+  tutorials:
+  - {fileID: 11400000, guid: bff8ca9b8b16b854d9b7bd2879be3607, type: 2}
+  - {fileID: 11400000, guid: 5c32c15354fd732459b15c77e70e6eaa, type: 2}
+  tutorialLines: 0200000004000000
   speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
   speakerOnTheRight: {fileID: 11400000, guid: 47cb9999d7dcc504482336a5eb55c77e, type: 2}
   lines:

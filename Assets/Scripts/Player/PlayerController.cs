@@ -352,14 +352,12 @@ public class PlayerController : PhysicsObject
                     {
                         move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
                     }
-                    else if (windMovingRight)
+                    else if (isFromLeft)
                     {
-                        print("Right Wind");
                         move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), 2.3f / (windDir.x * windPwr));
                     }
-                    else if (!windMovingRight)
+                    else if (!isFromLeft)
                     {
-                        print("Left Wind");
                         move.x = Mathf.Clamp(move.x, 2.3f / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
                     }
                 }
@@ -462,7 +460,7 @@ public class PlayerController : PhysicsObject
 
     private void ComputeDirectionOfSpriteInWind()
     {
-        if (windMovingRight & !isTouchingWall)
+        if (isFromLeft & !isTouchingWall)
         {
             if (velocity.x > windRatio && pIsFaceLeft) // If player is moving with the wind - face to the right 
             {
@@ -477,7 +475,7 @@ public class PlayerController : PhysicsObject
                 spriteRenderer.flipX = !spriteRenderer.flipX;
             }
         }
-        else if (!windMovingRight)
+        else if (!isFromLeft)
         {
             if (velocity.x > 0 && pIsFaceLeft && !isTouchingWall) // If the player is moving against the wind - face to the right
             {

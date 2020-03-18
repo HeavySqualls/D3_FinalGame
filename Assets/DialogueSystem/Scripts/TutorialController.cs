@@ -28,6 +28,13 @@ public class TutorialController : MonoBehaviour
     [SerializeField] TextMeshProUGUI tutorialInfo;
 
     [Space]
+    [Header("Quote Information:")]
+    [Tooltip("The QuoteText GameObject of the tutorial panel.")]
+    [SerializeField] GameObject quote;
+    [Tooltip("The TextMeshPro component of the InfoText game object.")]
+    [SerializeField] TextMeshProUGUI tutorialQuote;
+
+    [Space]
     [Header("Tutorial Input Buttons:")]
     [SerializeField] GameObject purpleButton;
     [SerializeField] GameObject continueButton;
@@ -40,7 +47,7 @@ public class TutorialController : MonoBehaviour
     [Tooltip("The Animator of the tutorial panel.")]
     [SerializeField] Animator animator;
     [Tooltip("The NarrativeController component of the Dialogue game object.")]
-    [SerializeField] NarrativeController conversationController;
+    [SerializeField] NarrativeController narCon;
 
     PlayerController pCon;
 
@@ -63,10 +70,9 @@ public class TutorialController : MonoBehaviour
 
         animator.SetBool("isOpen", true);
 
-        isOpen = true;
-
         tutorialTitle.text = _tutorialData.tutorialTitle;
         tutorialInfo.text = _tutorialData.tutorialInfo;
+        tutorialQuote.text = _tutorialData.tutorialQuote;
         tutorialImage.sprite = _tutorialData.tutorialImage;
 
         StartCoroutine(DisplayDelay());
@@ -77,13 +83,14 @@ public class TutorialController : MonoBehaviour
     public void CloseConversationAndTutorial()
     {
         HideTutorial();
-        conversationController.EndResetController();
+        narCon.EndResetController();
     }
 
     public void HideTutorial()
     {
         title.SetActive(false);
         info.SetActive(false);
+        quote.SetActive(false);
         imagePanel.SetActive(false);
 
         purpleButton.SetActive(false);
@@ -91,6 +98,7 @@ public class TutorialController : MonoBehaviour
         closeButton.SetActive(false);
 
         animator.SetBool("isOpen", false);
+        narCon.hasDisplayedTutorial = false;
         StartCoroutine(HideDelay());
     }
 
@@ -100,10 +108,13 @@ public class TutorialController : MonoBehaviour
 
         title.SetActive(true);
         info.SetActive(true);
+        quote.SetActive(true);
         imagePanel.SetActive(true);
         purpleButton.SetActive(true);
         continueButton.SetActive(true);
         closeButton.SetActive(true);
+
+        isOpen = true;
 
         yield break;
     }
@@ -112,9 +123,9 @@ public class TutorialController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        if (!conversationController.CheckIfConversationIsFinished())
+        if (!narCon.CheckIfConversationIsFinished())
         {
-            conversationController.AdvanceConversation();
+            narCon.AdvanceConversation();
         }
 
         tutorialPanel.SetActive(false);

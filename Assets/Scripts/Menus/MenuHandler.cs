@@ -24,33 +24,6 @@ public class MenuHandler : MonoBehaviour
     GameManager gm;
     PlayerController pCon;
 
-    //void OnEnable()
-    //{
-    //    timeLine.stopped += OnPlayableDirectorStopped;
-    //    SceneManager.sceneLoaded += StartCutscene;
-    //}
-
-    //private void StartCutscene(Scene scene, LoadSceneMode mode)
-    //{
-    //    if (timeLine != null)
-    //    {
-    //        timeLine.Play();
-    //        print("play");
-    //    }
-    //}
-
-    //void OnPlayableDirectorStopped(PlayableDirector aDirector)
-    //{
-    //    if (timeLine == aDirector)
-    //        Debug.Log("PlayableDirector named " + aDirector.name + " is now stopped.");
-    //}
-
-    //void OnDisable()
-    //{
-    //    timeLine.stopped -= OnPlayableDirectorStopped;
-    //    SceneManager.sceneLoaded -= StartCutscene;
-    //}
-
     private void Start()
     {
         gm = Toolbox.GetInstance().GetGameManager();
@@ -69,7 +42,6 @@ public class MenuHandler : MonoBehaviour
 
         if (timeLine != null)
         {
-            timeLine.Stop();
             timeLine.Play();
             print("play");
         }
@@ -104,8 +76,12 @@ public class MenuHandler : MonoBehaviour
         else
         {
             Time.timeScale = 1;
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
+
+            if (!Toolbox.GetInstance().GetDialogueSystemManager().GetConversationController().isNarrativeEventRunning)
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
         }
     }
 
@@ -127,6 +103,7 @@ public class MenuHandler : MonoBehaviour
 
     public void QuitToMainMenu()
     {
+        Time.timeScale = 1;
         gm.LoadCustomScene(0);
     }
 

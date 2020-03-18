@@ -17,7 +17,6 @@ public class WindOnUnit : MonoBehaviour
 
         if (_windArea != null)
         {
-            print("Entered wind zone");
             windZone = _windArea;
 
             unit.inWindZone = true;
@@ -31,9 +30,6 @@ public class WindOnUnit : MonoBehaviour
 
         if (_windArea != null)
         {
-            print("Exit Wind Zone");
-
-            //unit.velocity = Vector3.zero;
             windZone = null;
             unit.inWindZone = false;
         }

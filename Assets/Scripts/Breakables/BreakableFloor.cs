@@ -17,7 +17,8 @@ public class BreakableFloor : BreakableObject
     public float totalAllowableWeight;
     [SerializeField] List<WeightData> objectsOnFloor = new List<WeightData>();
     [SerializeField] private float totalWeight;
-
+    [Tooltip("The box collider trigger that determines if a boulder is on the breakable floor.")]
+    [SerializeField] BoxCollider2D triggerCollider;
     protected override void Start()
     {
         base.Start();
@@ -59,6 +60,7 @@ public class BreakableFloor : BreakableObject
         // If the weight exceeds the total allowable weight,
         if (totalWeight >= totalAllowableWeight)
         {
+            triggerCollider.enabled = false;
             StartCoroutine(CollapseAndRespawnCounter());
             objectsOnFloor.Clear();
             totalWeight = 0;

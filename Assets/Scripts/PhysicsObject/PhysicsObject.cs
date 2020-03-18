@@ -30,7 +30,7 @@ public class PhysicsObject : MonoBehaviour
 
     public Vector2 windDir;
     public float windPwr;
-    protected bool windMovingRight;
+    protected bool isFromLeft;
     public LayerMask layerMask;
 
     void OnEnable()
@@ -48,8 +48,6 @@ public class PhysicsObject : MonoBehaviour
         contactFilter.useLayerMask = true;
     }
 
-    //public bool isWallJumping = false;
-
     protected virtual void Update()
     {
 
@@ -59,7 +57,7 @@ public class PhysicsObject : MonoBehaviour
     {
         windDir = _windDir;
         windPwr = _windPwr;
-        windMovingRight = _directionOfSource;
+        isFromLeft = _directionOfSource;
     }
 
     protected virtual void ComputeVelocity()

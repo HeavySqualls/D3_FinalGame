@@ -6,11 +6,11 @@ public class NarrativeTrigger : MonoBehaviour
     [SerializeField] sNarrative thisConversation;
 
     NarrativeController conversationCon;
-    CircleCollider2D circleCollider;
+    BoxCollider2D boxColl;
 
     private void Start()
     {
-        circleCollider = GetComponent<CircleCollider2D>();
+        boxColl = GetComponent<BoxCollider2D>();
         conversationCon = Toolbox.GetInstance().GetDialogueSystemManager().GetConversationController();
     }
 
@@ -21,7 +21,7 @@ public class NarrativeTrigger : MonoBehaviour
         if (playerHandleInteract != null)
         {
             conversationCon.GetNewNarrative(thisConversation);
-            circleCollider.enabled = false;
+            boxColl.enabled = false;
         }
     }
 }

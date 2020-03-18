@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 
 [System.Serializable]
@@ -20,9 +21,9 @@ public class sNarrative : ScriptableObject
     [Tooltip("Does this Narrative contain a tutorial?")]
     public bool hasTutorial;
     [Tooltip("Drag in the relative sTutorial for this narrative.")]
-    public sTutorial tutorial;
+    public sTutorial[] tutorials;
     [Tooltip("After which line of dialogue will this tutorial be presented?")]
-    public int tutorialLine;
+    public int[] tutorialLines;
 
     [Tooltip("Who will be the speaker on the left?")]
     public sCharacter speakerOnTheLeft;
