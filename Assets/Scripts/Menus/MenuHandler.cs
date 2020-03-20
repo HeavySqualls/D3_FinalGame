@@ -77,7 +77,7 @@ public class MenuHandler : MonoBehaviour
         {
             Time.timeScale = 1;
 
-            if (!Toolbox.GetInstance().GetDialogueSystemManager().GetConversationController().isNarrativeEventRunning)
+            if (!Toolbox.GetInstance().GetDialogueSystemManager().GetNarrativeController().isNarrativeEventRunning)
             {
                 Cursor.visible = false;
                 Cursor.lockState = CursorLockMode.Locked;

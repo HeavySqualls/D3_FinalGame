@@ -9,6 +9,7 @@ public class Enemy_Base : PhysicsObject
     [Header("--- ENEMY BASE ---")]
 
     public State currentState;
+    public bool isUnitPaused = false;
     protected bool isIdle;
     protected bool isPatrolling;
     protected bool isHunting;
@@ -86,6 +87,8 @@ public class Enemy_Base : PhysicsObject
     protected override void Start()
     {
         base.Start();
+
+        Toolbox.GetInstance().GetLevelManager().AddBaseEnemies(this);
 
         currentHP = startHP;
         animator = GetComponent<Animator>();
@@ -178,6 +181,7 @@ public class Enemy_Base : PhysicsObject
     protected virtual void KillUnit()
     {
         // Behaviour handled in specific enemy controller
+        Toolbox.GetInstance().GetLevelManager().RemoveBaseEnemies(this);
     }
 
 
@@ -185,26 +189,33 @@ public class Enemy_Base : PhysicsObject
 
     protected override void ComputeVelocity()
     {
-        Move();
-
-        if (inWindZone)
+        if (!isUnitPaused)
         {
-            // Wind is moving to the right 
-            if (windDir == Vector2.right)
+            Move();
+
+            if (inWindZone)
             {
-                if (windDir == direction) // if we are moving with the wind direction 
-                    currentMoveSpeed -= windDir.x * windPwr;
-                else if (windDir != direction)
-                    currentMoveSpeed += windDir.x * windPwr;
+                // Wind is moving to the right 
+                if (windDir == Vector2.right)
+                {
+                    if (windDir == direction) // if we are moving with the wind direction 
+                        currentMoveSpeed -= windDir.x * windPwr;
+                    else if (windDir != direction)
+                        currentMoveSpeed += windDir.x * windPwr;
+                }
+                // Wind is moving to the left
+                else if (windDir == Vector2.left)
+                {
+                    if (windDir != direction) // if we are moving against the wind direction
+                        currentMoveSpeed += windDir.x * windPwr;
+                    else if (windDir == direction) // if we are moving with the wind direction 
+                        currentMoveSpeed -= windDir.x * windPwr;
+                }
             }
-            // Wind is moving to the left
-            else if (windDir == Vector2.left)
-            {
-                if (windDir != direction) // if we are moving against the wind direction
-                    currentMoveSpeed += windDir.x * windPwr;
-                else if (windDir == direction) // if we are moving with the wind direction 
-                    currentMoveSpeed -= windDir.x * windPwr;
-            }
+        }
+        else
+        {
+            targetVelocity.x = 0;
         }
     }
 

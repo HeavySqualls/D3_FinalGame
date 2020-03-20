@@ -9,12 +9,12 @@ public class FlowNarrativeTrigger : MonoBehaviour
     [SerializeField] sFlowNarrative thisFN;
 
     FlowNarrativeController fn_Con;
-    CircleCollider2D circleCollider;
+    BoxCollider2D boxColl;
     GameObject target;
 
     private void Start()
     {
-        circleCollider = GetComponent<CircleCollider2D>();
+        boxColl = GetComponent<BoxCollider2D>();
         fn_Con = Toolbox.GetInstance().GetDialogueSystemManager().GetFlowNarrativeController();
     }
 
@@ -26,7 +26,7 @@ public class FlowNarrativeTrigger : MonoBehaviour
         {
             target = playerHandleInteract.gameObject;
             fn_Con.GetNewFlowNarrative(thisFN, target);
-            circleCollider.enabled = false;
+            boxColl.enabled = false;
         }
     }
 }

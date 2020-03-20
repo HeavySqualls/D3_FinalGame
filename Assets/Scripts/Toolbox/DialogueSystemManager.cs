@@ -9,7 +9,7 @@ public class DialogueSystemManager : MonoBehaviour
 
     NarrativeController N_Controller;
 
-    public NarrativeController GetConversationController()
+    public NarrativeController GetNarrativeController()
     {
         return N_Controller;
     }

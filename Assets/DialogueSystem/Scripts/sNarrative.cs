@@ -16,14 +16,21 @@ public struct Line
 [CreateAssetMenu(fileName = "Scriptable Objects", menuName = "DialogueSystem/Narrative", order = 1)]
 public class sNarrative : ScriptableObject
 {
+    [Header("Narrative Settings:")]
     public string narrativeID;
-
+    [Tooltip("Does this Narrative only have one speaker?")]
+    public bool isMonologue;
     [Tooltip("Does this Narrative contain a tutorial?")]
     public bool hasTutorial;
+    [Tooltip("Does this Narrative have a delay before beginning?")]
+    public bool hasDelay;
+    [Tooltip("If this Narrative has a delay, how long will that delay be?")]
+    public float narrativeStartDelayTime;
     [Tooltip("Drag in the relative sTutorial for this narrative.")]
     public sTutorial[] tutorials;
     [Tooltip("After which line of dialogue will this tutorial be presented?")]
     public int[] tutorialLines;
+
 
     [Tooltip("Who will be the speaker on the left?")]
     public sCharacter speakerOnTheLeft;

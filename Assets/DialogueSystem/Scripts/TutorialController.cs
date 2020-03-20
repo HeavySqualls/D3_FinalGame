@@ -83,7 +83,6 @@ public class TutorialController : MonoBehaviour
     public void CloseConversationAndTutorial()
     {
         HideTutorial();
-        narCon.EndResetController();
     }
 
     public void HideTutorial()
@@ -125,7 +124,11 @@ public class TutorialController : MonoBehaviour
 
         if (!narCon.CheckIfConversationIsFinished())
         {
-            narCon.AdvanceConversation();
+            narCon.AdvanceNarrative();
+        }
+        else
+        {
+            narCon.EndResetNarrativeController();
         }
 
         tutorialPanel.SetActive(false);

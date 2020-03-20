@@ -9,22 +9,23 @@ public class GameManager : MonoBehaviour
 
     void OnEnable()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
     void OnDisable()
     {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
+        UnityEngine.SceneManagement.SceneManager.sceneLoaded -= OnSceneLoaded;
     }
 
     public void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         ResetGameManager();
+        Toolbox.GetInstance().GetLevelManager().ClearLists();
     }
 
     void Start()
     {
-        currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+        currentLevelIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
     }
 
 
@@ -32,22 +33,22 @@ public class GameManager : MonoBehaviour
 
     public void LoadCustomScene(int _sceneToLoad)
     {
-        SceneManager.LoadScene(_sceneToLoad);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(_sceneToLoad);
     }
 
     public void LoadNextScene()
     {
-        SceneManager.LoadScene(currentLevelIndex + 1);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentLevelIndex + 1);
     }
 
     public void RestartLevel()
     {
-        SceneManager.LoadScene(currentLevelIndex);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(currentLevelIndex);
     }
 
     public void RestartGame()
     {
-        SceneManager.LoadScene(0);
+        UnityEngine.SceneManagement.SceneManager.LoadScene(0);
     }
 
     public void QuitGame()
@@ -60,6 +61,6 @@ public class GameManager : MonoBehaviour
 
     private void ResetGameManager()
     {
-        currentLevelIndex = SceneManager.GetActiveScene().buildIndex;
+        currentLevelIndex = UnityEngine.SceneManagement.SceneManager.GetActiveScene().buildIndex;
     }
 }

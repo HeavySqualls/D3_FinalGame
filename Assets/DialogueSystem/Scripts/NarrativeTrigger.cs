@@ -11,7 +11,7 @@ public class NarrativeTrigger : MonoBehaviour
     private void Start()
     {
         boxColl = GetComponent<BoxCollider2D>();
-        conversationCon = Toolbox.GetInstance().GetDialogueSystemManager().GetConversationController();
+        conversationCon = Toolbox.GetInstance().GetDialogueSystemManager().GetNarrativeController();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Enemy_Turret_Base : MonoBehaviour
@@ -10,13 +9,13 @@ public class Enemy_Turret_Base : MonoBehaviour
     [Header("--- ENEMY TURRET BASE ---")]
 
     public State currentState;
+    public bool isTurretPaused = false;
     protected bool isIdle;
     protected bool isPatrolling;
     protected bool isHunting;
     protected bool isDead;
     protected bool isInAirInWind;
     protected bool isHit = false;
-    //protected bool objectHit = false;
     protected bool isHurt = false;
     protected bool isCooldown = false;
     protected bool objectHit = false;
@@ -60,6 +59,8 @@ public class Enemy_Turret_Base : MonoBehaviour
 
     protected virtual void Start()
     {
+        Toolbox.GetInstance().GetLevelManager().AddTurretEnemies(this);
+
         currentHP = startHP;
         animator = GetComponent<Animator>();
 
@@ -106,6 +107,7 @@ public class Enemy_Turret_Base : MonoBehaviour
     protected virtual void KillUnit()
     {
         // Behaviour handled in specific enemy controller
+        Toolbox.GetInstance().GetLevelManager().RemoveTurretEnemies(this);
     }
 
     public void ThisUnitHit(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections;
 using UnityEngine;
 
 public class SandOstrich : Enemy_Turret_Base
@@ -176,7 +174,10 @@ public class SandOstrich : Enemy_Turret_Base
 
     public void ShootFlames() // called from inside the animator (for now)
     {
-        partSyst.Play();
+        if (!isTurretPaused)
+        {
+            partSyst.Play();
+        }
     }
 
     public void DealDamage()

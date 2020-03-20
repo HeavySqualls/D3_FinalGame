@@ -71,7 +71,6 @@ public class SpeakerUIController : MonoBehaviour
 
     public void Hide()
     {
-        print("hide");
         HideUIItems();
         dialogueBoxAnimator.SetBool("isOpen", false);
         StartCoroutine(WaitForAnimationFinish());

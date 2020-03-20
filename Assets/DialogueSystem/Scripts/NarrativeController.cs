@@ -29,9 +29,11 @@ public class NarrativeController : MonoBehaviour
     [Header("Tutorial References:")]
     public TutorialController tutorialController;
     public bool hasDisplayedTutorial = false;
-    [SerializeField] private Image backgroundImage;
-
+    bool tutorialsRemaining = true;
+    int tutorialsPlayed;
     public int activeTutorialLineIndex = 0;
+
+    [SerializeField] CinematicCanvasController cinematicController;
     private int activeLineIndex = 0;
     private PlayerController pCon;
 
@@ -59,7 +61,7 @@ public class NarrativeController : MonoBehaviour
             }
             else
             {
-                AdvanceConversation();
+                AdvanceNarrative();
             }
         }
     }
@@ -67,50 +69,92 @@ public class NarrativeController : MonoBehaviour
     public void GetNewNarrative (sNarrative _convo)
     {
         N = _convo;
+
+        StartCoroutine(NarrativeDelay());
+    }
+
+    float delayTime = 0.5f;
+
+    IEnumerator NarrativeDelay()
+    {
+        if (N.hasDelay)
+        {
+            yield return new WaitForSeconds(N.narrativeStartDelayTime);
+        }
+
+        cinematicController.PlayNarrativeSlideIn();
+
+        yield return new WaitForSeconds(delayTime);
+
         StartNarrative();
+
+        yield break;
     }
 
     private void StartNarrative()
     {
         isNarrativeEventRunning = true;
+        
+        // Disable both the player input and the enemy movements
+        pCon.canMove = false;
+        Toolbox.GetInstance().GetLevelManager().PauseAllEnemies();
 
-        speakerUILeft = speakerLeft.GetComponent<SpeakerUIController>();
-        speakerUIRight = speakerRight.GetComponent<SpeakerUIController>();
+        // Check if this narrative is a monologue, and if so, only enable the speaker on the left side
+        if (N.isMonologue)
+        {
+            speakerUILeft = speakerLeft.GetComponent<SpeakerUIController>();
+            speakerUILeft.Speaker = N.speakerOnTheLeft;
+            speakerUILeft.ShowSprite();
+        }
+        // Else enable both speakers for the conversation
+        else
+        {
+            speakerUILeft = speakerLeft.GetComponent<SpeakerUIController>();
+            speakerUILeft.Speaker = N.speakerOnTheLeft;
+            speakerUILeft.ShowSprite();
 
-        speakerUILeft.Speaker = N.speakerOnTheLeft;
-        speakerUIRight.Speaker = N.speakerOnTheRight;
+            speakerUIRight = speakerRight.GetComponent<SpeakerUIController>();
+            speakerUIRight.Speaker = N.speakerOnTheRight;
+            speakerUIRight.ShowSprite();
+        }
 
-        speakerUILeft.ShowSprite();
-        speakerUIRight.ShowSprite();
+        if (!N.hasTutorial)
+        {
+            tutorialsRemaining = false;
+        }
 
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
 
-        backgroundImage.enabled = true;
-        AdvanceConversation();
-        pCon.canMove = false;
+        AdvanceNarrative();
     }
-
-    bool tutorialsRemaining = true;
-    int tutorialsPlayed;
 
     // If the current line that we are interested in is less lines that the number of lines in the conversation, 
     // display it and increase the line index. Otherwise end the conversation. 
-    public void AdvanceConversation()
+    public void AdvanceNarrative()
     {
-        // Check if both the speaker UI's have finished animating (to prevent UI elements from being enabled/disabled
+        // Check if this narrative is a Monologue, OR if both the speaker UI's have finished animating (to prevent UI elements from being enabled/disabled
         // before they are supposed to be)
-        if (!speakerUILeft.isAnimating && !speakerUIRight.isAnimating)
+        if (N.isMonologue && !speakerUILeft.isAnimating || !N.isMonologue && !speakerUILeft.isAnimating && !speakerUIRight.isAnimating)
         {
-            if (activeLineIndex < N.lines.Length)
+            // If there are still lines left in the dialogue OR if there are any tutorials remaining in the narrative event that have not yet been displayed 
+            // (typically located after the last line of dialogue)
+            if (activeLineIndex < N.lines.Length || tutorialsRemaining)
             {
                 // If this narrative has tutorials, and there are tutorials remaining to be played, the tutorial line index matches the current line index, 
                 // AND we are not currently displaying a tutorial
                 if (N.hasTutorial && tutorialsRemaining && N.tutorialLines[activeTutorialLineIndex] == activeLineIndex && !hasDisplayedTutorial)
                 {
                     // Hide speaker UIs
-                    speakerUIRight.Hide();
-                    speakerUILeft.Hide();
+                    if (N.isMonologue)
+                    {
+                        speakerUILeft.Hide();
+                    }
+                    else
+                    {
+                        speakerUIRight.Hide();
+                        speakerUILeft.Hide();
+                    }
 
                     // Display tutorial that matches the index number of the activeTutorialLineIndex
                     tutorialController.DisplayTutorial(N.tutorials[activeTutorialLineIndex]);
@@ -136,7 +180,7 @@ public class NarrativeController : MonoBehaviour
             }
             else
             {
-                EndResetController();
+                EndResetNarrativeController();
             }
         }
     }
@@ -152,14 +196,32 @@ public class NarrativeController : MonoBehaviour
         line = N.lines[activeLineIndex];
         sCharacter character = line.character;
 
-        if (speakerUILeft.SpeakerIs(character))
+        if (N.isMonologue)
         {
-            SetNarrativeDialogue(speakerUILeft, speakerUIRight, line.text);
+            SetNarrativeMonologueDialogue(speakerUILeft, line.text);
         }
         else
         {
-            SetNarrativeDialogue(speakerUIRight, speakerUILeft, line.text);
+            if (speakerUILeft.SpeakerIs(character))
+            {
+                SetNarrativeDialogue(speakerUILeft, speakerUIRight, line.text);
+            }
+            else
+            {
+                SetNarrativeDialogue(speakerUIRight, speakerUILeft, line.text);
+            }
         }
+    }
+
+    private void SetNarrativeMonologueDialogue(SpeakerUIController _activeSpeakerUI, string _text)
+    {
+        activeSpeakerUI = _activeSpeakerUI;
+        _activeSpeakerUI.Dialogue = _text;
+        _activeSpeakerUI.Show();
+
+        _activeSpeakerUI.Dialogue = "";
+        StopAllCoroutines();
+        StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
     }
 
     private void SetNarrativeDialogue(SpeakerUIController _activeSpeakerUI, SpeakerUIController _inactiveSpeakerUI, string _text)
@@ -202,26 +264,39 @@ public class NarrativeController : MonoBehaviour
         return true;
     }
 
-    public void EndResetController()
+    public void EndResetNarrativeController()
     {
+        // Hide UI
         speakerUILeft.Hide();
-        speakerUIRight.Hide();
         speakerUILeft.HideSprite();
-        speakerUIRight.HideSprite();
-        backgroundImage.enabled = false;
 
+        if (!N.isMonologue)
+        {
+            speakerUIRight.Hide();
+            speakerUIRight.HideSprite();
+        }
+
+        cinematicController.PlayNarrativeSlideOut();
+
+        // Hide Cursor
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
 
+        // Re-Enable player 
         pCon.move.x = 0;
         pCon.canMove = true;
-        N = null;
 
+        // Re-emable enemies
+        Toolbox.GetInstance().GetLevelManager().UnPauseAllEnemies();
+
+        // Reset tutorial tracking vars 
         hasDisplayedTutorial = false;
         tutorialsPlayed = 0;
         tutorialsRemaining = true;
         activeTutorialLineIndex = 0;
 
+        // Reset controller vars 
+        N = null;
         activeLineIndex = 0;
         isNarrativeEventRunning = false;
     }

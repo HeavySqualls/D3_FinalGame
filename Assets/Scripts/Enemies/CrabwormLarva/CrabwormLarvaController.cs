@@ -24,8 +24,6 @@ public class CrabwormLarvaController : Enemy_Base
         base.Start();
     }
 
-
-
     protected override void Update()
     {
         base.Update();
@@ -183,21 +181,24 @@ public class CrabwormLarvaController : Enemy_Base
 
     void DetectPlayerCollisions()
     {
-        RaycastHit2D huntingInfo = Physics2D.Raycast(eyeRange.position, direction, eyeRangeDistance, playerLayerMask);
-
-        // If we have detected the player and are not currently attacking them
-        if (huntingInfo.collider != null && currentState != State.Attacking)
+        if (!isUnitPaused)
         {
-            target = huntingInfo.collider.gameObject;
-            currentState = State.Hunting;
+            RaycastHit2D huntingInfo = Physics2D.Raycast(eyeRange.position, direction, eyeRangeDistance, playerLayerMask);
 
-            RaycastHit2D attackInfo = Physics2D.Raycast(eyeRange.position, direction, eyeRangeDistance / 2, playerLayerMask);
-
-            if (attackInfo.collider != null)
+            // If we have detected the player and are not currently attacking them
+            if (huntingInfo.collider != null && currentState != State.Attacking)
             {
-                isPatrolling = false;
-                currentState = State.Attacking;
-                animator.SetTrigger("isAttacking");
+                target = huntingInfo.collider.gameObject;
+                currentState = State.Hunting;
+
+                RaycastHit2D attackInfo = Physics2D.Raycast(eyeRange.position, direction, eyeRangeDistance / 2, playerLayerMask);
+
+                if (attackInfo.collider != null)
+                {
+                    isPatrolling = false;
+                    currentState = State.Attacking;
+                    animator.SetTrigger("isAttacking");
+                }
             }
         }
     }
