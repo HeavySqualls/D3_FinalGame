@@ -5,7 +5,7 @@ public class CinematicTriggerController : MonoBehaviour
 {
     public PlayableDirector timeLine;
     public GameObject cinematicCam;
-
+    [SerializeField] CinematicCanvasController cinCanCon;
     PlayerController pCon;
     CircleCollider2D circColl;
 
@@ -17,8 +17,6 @@ public class CinematicTriggerController : MonoBehaviour
 
     void Update()
     {
-        //Toolbox.GetInstance().GetCanvasManager().GetCinematicCanvasController().ShowContinueButton();
-
         if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsDown) && cinematicCam.activeSelf == true)
         {
             EndCutScene();
@@ -29,7 +27,7 @@ public class CinematicTriggerController : MonoBehaviour
     {
         Toolbox.GetInstance().GetCanvasManager().GetCinematicCanvasController().PlayCutSceneSlideOut();
         cinematicCam.SetActive(false);
-
+        Toolbox.GetInstance().GetCanvasManager().GetCinematicCanvasController().HideContinueButton();
         pCon.EnablePlayerController();
 
         circColl.enabled = false;
@@ -48,10 +46,5 @@ public class CinematicTriggerController : MonoBehaviour
 
             pCon.DisablePlayerController();
         }
-    }
-
-    public void DisplayContinuePrompt()
-    {
-
     }
 }

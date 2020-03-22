@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: 1-2 N5
   m_EditorClassIdentifier: 
   narrativeID: 1-2N5
+  isMonologue: 1
   hasTutorial: 1
+  hasDelay: 0
+  narrativeStartDelayTime: 0
   tutorials:
   - {fileID: 11400000, guid: fd34d16696ffe3442aa3ceba0f17e161, type: 2}
   tutorialLines: 01000000
-  speakerOnTheLeft: {fileID: 11400000, guid: 47cb9999d7dcc504482336a5eb55c77e, type: 2}
-  speakerOnTheRight: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
+  speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
+  speakerOnTheRight: {fileID: 0}
   lines:
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
     text: A boulder...

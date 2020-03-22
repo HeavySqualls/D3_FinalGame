@@ -1,5 +1,6 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.Playables;
 
 public class CinematicCanvasController : MonoBehaviour
 {
@@ -11,6 +12,11 @@ public class CinematicCanvasController : MonoBehaviour
     {
         Toolbox.GetInstance().GetCanvasManager().SetCinematicCanvasCon(this);
         animator = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {
+        ShowContinueButton();
     }
 
     public void PlayNarrativeSlideIn()
@@ -36,11 +42,21 @@ public class CinematicCanvasController : MonoBehaviour
 
     public void ShowContinueButton()
     {
-        continueButton.SetActive(true);
+        if (cinematicTrigger != null && cinematicTrigger.timeLine.state != PlayState.Playing && !continueButton.activeSelf)
+        {
+            print("Show Continue Button");
+            continueButton.SetActive(true);
+        }
+    }
+
+    public void HideContinueButton()
+    {
+        continueButton.SetActive(false);
     }
 
     public void ContinueButtonPressed()
     {
+        HideContinueButton();
         cinematicTrigger.EndCutScene();
         cinematicTrigger = null;
     }

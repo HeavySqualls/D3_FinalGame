@@ -14,6 +14,8 @@ public class NarrativeController : MonoBehaviour
     public bool isNarrativeEventRunning = false;
     [Tooltip("The time between displaying individual letters in a dialogue.")]
     [SerializeField] float textDelayTime;
+    [Tooltip("The time between when the player hits the trigger and before the dialogue begins.")]
+    [SerializeField] float delayTime = 0.5f;
     bool isTyping = false;
 
     [Space]
@@ -72,8 +74,6 @@ public class NarrativeController : MonoBehaviour
 
         StartCoroutine(NarrativeDelay());
     }
-
-    float delayTime = 0.5f;
 
     IEnumerator NarrativeDelay()
     {

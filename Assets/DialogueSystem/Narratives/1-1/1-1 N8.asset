@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: 1-1 N8
   m_EditorClassIdentifier: 
   narrativeID: 1-1N8
+  isMonologue: 1
   hasTutorial: 1
+  hasDelay: 0
+  narrativeStartDelayTime: 0
   tutorials:
   - {fileID: 11400000, guid: a38088350d5f4fc49a62b788427406f5, type: 2}
   tutorialLines: 02000000
-  speakerOnTheLeft: {fileID: 11400000, guid: 47cb9999d7dcc504482336a5eb55c77e, type: 2}
-  speakerOnTheRight: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
+  speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
+  speakerOnTheRight: {fileID: 0}
   lines:
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
     text: Dead end.

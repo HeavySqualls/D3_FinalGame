@@ -119,8 +119,8 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 1277829017802512157}
-        m_MethodName: AdvanceNarrative
+      - m_Target: {fileID: 2285592357031721715}
+        m_MethodName: ContinueButtonPressed
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -1481,6 +1481,16 @@ PrefabInstance:
       propertyPath: backgroundImage
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 6908171024174537174, guid: 7afa0fe594dedd24da1337808b7bd899,
+        type: 3}
+      propertyPath: delayTime
+      value: 0.35
+      objectReference: {fileID: 0}
+    - target: {fileID: 6908171024174537174, guid: 7afa0fe594dedd24da1337808b7bd899,
+        type: 3}
+      propertyPath: cinematicController
+      value: 
+      objectReference: {fileID: 2285592357031721715}
     - target: {fileID: 6908171024222213804, guid: 7afa0fe594dedd24da1337808b7bd899,
         type: 3}
       propertyPath: m_SizeDelta.x
