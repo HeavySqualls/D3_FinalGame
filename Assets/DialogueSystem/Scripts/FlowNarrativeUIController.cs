@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class FlowNarrativeUIController : MonoBehaviour
@@ -6,6 +7,7 @@ public class FlowNarrativeUIController : MonoBehaviour
     [Header("UI Base References:")]
     public GameObject speechBubble;
     public TextMeshProUGUI dialogue;
+    //public Text dialogue;
     public GameObject speechTarget;
 
     [Header("Speech Bubble Offset:")]

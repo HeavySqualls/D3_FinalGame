@@ -16,6 +16,8 @@ public class FlowNarrativeController : MonoBehaviour
     [Tooltip("The time between each letter appearing when being typed out.")]
     [SerializeField] float textDelayTime;
 
+    private bool isPlayingFN = false;
+
     private int activeLineIndex = 0;
     private FlowNarrativeUIController flowNarController;
 
@@ -30,7 +32,12 @@ public class FlowNarrativeController : MonoBehaviour
 
     public void GetNewFlowNarrative(sFlowNarrative _fn, GameObject _target)
     {
+        print("new FN assigned");
+        if (isPlayingFN)
+            EndResetController();
+
         FN = _fn;
+        isPlayingFN = true;
         flowNarController.ShowFNSpeechBubble(_target);
         AdvanceConversation();
     }
@@ -88,6 +95,7 @@ public class FlowNarrativeController : MonoBehaviour
         flowNarController.HideFNSpeechBubble();
         flowNarController.RemoveTargetRef();
         FN = null;
+        isPlayingFN = false;
         activeLineIndex = 0;
     }
 }

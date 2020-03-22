@@ -1,11 +1,14 @@
-﻿using System.Collections;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.Playables;
 
 public class CinematicCanvasController : MonoBehaviour
 {
-    [SerializeField] GameObject continueButton;
+    [Tooltip("The prompt that will tell the player that they can close the cutscene and continue playing.")]
+    [SerializeField] GameObject continuePrompt;
+
+    [Tooltip("Gets automatically assighed by the trigger itself, and nullified when the continue prompt is closed.")]
     CinematicTriggerController cinematicTrigger;
+
     Animator animator;
 
     private void Start()
@@ -16,18 +19,31 @@ public class CinematicCanvasController : MonoBehaviour
 
     private void Update()
     {
-        ShowContinueButton();
+        // if we have a cinematic controller assigned, 
+        if (cinematicTrigger != null)
+        {
+            // start tracking whether the cutscene has finished, and if so, display the continue prompt
+            ShowContinueButton();
+
+            // if we have recieved the correct button input, and if the cinemtic timeline has stopped playing, and if the cinematic camera
+            // is still active
+            if ((Input.GetButtonDown(Toolbox.GetInstance().GetPlayerManager().GetPlayerController().controls.interact) || Controls.IsDown)
+               && cinematicTrigger.timeLine.state != PlayState.Playing && cinematicTrigger.cinematicCam.activeSelf == true)
+            {
+                // End the cutscene from the trigger
+                cinematicTrigger.EndCutScene();
+                // slide out cinematic bars 
+                PlayCutSceneSlideOut();
+                // hide the continue prompt
+                HideContinueButton();
+                // nullify the cinematicTrigger variable
+                cinematicTrigger = null;
+            }
+        }
     }
 
-    public void PlayNarrativeSlideIn()
-    {
-        animator.SetBool("isNarrativeSlideIn", true);
-    }
 
-    public void PlayNarrativeSlideOut()
-    {
-        animator.SetBool("isNarrativeSlideIn", false);
-    }
+    // < ------------------------------------- CUTSCENES ------------------------------------- >> //
 
     public void PlayCutSceneSlideIn(CinematicTriggerController _cinematicTrigger)
     {
@@ -42,22 +58,28 @@ public class CinematicCanvasController : MonoBehaviour
 
     public void ShowContinueButton()
     {
-        if (cinematicTrigger != null && cinematicTrigger.timeLine.state != PlayState.Playing && !continueButton.activeSelf)
+        if (cinematicTrigger.timeLine.state != PlayState.Playing && !continuePrompt.activeSelf)
         {
             print("Show Continue Button");
-            continueButton.SetActive(true);
+            continuePrompt.SetActive(true);
         }
     }
 
     public void HideContinueButton()
     {
-        continueButton.SetActive(false);
+        continuePrompt.SetActive(false);
     }
 
-    public void ContinueButtonPressed()
+
+    // < ------------------------------------- NARRATIVE ------------------------------------- >> //
+
+    public void PlayNarrativeSlideIn()
     {
-        HideContinueButton();
-        cinematicTrigger.EndCutScene();
-        cinematicTrigger = null;
+        animator.SetBool("isNarrativeSlideIn", true);
+    }
+
+    public void PlayNarrativeSlideOut()
+    {
+        animator.SetBool("isNarrativeSlideIn", false);
     }
 }
