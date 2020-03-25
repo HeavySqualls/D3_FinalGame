@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: 1-1 N4
   m_EditorClassIdentifier: 
   narrativeID: 1-1N4
+  isMonologue: 0
   hasTutorial: 0
-  tutorial: {fileID: 0}
-  tutorialLine: 0
+  hasDelay: 1
+  narrativeStartDelayTime: 2
+  tutorials: []
+  tutorialLines: 
   speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
   speakerOnTheRight: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
   lines:
@@ -26,12 +29,10 @@ MonoBehaviour:
 
       You survived.'
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: It seems your boots absorbed most of the impact.
-  - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: Your knees graciously took the rest.
+    text: It looks like your boots absorbed most of the impact.
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: Just-- ouch.
+    text: uggghh... my knees would disagree...
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: I know.
+    text: 'I feel your pain... Actually I don''t. No knees. '
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
     text: Also, your boots are broken.
