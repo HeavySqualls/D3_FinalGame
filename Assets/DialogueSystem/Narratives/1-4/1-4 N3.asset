@@ -12,24 +12,29 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1266fb0b76e3f84428a6f7a0dbeb7762, type: 3}
   m_Name: 1-4 N3
   m_EditorClassIdentifier: 
-  narrativeID: 1-4N3
+  narrativeID: 1-4N2
+  isMonologue: 0
   hasTutorial: 0
-  tutorial: {fileID: 0}
-  tutorialLine: 0
+  hasDelay: 1
+  narrativeStartDelayTime: 2
+  tutorials: []
+  tutorialLines: 
   speakerOnTheLeft: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
   speakerOnTheRight: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
   lines:
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: YES! Made it!
+    text: YES! FLIED IT!
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
     text: 'Did you see that?!
 
-      Spirits, man!'
+      I took the Wind! I did it! '
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: Don't call me "man". Ugh.
+    text: Ugghhh.
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: MAN!
+    text: HA!
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
     text: ...
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: Phew! Alright...
+    text: 'Phew! Alright... '
+  - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
+    text: Focus.
