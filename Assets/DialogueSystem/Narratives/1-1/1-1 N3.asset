@@ -14,12 +14,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   narrativeID: 1-1N3
   isMonologue: 0
-  hasTutorial: 1
+  hasTutorial: 0
   hasDelay: 0
   narrativeStartDelayTime: 0
-  tutorials:
-  - {fileID: 11400000, guid: 23a52a75cb480e54fb91d29e5304ee96, type: 2}
-  tutorialLines: 07000000
+  tutorials: []
+  tutorialLines: 
   speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
   speakerOnTheRight: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
   lines:
@@ -36,10 +35,10 @@ MonoBehaviour:
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
     text: '...
 
-      I move with the Wind spirits.'
+'
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: I can make it.
-  - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: Can't wait to see you try.
+    text: I move with the spirits.
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: ...
+    text: 'I can make it.
+
+'
