@@ -59,7 +59,7 @@ public class PlayerHandleInteract : MonoBehaviour
             // If the player is interacting with a switch object:
             if (currentSwtich != null)
             {
-                currentSwtich.OpenCloseDoor();
+                currentSwtich.ActuateSwitch();
             }
         }
 

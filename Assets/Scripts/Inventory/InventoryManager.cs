@@ -80,7 +80,6 @@ public class InventoryManager : MonoBehaviour
         //Loot Box Panels
         foreach (LootBoxPanel lbp in lootBoxPanels)
         {
-            print("Hey!");
             lbp.OnRightClickEvent += TakeLoot;
             lbp.OnPointerEnterEvent += ShowTooltip;
             lbp.OnPointerExitEvent += HideTooltip;

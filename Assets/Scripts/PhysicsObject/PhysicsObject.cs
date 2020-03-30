@@ -41,7 +41,7 @@ public class PhysicsObject : MonoBehaviour
 
     protected virtual void Start()
     {
-        layerMask = ~((1 << 16) | (1 << 12) | (1 << 13));
+        layerMask = ~((1 << 16) | (1 << 12) | (1 << 13) | (1 << 20));
 
         contactFilter.useTriggers = false; // not checking collisions against triggers
         contactFilter.SetLayerMask(layerMask); // only grabs collisions on the layer the specified layer (see project settings > physics2d)

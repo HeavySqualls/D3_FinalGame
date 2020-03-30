@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BorasWindController : MonoBehaviour
@@ -11,17 +10,21 @@ public class BorasWindController : MonoBehaviour
     public float blowTimeStart = 2f;
     [SerializeField] private float blowTime;
 
+    public float enableColliderTime = 1f;
+    public float disableColliderTime = 1f;
+
     public float intervalTime = 5f;
     public float speed;
     public Transform startPos;
     private ParticleSystem borasSyst;
     public ParticleSystem detectSyst;
-    public GameObject windArea;
+    public BoxCollider2D windArea;
 
+    public WindColliderController windCollCon;
     void Start()
     {
         borasSyst = GetComponentInChildren<ParticleSystem>();
-
+        windArea.enabled = false;
         blowTime = blowTimeStart;
     }
 
@@ -42,7 +45,16 @@ public class BorasWindController : MonoBehaviour
         if (countdown && isBlowing)
         {
             blowTime -= Time.deltaTime;
-            windArea.transform.Translate(Vector2.right * speed * Time.deltaTime);
+
+            if (blowTime < enableColliderTime)
+            {
+                windArea.enabled = true;
+            }
+
+            if (blowTime < disableColliderTime)
+            {
+                windArea.enabled = false;
+            }
 
             if (blowTime < 0)
             {
@@ -54,8 +66,6 @@ public class BorasWindController : MonoBehaviour
 
     IEnumerator Interval()
     {
-        print("break");
-        windArea.transform.position = startPos.position;
         borasSyst.Stop(withChildren);
 
         yield return new WaitForSeconds(intervalTime);

@@ -51,7 +51,7 @@ public class BreakablePiece : MonoBehaviour
 
         if (!_isPlatform)
         {
-            rb.AddForce(_dir * Random.Range(1f, 6f), ForceMode2D.Impulse);
+            rb.AddForce(_dir * Random.Range(3f, 9f), ForceMode2D.Impulse);
         }
         else
         {

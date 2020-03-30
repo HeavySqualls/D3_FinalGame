@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class ToxicSpill : Interact_Base
 {
+    public bool isTurnedOn = true;
     public float damageDelay;
     private bool isDamageDelay = false;
 
@@ -19,7 +20,7 @@ public class ToxicSpill : Interact_Base
 
     void Update()
     {
-        if (!partSyst.isEmitting)
+        if (!partSyst.isEmitting && isTurnedOn)
         {
             emmisionPause += Time.deltaTime;
 
@@ -32,7 +33,7 @@ public class ToxicSpill : Interact_Base
 
     void OnParticleCollision(GameObject other)
     {
-        print(other.name);
+        //print(other.name);
 
         pRecieveDamage = other.GetComponent<RecieveDamage>();
 
@@ -49,5 +50,13 @@ public class ToxicSpill : Interact_Base
         yield return new WaitForSeconds(damageDelay);
 
         isDamageDelay = false;
+    }
+
+    public void TurnOffSpillPipe()
+    {
+        isTurnedOn = false;
+
+        var main = partSyst.main;
+        main.loop = false;
     }
 }

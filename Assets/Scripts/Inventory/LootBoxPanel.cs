@@ -34,11 +34,11 @@ public class LootBoxPanel : MonoBehaviour
     private void Awake()
     {
         OnValidate();
-        inventoryManager = Toolbox.GetInstance().GetPlayerManager().GetInventoryManager();
     }
 
     private void Start()
     {
+        inventoryManager = Toolbox.GetInstance().GetPlayerManager().GetInventoryManager();
 
         for (int i = 0; i < lootBoxSlots.Length; i++)
         {
