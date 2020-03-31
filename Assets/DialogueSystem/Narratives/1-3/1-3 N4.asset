@@ -13,38 +13,44 @@ MonoBehaviour:
   m_Name: 1-3 N4
   m_EditorClassIdentifier: 
   narrativeID: 1-3N4
+  isMonologue: 0
   hasTutorial: 1
+  hasDelay: 0
+  narrativeStartDelayTime: 0
   tutorials:
   - {fileID: 11400000, guid: 393393e4203c15a4eb0479dc91f175db, type: 2}
-  tutorialLines: 07000000
+  tutorialLines: 04000000
   speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
   speakerOnTheRight: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
   lines:
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
     text: "Dust those things! \nAnd dust the Windrose for sending me here!"
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: You know more than a hundred people die every year from larva attacks in
-      Drylake?
+    text: Only in Drylake, more than a hundred people die every year from larva attacks.
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: On a population of six thousands, it is quite a lot.
+    text: From a population of six thousands, it IS quite a lot.
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
     text: ...
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: 'Don''t worry too much about it. In fact, you should be proud:'
+    text: 'Don''t worry about it though:'
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: I hear humans make great fertilizer when they die.
+    text: 'I hear humans make great fertilizer.
+
+      Very useful.'
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
     text: Speaking of which, I've sonarized the area above and you're not out of
       the manure, so to speak.
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: There are two distinct paths leading out of the cave.
+    text: There are two paths leading out of the cave.
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: The left path is stable but I read many  lifeforms.
+    text: The left path is stable but I read many lifeforms.
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: The right path is unstable but less crowded. I read metal...
+    text: The right one is unstable but less crowded. I read metal...
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
     text: Precious scrap or death traps, I cannot say.
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: ...
+    text: Not sure I can trust you. Last week-
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
-    text: Yes, you can also thank me later.
+    text: 'That was an accident. '
+  - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
+    text: '*sigh*'

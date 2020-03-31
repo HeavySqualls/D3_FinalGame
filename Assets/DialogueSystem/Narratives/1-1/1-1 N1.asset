@@ -12,22 +12,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1266fb0b76e3f84428a6f7a0dbeb7762, type: 3}
   m_Name: 1-1 N1
   m_EditorClassIdentifier: 
-  narrativeID: 1-1N1
+  narrativeID: '1-1N1 '
   isMonologue: 1
   hasTutorial: 1
   hasDelay: 0
-  narrativeDelayTime: 0
+  narrativeStartDelayTime: 0
   tutorials:
   - {fileID: 11400000, guid: bff8ca9b8b16b854d9b7bd2879be3607, type: 2}
-  tutorialLines: 03000000
+  tutorialLines: 05000000
   speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
   speakerOnTheRight: {fileID: 0}
   lines:
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
     text: Here we are... target location should be up ahead.
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: ...
+    text: Wonder why the Windrose sent me here...
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: 'Smells like worm shit... '
+    text: They know the Winds and they move fast.
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: Better be careful.
+    text: So why hire a Wind Digger to investigate their own ruins...?
+  - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
+    text: ...I better be careful.

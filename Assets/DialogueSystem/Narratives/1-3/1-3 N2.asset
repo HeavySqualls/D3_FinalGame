@@ -13,18 +13,21 @@ MonoBehaviour:
   m_Name: 1-3 N2
   m_EditorClassIdentifier: 
   narrativeID: 1-3N2
+  isMonologue: 0
   hasTutorial: 0
-  tutorial: {fileID: 0}
-  tutorialLine: 0
+  hasDelay: 0
+  narrativeStartDelayTime: 0
+  tutorials: []
+  tutorialLines: 
   speakerOnTheLeft: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
   speakerOnTheRight: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
   lines:
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: Hope this is over soon...
+    text: 'There''s a way up here... '
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: There's a way up... I feel air moving...
+    text: ...air is moving...
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
-    text: ...maybe an exit.
+    text: ...maybe an exit?
   - character: {fileID: 11400000, guid: 67c025b758814444087a5c23ebe82154, type: 2}
     text: '*simulated cough*'
   - character: {fileID: 11400000, guid: 5b847dbe46a454d419063358f7e83665, type: 2}
