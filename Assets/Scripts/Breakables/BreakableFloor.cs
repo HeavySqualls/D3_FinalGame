@@ -1,14 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 public class BreakableFloor : BreakableObject
 {
-    [Space]
-    [Header("VARIABLES:")]
-    [Tooltip("The length of time until the object will be destroyed.")]
-    public float destroySeconds;
-
     [Space]
     [Header("WEIGHT VARIABLES:")]
     [Tooltip("The delay before the items get weighed - to give a brief moment before the floor collapses.")]
@@ -19,9 +13,11 @@ public class BreakableFloor : BreakableObject
     [SerializeField] private float totalWeight;
     [Tooltip("The box collider trigger that determines if a boulder is on the breakable floor.")]
     [SerializeField] BoxCollider2D triggerCollider;
+    [SerializeField] BoxCollider2D bfBoxCollider;
     protected override void Start()
     {
         base.Start();
+        boxCollider = bfBoxCollider;
     }
 
     // When another objects collider interacts with this collider, 

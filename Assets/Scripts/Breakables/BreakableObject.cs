@@ -148,7 +148,7 @@ public class BreakableObject : MonoBehaviour
             DropObject();
         }
 
-        yield return new WaitForSeconds(Random.Range(1, 2)); // wait for a few seconds - then hide breakable pieces
+        yield return new WaitForSeconds(2); // wait for a few seconds - then hide breakable pieces
 
         HideObject();
 
