@@ -20,7 +20,7 @@ public class WindOnUnit : MonoBehaviour
             windZone = _windArea;
 
             unit.inWindZone = true;
-            unit.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft);
+            unit.WindZoneStats(windZone.direction, windZone.strength, windZone.fromLeft, windZone.doesAffectMovement);
         }
     }
 

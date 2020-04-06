@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class WindArea : MonoBehaviour
 {
@@ -13,5 +11,9 @@ public class WindArea : MonoBehaviour
     [Tooltip("Is the wind intermittent? - false for no")]
     public bool isBorasWind = false;
 
+    [Tooltip("Which direction is the wind blowing? (-1 for to the left, 1 for to the right)")]
     public Vector3 direction;
+
+    [Tooltip("Does the wind affect the players movement (disable if just the in wind animations are desired)")]
+    public bool doesAffectMovement = true;
 }

@@ -316,11 +316,14 @@ public class PlayerController : PhysicsObject
             // Determine if there is input
             if (isInputLeftORRight) 
             {
+                if (inWindZone)
+                    isMovingInWind = true;
+                
                 isMoving = true;              
 
                 if (horizontalInput > 0f) // Moving Right
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft && !inWindZone)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && isLeft && !windAffectMovement)
                     {
                         canFlipSprite = false;                    
                         timeAtMaxSpeed = 0;
@@ -331,7 +334,7 @@ public class PlayerController : PhysicsObject
                 }
                 else if (horizontalInput < 0f) // Moving Left
                 {
-                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft && !inWindZone)
+                    if (timeAtMaxSpeed == skidTimeLimit && !isSkidding && !isLeft && !windAffectMovement)
                     {
                         canFlipSprite = false;
                         timeAtMaxSpeed = 0;
@@ -344,31 +347,38 @@ public class PlayerController : PhysicsObject
                 //TODO: Find out why this is stronger with a smaller number?
 
                 // Add force from wind to players move.x if applicable
-                if (inWindZone && windAffectUnit)
-                {
-                    isMovingInWind = true;
-
-                    if (magBootsOn)
+                if (inWindZone && windAffectMovement)
+                {                
+                    if (windAffectUnit)
                     {
-                        move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
-                    }
-                    else if (isFromLeft)
-                    {
-                        move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), 2.3f / (windDir.x * windPwr));
-                    }
-                    else if (!isFromLeft)
-                    {
-                        move.x = Mathf.Clamp(move.x, 2.3f / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
-                    }
+                        if (magBootsOn)
+                        {
+                            move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
+                        }
+                        else if (isFromLeft)
+                        {
+                            move.x = Mathf.Clamp(move.x, -maxSpeed * (windDir.x * windPwr), 2.3f / (windDir.x * windPwr));
+                        }
+                        else if (!isFromLeft)
+                        {
+                            move.x = Mathf.Clamp(move.x, 2.3f / (windDir.x * windPwr), -maxSpeed * (windDir.x * windPwr));
+                        }
+                    }        
                 }
-                else if (!inWindZone)
+                else if (!inWindZone || inWindZone && !windAffectMovement)
                 {
                     move.x = Mathf.Clamp(move.x, -maxSpeed, maxSpeed);
                 }
             }         
             else if (!isInputLeftORRight)  // Determine if input has stopped
             {
-                if (inWindZone) // If movement has stopped and player is in a windzone
+                if (isMoving)
+                {
+                    isMoving = false;
+                    isMovingInWind = false;
+                }
+
+                if (inWindZone && windAffectMovement) // If movement has stopped and player is in a windzone
                 {
                     if (!magBootsOn) // If the player does not have boots activated - add wind force to idle player
                     {
@@ -385,14 +395,8 @@ public class PlayerController : PhysicsObject
                     {
                         move.x = 0;
                     }
-
-                    if (isMoving)
-                    {                   
-                        isMoving = false;
-                        isMovingInWind = false;
-                    }
-                }
-                else
+                }                    
+                else if(!inWindZone || inWindZone && !windAffectMovement)
                 {
                     windRatio = 0;
 
