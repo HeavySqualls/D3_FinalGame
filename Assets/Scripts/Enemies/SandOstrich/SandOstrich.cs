@@ -49,6 +49,15 @@ public class SandOstrich : Enemy_Turret_Base
             isInHole = false;
     }
 
+    public void SetToIdle() // used by the cinematic trigger controller 
+    {
+        Destroy(gameObject);
+        print("Hey!");
+        //currentState = State.Idle;
+        //isIdle = false;
+        //isInHole = true;
+    }
+
     protected override void Update()
     {
         base.Update();
