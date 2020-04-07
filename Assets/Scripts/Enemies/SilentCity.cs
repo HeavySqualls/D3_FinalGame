@@ -1,7 +1,7 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using DG.Tweening;
+using Cinemachine;
 
 public class SilentCity : MonoBehaviour
 {
@@ -15,13 +15,11 @@ public class SilentCity : MonoBehaviour
 
     bool isMoving = false;
 
-    Camera cam;
+    public CinemachineVirtualCamera cam;
     Tween shakeTween;
 
     private void Start()
     {
-        cam = Camera.main;
-
         StartCoroutine(WaitToStart());
     }
 
@@ -52,6 +50,19 @@ public class SilentCity : MonoBehaviour
         if (objectHit != null)
         {
             print("Ran over " + objectHit.name);
+
+            if (objectHit.gameObject.GetComponent<PlayerController>())
+            {
+                objectHit.GetHit(Vector2.left, 100f, 0, 0, 0);
+                StartCoroutine(WaitAndRestart());
+            }
         }
+    }
+
+    IEnumerator WaitAndRestart()
+    {
+        yield return new WaitForSeconds(2);
+
+        Toolbox.GetInstance().GetGameManager().RestartLevel();
     }
 }
