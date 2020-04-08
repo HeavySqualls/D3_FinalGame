@@ -1667,13 +1667,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c2a5b83e23c12bb4791448fe8fe71c51, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  lootBoxPanel: {fileID: 0}
   inventory: {fileID: 8207287642455223837}
   equipmentPanel: {fileID: 8207287641275511296}
   statsPanel: {fileID: 8207287642432848110}
   itemTooltip: {fileID: 8207287640601089487}
   statTooltip: {fileID: 8207287641261094093}
-  lootBoxPanel: {fileID: 0}
-  inventoryKey: 9
 --- !u!1 &8207287641182189057
 GameObject:
   m_ObjectHideFlags: 0
@@ -5487,12 +5486,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 8207287642455223809}
-  interactKey: 102
-  quickLootKey: 114
   currentPickupItem: {fileID: 0}
   currentLootBoxPanel: {fileID: 0}
   currentSwtich: {fileID: 0}
-  pHandleInventory: {fileID: 8207287641177776633}
 --- !u!114 &4921897074839377781
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5512,6 +5508,7 @@ MonoBehaviour:
   phase3FlashDelay: 0.15
   currentPhase: 0
   playerHealthStart: 0
+  respawnTime: 0
 --- !u!114 &6711178901593303750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5575,13 +5572,14 @@ MonoBehaviour:
   velocity: {x: 0, y: 0}
   targetVelocity: {x: 0, y: 0}
   gravStart: 6.35
+  terminalVelocity: 40
   direction: {x: 0, y: 0}
   windDir: {x: 0, y: 0}
   windPwr: 0
+  windAffectMovement: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 0
-  isWallJumping: 0
   respawnZone: {fileID: 0}
   move: {x: 0, y: 0}
   isController: 0
@@ -5618,6 +5616,8 @@ MonoBehaviour:
   wallJumpForce: 3.25
   wallCheck: {fileID: 2239165945652749864}
   isWallSliding: 0
+  terminalWallSlidingVelocity: 20
+  isWallJumping: 0
   canClimbLedge: 0
   ledgeCheckDistance: 0.75
   ledgeCheck: {fileID: 7020729085216298182}
@@ -5649,6 +5649,9 @@ MonoBehaviour:
   magBoots: 
   crouch: 
   interact: 
+  inventory: 
+  quickLoot: 
+  pauseMenu: 
 --- !u!50 &8840246823808797379
 Rigidbody2D:
   serializedVersion: 4
