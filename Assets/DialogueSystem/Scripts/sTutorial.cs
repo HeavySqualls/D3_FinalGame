@@ -16,6 +16,10 @@ public class sTutorial : ScriptableObject
     [TextArea(2, 6)]
     public string tutorialQuote;
 
+    [Tooltip("Add in the relative quote reference for this tutorial.")]
+    [TextArea(2, 6)]
+    public string tutorialQuoteRef;
+
     [Tooltip("Input the number of lines desired and add text.")]
     [TextArea(2, 6)]
     public string tutorialInfo;

@@ -173,10 +173,10 @@ public class PlayerController : PhysicsObject
         horizontalInput = Input.GetAxisRaw(controls.xMove);
         isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
 
-        if (!isWallJumping)
-        {
-            targetVelocity = Vector2.zero; // for hard landings to stop movement
-        }
+        //if (!isWallJumping)
+        //{
+        //    targetVelocity = Vector2.zero; // for hard landings to stop movement
+        //}
 
         CheckSurroundings();
         CheckIfWallSliding();
@@ -733,26 +733,28 @@ public class PlayerController : PhysicsObject
 
     // <<-----------------------------------------------------MAG BOOTS METHODS ------------------------------------------- //
 
+    bool coroutineRunning = false;
 
     public void MagBoots()
     {
-        if (Input.GetButtonDown(controls.magBoots) && !magBootsOn && !canClimbLedge)
+        if (Input.GetButton(controls.magBoots)/* && !magBootsOn*/ && !canClimbLedge)
         {
             if (!isGrounded)
             {
                 StartCoroutine(MagBootsOn());
+                coroutineRunning = true;
             }
             else
             {
                 magBootsOn = true;
                 rb2d.velocity = Vector3.zero;
                 gravityModifier = onGravValue;
-                ripPP.CauseRipple(groundCheck, 12f, 0.5f);
+                ripPP.CauseRipple(groundCheck, 4f, 0.5f);
             }
 
             print("MagBoots Activated: " + magBootsOn);
         }
-        else if (Input.GetButtonDown(controls.magBoots) && magBootsOn && !canClimbLedge)
+        else if (Input.GetButtonUp(controls.magBoots)/* && magBootsOn*/ && !canClimbLedge)
         {
             magBootsOn = false;
             gravityModifier = gravStart;
@@ -905,7 +907,7 @@ public class PlayerController : PhysicsObject
         StopSlopeSlide();
 
         isGroundSliding = false;
-        canMove = true;
+        canMove = true;// TODO: block this off for sliding surface
         velocity.y = slidingSurfaceJumpForceY;
     }
 
@@ -927,11 +929,13 @@ public class PlayerController : PhysicsObject
 
         if (direction == Vector2.right)
         {
-            move.x = 14f;
+            print("ding");
+            move.x = 3.75f;
         }
         else
         {
-            move.x = -14f;
+            print("dong");
+            move.x = -3.75f;
         }
     }
 
@@ -1038,6 +1042,7 @@ public class PlayerController : PhysicsObject
                
                 airTime = 0;
                 inAir = false;
+                coroutineRunning = false;
             }
         }
     }

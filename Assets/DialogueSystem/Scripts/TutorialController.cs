@@ -31,8 +31,10 @@ public class TutorialController : MonoBehaviour
     [Header("Quote Information:")]
     [Tooltip("The QuoteText GameObject of the tutorial panel.")]
     [SerializeField] GameObject quote;
-    [Tooltip("The TextMeshPro component of the InfoText game object.")]
+    [Tooltip("The TextMeshPro component of the quote Text game object.")]
     [SerializeField] TextMeshProUGUI tutorialQuote;
+    [Tooltip("The TextMeshPro component of the quote reference Text game object.")]
+    [SerializeField] TextMeshProUGUI tutorialQuoteReference;
 
     [Space]
     [Header("Tutorial Input Buttons:")]
@@ -73,6 +75,7 @@ public class TutorialController : MonoBehaviour
         tutorialTitle.text = _tutorialData.tutorialTitle;
         tutorialInfo.text = _tutorialData.tutorialInfo;
         tutorialQuote.text = _tutorialData.tutorialQuote;
+        tutorialQuoteReference.text = _tutorialData.tutorialQuoteRef;
         tutorialImage.sprite = _tutorialData.tutorialImage;
 
         StartCoroutine(DisplayDelay());
