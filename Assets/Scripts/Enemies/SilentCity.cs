@@ -5,29 +5,83 @@ using Cinemachine;
 
 public class SilentCity : MonoBehaviour
 {
-    [SerializeField] float moveSpeed;
+    [Header("Chase Variables:")]
+    public Transform target;
+    [SerializeField] float waitToStartTime;
+    [SerializeField] float distance;
+
+    [SerializeField] float accelDecelTime = 0.1f;
+    [SerializeField] float currentMoveSpeed;
+    [SerializeField] float closeMoveSpeed = 8f;
+    [SerializeField] float nearMoveSpeed = 8f;
+    [SerializeField] float baseMoveSpeed = 13f;
+    [SerializeField] float distantMoveSpeed = 8f;
+    [SerializeField] float farMoveSpeed = 16f;
+
+    [SerializeField] float closeDistance = 47f;
+    [SerializeField] float nearDistance = 47f;
+    [SerializeField] float baseDistance = 52f;
+    [SerializeField] float distantDistance = 47f;
+    [SerializeField] float farDistance = 58f;
+    bool isMoving = false;
+
+    [Space]
+    [Header("Screen Shake:")]
+    public CinemachineVirtualCamera cam;
+    Tween shakeTween;
     [SerializeField] float levelDuration;
     [SerializeField] float shakeStrength;
     [SerializeField] int virbrato;
     [SerializeField] float randomness;
 
-    [SerializeField] float waitToStartTime;
-
-    bool isMoving = false;
-
-    public CinemachineVirtualCamera cam;
-    Tween shakeTween;
-
     private void Start()
     {
         StartCoroutine(WaitToStart());
+        currentMoveSpeed = baseMoveSpeed;
     }
 
     private void Update()
     {
+        TrackDistanceBetweenObject();
+        AdjustSpeedBasedOnDistance();
+
         if (isMoving)
         {
-            transform.position += Vector3.left * Time.deltaTime * moveSpeed;
+            transform.position += Vector3.left * Time.deltaTime * currentMoveSpeed;
+        }
+    }
+
+    private void TrackDistanceBetweenObject()
+    {
+        distance = Vector3.Distance(transform.position, target.transform.position);
+    }
+
+    private void AdjustSpeedBasedOnDistance()
+    {
+        if (distance < closeDistance)
+        {
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, closeMoveSpeed, accelDecelTime * Time.deltaTime);
+            //accelDecelTime += 0.5f * Time.deltaTime;
+        }
+        else if (distance > closeDistance && distance < baseDistance)
+        {
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, nearMoveSpeed, accelDecelTime * Time.deltaTime);
+            //accelDecelTime += 0.5f * Time.deltaTime;
+        }
+        else if (distance > baseDistance && distance < distantDistance)
+        {
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, baseMoveSpeed, accelDecelTime * Time.deltaTime);
+            //accelDecelTime += 0.5f * Time.deltaTime;
+        }
+        else if (distance > distantDistance && distance < farDistance)
+        {
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, distantMoveSpeed, accelDecelTime * Time.deltaTime);
+            //accelDecelTime += 0.5f * Time.deltaTime;
+        }
+        else if (distance > farDistance)
+        {
+            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, farMoveSpeed, accelDecelTime * Time.deltaTime);
+            //accelDecelTime += 0.5f * Time.deltaTime;
         }
     }
 
