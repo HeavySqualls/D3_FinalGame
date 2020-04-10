@@ -4,33 +4,42 @@ using DG.Tweening;
 
 public class PlayerHealthSystem : MonoBehaviour
 {
-    [Header("RED FLASH:")]
+    [Header("Health Variables:")]
+    [SerializeField] float playerHealthStart;
+    float playerHealth;
+
+    [Space]
+    [Header("Red Flash:")]
     [Tooltip("The length of time the object will flash.")]
     public float flashDuration = 5f;
     [SerializeField] float currentFlashDelay;
     [SerializeField] float phase1FlashDelay = 1f;
     [SerializeField] float phase2FlashDelay = 0.5f;
     [SerializeField] float phase3FlashDelay = 0.35f;
+    private IEnumerator flashCoroutine;
 
+    [Space]
+    [Header("Injury Phases:")]
     [SerializeField] int currentPhase;
     int hurtPhase0 = 0;
     int hurtPhase1 = 1;
     int hurtPhase2 = 2;
     int hurtPhase3 = 3;
 
-    [SerializeField] float playerHealthStart;
-    float playerHealth;
-
+    [Space]
+    [Header("Respawn:")]
+    public SpawnZone spawnZone;
     public float respawnTime;
-    bool isDead = false;
+    [SerializeField] bool isBeingChased = false;
+    public bool isDead = false;
 
+    [Space]
+    [Header("References:")]
     PlayerController pCon;
     Animator animator;
     Camera cam;
     Tween shakeTween;
     SpriteRenderer spriteRenderer;
-
-    private IEnumerator flashCoroutine;
 
     void Start()
     {
@@ -94,8 +103,9 @@ public class PlayerHealthSystem : MonoBehaviour
         }    
     }
 
-    private void KillPlayer()
+    public void KillPlayer()
     {
+        print("player killed");
         isDead = true;
         pCon.animator.SetBool("isDead", isDead);
         pCon.DisablePlayerController();
@@ -111,7 +121,18 @@ public class PlayerHealthSystem : MonoBehaviour
 
         isDead = false;
         pCon.animator.SetBool("isDead", isDead);
-        gameObject.transform.position = pCon.respawnZone.position;
+        pCon.DisablePlayerController();
+
+        if (spawnZone != null)
+        {
+            print("spawn player");
+            spawnZone.RespawnObject(gameObject);
+        }
+        else
+        {
+            Debug.LogError("No respawn location assigned!");
+        }
+
         pCon.EnablePlayerController();
         playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;

@@ -5,7 +5,6 @@ public class PlayerController : PhysicsObject
 {
     [Space]
     [Header("--- PLAYER CONTROLLER ---")]
-    public Transform respawnZone;
     public Vector2 move;
 
     [Space]

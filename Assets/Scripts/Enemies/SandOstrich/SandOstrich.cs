@@ -193,7 +193,9 @@ public class SandOstrich : Enemy_Turret_Base
     {
         print(gameObject.name + " has hit " + pRecieveDamage.name);
 
-        pRecieveDamage.GetHit(direction, damageOutput, knockBack, knockUp, stunTime);
+        if (pRecieveDamage != null)
+            pRecieveDamage.GetHit(direction, damageOutput, knockBack, knockUp, stunTime);
+
         StartCoroutine(DamageDelay());
         isDamageDelay = true;
     }

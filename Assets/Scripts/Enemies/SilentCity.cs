@@ -53,6 +53,12 @@ public class SilentCity : MonoBehaviour
         }
     }
 
+    public void Respawn(Transform _respawnLocation)
+    {
+        transform.position = _respawnLocation.position;
+        StartCoroutine(WaitToStart());
+    }
+
     private void TrackDistanceBetweenObject()
     {
         distance = Vector3.Distance(transform.position, target.transform.position);
@@ -101,6 +107,7 @@ public class SilentCity : MonoBehaviour
     {
         yield return new WaitForSeconds(waitToStartTime);
         StartMoving();
+        yield break;
     }
 
     private void OnTriggerEnter2D(Collider2D col)
@@ -111,18 +118,16 @@ public class SilentCity : MonoBehaviour
         {
             print("Ran over " + objectHit.name);
 
-            if (objectHit.gameObject.GetComponent<PlayerController>())
+            PlayerHealthSystem pHeathSyst = objectHit.gameObject.GetComponent<PlayerHealthSystem>();
+
+            if (pHeathSyst != null && !pHeathSyst.isDead)
+            {
+                pHeathSyst.KillPlayer();            
+            }
+            else
             {
                 objectHit.GetHit(Vector2.left, 100f, 0, 0, 0);
-                StartCoroutine(WaitAndRestart());
             }
         }
-    }
-
-    IEnumerator WaitAndRestart()
-    {
-        yield return new WaitForSeconds(2);
-
-        Toolbox.GetInstance().GetGameManager().RestartLevel();
     }
 }

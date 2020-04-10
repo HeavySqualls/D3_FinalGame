@@ -1,14 +1,22 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SpawnZone : MonoBehaviour
 {
-    private void OnTriggerEnter2D(Collider2D collision)
+    [SerializeField] PlayerHealthSystem pHealthSyst;
+
+    protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.GetComponent<PlayerController>())
+        pHealthSyst = collision.gameObject.GetComponent<PlayerHealthSystem>();
+
+        if (pHealthSyst != null)
         {
-            collision.gameObject.GetComponent<PlayerController>().respawnZone = this.transform;
+            pHealthSyst.spawnZone = this; 
         }
+    }
+
+    public virtual void RespawnObject(GameObject _respawnee)
+    {
+        _respawnee.transform.position = transform.position;
+        print("Respawn Player");
     }
 }
