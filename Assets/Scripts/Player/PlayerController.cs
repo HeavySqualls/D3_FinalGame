@@ -256,27 +256,13 @@ public class PlayerController : PhysicsObject
     }
 
 
-    public void DisablePlayerController()
-    {
-        canJump = false;
-        canMove = false;
-        canWallSlide = false;
-        canFlipSprite = false;
-    }
-
-    public void EnablePlayerController()
-    {
-        canFlipSprite = true;
-        canJump = true;
-        canMove = true;
-        canWallSlide = true;
-    }
-
     // <<----------------------------------------------------- COMPUTE VELOCITY (IN AND OUT OF WIND ZONES) ------------------------------------------- //
 
 
     protected override void ComputeVelocity()
     {
+        //targetVelocity = Vector2.zero;
+
         // Checks to determine what acceleration speed the player will have depending on the situation
         if (inAir) // if the player is in the air
         {
@@ -628,7 +614,7 @@ public class PlayerController : PhysicsObject
     private void SlopeSlide(Vector2 _slideDirection)
     {
         canMove = false;
-
+        isGrounded = true;
         if (!isGroundSliding)
         {
             isGroundSliding = true;
@@ -731,31 +717,34 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // <<-----------------------------------------------------MAG BOOTS METHODS ------------------------------------------- //
+    // <<----------------------------------------------------- MAG BOOTS METHODS ------------------------------------------- >> //
 
-    bool coroutineRunning = false;
+    //bool coroutineRunning = false;
+    bool bootsSwitchedOn = false;
 
     public void MagBoots()
     {
         if (Input.GetButton(controls.magBoots)/* && !magBootsOn*/ && !canClimbLedge)
         {
-            if (!isGrounded)
+            if (!isGrounded && !bootsSwitchedOn)
             {
                 StartCoroutine(MagBootsOn());
-                coroutineRunning = true;
+                bootsSwitchedOn = true;
             }
-            else
+            else if (isGrounded && !bootsSwitchedOn)
             {
+                print("MagBoots Activated: " + magBootsOn);
+                bootsSwitchedOn = true;
                 magBootsOn = true;
                 rb2d.velocity = Vector3.zero;
                 gravityModifier = onGravValue;
-                ripPP.CauseRipple(groundCheck, 4f, 0.5f);
             }
 
-            print("MagBoots Activated: " + magBootsOn);
+            ripPP.CauseRipple(groundCheck, 4f, 0.5f);
         }
         else if (Input.GetButtonUp(controls.magBoots)/* && magBootsOn*/ && !canClimbLedge)
         {
+            bootsSwitchedOn = false;
             magBootsOn = false;
             gravityModifier = gravStart;
             print("MagBoots Activated: " + magBootsOn);
@@ -778,7 +767,7 @@ public class PlayerController : PhysicsObject
     }
 
 
-    // <<----------------------------------------------------- LEDGE CLIMB METHODS ------------------------------------------- //
+    // << -------------------------------------------------- LEDGE CLIMB METHODS ------------------------------------------- >> //
 
 
     private void CheckLedgeClimb()
@@ -1042,7 +1031,7 @@ public class PlayerController : PhysicsObject
                
                 airTime = 0;
                 inAir = false;
-                coroutineRunning = false;
+                //coroutineRunning = false;
             }
         }
     }
@@ -1056,10 +1045,30 @@ public class PlayerController : PhysicsObject
 
     // <<----------------------------------------------------- UTILITY ------------------------------------------- //
 
+    public void DisablePlayerController()
+    {
+        canJump = false;
+        canMove = false;
+        canWallSlide = false;
+        canFlipSprite = false;
+        targetVelocity = Vector2.zero;
+    }
+
+    public void EnablePlayerController()
+    {
+        canFlipSprite = true;
+        canJump = true;
+        canMove = true;
+        canWallSlide = true;
+        targetVelocity = Vector2.zero;
+    }
+
+
 
     public void EnableMovement(bool _enable) // Called by the Animator at the moment
     {
         canMove = _enable;
+        targetVelocity = Vector2.zero;
     }
 
     private IEnumerator LandingPause(float _pauseTime)

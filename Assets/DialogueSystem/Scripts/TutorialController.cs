@@ -6,6 +6,7 @@ using TMPro;
 public class TutorialController : MonoBehaviour
 {
     public bool isOpen = false;
+    private bool open = false;
 
     [Header("Tutorial Image:")]
     [Tooltip("The DisplayPanel GameObject of the tutorial panel.")]
@@ -60,8 +61,9 @@ public class TutorialController : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && isOpen)
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && open)
         {
+            open = false;
             HideTutorial();
         }
     }
@@ -81,11 +83,6 @@ public class TutorialController : MonoBehaviour
         StartCoroutine(DisplayDelay());
 
         // TODO: track that the tutorial has been seen here??
-    }
-
-    public void CloseConversationAndTutorial()
-    {
-        HideTutorial();
     }
 
     public void HideTutorial()
@@ -116,6 +113,7 @@ public class TutorialController : MonoBehaviour
         continueButton.SetActive(true);
         closeButton.SetActive(true);
 
+        open = true;
         isOpen = true;
 
         yield break;
@@ -125,6 +123,9 @@ public class TutorialController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
+        isOpen = false;
+        tutorialPanel.SetActive(false);
+
         if (!narCon.CheckIfConversationIsFinished())
         {
             narCon.AdvanceNarrative();
@@ -133,9 +134,6 @@ public class TutorialController : MonoBehaviour
         {
             narCon.EndResetNarrativeController();
         }
-
-        tutorialPanel.SetActive(false);
-        isOpen = false;
 
         yield break;
     }

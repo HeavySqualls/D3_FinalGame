@@ -5,13 +5,13 @@ public class NarrativeTrigger : MonoBehaviour
     [Tooltip("Drag in a Scriptable Object conversation.")]
     [SerializeField] sNarrative thisConversation;
 
-    NarrativeController conversationCon;
+    NarrativeController narrativeController;
     BoxCollider2D boxColl;
 
     private void Start()
     {
         boxColl = GetComponent<BoxCollider2D>();
-        conversationCon = Toolbox.GetInstance().GetDialogueSystemManager().GetNarrativeController();
+        narrativeController = Toolbox.GetInstance().GetDialogueSystemManager().GetNarrativeController();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -20,8 +20,13 @@ public class NarrativeTrigger : MonoBehaviour
 
         if (playerHandleInteract != null)
         {
-            conversationCon.GetNewNarrative(thisConversation);
+            narrativeController.SetUpNarrativeController(thisConversation, this);
             boxColl.enabled = false;
         }
+    }
+
+    public void DisableTrigger()
+    {
+        boxColl.enabled = false;
     }
 }

@@ -7,6 +7,7 @@ public class NarrativeController : MonoBehaviour
     [Header("Assigned Narrative Scriptable Object")]
     [Tooltip("The sNarrative will automatically be assigned here by the narrative trigger.")]
     public sNarrative N;
+    public NarrativeTrigger narTrigger;
 
     [Space]
     [Header("Controller Status:")]
@@ -49,6 +50,8 @@ public class NarrativeController : MonoBehaviour
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
     }
 
+    private IEnumerator typeCoroutine; 
+
     private void Update()
     {
         // Check if the correct input was registered, if the narrative is not null, and if the tutorial panel is not open 
@@ -57,7 +60,11 @@ public class NarrativeController : MonoBehaviour
         {
             if (isTyping)
             {
-                StopAllCoroutines();
+                if (typeCoroutine != null)
+                {
+                    StopCoroutine(typeCoroutine);
+                }
+
                 isTyping = false;
                 activeSpeakerUI.Dialogue = line.text;
             }
@@ -68,10 +75,10 @@ public class NarrativeController : MonoBehaviour
         }
     }
 
-    public void GetNewNarrative (sNarrative _convo)
+    public void SetUpNarrativeController (sNarrative _convo, NarrativeTrigger _trigger)
     {
         N = _convo;
-
+        narTrigger = _trigger;
         StartCoroutine(NarrativeDelay());
     }
 
@@ -94,9 +101,9 @@ public class NarrativeController : MonoBehaviour
     private void StartNarrative()
     {
         isNarrativeEventRunning = true;
-        
+
         // Disable both the player input and the enemy movements
-        pCon.canMove = false;
+        pCon.DisablePlayerController();
         Toolbox.GetInstance().GetLevelManager().PauseAllEnemies();
 
         // Check if this narrative is a monologue, and if so, only enable the speaker on the left side
@@ -220,8 +227,15 @@ public class NarrativeController : MonoBehaviour
         _activeSpeakerUI.Show();
 
         _activeSpeakerUI.Dialogue = "";
-        StopAllCoroutines();
-        StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
+
+        if (typeCoroutine != null)
+        {
+            StopCoroutine(typeCoroutine);
+        }
+
+        typeCoroutine = TypeWritterEffect_N(_text, _activeSpeakerUI);
+        StartCoroutine(typeCoroutine);
+        //StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
     }
 
     private void SetNarrativeDialogue(SpeakerUIController _activeSpeakerUI, SpeakerUIController _inactiveSpeakerUI, string _text)
@@ -232,11 +246,19 @@ public class NarrativeController : MonoBehaviour
         _inactiveSpeakerUI.Hide();
 
         _activeSpeakerUI.Dialogue = "";
-        StopAllCoroutines();
-        StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
+
+        if (typeCoroutine != null)
+        {
+            StopCoroutine(typeCoroutine);
+        }
+
+        typeCoroutine = TypeWritterEffect_N(_text, _activeSpeakerUI);
+        StartCoroutine(typeCoroutine);
+        //StopAllCoroutines();
+        //StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
     }
 
-    private IEnumerator TypeWritterEffect_N(string _text, SpeakerUIController _speakerUI)
+    public IEnumerator TypeWritterEffect_N(string _text, SpeakerUIController _speakerUI)
     {
         isTyping = true;
 
@@ -270,7 +292,7 @@ public class NarrativeController : MonoBehaviour
         speakerUILeft.Hide();
         speakerUILeft.HideSprite();
 
-        if (!N.isMonologue)
+        if (N != null && !N.isMonologue)
         {
             speakerUIRight.Hide();
             speakerUIRight.HideSprite();
@@ -283,8 +305,7 @@ public class NarrativeController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
 
         // Re-Enable player 
-        pCon.move.x = 0;
-        pCon.canMove = true;
+        pCon.EnablePlayerController();
 
         // Re-emable enemies
         Toolbox.GetInstance().GetLevelManager().UnPauseAllEnemies();
@@ -296,6 +317,7 @@ public class NarrativeController : MonoBehaviour
         activeTutorialLineIndex = 0;
 
         // Reset controller vars 
+        narTrigger.DisableTrigger();
         N = null;
         activeLineIndex = 0;
         isNarrativeEventRunning = false;

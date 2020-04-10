@@ -58,30 +58,31 @@ public class SilentCity : MonoBehaviour
         distance = Vector3.Distance(transform.position, target.transform.position);
     }
 
+    bool endchaseSpeed = false;
+
+    public void IncreaseSpeed()
+    {
+        endchaseSpeed = true;
+    }
+
     private void AdjustSpeedBasedOnDistance()
     {
-        if (distance < closeDistance)
+        if (endchaseSpeed)
         {
-            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, closeMoveSpeed, currentAccelDecelTime * Time.deltaTime);
-        }
-        else if (distance > closeDistance && distance < baseDistance)
-        {
-            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, nearMoveSpeed, currentAccelDecelTime * Time.deltaTime);
-        }
-        else if (distance > baseDistance && distance < distantDistance)
-        {
-            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, baseMoveSpeed, currentAccelDecelTime * Time.deltaTime);
-        }
-        else if (distance > distantDistance && distance < farDistance)
-        {
-            currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, distantMoveSpeed, currentAccelDecelTime * Time.deltaTime);
-        }
-        else if (distance > farDistance)
-        {
-            //if (currentAccelDecelTime == accelDecelTimeMax)
-            //    currentAccelDecelTime = accelDecelTimeStart;
-
             currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, farMoveSpeed, currentAccelDecelTime * Time.deltaTime);
+        }
+        else
+        {
+            if (distance < closeDistance)
+                currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, closeMoveSpeed, currentAccelDecelTime * Time.deltaTime);
+            else if (distance > closeDistance && distance < baseDistance)
+                currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, nearMoveSpeed, currentAccelDecelTime * Time.deltaTime);
+            else if (distance > baseDistance && distance < distantDistance)
+                currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, baseMoveSpeed, currentAccelDecelTime * Time.deltaTime);
+            else if (distance > distantDistance && distance < farDistance)
+                currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, distantMoveSpeed, currentAccelDecelTime * Time.deltaTime);
+            else if (distance > farDistance)
+                currentMoveSpeed = Mathf.Lerp(currentMoveSpeed, farMoveSpeed, currentAccelDecelTime * Time.deltaTime);
         }
 
         currentAccelDecelTime += 0.5f * Time.deltaTime;

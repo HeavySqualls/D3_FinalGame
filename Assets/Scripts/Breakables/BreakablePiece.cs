@@ -6,7 +6,7 @@ public class BreakablePiece : MonoBehaviour
 {
     [Tooltip("Will this piece fall appart before the rest of the object?")]
     public bool isEarlyBreakPiece = false;
-    bool isShake = false;
+    //bool isShake = false;
 
     Vector3 startingPos;
     Quaternion startingTrans;
@@ -35,9 +35,7 @@ public class BreakablePiece : MonoBehaviour
     IEnumerator Drop()
     {
         yield return new WaitForSeconds(Random.Range(0.01f, 0.1f));
-        print("piece dropping");
-        rb.isKinematic = false;// RigidbodyType.Dynamic;
-        //rb.useGravity = 2f;
+        rb.isKinematic = false;
         boxColl.enabled = true;
 
         yield break;
@@ -47,7 +45,7 @@ public class BreakablePiece : MonoBehaviour
     // Logic for destroying the basic object piece after being attacked
     public void BlowOutPiece(Vector2 _dir, bool _isPlatform)
     {
-        rb.isKinematic = false;// bodyType = RigidbodyType.Dynamic;
+        rb.isKinematic = false;
 
         if (!_isPlatform)
         {
@@ -81,8 +79,8 @@ public class BreakablePiece : MonoBehaviour
     public void RespawnPiece(bool _isCrumblingWall)
     {
         rb.velocity = Vector2.zero;
-        rb.angularVelocity = 0f;/*Vector3.zero;*/
-        /*rb.isKinematic = true;*/rb.bodyType = RigidbodyType2D.Kinematic;
+        rb.angularVelocity = 0f;
+        rb.bodyType = RigidbodyType2D.Kinematic;
 
         if (_isCrumblingWall)
         {
