@@ -20,7 +20,5 @@ public class SpawnZone_Chase : SpawnZone
         {
             chaser.gameObject.transform.position = chaserRespawnLocation.position;
         }
-
-        print("Respawn City");
     }
 }

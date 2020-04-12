@@ -6,9 +6,13 @@ public class LevelManager : MonoBehaviour
 {
     // Provides a place for loot crates to add themselves to a list of loot crates 
 
+    public int currentSpawnID;
+
     [SerializeField] private List<PickUpItem> pickUpItems = new List<PickUpItem>();
     [SerializeField] private List<Enemy_Base> baseEnemies = new List<Enemy_Base>();
+    [SerializeField] private List<CrabwormTriggerZones> cwTriggers = new List<CrabwormTriggerZones>(); //TODO: Set trigger zones up to subscribe to an event that will reset them automatically
     [SerializeField] private List<Enemy_Turret_Base> turretBaseEnemies = new List<Enemy_Turret_Base>();
+    [SerializeField] private List<BreakableObject> breakableObjects = new List<BreakableObject>();
 
     public void ClearLists()
     {
@@ -16,6 +20,37 @@ public class LevelManager : MonoBehaviour
         pickUpItems.Clear();
         baseEnemies.Clear();
         turretBaseEnemies.Clear();
+        breakableObjects.Clear();
+    }
+
+    public void ResetLevelObjects()
+    {
+        foreach (Enemy_Base e in baseEnemies)
+        {
+            e.ResetUnit();
+        }
+
+        foreach (CrabwormTriggerZones cwtz in cwTriggers)
+        {
+            cwtz.isActive = true;
+        }
+
+        foreach (Enemy_Turret_Base et in turretBaseEnemies)
+        {
+            et.ResetUnit();
+        }
+
+        foreach (BreakableObject bo in breakableObjects)
+        {
+            bo.ResetObject();
+        }
+    }
+
+    // < ------------------------------------- TRACK BREAKABLE WALLS ----------------------------- >> //
+
+    public void AddBreakableObjects(BreakableObject _breakableObject)
+    {
+        breakableObjects.Add(_breakableObject);
     }
 
     // < ------------------------------------- TRACK PICKUPS ------------------------------------- >> //
@@ -56,6 +91,11 @@ public class LevelManager : MonoBehaviour
         {
             et.isTurretPaused = false;
         }
+    }
+
+    public void AddcwTriggerZone(CrabwormTriggerZones _cwTZ)
+    {
+        cwTriggers.Add(_cwTZ);
     }
 
     // Store all Base type Enemies

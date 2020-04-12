@@ -43,7 +43,18 @@ public class BreakableObject : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         currentHP = startHP;
 
+        if (!isRespawnable)
+        {
+            Toolbox.GetInstance().GetLevelManager().AddBreakableObjects(this);
+        }
+
         FindEveryChild(gameObject.transform);
+    }
+
+    public void ResetObject()
+    {
+        //gameObject.SetActive(true);
+        RespawnObject();
     }
 
     // Finds every child in the game object with a BreakablePiece component and adds it to the list 
@@ -85,7 +96,7 @@ public class BreakableObject : MonoBehaviour
                 bp.BlowOutPiece(_hitDir, isPlatform);
             }
 
-            Destroy(gameObject, 3f);
+            //Destroy(gameObject, 3f);
         }
         else // if object still has hit points, shake
         {
@@ -165,12 +176,11 @@ public class BreakableObject : MonoBehaviour
             RespawnObject();
             yield break;
         }
-        else // If the object is NOT respawnable, destroy
-        {
-            Destroy(gameObject);
-        }
-
-        
+        //else // If the object is NOT respawnable, destroy
+        //{
+        //    //Destroy(gameObject);
+        //    gameObject.SetActive(false);
+        //}     
 
         yield break;
     }
@@ -246,6 +256,9 @@ public class BreakableObject : MonoBehaviour
     private void RespawnObject()
     {
         Debug.Log("Respawn Object");
+
+        boxCollider.enabled = true;
+
         foreach (BreakablePiece bp in objPieces)
         {
             bp.RespawnPiece(isCrumblingWall);
@@ -258,6 +271,8 @@ public class BreakableObject : MonoBehaviour
                 ebp.RespawnPiece(isCrumblingWall);
             }
         }
+
+        currentHP = startHP;
 
         hitByHeavyObject = false;
     }

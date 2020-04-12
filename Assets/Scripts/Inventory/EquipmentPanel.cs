@@ -30,9 +30,6 @@ public class EquipmentPanel : MonoBehaviour
             equipmentSlots[i].OnDragEvent += OnDragEvent;
             equipmentSlots[i].OnDropEvent += OnDropEvent;
         }
-
-
-
     }
 
     private void OnValidate()

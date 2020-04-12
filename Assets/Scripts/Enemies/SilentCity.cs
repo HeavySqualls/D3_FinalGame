@@ -57,6 +57,7 @@ public class SilentCity : MonoBehaviour
     {
         transform.position = _respawnLocation.position;
         StartCoroutine(WaitToStart());
+        endchaseSpeed = false;
     }
 
     private void TrackDistanceBetweenObject()

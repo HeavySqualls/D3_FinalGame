@@ -227,7 +227,7 @@ public class SandOstrich : Enemy_Turret_Base
         isDead = true;
 
         currentState = State.Dead;
-        Destroy(gameObject, 5f);
+        //gameObject.SetActive(false);
     }
 
     // << ------------------------------------- RAYCAST CHECKS -------------------------------- >> //

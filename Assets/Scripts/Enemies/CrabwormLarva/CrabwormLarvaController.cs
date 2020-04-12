@@ -173,7 +173,8 @@ public class CrabwormLarvaController : Enemy_Base
         base.KillUnit();
         isDead = true;
         currentState = State.Dead;
-        Destroy(gameObject, 10f);
+        //Destroy(gameObject, 10f);
+        //gameObject.SetActive(false);
     }
 
 

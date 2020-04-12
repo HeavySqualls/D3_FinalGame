@@ -8,7 +8,10 @@ public class Enemy_Base : PhysicsObject
     [Space]
     [Header("--- ENEMY BASE ---")]
 
-    public State currentState;
+    public State startingState;
+    protected State currentState;
+    private Vector3 startingPos;
+
     public bool isUnitPaused = false;
     protected bool isIdle;
     protected bool isPatrolling;
@@ -90,6 +93,9 @@ public class Enemy_Base : PhysicsObject
 
         Toolbox.GetInstance().GetLevelManager().AddBaseEnemies(this);
 
+        currentState = startingState;
+        startingPos = transform.position;
+
         currentHP = startHP;
         animator = GetComponent<Animator>();
 
@@ -106,6 +112,16 @@ public class Enemy_Base : PhysicsObject
     {
         base.Update();
         ComputeVelocity();
+    }
+
+    public void ResetUnit()
+    {
+        isDead = false;
+        Debug.Log(gameObject.name + " was reset");
+        gameObject.SetActive(true);
+        transform.position = startingPos;
+        currentState = startingState;
+        currentHP = startHP;
     }
 
 
@@ -181,7 +197,8 @@ public class Enemy_Base : PhysicsObject
     protected virtual void KillUnit()
     {
         // Behaviour handled in specific enemy controller
-        Toolbox.GetInstance().GetLevelManager().RemoveBaseEnemies(this);
+        //Toolbox.GetInstance().GetLevelManager().RemoveBaseEnemies(this);
+        //currentState = State.Dead;
     }
 
 

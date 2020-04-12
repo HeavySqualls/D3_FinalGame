@@ -8,7 +8,9 @@ public class Enemy_Turret_Base : MonoBehaviour
     [Space]
     [Header("--- ENEMY TURRET BASE ---")]
 
-    public State currentState;
+    public State startingState;
+    protected State currentState;
+
     public bool isTurretPaused = false;
     protected bool isIdle;
     protected bool isPatrolling;
@@ -61,6 +63,8 @@ public class Enemy_Turret_Base : MonoBehaviour
     {
         Toolbox.GetInstance().GetLevelManager().AddTurretEnemies(this);
 
+        currentState = startingState;
+
         currentHP = startHP;
         animator = GetComponent<Animator>();
 
@@ -76,6 +80,14 @@ public class Enemy_Turret_Base : MonoBehaviour
         // Dealt with in the relative enemy controller
     }
 
+    public void ResetUnit()
+    {
+        isDead = false;
+        Debug.Log(gameObject.name + " was reset");
+        gameObject.SetActive(true);
+        currentState = startingState;
+        currentHP = startHP;
+    }
 
     // << --------------------------------------- COMBAT -------------------------------- >> //
 
@@ -107,7 +119,8 @@ public class Enemy_Turret_Base : MonoBehaviour
     protected virtual void KillUnit()
     {
         // Behaviour handled in specific enemy controller
-        Toolbox.GetInstance().GetLevelManager().RemoveTurretEnemies(this);
+        //Toolbox.GetInstance().GetLevelManager().RemoveTurretEnemies(this);
+        //currentState = State.Dead;
     }
 
     public void ThisUnitHit(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
