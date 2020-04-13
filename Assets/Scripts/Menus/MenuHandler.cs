@@ -1,28 +1,46 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Playables;
-using UnityEngine.SceneManagement;
 
 public class MenuHandler : MonoBehaviour
 {
-    public bool isPauseMenu = false;
-
+    [Header("Main Menu:")]
     [SerializeField] Button startGameButton;
     [SerializeField] Button quitGameButton;
 
+    [Space]
+    [Header("Pause Menu:")]
+    public bool isPauseMenu = false;
+    [SerializeField] GameObject PauseMenu;
+    [SerializeField] Button quitToMainMenu;
+    [SerializeField] Button resetLevelButton;
+    [SerializeField] Button continueButton;
+
+    [Space]
+    [Header("Options Menu:")]
+    [SerializeField] GameObject OptionsMenu;
     [SerializeField] Button optionsButton;
 
-    [SerializeField] Button continueButton;
-    [SerializeField] Button resetLevelButton;
-    [SerializeField] Button quitToMainMenu;
+    [Space]
+    [Header("Death Menu:")]
+    [SerializeField] GameObject DeathMenu;
+    [SerializeField] Button respawnButton;
 
-    [SerializeField] GameObject OptionsMenu;
-    [SerializeField] GameObject PauseMenu;
-
+    [Space]
+    [Header("References:")]
     [SerializeField] PlayableDirector timeLine; //TODO: move this to some sort of scene manager
-
     GameManager gm;
     PlayerController pCon;
+
+    private void OnEnable()
+    {
+        SpawnManager.onPlayerKilled += EnableDeathMenu;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onPlayerKilled -= EnableDeathMenu;
+    }
 
     private void Start()
     {
@@ -34,6 +52,7 @@ public class MenuHandler : MonoBehaviour
         }
 
         OptionsMenu.SetActive(false);
+        DeathMenu.SetActive(false);
 
         if (PauseMenu != null)
         {
@@ -45,6 +64,9 @@ public class MenuHandler : MonoBehaviour
             timeLine.Play();
             print("play");
         }
+
+        //Cursor.visible = false;
+        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
@@ -85,8 +107,24 @@ public class MenuHandler : MonoBehaviour
         }
     }
 
+    private void EnableDeathMenu()
+    {
+        DeathMenu.SetActive(true);
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+    }
+
+    public void ResetToLastCheckpoint()
+    {
+        DeathMenu.SetActive(false);
+        SpawnManager.ResetLevelObjects();
+        Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+    }
+
     public void ResetLevel()
     {
+        //DeathMenu.SetActive(false);
         Time.timeScale = 1;
         gm.RestartLevel();
     }

@@ -34,14 +34,11 @@ public class PhysicsObject : MonoBehaviour
     public bool windAffectMovement;
     public LayerMask layerMask;
 
-    void OnEnable()
+    protected virtual void Start()
     {
         rb2d = GetComponent<Rigidbody2D>();
         gravityModifier = gravStart;
-    }
 
-    protected virtual void Start()
-    {
         layerMask = ~((1 << 16) | (1 << 12) | (1 << 13) | (1 << 20));
 
         contactFilter.useTriggers = false; // not checking collisions against triggers

@@ -63,6 +63,7 @@ public class PlayerController : PhysicsObject
     [Tooltip("Time it takes while holding the jump button to enable the 'Jump Flip' animation.")]
     public float jumpHoldTimeMax = 1.5f;
     public float airDisableTimer = 0.2f;
+    public float slidingSurfaceJumpForceY = 25f;
     private bool isPressingJumpButton = false;
     private float currentGraceTime;
     private float airTime = 0f;
@@ -82,7 +83,7 @@ public class PlayerController : PhysicsObject
     public float groundCheckDistance = 1.75f;
     public Transform groundCheck; // for determining quick landing jump
     public float groundSlideSpeed = 18f;
-    private bool isGroundSliding;
+    public bool isGroundSliding;
 
     [Space]
     [Header("Wall Check:")]
@@ -122,9 +123,9 @@ public class PlayerController : PhysicsObject
     [Header("References:")]
     public Controls controls;
     public Animator animator;
+    private PlayerFeedback pFeedback;
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
-
     private LayerMask groundLayerMask;
     private int groundLayer = 8;
     private int breakableFloorsLayer = 17;
@@ -148,6 +149,8 @@ public class PlayerController : PhysicsObject
     protected override void Start()
     {
         base.Start();
+
+        pFeedback = GetComponent<PlayerFeedback>();
 
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
 
@@ -493,6 +496,7 @@ public class PlayerController : PhysicsObject
 
     // <<----------------------------------------------------- CHECK SURROUNDINGS ------------------------------------------- //
 
+    //public bool isOnGround = false;
 
     private void CheckSurroundings()
     {
@@ -547,6 +551,10 @@ public class PlayerController : PhysicsObject
                 print("Stop");
                 StopSlopeSlide();
             }
+            //else if (currentLayer == groundLayer)
+            //{
+            //    isOnGround = true;
+            //}
         }
         else if(hitGround.collider == null && isGroundSliding)
         {
@@ -613,9 +621,11 @@ public class PlayerController : PhysicsObject
     private void SlopeSlide(Vector2 _slideDirection)
     {
         canMove = false;
-        isGrounded = true;
+        //isGrounded = true;
         if (!isGroundSliding)
         {
+            isTouchingWall = false;
+            isWallSliding = false;
             isGroundSliding = true;
         }
 
@@ -661,7 +671,7 @@ public class PlayerController : PhysicsObject
             StopTrackAirTime();
             gravityModifier = wallSlidingSpeed;
         }
-        else
+        else if (!isTouchingWall)
         {
             isWallSliding = false;
             gravityModifier = gravStart;
@@ -821,6 +831,7 @@ public class PlayerController : PhysicsObject
         {
             if (Input.GetButtonDown(controls.jump))
             {
+                pFeedback.JumpingParticleEffect();
                 isPressingJumpButton = true;
 
                 if (currentGraceTime > 0 && canJump || isWallSliding)
@@ -888,8 +899,6 @@ public class PlayerController : PhysicsObject
 
     // <<----------------------------------------------------- SLIDING SURFACE JUMP ------------------------------------------- //
 
-    float slidingSurfaceJumpForceY = 30f;
-
     private void PushOffSlidingSurface() 
     {
         StopSlopeSlide();
@@ -930,7 +939,9 @@ public class PlayerController : PhysicsObject
     private void PushOffWall()
     {
         Debug.Log("WALL JUMP");
+
         isTouchingWall = false;
+        isWallSliding = false;
 
         if (direction == Vector2.right)
         {
@@ -1009,12 +1020,14 @@ public class PlayerController : PhysicsObject
                 {
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime()));
+                    pFeedback.HeavyLandingParticles();
                     ripPP.CauseRipple(groundCheck, 12f, 0.8f);
                 }
                 else if (airTime > heavyLandTime) // Heavy hard landing 
                 {
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime() + 0.5f));
+                    pFeedback.HeavyLandingParticles();
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
                 }
 
@@ -1030,7 +1043,7 @@ public class PlayerController : PhysicsObject
                
                 airTime = 0;
                 inAir = false;
-                //coroutineRunning = false;
+                pFeedback.LightLandingParticles();
             }
         }
     }

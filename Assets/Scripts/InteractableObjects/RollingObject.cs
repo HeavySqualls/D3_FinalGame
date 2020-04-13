@@ -3,11 +3,23 @@
 public class RollingObject : MonoBehaviour
 {
     public Vector2 direction;
+    private Vector3 startPos;
 
     Rigidbody2D rb2D;
 
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += ResetRollingObject;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= ResetRollingObject;
+    }
+
     void Start()
     {
+        startPos = gameObject.transform.position;
         rb2D = GetComponent<Rigidbody2D>();
     }
 
@@ -16,5 +28,10 @@ public class RollingObject : MonoBehaviour
         print("hit");
         rb2D.AddForce(_hitDir * (_damage * 100));
         direction = _hitDir;
+    }
+
+    public void ResetRollingObject()
+    {
+        gameObject.transform.position = startPos;
     }
 }

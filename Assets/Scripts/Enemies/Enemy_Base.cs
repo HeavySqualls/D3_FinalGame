@@ -87,6 +87,16 @@ public class Enemy_Base : PhysicsObject
     protected Animator animator;
     protected GameObject target;
 
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += ResetBaseUnit;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= ResetBaseUnit;
+    }
+
     protected override void Start()
     {
         base.Start();
@@ -114,7 +124,7 @@ public class Enemy_Base : PhysicsObject
         ComputeVelocity();
     }
 
-    public void ResetUnit()
+    public void ResetBaseUnit()
     {
         isDead = false;
         Debug.Log(gameObject.name + " was reset");

@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class CrabwormTriggerZones : MonoBehaviour
 {
@@ -12,6 +10,21 @@ public class CrabwormTriggerZones : MonoBehaviour
     private void Start()
     {
         Toolbox.GetInstance().GetLevelManager().AddcwTriggerZone(this);
+    }
+
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += EnableTrigger;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= EnableTrigger;
+    }
+
+    private void EnableTrigger()
+    {
+        isActive = true;
     }
 
     void OnTriggerEnter2D(Collider2D other)

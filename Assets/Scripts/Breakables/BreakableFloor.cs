@@ -20,6 +20,13 @@ public class BreakableFloor : BreakableObject
         boxCollider = bfBoxCollider;
     }
 
+    protected override void ResetObject()
+    {
+        base.ResetObject();
+
+        triggerCollider.enabled = true;
+    }
+
     // When another objects collider interacts with this collider, 
     void OnTriggerEnter2D (Collider2D other)
     {

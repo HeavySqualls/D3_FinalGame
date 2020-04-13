@@ -41,6 +41,16 @@ public class PlayerHealthSystem : MonoBehaviour
     Tween shakeTween;
     SpriteRenderer spriteRenderer;
 
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += RespawnPlayer;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= RespawnPlayer;
+    }
+
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
@@ -112,16 +122,14 @@ public class PlayerHealthSystem : MonoBehaviour
 
         StopCoroutine("IFlashRed");
         spriteRenderer.color = Color.white;
-        StartCoroutine(RespawnCountdown());
+        //StartCoroutine(RespawnCountdown());
+        SpawnManager.PlayerWasKilled();
     }
 
-    private IEnumerator RespawnCountdown()
-    {
-        yield return new WaitForSeconds(respawnTime);
-
+    public void RespawnPlayer()
+    { 
         isDead = false;
         pCon.animator.SetBool("isDead", isDead);
-        pCon.DisablePlayerController();
 
         if (spawnZone != null)
         {
@@ -129,14 +137,36 @@ public class PlayerHealthSystem : MonoBehaviour
             spawnZone.RespawnObject(gameObject);
         }
         else
-        {
+
             Debug.LogError("No respawn location assigned!");
-        }
 
         pCon.EnablePlayerController();
         playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;
     }
+
+    //private IEnumerator RespawnCountdown()
+    //{
+    //    yield return new WaitForSeconds(respawnTime);
+
+    //    isDead = false;
+    //    pCon.animator.SetBool("isDead", isDead);
+    //    pCon.DisablePlayerController();
+
+    //    if (spawnZone != null)
+    //    {
+    //        print("spawn player");
+    //        spawnZone.RespawnObject(gameObject);
+    //    }
+    //    else
+    //    {
+    //        Debug.LogError("No respawn location assigned!");
+    //    }
+
+    //    pCon.EnablePlayerController();
+    //    playerHealth = playerHealthStart;
+    //    currentPhase = hurtPhase0;
+    //}
 
     public IEnumerator IFlashRed()
     {

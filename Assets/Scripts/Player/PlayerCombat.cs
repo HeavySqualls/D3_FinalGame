@@ -59,6 +59,7 @@ public class PlayerCombat : MonoBehaviour
     private AirTankController pUI;
     private Animator animator;
     private PlayerController pCon;
+    private PlayerFeedback pFeedback;
     LayerMask interactableLayerMask;
     int enemyLayer = 13;
     int interactablesLayer = 15;
@@ -68,6 +69,7 @@ public class PlayerCombat : MonoBehaviour
         interactableLayerMask = ((1 << enemyLayer) | (1 << interactablesLayer));
         pUI = GetComponent<AirTankController>();
         pCon = GetComponent<PlayerController>();
+        pFeedback = GetComponent<PlayerFeedback>();
         animator = pCon.animator;
     }
 
@@ -114,6 +116,7 @@ public class PlayerCombat : MonoBehaviour
             // Punch
             if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 3)
             {
+                pFeedback.AttackParticles("AttackParticleSystem-Heavy");
                 timeBetweenCombos = 0;
                 SetAttackStats(p3_damage, p3_knockback, p3_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch3");
@@ -123,6 +126,7 @@ public class PlayerCombat : MonoBehaviour
             }
             else if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 2)
             {
+                pFeedback.AttackParticles("AttackParticleSystem-Medium");
                 timeBetweenCombos = 0;
                 SetAttackStats(p2_damage, p2_knockback, p2_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch2");
@@ -134,7 +138,6 @@ public class PlayerCombat : MonoBehaviour
             {
                 comboAttacking = true;
                 timeBetweenCombos = 0;
-
                 SetAttackStats(p1_damage, p1_knockback, p1_knockUp, p1_stunTime);
                 pCon.animator.SetTrigger("punch1");
                 StartCoroutine(AttackCoolDown(attackSpacing));

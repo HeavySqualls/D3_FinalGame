@@ -59,6 +59,16 @@ public class Enemy_Turret_Base : MonoBehaviour
     protected Animator animator;
     public GameObject target;
 
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += ResetTurretUnit;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= ResetTurretUnit;
+    }
+
     protected virtual void Start()
     {
         Toolbox.GetInstance().GetLevelManager().AddTurretEnemies(this);
@@ -80,7 +90,7 @@ public class Enemy_Turret_Base : MonoBehaviour
         // Dealt with in the relative enemy controller
     }
 
-    public void ResetUnit()
+    public void ResetTurretUnit()
     {
         isDead = false;
         Debug.Log(gameObject.name + " was reset");

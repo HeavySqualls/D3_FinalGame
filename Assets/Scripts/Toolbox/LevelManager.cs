@@ -6,8 +6,6 @@ public class LevelManager : MonoBehaviour
 {
     // Provides a place for loot crates to add themselves to a list of loot crates 
 
-    public int currentSpawnID;
-
     [SerializeField] private List<PickUpItem> pickUpItems = new List<PickUpItem>();
     [SerializeField] private List<Enemy_Base> baseEnemies = new List<Enemy_Base>();
     [SerializeField] private List<CrabwormTriggerZones> cwTriggers = new List<CrabwormTriggerZones>(); //TODO: Set trigger zones up to subscribe to an event that will reset them automatically
@@ -21,29 +19,6 @@ public class LevelManager : MonoBehaviour
         baseEnemies.Clear();
         turretBaseEnemies.Clear();
         breakableObjects.Clear();
-    }
-
-    public void ResetLevelObjects()
-    {
-        foreach (Enemy_Base e in baseEnemies)
-        {
-            e.ResetUnit();
-        }
-
-        foreach (CrabwormTriggerZones cwtz in cwTriggers)
-        {
-            cwtz.isActive = true;
-        }
-
-        foreach (Enemy_Turret_Base et in turretBaseEnemies)
-        {
-            et.ResetUnit();
-        }
-
-        foreach (BreakableObject bo in breakableObjects)
-        {
-            bo.ResetObject();
-        }
     }
 
     // < ------------------------------------- TRACK BREAKABLE WALLS ----------------------------- >> //

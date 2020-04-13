@@ -16,6 +16,7 @@ public class BreakableObject : MonoBehaviour
     public bool isRespawnable = false;
     [HideInInspector]
     public bool isFallingApart = false;
+    private bool isBroken = false;
 
     [Space]
     [Header("VARIABLES:")]
@@ -38,6 +39,16 @@ public class BreakableObject : MonoBehaviour
     public List<BreakablePiece> earlyBreakPieces = new List<BreakablePiece>();
     protected BoxCollider2D boxCollider;
 
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += ResetObject;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= ResetObject;
+    }
+
     protected virtual void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
@@ -51,10 +62,12 @@ public class BreakableObject : MonoBehaviour
         FindEveryChild(gameObject.transform);
     }
 
-    public void ResetObject()
+    protected virtual void ResetObject()
     {
-        //gameObject.SetActive(true);
-        RespawnObject();
+        if (isBroken)
+        {
+            RespawnObject();
+        }
     }
 
     // Finds every child in the game object with a BreakablePiece component and adds it to the list 
@@ -71,6 +84,7 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
+
     // Determines if this object has been hit by a rolling object & is somthing other than a breakable floor, if so get direction of the rolling object and destroy this object
     void OnCollisionEnter2D(Collision2D other)
     {
@@ -82,6 +96,7 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
+
     // Implements damage to the object with variables passed on by the RecieveDamage component 
     public void TakeDamage(Vector2 _hitDir, float _dmg, float _knockback, float _knockUp, float _stunned)
     {
@@ -91,12 +106,11 @@ public class BreakableObject : MonoBehaviour
         {
             Debug.Log("Wall is broken");
             boxCollider.enabled = false;
+            isBroken = true;
             foreach (BreakablePiece bp in objPieces)
             {
                 bp.BlowOutPiece(_hitDir, isPlatform);
             }
-
-            //Destroy(gameObject, 3f);
         }
         else // if object still has hit points, shake
         {
@@ -148,6 +162,7 @@ public class BreakableObject : MonoBehaviour
 
         // Disable box collider on parent object
         boxCollider.enabled = false;
+        isBroken = true;
 
         // If the object has been hit by a rolling object
         if (hitByHeavyObject && !isPlatform && !isBreakableFloor)
@@ -175,12 +190,7 @@ public class BreakableObject : MonoBehaviour
 
             RespawnObject();
             yield break;
-        }
-        //else // If the object is NOT respawnable, destroy
-        //{
-        //    //Destroy(gameObject);
-        //    gameObject.SetActive(false);
-        //}     
+        }  
 
         yield break;
     }
@@ -273,7 +283,7 @@ public class BreakableObject : MonoBehaviour
         }
 
         currentHP = startHP;
-
+        isBroken = false;
         hitByHeavyObject = false;
     }
 }
