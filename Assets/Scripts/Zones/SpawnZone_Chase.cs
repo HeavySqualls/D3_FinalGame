@@ -18,7 +18,8 @@ public class SpawnZone_Chase : SpawnZone
 
         if (chaser != null)
         {
-            chaser.gameObject.transform.position = chaserRespawnLocation.position;
+            chaser.Respawn(chaserRespawnLocation);
+            //chaser.gameObject.transform.position = chaserRespawnLocation.position;
         }
     }
 }
