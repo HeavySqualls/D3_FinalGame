@@ -5,7 +5,7 @@ using UnityEngine;
 public class BreakableObject : MonoBehaviour
 {
     [Space]
-    [Header("TYPE:")]
+    [Header("Type:")]
     [Tooltip("Is this object a platform?")]
     public bool isPlatform = false;
     [Tooltip("Is this object a crumbling wall?")]
@@ -19,7 +19,12 @@ public class BreakableObject : MonoBehaviour
     private bool isBroken = false;
 
     [Space]
-    [Header("VARIABLES:")]
+    [Header("Particle System:")]
+    [SerializeField] ParticleSystem damagePartSyst;
+    [SerializeField] ParticleSystem brokenPartSyst;
+
+    [Space]
+    [Header("Variables:")]
     public float startHP;
     private float currentHP;
     [Tooltip("The length of time the object will shake.")]
@@ -84,7 +89,6 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
-
     // Determines if this object has been hit by a rolling object & is somthing other than a breakable floor, if so get direction of the rolling object and destroy this object
     void OnCollisionEnter2D(Collision2D other)
     {
@@ -104,6 +108,9 @@ public class BreakableObject : MonoBehaviour
 
         if (currentHP <= 0f) // if object has no more hit points, destroy
         {
+            brokenPartSyst.Play();
+            Toolbox.GetInstance().GetPlayerManager().GetPlayerFeedback().BreakShake();
+
             Debug.Log("Wall is broken");
             boxCollider.enabled = false;
             isBroken = true;
@@ -114,6 +121,8 @@ public class BreakableObject : MonoBehaviour
         }
         else // if object still has hit points, shake
         {
+            damagePartSyst.Play();         
+
             foreach (BreakablePiece bp in objPieces)
             {
                 bp.ShakePiece(bp.gameObject, shakeDuration, strength, vibrato);
@@ -126,7 +135,7 @@ public class BreakableObject : MonoBehaviour
     public void TriggerObjectShake()
     {
         Debug.Log("Floor is shaking!");
-
+        damagePartSyst.Play();
         ShakeObject();
     }
 

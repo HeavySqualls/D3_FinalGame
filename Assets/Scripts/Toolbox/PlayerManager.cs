@@ -7,6 +7,7 @@ public class PlayerManager : MonoBehaviour
     InventoryManager inventoryManager;
     PlayerInventoryHandler pInventoryHandler;
     PlayerController pCon;
+    PlayerFeedback pFeedback;
     AirTankController airTankCon;
 
     // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
@@ -19,6 +20,19 @@ public class PlayerManager : MonoBehaviour
     public PlayerController GetPlayerController()
     {
         return pCon;
+    }
+
+
+    // <<--------------------------------------------- SET UP PLAYER FEEDBACK ------------------------------------------- >> //
+
+    public void SetPlayerFeedback(PlayerFeedback _pFeedback)
+    {
+        pFeedback = _pFeedback;
+    }
+
+    public PlayerFeedback GetPlayerFeedback()
+    {
+        return pFeedback;
     }
 
 

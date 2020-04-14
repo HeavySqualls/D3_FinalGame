@@ -1018,17 +1018,21 @@ public class PlayerController : PhysicsObject
 
                 if (airTime > hardLandTime) // Light hard landing 
                 {
+                    pFeedback.LandingParticles("LandingParticleSystem-Heavy");
+                    ripPP.CauseRipple(groundCheck, 12f, 0.8f);
+                    pFeedback.HardLandShake();
+
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime()));
-                    pFeedback.HeavyLandingParticles();
-                    ripPP.CauseRipple(groundCheck, 12f, 0.8f);
                 }
                 else if (airTime > heavyLandTime) // Heavy hard landing 
                 {
+                    pFeedback.LandingParticles("LandingParticleSystem-Heavy");
+                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
+                    pFeedback.HardLandShake();
+
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime() + 0.5f));
-                    pFeedback.HeavyLandingParticles();
-                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
                 }
 
                 if (magBootsOn) // Landing with Mag Boots engaged
@@ -1043,7 +1047,7 @@ public class PlayerController : PhysicsObject
                
                 airTime = 0;
                 inAir = false;
-                pFeedback.LightLandingParticles();
+                pFeedback.LandingParticles("LandingParticleSystem-Light");
             }
         }
     }

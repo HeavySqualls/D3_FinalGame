@@ -21,7 +21,6 @@ public class GameManager : MonoBehaviour
     {
         ResetGameManager();
         Toolbox.GetInstance().GetLevelManager().ClearLists();
-        //Toolbox.GetInstance().GetLevelManager().PlacePlayerAtStartPoint()
     }
 
     void Start()

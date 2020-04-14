@@ -28,7 +28,7 @@ public class EnemyHandleInteract : MonoBehaviour
         if (enemyBase != null)
         {
             enemyBase.currentHP -= _damage;
-            print(gameObject.name + " was damaged!");
+            //print(gameObject.name + " was damaged!");
 
             StartCoroutine(enemyBase.ThisUnitHit(_hitDirection, _knockBack, _knockUp, _stunTime));
             StartCoroutine(IFlashRed());
@@ -36,7 +36,7 @@ public class EnemyHandleInteract : MonoBehaviour
         else if (enemyTurretBase != null)
         {
             enemyTurretBase.currentHP -= _damage;
-            print(gameObject.name + " was damaged!");
+            //print(gameObject.name + " was damaged!");
 
             enemyTurretBase.ThisUnitHit(_hitDirection, _knockBack, _knockUp, _stunTime);
             StartCoroutine(IFlashRed());

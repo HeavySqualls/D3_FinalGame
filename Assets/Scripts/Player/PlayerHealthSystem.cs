@@ -1,6 +1,5 @@
 ﻿using System.Collections;
 using UnityEngine;
-using DG.Tweening;
 
 public class PlayerHealthSystem : MonoBehaviour
 {
@@ -30,15 +29,13 @@ public class PlayerHealthSystem : MonoBehaviour
     [Header("Respawn:")]
     public SpawnZone spawnZone;
     public float respawnTime;
-    [SerializeField] bool isBeingChased = false;
     public bool isDead = false;
 
     [Space]
     [Header("References:")]
     PlayerController pCon;
+    PlayerFeedback pFeedback;
     Animator animator;
-    Camera cam;
-    Tween shakeTween;
     SpriteRenderer spriteRenderer;
 
     private void OnEnable()
@@ -54,15 +51,15 @@ public class PlayerHealthSystem : MonoBehaviour
     void Start()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
-        cam = Camera.main;
 
         pCon = GetComponent<PlayerController>();
+        pFeedback = GetComponent<PlayerFeedback>();
         animator = GetComponent<Animator>();
 
         playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;
 
-        flashCoroutine = IFlashRed();
+        flashCoroutine = IInjuredFlashRed();
     }
 
 
@@ -72,8 +69,8 @@ public class PlayerHealthSystem : MonoBehaviour
     {
         if (!isDead)
         {
-            shakeTween = cam.transform.DOShakePosition(0.8f, 0.25f, 9, 2f, false, true);
-            StopCoroutine("IFlashRed");
+            pFeedback.HurtShake();
+            StopCoroutine("IInjuredFlashRed");
 
             if (currentPhase == hurtPhase0)
             {
@@ -100,7 +97,7 @@ public class PlayerHealthSystem : MonoBehaviour
                 return;
             }
 
-            StartCoroutine("IFlashRed");
+            StartCoroutine("IInjuredFlashRed");
 
             playerHealth -= _damage;
 
@@ -120,9 +117,8 @@ public class PlayerHealthSystem : MonoBehaviour
         pCon.animator.SetBool("isDead", isDead);
         pCon.DisablePlayerController();
 
-        StopCoroutine("IFlashRed");
+        StopCoroutine("IInjuredFlashRed");
         spriteRenderer.color = Color.white;
-        //StartCoroutine(RespawnCountdown());
         SpawnManager.PlayerWasKilled();
     }
 
@@ -145,30 +141,7 @@ public class PlayerHealthSystem : MonoBehaviour
         currentPhase = hurtPhase0;
     }
 
-    //private IEnumerator RespawnCountdown()
-    //{
-    //    yield return new WaitForSeconds(respawnTime);
-
-    //    isDead = false;
-    //    pCon.animator.SetBool("isDead", isDead);
-    //    pCon.DisablePlayerController();
-
-    //    if (spawnZone != null)
-    //    {
-    //        print("spawn player");
-    //        spawnZone.RespawnObject(gameObject);
-    //    }
-    //    else
-    //    {
-    //        Debug.LogError("No respawn location assigned!");
-    //    }
-
-    //    pCon.EnablePlayerController();
-    //    playerHealth = playerHealthStart;
-    //    currentPhase = hurtPhase0;
-    //}
-
-    public IEnumerator IFlashRed()
+    public IEnumerator IInjuredFlashRed()
     {
         print("Flash");
 

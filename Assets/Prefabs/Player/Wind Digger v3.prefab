@@ -4948,15 +4948,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8bd70bb644fd849ba4daeb0c1094b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundPositionOffset: {x: 0, y: -1.5, z: 0}
+  attackPositionOffset: {x: 1.5, y: -1, z: 0}
+  attackPositionOffsetALT: {x: 1.5, y: 1.5, z: 0}
   runningPartSyst: {fileID: 497008579}
   slidingPartSyst: {fileID: 497008579}
   jumpingTrailPartSyst: {fileID: 1619517173}
+  heavyAttackPartSyst: {fileID: 0}
   flashDuration: 0.4
   shakeDuration: 0.8
   shakeStrength: 0.25
   vibrato: 9
   randomness: 2
-  groundPositionOffset: {x: 0, y: 1.5, z: 0}
 --- !u!114 &7036694795940340694
 MonoBehaviour:
   m_ObjectHideFlags: 0

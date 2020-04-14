@@ -17,7 +17,7 @@ public class DeathZone : MonoBehaviour
             if (unit.GetComponent<PlayerController>())
             {
                 unit.gameObject.GetComponent<PlayerHealthSystem>().KillPlayer();
-                StartCoroutine(unit.gameObject.GetComponent<PlayerFeedback>().IFlashRed());
+                //StartCoroutine(unit.gameObject.GetComponent<PlayerFeedback>().IFlashRed());
             }
             else if (unit.GetComponent<Enemy_Base>())
             {

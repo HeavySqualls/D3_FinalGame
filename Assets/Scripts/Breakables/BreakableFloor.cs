@@ -3,8 +3,10 @@ using UnityEngine;
 
 public class BreakableFloor : BreakableObject
 {
+    [Header("BREAKABLE FLOOR:")]
+
     [Space]
-    [Header("WEIGHT VARIABLES:")]
+    [Header("Weight Variables:")]
     [Tooltip("The delay before the items get weighed - to give a brief moment before the floor collapses.")]
     public float weighWaitTime;
     [Tooltip("The max amount of weight allowed on the floor before it collapses.")]

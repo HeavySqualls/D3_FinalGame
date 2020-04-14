@@ -233,7 +233,7 @@ public class PlayerCombat : MonoBehaviour
 
                 if (recieveDamage != null && !hit.collider.isTrigger)
                 {
-                    print("hit: " + recieveDamage.name);
+                    //print("hit: " + recieveDamage.name);
                     recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
                     canCast = false;
                     //pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);

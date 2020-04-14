@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 using DG.Tweening;
+using Cinemachine;
 
 public class PlayerFeedback : MonoBehaviour
 {
@@ -15,7 +16,6 @@ public class PlayerFeedback : MonoBehaviour
     [SerializeField] ParticleSystem runningPartSyst;
     [SerializeField] ParticleSystem slidingPartSyst;
     [SerializeField] ParticleSystem jumpingTrailPartSyst;
-    [SerializeField] ParticleSystem heavyAttackPartSyst;
     GameObject disposablePartSyst;
 
     [Space]
@@ -35,15 +35,15 @@ public class PlayerFeedback : MonoBehaviour
     public int vibrato = 9;
     [Tooltip("The randomness of the shake postitions.")]
     public float randomness = 2f;
-    Camera cam;
+    public CinemachineVirtualCamera cam;
     Tween shakeTween;
     PlayerController pCon;
 
     void Start()
     {
+        Toolbox.GetInstance().GetPlayerManager().SetPlayerFeedback(this);
         pCon = GetComponent<PlayerController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        cam = Camera.main;
     }
 
     private void Update()
@@ -68,29 +68,17 @@ public class PlayerFeedback : MonoBehaviour
         Destroy(disposablePartSyst, 1f);
     }
 
-    //public void MediumAttackParticles()
-    //{
-    //    disposablePartSyst = Instantiate(Resources.Load("AttackParticleSystem-Medium", typeof(GameObject))) as GameObject;
-
-    //    if (pCon.accessibleDirection == Vector2.right)
-    //        disposablePartSyst.transform.position = gameObject.transform.position + attackPositionOffset;
-    //    else
-    //        disposablePartSyst.transform.position = gameObject.transform.position - attackPositionOffsetALT;
-
-    //    Destroy(disposablePartSyst, 1f);
-    //}
-
     private void RunningParticles()
     {
         if (pCon.isMoving && pCon.isGrounded && !isRunningSystem)
         {
-            print("start running");
+            //print("start running");
             runningPartSyst.Play();
             isRunningSystem = true;
         }
         else if ((!pCon.isMoving || !pCon.isGrounded) && isRunningSystem)
         {
-            print("stop running");
+            //print("stop running");
             runningPartSyst.Stop();
             isRunningSystem = false; 
         }
@@ -100,13 +88,13 @@ public class PlayerFeedback : MonoBehaviour
     {
         if (pCon.isGroundSliding && !isSlidingSurfaceSystem && !isRunningSystem)
         {
-            print("start surface sliding");
+            //print("start surface sliding");
             slidingPartSyst.Play();
             isSlidingSurfaceSystem = true;
         }
         else if (!pCon.isGroundSliding && isSlidingSurfaceSystem)
         {
-            print("stop surface sliding");
+            //print("stop surface sliding");
             slidingPartSyst.Stop();
             isSlidingSurfaceSystem = false;
         }
@@ -136,16 +124,9 @@ public class PlayerFeedback : MonoBehaviour
         Destroy(disposablePartSyst, 1f);
     }
 
-    public void LightLandingParticles()
+    public void LandingParticles(string _particleName)
     {
-        disposablePartSyst = Instantiate(Resources.Load("LandingParticleSystem-Light", typeof(GameObject))) as GameObject;
-        disposablePartSyst.transform.position = gameObject.transform.position + groundPositionOffset;
-        Destroy(disposablePartSyst, 1.5f);
-    }
-
-    public void HeavyLandingParticles()
-    {
-        disposablePartSyst = Instantiate(Resources.Load("LandingParticleSystem-Heavy", typeof(GameObject))) as GameObject;
+        disposablePartSyst = Instantiate(Resources.Load(_particleName, typeof(GameObject))) as GameObject;
         disposablePartSyst.transform.position = gameObject.transform.position + groundPositionOffset;
         Destroy(disposablePartSyst, 1.5f);
     }
@@ -153,26 +134,41 @@ public class PlayerFeedback : MonoBehaviour
 
     // <<----------------------------------------------------- SPRITE FLASH ------------------------------------------- //
 
-    public IEnumerator IFlashRed()
+    public void HurtShake()
     {
-        shakeTween = cam.transform.DOShakePosition(0.8f, 0.25f, 9, 2f, false, true);
-
-        for (float i = 0; i < flashDuration; i += flashDelay)
-        {
-            if (spriteRenderer.color == Color.white)
-            {
-                spriteRenderer.color = Color.red;
-            }
-            else if (spriteRenderer.color == Color.red)
-            {
-                spriteRenderer.color = Color.white;
-            }
-
-            yield return new WaitForSeconds(flashDelay);
-        }
-
-        spriteRenderer.color = Color.white;
-
-        yield break;
+        shakeTween = cam.transform.DOShakePosition(shakeDuration, shakeStrength, vibrato, randomness, false, true);
     }
+
+    public void HardLandShake()
+    {
+        shakeTween = cam.transform.DOShakePosition(0.3f, 0.2f, 20, randomness, false, false);
+    }
+
+    public void BreakShake()
+    {
+        shakeTween = cam.transform.DOShakePosition(shakeDuration, 0.2f, 20, randomness, false, true);
+    }
+
+    //public IEnumerator IFlashRed()
+    //{
+    //    shakeTween = cam.transform.DOShakePosition(shakeDuration, shakeStrength, vibrato, randomness, false, true);
+
+    //    for (float i = 0; i < flashDuration; i += flashDelay)
+    //    {
+    //        if (spriteRenderer.color == Color.white)
+    //        {
+    //            spriteRenderer.color = Color.red;
+    //        }
+    //        else if (spriteRenderer.color == Color.red)
+    //        {
+    //            spriteRenderer.color = Color.white;
+    //        }
+
+    //        yield return new WaitForSeconds(flashDelay);
+    //    }
+
+    //    spriteRenderer.color = Color.white;
+
+    //    yield break;
+    //}
 }
