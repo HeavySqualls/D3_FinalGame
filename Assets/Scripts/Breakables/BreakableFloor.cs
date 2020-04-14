@@ -65,6 +65,7 @@ public class BreakableFloor : BreakableObject
         // If the weight exceeds the total allowable weight,
         if (totalWeight >= totalAllowableWeight)
         {
+            brokenPartSyst.Play();
             triggerCollider.enabled = false;
             StartCoroutine(CollapseAndRespawnCounter());
             objectsOnFloor.Clear();

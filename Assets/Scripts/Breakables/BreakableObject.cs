@@ -6,6 +6,8 @@ public class BreakableObject : MonoBehaviour
 {
     [Space]
     [Header("Type:")]
+    [Tooltip("Will this object respawn?")]
+    public bool isRottenDoor = false;
     [Tooltip("Is this object a platform?")]
     public bool isPlatform = false;
     [Tooltip("Is this object a crumbling wall?")]
@@ -20,8 +22,8 @@ public class BreakableObject : MonoBehaviour
 
     [Space]
     [Header("Particle System:")]
-    [SerializeField] ParticleSystem damagePartSyst;
-    [SerializeField] ParticleSystem brokenPartSyst;
+    [SerializeField] protected ParticleSystem damagePartSyst;
+    [SerializeField] protected ParticleSystem brokenPartSyst;
 
     [Space]
     [Header("Variables:")]
@@ -108,25 +110,16 @@ public class BreakableObject : MonoBehaviour
 
         if (currentHP <= 0f) // if object has no more hit points, destroy
         {
-            brokenPartSyst.Play();
             Toolbox.GetInstance().GetPlayerManager().GetPlayerFeedback().BreakShake();
-
-            Debug.Log("Wall is broken");
-            boxCollider.enabled = false;
-            isBroken = true;
-            foreach (BreakablePiece bp in objPieces)
-            {
-                bp.BlowOutPiece(_hitDir, isPlatform);
-            }
+            StartCoroutine(CollapseAndRespawnCounter());
+            //Debug.Log("Wall is broken");
+            //boxCollider.enabled = false;
+            //isBroken = true;
+            //BlowOutObject();
         }
         else // if object still has hit points, shake
         {
-            damagePartSyst.Play();         
-
-            foreach (BreakablePiece bp in objPieces)
-            {
-                bp.ShakePiece(bp.gameObject, shakeDuration, strength, vibrato);
-            }
+            ShakeObject();
         }
     }
 
@@ -134,7 +127,6 @@ public class BreakableObject : MonoBehaviour
     // Shakes the floor when the player lands on it
     public void TriggerObjectShake()
     {
-        Debug.Log("Floor is shaking!");
         damagePartSyst.Play();
         ShakeObject();
     }
@@ -174,7 +166,7 @@ public class BreakableObject : MonoBehaviour
         isBroken = true;
 
         // If the object has been hit by a rolling object
-        if (hitByHeavyObject && !isPlatform && !isBreakableFloor)
+        if (hitByHeavyObject && !isBreakableFloor || isRottenDoor)
         {
             BlowOutObject();
         }
@@ -206,7 +198,8 @@ public class BreakableObject : MonoBehaviour
 
     private void ShakeObject()
     {
-        Debug.Log("Shake Object");
+        damagePartSyst.Play();
+
         foreach (BreakablePiece bp in objPieces)
         {
             bp.ShakePiece(bp.gameObject, shakeDuration, strength, vibrato);
@@ -223,7 +216,8 @@ public class BreakableObject : MonoBehaviour
 
     private void DropObject()
     {
-        Debug.Log("Drop Object");
+        brokenPartSyst.Play();
+
         foreach (BreakablePiece bp in objPieces)
         {
             bp.DropPiece();
@@ -240,7 +234,8 @@ public class BreakableObject : MonoBehaviour
 
     private void BlowOutObject()
     {
-        Debug.Log("Blow Out Object");
+        brokenPartSyst.Play();
+
         foreach (BreakablePiece bp in objPieces)
         {
             bp.BlowOutPiece(boulderHitFromDirection, isPlatform);

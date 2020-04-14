@@ -37,18 +37,6 @@ CircleCollider2D:
   m_Offset: {x: 0.01608044, y: -0.02938819}
   serializedVersion: 2
   m_Radius: 1.3225133
---- !u!114 &4842629487838423581
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3464839085938416219}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 989f2e212723405408c2cefcdaa2b20a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &4842629487838423554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75,6 +63,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objWeight: 2
+--- !u!114 &4842629487838423581
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3464839085938416219}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 989f2e212723405408c2cefcdaa2b20a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &7019696340931215773
 GameObject:
   m_ObjectHideFlags: 0
@@ -116,12 +116,12 @@ PrefabInstance:
     - target: {fileID: -4216859302048453862, guid: c971a719b4bd1d24bbc2fd401ae809e1,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: -2.5
+      value: -2.5400085
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c971a719b4bd1d24bbc2fd401ae809e1,
         type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: 0.18999863
       objectReference: {fileID: 0}
     - target: {fileID: -4216859302048453862, guid: c971a719b4bd1d24bbc2fd401ae809e1,
         type: 3}
@@ -168,6 +168,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: c971a719b4bd1d24bbc2fd401ae809e1,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: b80a8df95f16dcc4e95ed6f1fdb865a6, type: 2}
     - target: {fileID: -927199367670048503, guid: c971a719b4bd1d24bbc2fd401ae809e1,
         type: 3}
       propertyPath: m_Name
