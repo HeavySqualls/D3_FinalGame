@@ -28,6 +28,10 @@ public class SilentCity : MonoBehaviour
     bool isMoving = false;
 
     [Space]
+    [Header("Particle Effects:")]
+    [SerializeField] GameObject disposablePartSyst;
+
+    [Space]
     [Header("Screen Shake:")]
     public CinemachineVirtualCamera cam;
     Tween shakeTween;
@@ -113,22 +117,39 @@ public class SilentCity : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D col)
     {
-        RecieveDamage objectHit = col.gameObject.GetComponent<RecieveDamage>();
+        GameObject objectHit = col.gameObject;       
 
         if (objectHit != null)
         {
-            print("Ran over " + objectHit.name);
+            RecieveDamage objectRecieveDamage = objectHit.GetComponent<RecieveDamage>();
 
-            PlayerHealthSystem pHeathSyst = objectHit.gameObject.GetComponent<PlayerHealthSystem>();
-
-            if (pHeathSyst != null && !pHeathSyst.isDead)
+            if (objectRecieveDamage != null)
             {
-                pHeathSyst.KillPlayer();            
+                print("City killed " + objectHit.name);
+
+                PlayerHealthSystem pHeathSyst = objectHit.gameObject.GetComponent<PlayerHealthSystem>();
+
+                if (pHeathSyst != null && !pHeathSyst.isDead)
+                {
+                    pHeathSyst.KillPlayer();
+                }
+                else
+                {
+                    objectRecieveDamage.GetHit(Vector2.left, 100f, 0, 0, 0);
+                }
             }
             else
             {
-                objectHit.GetHit(Vector2.left, 100f, 0, 0, 0);
-            }
+                print("City ran over " + objectHit.name);
+                SmashingWallEffect(objectHit.transform.position);
+            }  
         }
+    }
+
+    private void SmashingWallEffect(Vector3 _position)
+    {
+        disposablePartSyst = Instantiate(Resources.Load("CitySmash-Particle System", typeof(GameObject))) as GameObject;
+        disposablePartSyst.transform.position = _position;
+        Destroy(disposablePartSyst, 1.5f);
     }
 }
