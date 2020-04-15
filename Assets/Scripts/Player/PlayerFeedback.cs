@@ -44,6 +44,9 @@ public class PlayerFeedback : MonoBehaviour
         Toolbox.GetInstance().GetPlayerManager().SetPlayerFeedback(this);
         pCon = GetComponent<PlayerController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        //spriteRenderer.receiveShadows = true;
+        //spriteRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
+
     }
 
     private void Update()
