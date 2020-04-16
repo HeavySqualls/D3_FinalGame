@@ -3,28 +3,50 @@ using UnityEngine;
 
 public class BorasWindController : MonoBehaviour
 {
-    public bool withChildren = true;
-    public bool isBlowing = false;
-    bool countdown = false;
-
-    public float blowTimeStart = 2f;
+    [Header("Boras Variables:")]
+    [Tooltip("The time in between gusts of wind.")]
+    [SerializeField] float intervalTime = 5f;
+    [Tooltip("The duration that the wind will blow for.")]
+    [SerializeField] float blowTimeStart = 2f;
+    [Tooltip("The current duration that the wind is blowing.")]
     [SerializeField] private float blowTime;
+    [SerializeField] private bool countdown = false;
 
-    public float enableColliderTime = 1f;
-    public float disableColliderTime = 1f;
+    [Space]
+    [Header("Wind Collider Variables:")]
+    [Tooltip("The box collider where the wind affect will be applied.")]
+    [SerializeField] BoxCollider2D[] windAreas;
+    //public BoxCollider2D windArea;
+    [Tooltip("The time that the box collider will be enabled at (check blowTime to set the enable time).")]
+    [SerializeField] float enableDelay;
+    [Tooltip("The time that the box collider will be enabled at (check blowTime to set the enable time).")]
+    [SerializeField] float enableColliderTime = 1f;
+    [Tooltip("The time that the box collider will be disabled at (check blowTime to set the disable time).")]
+    [SerializeField] float disableColliderTime = 1f;
+    bool enableColliders;
 
-    public float intervalTime = 5f;
-    public float speed;
-    public Transform startPos;
-    private ParticleSystem borasSyst;
+    [Space]
+    [Header("Particle System:")]
     public ParticleSystem detectSyst;
-    public BoxCollider2D windArea;
+    [SerializeField] bool isBlowing = false;
+    private ParticleSystem borasSyst;
+    private bool withChildren = true;
 
-    public WindColliderController windCollCon;
+    //OLD MOVING COLLIDER SYSTEM VARS:
+    //public WindColliderController windCollCon;
+    //public float speed;
+    //public Transform startPos;
+
     void Start()
     {
         borasSyst = GetComponentInChildren<ParticleSystem>();
-        windArea.enabled = false;
+        //windArea.enabled = false;
+
+        foreach (BoxCollider2D wA in windAreas)
+        {
+            wA.enabled = false;
+        }
+
         blowTime = blowTimeStart;
     }
 
@@ -46,14 +68,18 @@ public class BorasWindController : MonoBehaviour
         {
             blowTime -= Time.deltaTime;
 
-            if (blowTime < enableColliderTime)
+            if (!enableColliders && blowTime < enableColliderTime)
             {
-                windArea.enabled = true;
+                //windArea.enabled = true;
+                StartCoroutine(EnableWindColliders());
+                enableColliders = true;
             }
 
-            if (blowTime < disableColliderTime)
+            if (enableColliders && blowTime < disableColliderTime)
             {
-                windArea.enabled = false;
+                //windArea.enabled = false;
+                StartCoroutine(DisableWindColliders());
+                enableColliders = false;
             }
 
             if (blowTime < 0)
@@ -62,6 +88,38 @@ public class BorasWindController : MonoBehaviour
                 countdown = false;
             }
         }
+    }
+
+    IEnumerator EnableWindColliders()
+    {
+        int colliderCount = 0;
+
+        while (colliderCount < windAreas.Length)
+        {
+            yield return new WaitForSeconds(enableDelay);
+
+            windAreas[colliderCount].enabled = true;
+
+            colliderCount++;
+        }
+
+        yield break;
+    }
+
+    IEnumerator DisableWindColliders()
+    {
+        int colliderCount = 0;
+
+        while (colliderCount < windAreas.Length)
+        {
+            yield return new WaitForSeconds(enableDelay);
+
+            windAreas[colliderCount].enabled = false;
+
+            colliderCount++;          
+        }
+
+        yield break;
     }
 
     IEnumerator Interval()

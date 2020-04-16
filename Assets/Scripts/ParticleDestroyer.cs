@@ -6,6 +6,6 @@ public class ParticleDestroyer : MonoBehaviour
     void OnParticleCollision(GameObject other)
     {
         var collision = other.gameObject.GetComponent<ParticleSystem>().collision;
-        collision.lifetimeLoss = 1;      
+        collision.lifetimeLoss = 1f;      
     }
 }

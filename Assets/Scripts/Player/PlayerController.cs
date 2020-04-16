@@ -450,21 +450,23 @@ public class PlayerController : PhysicsObject
         animator.SetFloat("velocityX", Mathf.Abs(velocity.x) / maxSpeed);
     }
 
-    private void ComputeDirectionOfSpriteInWind()
+    private void ComputeDirectionOfSpriteInWind() // TODO: Solve the issue where the boras wind confuses the players sprite flip
     {
-        if (isFromLeft & !isTouchingWall)
+        if (isFromLeft)
         {
             if (velocity.x > windRatio && pIsFaceLeft) // If player is moving with the wind - face to the right 
             {
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
+                print("Player direction = " + direction);
             }
             else if (velocity.x < 0 && !pIsFaceLeft) // If the player is moving against the wind - face to the left 
             {
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
+                print("Player direction = " + direction);
             }
         }
         else if (!isFromLeft)
@@ -474,12 +476,14 @@ public class PlayerController : PhysicsObject
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
+                print("Player direction = " + direction);
             }
             else if (velocity.x < windRatio && !pIsFaceLeft && isMovingInWind && !isTouchingWall) // If the player is moving with the wind - face to the left
             {
                 ChangeDirection();
                 pIsFaceLeft = !pIsFaceLeft;
                 spriteRenderer.flipX = !spriteRenderer.flipX;
+                print("Player direction = " + direction);
             }
         }
 
@@ -494,9 +498,46 @@ public class PlayerController : PhysicsObject
     }
 
 
+    // <<----------------------------------------------------- CHANGE DIRECTION / FLIP SPRITE ------------------------------------------- //
+
+    private void FlipSpriteBasedOnInput()
+    {
+        if (canFlipSprite)
+        {
+            bool flipPlayerSprite = (spriteRenderer.flipX ? (horizontalInput > 0f) : (horizontalInput < 0f));
+
+            if (flipPlayerSprite)
+            {
+                print("flip");
+                ChangeDirection();
+            }
+        }
+    }
+
+    private void ChangeDirection()
+    {
+        if (direction == Vector2.right)
+        {
+            direction = Vector2.left;
+            isLeft = true;
+        }
+        else
+        {
+            direction = Vector2.right;
+            isLeft = false;
+        }
+
+        if (!inWindZone)
+        {
+            pIsFaceLeft = !pIsFaceLeft;
+            spriteRenderer.flipX = !spriteRenderer.flipX;
+            accessibleDirection = direction;
+        }
+    }
+
+
     // <<----------------------------------------------------- CHECK SURROUNDINGS ------------------------------------------- //
 
-    //public bool isOnGround = false;
 
     private void CheckSurroundings()
     {
@@ -678,51 +719,6 @@ public class PlayerController : PhysicsObject
         }
 
         animator.SetBool("isWallSliding", isWallSliding);
-    }
-
-
-    // <<----------------------------------------------------- CHANGE DIRECTION / FLIP SPRITE ------------------------------------------- //
-
-    private void FlipSpriteBasedOnInput()
-    {
-        //float minXFlip = 0f; // minimum velocity on the x axis to trigger the sprite flip                   
-        //bool flipPlayerSprite = (spriteRenderer.flipX ? (velocity.x > minXFlip /*&& !isTouchingWall*/) : (velocity.x < minXFlip/* && !isTouchingWall*/));
-
-        // TRYING THIS OUT TO PREVENT PLAYER FROM CHANGING DIRECTIONS WHEN HITTING A WALL BELOW THE WALL CHECK RAYCAST WHILE IN THE AIR 
-        if (canFlipSprite)
-        {
-            bool flipPlayerSprite = (spriteRenderer.flipX ? (horizontalInput > 0f) : (horizontalInput < 0f));
-
-            if (flipPlayerSprite)
-            {
-                print("flip");
-                ChangeDirection();
-            }
-        }
-    }
-
-    private void ChangeDirection()
-    {
-        //if (canFlipSprite)
-        //{
-            if (direction == Vector2.right)
-            {
-                direction = Vector2.left;
-                isLeft = true;
-            }             
-            else
-            {
-                direction = Vector2.right;
-                isLeft = false;
-            }
-
-            if (!inWindZone)
-            {
-                pIsFaceLeft = !pIsFaceLeft;
-                spriteRenderer.flipX = !spriteRenderer.flipX;
-                accessibleDirection = direction;
-            }
-        //}
     }
 
 

@@ -38,6 +38,7 @@ public class BreakableObject : MonoBehaviour
     [Tooltip("The time it takes for the platform to respawn.")]
     public float respawnTime;
     public bool hitByHeavyObject = false;
+    private bool hitByPlayer = false;
     private Vector2 boulderHitFromDirection;
 
     [Space]
@@ -111,6 +112,7 @@ public class BreakableObject : MonoBehaviour
         if (currentHP <= 0f) // if object has no more hit points, destroy
         {
             Toolbox.GetInstance().GetPlayerManager().GetPlayerFeedback().BreakShake();
+            hitByPlayer = true;
             StartCoroutine(CollapseAndRespawnCounter());
             //Debug.Log("Wall is broken");
             //boxCollider.enabled = false;
@@ -156,7 +158,7 @@ public class BreakableObject : MonoBehaviour
         isFallingApart = true;
 
         // If the object has not been hit by a rolling object, wait for shake to finish
-        if (!hitByHeavyObject)
+        if (!hitByHeavyObject || !hitByPlayer)
         {
             yield return new WaitForSeconds(shakeDuration);
         }
@@ -166,7 +168,7 @@ public class BreakableObject : MonoBehaviour
         isBroken = true;
 
         // If the object has been hit by a rolling object
-        if (hitByHeavyObject && !isBreakableFloor || isRottenDoor)
+        if ((hitByHeavyObject || hitByPlayer) && !isBreakableFloor /*|| isRottenDoor*/)
         {
             BlowOutObject();
         }
@@ -289,5 +291,6 @@ public class BreakableObject : MonoBehaviour
         currentHP = startHP;
         isBroken = false;
         hitByHeavyObject = false;
+        hitByPlayer = false;
     }
 }
