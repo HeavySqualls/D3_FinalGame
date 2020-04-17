@@ -538,6 +538,7 @@ public class PlayerController : PhysicsObject
 
     // <<----------------------------------------------------- CHECK SURROUNDINGS ------------------------------------------- //
 
+    //public bool isOnGround = false;
 
     private void CheckSurroundings()
     {
