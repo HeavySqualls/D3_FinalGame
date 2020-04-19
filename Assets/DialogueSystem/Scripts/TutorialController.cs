@@ -44,6 +44,14 @@ public class TutorialController : MonoBehaviour
     [SerializeField] GameObject closeButton;
 
     [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip openCloseSound;
+    [SerializeField] float openCloseVolume = 0.3f;
+    [SerializeField] AudioClip continueSound;
+    [SerializeField] float continueVolume = 0.3f;
+    AudioSource audioSource;
+
+    [Space]
     [Header("Tutorial References:")]
     [Tooltip("The GameObject of the tutorial panel.")]
     [SerializeField] GameObject tutorialPanel;
@@ -57,12 +65,20 @@ public class TutorialController : MonoBehaviour
     private void Start()
     {
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void PlayAudio(AudioClip _clip, float _volume)
+    {
+        audioSource.volume = _volume;
+        audioSource.PlayOneShot(_clip);
     }
 
     private void Update()
     {
         if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && open)
         {
+            PlayAudio(continueSound, continueVolume);
             open = false;
             HideTutorial();
         }
@@ -70,6 +86,7 @@ public class TutorialController : MonoBehaviour
 
     public void DisplayTutorial(sTutorial _tutorialData)
     {
+        PlayAudio(openCloseSound, openCloseVolume);
         tutorialPanel.SetActive(!tutorialPanel.activeSelf);
 
         animator.SetBool("isOpen", true);
@@ -87,6 +104,7 @@ public class TutorialController : MonoBehaviour
 
     public void HideTutorial()
     {
+        PlayAudio(openCloseSound, openCloseVolume);
         title.SetActive(false);
         info.SetActive(false);
         quote.SetActive(false);

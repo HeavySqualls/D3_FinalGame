@@ -36,6 +36,8 @@ public class BreakableFloor : BreakableObject
 
         if (newObj != null)
         {
+            damagePartSyst.Play();
+
             objectsOnFloor.Add(newObj);
             hitByHeavyObject = true;
             DetermineWeight();

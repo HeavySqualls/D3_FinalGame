@@ -5439,11 +5439,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef8bd70bb644fd849ba4daeb0c1094b7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  groundPositionOffset: {x: 0, y: 1.5, z: 0}
+  attackPositionOffset: {x: 1.5, y: -1.5, z: 0}
+  attackPositionOffsetALT: {x: 1.5, y: 1.5, z: 0}
+  runningPartSyst: {fileID: 0}
+  slidingPartSyst: {fileID: 0}
+  jumpingTrailPartSyst: {fileID: 0}
   flashDuration: 0.4
   shakeDuration: 0.8
   shakeStrength: 0.25
   vibrato: 9
   randomness: 2
+  cam: {fileID: 0}
 --- !u!114 &8840246823808797432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5501,14 +5508,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b949dadd950d944cbae01e2d625702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  playerHealthStart: 0
   flashDuration: 5
   currentFlashDelay: 0
   phase1FlashDelay: 0.5
   phase2FlashDelay: 0.35
   phase3FlashDelay: 0.15
   currentPhase: 0
-  playerHealthStart: 0
+  spawnZone: {fileID: 0}
   respawnTime: 0
+  isDead: 0
 --- !u!114 &6711178901593303750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5580,7 +5589,6 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 0
-  respawnZone: {fileID: 0}
   move: {x: 0, y: 0}
   isController: 0
   accelSpeedNormal: 15
@@ -5603,6 +5611,7 @@ MonoBehaviour:
   maxGraceTime: 0.12
   jumpHoldTimeMax: 0.37
   airDisableTimer: 0.1
+  slidingSurfaceJumpForceY: 25
   magBootsOn: 0
   onGravValue: 25
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
@@ -5610,6 +5619,7 @@ MonoBehaviour:
   groundCheckDistance: 0.2
   groundCheck: {fileID: 7913283350763793139}
   groundSlideSpeed: 18
+  isGroundSliding: 0
   wallCheckDistance: 0.75
   wallSlidingSpeed: 1
   wallJumpDirection: {x: 0, y: 0}
@@ -5628,6 +5638,7 @@ MonoBehaviour:
   controls: {fileID: 7653283981852455200}
   animator: {fileID: 0}
   isHit: 0
+  isOnGround: 0
 --- !u!114 &7653283981852455200
 MonoBehaviour:
   m_ObjectHideFlags: 0

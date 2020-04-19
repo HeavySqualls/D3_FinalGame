@@ -12,6 +12,15 @@ public class RollingObject : MonoBehaviour
     int breakableFloorsLayer = 17;
     public float groundCheckDistance = 2f;
 
+    [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip rollingSound;
+    [SerializeField] float rollingVolume = 0.3f;
+    bool isRollingSoundPlaying = false;
+    [SerializeField] AudioClip landSound;
+    [SerializeField] float landSoundVolume = 0.3f;
+    [SerializeField] AudioSource rollingSource;
+    [SerializeField] AudioSource effectSource;
     private void OnEnable()
     {
         SpawnManager.onResetLevelObjects += ResetRollingObject;
@@ -27,11 +36,31 @@ public class RollingObject : MonoBehaviour
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer));
         startPos = gameObject.transform.position;
         rb2D = GetComponent<Rigidbody2D>();
+
+        rollingSource.clip = rollingSound;
+        rollingSource.volume = rollingVolume;
+    }
+
+    private void PlayAudio(AudioClip _clip, float _volume)
+    {
+        effectSource.volume = _volume;
+        effectSource.PlayOneShot(_clip);
     }
 
     private void Update()
     {
         CheckForGround();
+
+        if ((rb2D.velocity.x > 0.5f || rb2D.velocity.x < -0.5f) && !isRollingSoundPlaying)
+        {
+            rollingSource.Play();
+            isRollingSoundPlaying = true;
+        }
+        else if ((rb2D.velocity.x < 0.5f && rb2D.velocity.x > -0.5f) && isRollingSoundPlaying)
+        {
+            rollingSource.Stop();
+            isRollingSoundPlaying = false;
+        }
     }
 
     public void TakeDamage(Vector2 _hitDir, float _damage, float _knockBack, float _knockUp, float _stun)
@@ -60,6 +89,7 @@ public class RollingObject : MonoBehaviour
 
         if (hitGround.collider != null && shakeOnLanding == true)
         {
+            PlayAudio(landSound, landSoundVolume);
             Toolbox.GetInstance().GetPlayerManager().GetPlayerFeedback().BreakShake();
             disposablePartSyst = Instantiate(Resources.Load("LandingParticleSystem-Heavy", typeof(GameObject))) as GameObject;
             disposablePartSyst.transform.position = gameObject.transform.position - groundPositionOffset;

@@ -80,6 +80,20 @@ public class LootBoxPanel : MonoBehaviour
         }
     }
 
+    public bool CheckIfEmpty()
+    {
+        for (int i = 0; i < lootBoxSlots.Length; i++)
+        {
+            if (lootBoxSlots[i].Item != null)
+            {
+                return false;
+            }
+        }
+
+        Debug.Log("No items left in " + gameObject.name + "!");
+        return true;
+    }
+
     public void QuickLoot()
     {
         for (int i = 0; i < lootBoxSlots.Length; i++)

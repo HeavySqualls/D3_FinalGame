@@ -20,6 +20,12 @@ public class Inventory : MonoBehaviour, IItemContainer
 
     public event Action<sItem> OnItemRightClickedEvent;
 
+    [SerializeField] AudioClip pickUpSound;
+    [SerializeField] AudioClip errorSound;
+    [SerializeField] AudioClip trashSound;
+    [SerializeField] float soundVolume = 0.15f;
+    AudioSource audioSource;
+
     private void Start()
     {
         for (int i = 0; i < itemSlots.Length; i++)
@@ -37,6 +43,9 @@ public class Inventory : MonoBehaviour, IItemContainer
         SetStartingItems();
 
         gameObject.SetActive(!gameObject.activeSelf);
+
+        audioSource = GetComponent<AudioSource>();
+        audioSource.volume = soundVolume;
     }
 
     private void OnValidate()
@@ -70,6 +79,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         {
             if (itemSlots[i].Item == null)
             {
+                audioSource.PlayOneShot(pickUpSound);
                 itemSlots[i].Item = item;
                 return true;
             }
@@ -85,6 +95,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         {
             if (itemSlots[i].Item == _item)
             {
+                audioSource.PlayOneShot(trashSound);
                 itemSlots[i].Item = null;
                 return true;
             }
@@ -117,6 +128,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         {
             if (itemSlots[i].Item == null)
             {
+                audioSource.PlayOneShot(errorSound);
                 return false;
             }
         }
@@ -145,6 +157,8 @@ public class Inventory : MonoBehaviour, IItemContainer
                 return true;
             }
         }
+
+        audioSource.PlayOneShot(errorSound);
         return false;
     }
 }

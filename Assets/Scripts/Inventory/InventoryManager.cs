@@ -12,7 +12,6 @@ public class InventoryManager : MonoBehaviour
 
     public Inventory inventory;
     [SerializeField] EquipmentPanel equipPanel;
-    //[SerializeField] LootBoxPanel lootPanel;
     [Tooltip("Set all the panels from the loot boxes in the level here.")]
     [SerializeField] LootBoxPanel[] lootBoxPanels;
     [SerializeField] StatPanel statPanel;
@@ -20,16 +19,6 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] Image draggableItem;
 
     private ItemSlot draggedSlot;
-
-    //private void OnValidate()
-    //{
-    //    if (itemTooltip == null)
-    //    {
-    //        itemTooltip = FindObjectOfType<ItemToolTip>();
-    //    }
-    //}
-
-    //TODO: Find out why these events are not getting linked 
 
     private void Awake()
     {

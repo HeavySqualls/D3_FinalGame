@@ -27,6 +27,16 @@ public class MenuHandler : MonoBehaviour
     [SerializeField] Button respawnButton;
 
     [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip hoverSound;
+    [SerializeField] float hoverVolume = 0.3f;
+    [SerializeField] AudioClip clickSound;
+    [SerializeField] float clickVolume = 0.3f;
+    [SerializeField] AudioClip openMenuSound;
+    [SerializeField] float openMenuVolume = 0.3f;
+    AudioSource audioSource;
+
+    [Space]
     [Header("References:")]
     [SerializeField] PlayableDirector timeLine; //TODO: move this to some sort of scene manager
     GameManager gm;
@@ -45,6 +55,7 @@ public class MenuHandler : MonoBehaviour
     private void Start()
     {
         gm = Toolbox.GetInstance().GetGameManager();
+        audioSource = GetComponent<AudioSource>();
 
         if (isPauseMenu)
         {
@@ -64,9 +75,6 @@ public class MenuHandler : MonoBehaviour
             timeLine.Play();
             print("play");
         }
-
-        //Cursor.visible = false;
-        //Cursor.lockState = CursorLockMode.Locked;
     }
 
     private void Update()
@@ -80,14 +88,27 @@ public class MenuHandler : MonoBehaviour
         }
     }
 
+    private void PlayAudio(AudioClip _clip, float _volume)
+    {
+        audioSource.volume = _volume;
+        audioSource.PlayOneShot(_clip);
+    }
+
     public void StartGame()
     {
+        PlayAudio(clickSound, clickVolume);
         gm.LoadNextScene();
+    }
+
+    public void PlayHoverSound()
+    {
+        PlayAudio(hoverSound, hoverVolume);
     }
 
     public void OpenClosePauseMenu()
     {
         PauseMenu.SetActive(!PauseMenu.activeSelf);
+        PlayAudio(openMenuSound, openMenuVolume);
 
         if (PauseMenu.activeSelf && !OptionsMenu.activeSelf)
         {
@@ -116,6 +137,7 @@ public class MenuHandler : MonoBehaviour
 
     public void ResetToLastCheckpoint()
     {
+        PlayAudio(clickSound, clickVolume);
         DeathMenu.SetActive(false);
         SpawnManager.ResetLevelObjects();
         Cursor.visible = false;
@@ -124,13 +146,15 @@ public class MenuHandler : MonoBehaviour
 
     public void ResetLevel()
     {
-        //DeathMenu.SetActive(false);
+        PlayAudio(clickSound, clickVolume);
+
         Time.timeScale = 1;
         gm.RestartLevel();
     }
 
     public void OpenCloseOptions()
     {
+        PlayAudio(clickSound, clickVolume);
         OptionsMenu.SetActive(!OptionsMenu.activeSelf);
 
         if (PauseMenu != null)
@@ -141,12 +165,14 @@ public class MenuHandler : MonoBehaviour
 
     public void QuitToMainMenu()
     {
+        PlayAudio(clickSound, clickVolume);
         Time.timeScale = 1;
         gm.LoadCustomScene(0);
     }
 
     public void Quit()
     {
+        PlayAudio(clickSound, clickVolume);
         gm.QuitGame();
     }
 }

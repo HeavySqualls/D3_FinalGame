@@ -29,6 +29,22 @@ public class NarrativeController : MonoBehaviour
     private SpeakerUIController speakerUIRight;
 
     [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip alertSound;
+    [SerializeField] float alertVolume = 0.3f;
+    [SerializeField] AudioClip speakersMoveInSound;
+    [SerializeField] float speakersMoveInVolume = 0.3f;
+    [SerializeField] AudioClip textSound;
+    [SerializeField] float textVolume = 0.3f;
+    [SerializeField] AudioClip panelOpenCloseSound;
+    [SerializeField] float panelOpenCloseVolume = 0.3f;
+    [SerializeField] AudioClip continueSound;
+    [SerializeField] float continueVolume = 0.3f;
+    [SerializeField] AudioClip quickTypeSound;
+    [SerializeField] float quickTypeVolume = 0.3f;
+    AudioSource audioSource;
+
+    [Space]
     [Header("Tutorial References:")]
     public TutorialController tutorialController;
     public bool hasDisplayedTutorial = false;
@@ -48,6 +64,13 @@ public class NarrativeController : MonoBehaviour
     private void Start()
     {
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
+        audioSource = GetComponent<AudioSource>();
+    }
+
+    private void PlayAudio(AudioClip _clip, float _volume)
+    {
+        audioSource.volume = _volume;
+        audioSource.PlayOneShot(_clip);
     }
 
     private IEnumerator typeCoroutine; 
@@ -62,6 +85,8 @@ public class NarrativeController : MonoBehaviour
             {
                 if (typeCoroutine != null)
                 {
+                    audioSource.Stop();
+                    PlayAudio(quickTypeSound, quickTypeVolume);
                     StopCoroutine(typeCoroutine);
                 }
 
@@ -70,6 +95,7 @@ public class NarrativeController : MonoBehaviour
             }
             else
             {
+                PlayAudio(continueSound, continueVolume);
                 AdvanceNarrative();
             }
         }
@@ -89,6 +115,7 @@ public class NarrativeController : MonoBehaviour
             yield return new WaitForSeconds(N.narrativeStartDelayTime);
         }
 
+        PlayAudio(alertSound, alertVolume);
         cinematicController.PlayNarrativeSlideIn();
 
         yield return new WaitForSeconds(delayTime);
@@ -105,6 +132,8 @@ public class NarrativeController : MonoBehaviour
         // Disable both the player input and the enemy movements
         pCon.DisablePlayerController();
         Toolbox.GetInstance().GetLevelManager().PauseAllEnemies();
+
+        PlayAudio(speakersMoveInSound, speakersMoveInVolume);
 
         // Check if this narrative is a monologue, and if so, only enable the speaker on the left side
         if (N.isMonologue)
@@ -235,7 +264,6 @@ public class NarrativeController : MonoBehaviour
 
         typeCoroutine = TypeWritterEffect_N(_text, _activeSpeakerUI);
         StartCoroutine(typeCoroutine);
-        //StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
     }
 
     private void SetNarrativeDialogue(SpeakerUIController _activeSpeakerUI, SpeakerUIController _inactiveSpeakerUI, string _text)
@@ -243,7 +271,18 @@ public class NarrativeController : MonoBehaviour
         activeSpeakerUI = _activeSpeakerUI;
         _activeSpeakerUI.Dialogue = _text;
         _activeSpeakerUI.Show();
+
+        if (_activeSpeakerUI.dialoguePanelGO != enabled)
+        {
+            PlayAudio(panelOpenCloseSound, panelOpenCloseVolume);
+        }
+
         _inactiveSpeakerUI.Hide();
+
+        if (_activeSpeakerUI.dialoguePanelGO == enabled)
+        {
+            PlayAudio(panelOpenCloseSound, panelOpenCloseVolume);
+        }
 
         _activeSpeakerUI.Dialogue = "";
 
@@ -254,8 +293,6 @@ public class NarrativeController : MonoBehaviour
 
         typeCoroutine = TypeWritterEffect_N(_text, _activeSpeakerUI);
         StartCoroutine(typeCoroutine);
-        //StopAllCoroutines();
-        //StartCoroutine(TypeWritterEffect_N(_text, _activeSpeakerUI));
     }
 
     public IEnumerator TypeWritterEffect_N(string _text, SpeakerUIController _speakerUI)
@@ -264,11 +301,17 @@ public class NarrativeController : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
+        audioSource.volume = textVolume;
+        audioSource.clip = textSound;
+        audioSource.Play();
+
         foreach (char letter in _text.ToCharArray())
         {
             _speakerUI.Dialogue += letter;
             yield return new WaitForSeconds(textDelayTime);
         }
+
+        audioSource.Stop();
 
         isTyping = false;
     }
@@ -289,6 +332,8 @@ public class NarrativeController : MonoBehaviour
     public void EndResetNarrativeController()
     {
         // Hide UI
+        PlayAudio(speakersMoveInSound, speakersMoveInVolume);
+
         speakerUILeft.Hide();
         speakerUILeft.HideSprite();
 

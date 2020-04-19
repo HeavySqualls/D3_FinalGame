@@ -35,6 +35,7 @@ public class PlayerHealthSystem : MonoBehaviour
     [Header("References:")]
     PlayerController pCon;
     PlayerFeedback pFeedback;
+    PlayerAudioController pAudio;
     Animator animator;
     SpriteRenderer spriteRenderer;
 
@@ -53,6 +54,7 @@ public class PlayerHealthSystem : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
 
         pCon = GetComponent<PlayerController>();
+        pAudio = GetComponent<PlayerAudioController>();
         pFeedback = GetComponent<PlayerFeedback>();
         animator = GetComponent<Animator>();
 
@@ -69,6 +71,7 @@ public class PlayerHealthSystem : MonoBehaviour
     {
         if (!isDead)
         {
+            pAudio.PlayHurtSound();
             pFeedback.HurtShake();
             StopCoroutine("IInjuredFlashRed");
 
@@ -114,6 +117,7 @@ public class PlayerHealthSystem : MonoBehaviour
     {
         print("player killed");
         isDead = true;
+        pAudio.PlayDeathSound();
         pCon.animator.SetBool("isDead", isDead);
         pCon.DisablePlayerController();
 

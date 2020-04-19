@@ -11,6 +11,10 @@ public class PlayerInventoryHandler : MonoBehaviour
     [SerializeField] GameObject statTooltip;
 
     bool isInventoryOpen = false;
+    [SerializeField] AudioClip openSound;
+    [SerializeField] float soundVolume = 0.15f;
+    float playSpeed = 1.5f;
+    AudioSource audioSource;
     PlayerController pCon;
 
     private void Awake()
@@ -22,21 +26,41 @@ public class PlayerInventoryHandler : MonoBehaviour
     {
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
         equipmentPanel.SetActive(!equipmentPanel.activeSelf);
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = openSound;
+        audioSource.volume = soundVolume;
+        audioSource.pitch = playSpeed;
     }
+
+    float wantedTime = 0;
 
     void Update()
     {
-        if (Input.GetButtonDown(pCon.controls.inventory) || Controls.IsUp)
+        if (!pCon.isDisabled)
         {
-            if (isInventoryOpen)
+            if (Input.GetButtonDown(pCon.controls.inventory) || Controls.IsUp)
             {
-                HideMouseCursor();
-                DisableInventory();
-            }
-            else if (!isInventoryOpen)
-            {
-                ShowMouseCursor();
-                EnableInventory();
+                if (isInventoryOpen)
+                {
+                    //audioSource.time = openSound.length;
+                    //audioSource.pitch = closePlaySpeed;
+                    //audioSource.timeSamples = audioSource.clip.samples -1;
+                    audioSource.Play();
+
+                    HideMouseCursor();
+                    DisableInventory();
+                }
+                else if (!isInventoryOpen)
+                {
+                    //audioSource.time = openSound.length;
+                    //audioSource.pitch = 1;
+                    //audioSource.timeSamples = audioSource.clip.samples + 1;
+                    audioSource.Play();
+
+                    //audioSource.Play();
+                    ShowMouseCursor();
+                    EnableInventory();
+                }
             }
         }
     }

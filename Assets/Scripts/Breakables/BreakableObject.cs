@@ -42,6 +42,14 @@ public class BreakableObject : MonoBehaviour
     private Vector2 boulderHitFromDirection;
 
     [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip hitSound;
+    [SerializeField] float hitSoundVolume = 0.3f;
+    [SerializeField] AudioClip breakSound;
+    [SerializeField] float breakSoundVolume = 0.3f;
+    AudioSource audioSource;
+
+    [Space]
     [Header("OBJECT PIECES:")]
     public List<BreakablePiece> objPieces = new List<BreakablePiece>();
     public List<BreakablePiece> earlyBreakPieces = new List<BreakablePiece>();
@@ -60,6 +68,7 @@ public class BreakableObject : MonoBehaviour
     protected virtual void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
+        audioSource = GetComponent<AudioSource>();
         currentHP = startHP;
 
         if (!isRespawnable)
@@ -68,6 +77,12 @@ public class BreakableObject : MonoBehaviour
         }
 
         FindEveryChild(gameObject.transform);
+    }
+
+    private void PlayAudio(AudioClip _clip, float _volume)
+    {
+        audioSource.volume = _volume;
+        audioSource.PlayOneShot(_clip);
     }
 
     protected virtual void ResetObject()
@@ -158,14 +173,16 @@ public class BreakableObject : MonoBehaviour
         isFallingApart = true;
 
         // If the object has not been hit by a rolling object, wait for shake to finish
-        if (!hitByHeavyObject || !hitByPlayer)
+        if (!hitByHeavyObject && !hitByPlayer)
         {
+            print("poo");
             yield return new WaitForSeconds(shakeDuration);
         }
 
         // Disable box collider on parent object
         boxCollider.enabled = false;
         isBroken = true;
+        PlayAudio(breakSound, breakSoundVolume);
 
         // If the object has been hit by a rolling object
         if ((hitByHeavyObject || hitByPlayer) && !isBreakableFloor /*|| isRottenDoor*/)
@@ -201,6 +218,7 @@ public class BreakableObject : MonoBehaviour
     private void ShakeObject()
     {
         damagePartSyst.Play();
+        PlayAudio(hitSound, hitSoundVolume);
 
         foreach (BreakablePiece bp in objPieces)
         {

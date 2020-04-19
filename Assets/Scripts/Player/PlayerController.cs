@@ -9,6 +9,7 @@ public class PlayerController : PhysicsObject
 
     [Space]
     [Header("Input:")]
+    public bool isDisabled = false;
     public bool isController = false;
 
     [Space]
@@ -38,10 +39,10 @@ public class PlayerController : PhysicsObject
     [Tooltip("Maximum movement speed.")]
     public float maxSpeed = 3.75f;
     public Vector2 accessibleDirection; // a player direction vector that other scripts can read and use without making the physics object public
+    public bool backToWind = true;
     private bool windAffectUnit = true;
     private bool pIsFaceLeft;
     private bool canFlipSprite = true;
-    private bool backToWind = true;
     private float windRatio; // Ratio between the wind power and the players velocity
 
     [Space]
@@ -124,9 +125,11 @@ public class PlayerController : PhysicsObject
     public Controls controls;
     public Animator animator;
     private PlayerFeedback pFeedback;
+    private PlayerAudioController pAudio;
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
     private LayerMask groundLayerMask;
+    private LayerMask wallLayerMask;
     private int groundLayer = 8;
     private int breakableFloorsLayer = 17;
     private int slidingSurfaceLayer = 18;
@@ -151,8 +154,10 @@ public class PlayerController : PhysicsObject
         base.Start();
 
         pFeedback = GetComponent<PlayerFeedback>();
+        pAudio = GetComponent<PlayerAudioController>();
 
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
+        wallLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << breakableObjectsLayer));
 
         if (controls != null)
         {
@@ -223,6 +228,7 @@ public class PlayerController : PhysicsObject
     {
         print("Skidding");
         isSkidding = true;
+        pAudio.PlaySlideSound();
 
         yield return new WaitForSeconds(GetAnimTime() / 4.25f);
 
@@ -443,7 +449,7 @@ public class PlayerController : PhysicsObject
         animator.SetBool("isGroundSliding", isGroundSliding);
         animator.SetBool("isMoving", isMoving);
         animator.SetBool("isSkid", isSkidding);
-        animator.SetBool("grounded", isGrounded);
+        animator.SetBool("grounded", isOnGround/*isGrounded*/);
         animator.SetBool("inWind", inWindZone);
         animator.SetBool("isBackToWind", backToWind);
         animator.SetBool("isMovingInWind", isMovingInWind);
@@ -538,7 +544,7 @@ public class PlayerController : PhysicsObject
 
     // <<----------------------------------------------------- CHECK SURROUNDINGS ------------------------------------------- //
 
-    //public bool isOnGround = false;
+    public bool isOnGround = false;
 
     private void CheckSurroundings()
     {
@@ -547,6 +553,8 @@ public class PlayerController : PhysicsObject
 
         if (hitGround.collider != null)
         {
+            isOnGround = true;
+
             int currentLayer = hitGround.collider.gameObject.layer;
 
             if (currentLayer == breakableObjectsLayer)
@@ -611,13 +619,17 @@ public class PlayerController : PhysicsObject
 
             targetVelocity.x = move.x;
         }
+        else if (hitGround.collider == null)
+        {
+            isOnGround = false;
+        }
 
         if (canMove)
         {
-            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
+            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, wallLayerMask);
             Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
 
-            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, groundLayerMask);
+            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, wallLayerMask);
             Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
 
             // Check for ledge grab
@@ -662,37 +674,45 @@ public class PlayerController : PhysicsObject
 
     private void SlopeSlide(Vector2 _slideDirection)
     {
-        canMove = false;
-        //isGrounded = true;
-        if (!isGroundSliding)
+        if (!magBootsOn)
         {
-            isTouchingWall = false;
-            isWallSliding = false;
-            isGroundSliding = true;
-        }
+            canMove = false;
+            //isGrounded = true;
+            if (!isGroundSliding)
+            {
+                isTouchingWall = false;
+                isWallSliding = false;
+                isGroundSliding = true;
+            }
 
-        if (direction != _slideDirection)
-        {
-            ChangeDirection();
-        }
+            if (direction != _slideDirection)
+            {
+                ChangeDirection();
+            }
 
-        canFlipSprite = false;
+            canFlipSprite = false;
 
-        animator.SetBool("isGroundSliding", isGroundSliding);
+            animator.SetBool("isGroundSliding", isGroundSliding);
 
-        slideDirection = _slideDirection;
+            slideDirection = _slideDirection;
 
-        if (_slideDirection == Vector2.right)
-        {
-            move.x = groundSlideSpeed;
+            if (_slideDirection == Vector2.right)
+            {
+                move.x = groundSlideSpeed;
+            }
+            else
+            {
+                move.x = -groundSlideSpeed;
+            }
+
+            targetVelocity.x = move.x;
+            velocity.y = -15;
         }
         else
         {
-            move.x = -groundSlideSpeed;
+            isGroundSliding = false;
         }
-
-        targetVelocity.x = move.x;
-        velocity.y = -15;
+        
     }
 
     private void StopSlopeSlide()
@@ -739,9 +759,9 @@ public class PlayerController : PhysicsObject
             }
             else if (isGrounded && !bootsSwitchedOn)
             {
+                magBootsOn = true;
                 print("MagBoots Activated: " + magBootsOn);
                 bootsSwitchedOn = true;
-                magBootsOn = true;
                 rb2d.velocity = Vector3.zero;
                 gravityModifier = onGravValue;
             }
@@ -781,7 +801,7 @@ public class PlayerController : PhysicsObject
         if (ledgeDetected && !canClimbLedge)
         {
             canClimbLedge = true;
-
+            pAudio.PlayClimbSound();
             StopTrackAirTime();
 
             if (direction == Vector2.right)
@@ -824,15 +844,16 @@ public class PlayerController : PhysicsObject
 
     private void Jump()
     {
-        if (!magBootsOn)
+        if (!magBootsOn && !isDisabled)
         {
             if (Input.GetButtonDown(controls.jump))
             {
-                pFeedback.JumpingParticleEffect();
                 isPressingJumpButton = true;
 
                 if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
+                    pAudio.PlayJumpSound();
+                    pFeedback.JumpingParticleEffect();
                     StartCoroutine(JumpDelayTime());
                     currentGraceTime = 0;
                     canJump = false;
@@ -966,12 +987,13 @@ public class PlayerController : PhysicsObject
 
         if (isGrounded)
         {
-            print("Quick jump!");
-            velocity.y = jumpTakeoffSpeed;
-            animator.SetTrigger("jumping");
-            currentGraceTime = 0;
-            StopTrackAirTime();
-            inAir = true;
+            Jump();
+            //print("Quick jump!");
+            //velocity.y = jumpTakeoffSpeed;
+            //animator.SetTrigger("jumping");
+            //currentGraceTime = 0;
+            //StopTrackAirTime();
+            //inAir = true;
         }
         else
         {
@@ -997,7 +1019,7 @@ public class PlayerController : PhysicsObject
 
     public void RapidJump()
     {
-        if (!isGrounded && canJump && Input.GetButtonDown(controls.jump) && quickJump)
+        if (!isOnGround/*isGrounded*/ && canJump && Input.GetButtonDown(controls.jump) && quickJump)
         {
             StartCoroutine(QuickJumpTimer());
         }
@@ -1018,6 +1040,7 @@ public class PlayerController : PhysicsObject
                     pFeedback.LandingParticles("LandingParticleSystem-Heavy");
                     ripPP.CauseRipple(groundCheck, 12f, 0.8f);
                     pFeedback.HardLandShake();
+                    pAudio.PlayLandSound(true, false);
 
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime()));
@@ -1027,9 +1050,15 @@ public class PlayerController : PhysicsObject
                     pFeedback.LandingParticles("LandingParticleSystem-Heavy");
                     ripPP.CauseRipple(groundCheck, 30f, 0.9f);
                     pFeedback.HardLandShake();
+                    pAudio.PlayLandSound(false, true);
 
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime() + 0.5f));
+                }
+                else // normal landing
+                {
+                    pFeedback.LandingParticles("LandingParticleSystem-Light");
+                    pAudio.PlayLandSound(false, false);
                 }
 
                 if (magBootsOn) // Landing with Mag Boots engaged
@@ -1044,7 +1073,6 @@ public class PlayerController : PhysicsObject
                
                 airTime = 0;
                 inAir = false;
-                pFeedback.LandingParticles("LandingParticleSystem-Light");
             }
         }
     }
@@ -1060,15 +1088,20 @@ public class PlayerController : PhysicsObject
 
     public void DisablePlayerController()
     {
+        isDisabled = true;
+        isMoving = false;
+        isMovingInWind = false;
         canJump = false;
         canMove = false;
         canWallSlide = false;
         canFlipSprite = false;
         targetVelocity = Vector2.zero;
+        pAudio.StopFootSteps();
     }
 
     public void EnablePlayerController()
     {
+        isDisabled = false;
         canFlipSprite = true;
         canJump = true;
         canMove = true;

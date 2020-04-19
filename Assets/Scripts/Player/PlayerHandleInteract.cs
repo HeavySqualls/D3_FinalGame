@@ -13,7 +13,6 @@ public class PlayerHandleInteract : MonoBehaviour
     PlayerInventoryHandler pInventoryHandler;
     PlayerController pCon;
 
-
     void Start()
     {
         pInventoryHandler = Toolbox.GetInstance().GetPlayerManager().GetPlayerInventoryHandler();

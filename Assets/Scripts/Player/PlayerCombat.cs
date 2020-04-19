@@ -15,6 +15,7 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] float airDrainAmount = 2f;
     float timeBetweenCombos = 0;
     int comboNum = 1;
+    int currentAttackNum = 1;
 
     [Space]
     [Header("States:")]
@@ -55,11 +56,16 @@ public class PlayerCombat : MonoBehaviour
     public float b_stunTime;
 
     [Space]
+    [Header("Audio:")]
+
+
+    [Space]
     [Header("References:")]
     private AirTankController pUI;
     private Animator animator;
     private PlayerController pCon;
     private PlayerFeedback pFeedback;
+    private PlayerAudioController pAudio;
     LayerMask interactableLayerMask;
     int enemyLayer = 13;
     int interactablesLayer = 15;
@@ -70,6 +76,7 @@ public class PlayerCombat : MonoBehaviour
         pUI = GetComponent<AirTankController>();
         pCon = GetComponent<PlayerController>();
         pFeedback = GetComponent<PlayerFeedback>();
+        pAudio = GetComponent<PlayerAudioController>();
         animator = pCon.animator;
     }
 
@@ -117,31 +124,37 @@ public class PlayerCombat : MonoBehaviour
             if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 3)
             {
                 pFeedback.AttackParticles("AttackParticleSystem-Heavy");
+                pAudio.PlayPunchSound(3);
                 timeBetweenCombos = 0;
                 SetAttackStats(p3_damage, p3_knockback, p3_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch3");
                 StartCoroutine(AttackCoolDown(attackSpacing));
                 StartCoroutine(CastForHit());
+                currentAttackNum = 3;
                 comboNum = 1;
             }
             else if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 2)
             {
                 pFeedback.AttackParticles("AttackParticleSystem-Medium");
+                pAudio.PlayPunchSound(2);
                 timeBetweenCombos = 0;
                 SetAttackStats(p2_damage, p2_knockback, p2_knockUp, p2_stunTime);
                 pCon.animator.SetTrigger("punch2");
                 StartCoroutine(AttackCoolDown(attackSpacing));
                 StartCoroutine(CastForHit());
+                currentAttackNum = 2;
                 comboNum = 3;
             }
             else if (Input.GetButtonDown(pCon.controls.punch) && comboNum == 1)
             {
+                pAudio.PlayPunchSound(1);
                 comboAttacking = true;
                 timeBetweenCombos = 0;
                 SetAttackStats(p1_damage, p1_knockback, p1_knockUp, p1_stunTime);
                 pCon.animator.SetTrigger("punch1");
                 StartCoroutine(AttackCoolDown(attackSpacing));
                 StartCoroutine(CastForHit());
+                currentAttackNum = 1;
                 comboNum = 2;
             }
 
@@ -234,7 +247,9 @@ public class PlayerCombat : MonoBehaviour
                 if (recieveDamage != null && !hit.collider.isTrigger)
                 {
                     //print("hit: " + recieveDamage.name);
+                    pAudio.PlayConnectSound(currentAttackNum);
                     recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
+                    
                     canCast = false;
                     //pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
                 }
