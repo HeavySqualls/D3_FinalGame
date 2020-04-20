@@ -12,9 +12,9 @@ public class PlayerInventoryHandler : MonoBehaviour
 
     bool isInventoryOpen = false;
     [SerializeField] AudioClip openSound;
-    [SerializeField] float soundVolume = 0.15f;
+    [SerializeField] float openSoundVolume = 0.15f;
     float playSpeed = 1.5f;
-    AudioSource audioSource;
+    AudioManager AM;
     PlayerController pCon;
 
     private void Awake()
@@ -26,10 +26,7 @@ public class PlayerInventoryHandler : MonoBehaviour
     {
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
         equipmentPanel.SetActive(!equipmentPanel.activeSelf);
-        audioSource = GetComponent<AudioSource>();
-        audioSource.clip = openSound;
-        audioSource.volume = soundVolume;
-        audioSource.pitch = playSpeed;
+        AM = Toolbox.GetInstance().GetAudioManager();
     }
 
     float wantedTime = 0;
@@ -42,22 +39,15 @@ public class PlayerInventoryHandler : MonoBehaviour
             {
                 if (isInventoryOpen)
                 {
-                    //audioSource.time = openSound.length;
-                    //audioSource.pitch = closePlaySpeed;
-                    //audioSource.timeSamples = audioSource.clip.samples -1;
-                    audioSource.Play();
+                    AM.PlayConsistentOneShot(openSound, openSoundVolume);
 
                     HideMouseCursor();
                     DisableInventory();
                 }
                 else if (!isInventoryOpen)
                 {
-                    //audioSource.time = openSound.length;
-                    //audioSource.pitch = 1;
-                    //audioSource.timeSamples = audioSource.clip.samples + 1;
-                    audioSource.Play();
+                    AM.PlayConsistentOneShot(openSound, openSoundVolume);
 
-                    //audioSource.Play();
                     ShowMouseCursor();
                     EnableInventory();
                 }

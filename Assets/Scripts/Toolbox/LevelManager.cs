@@ -1,10 +1,12 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 
 public class LevelManager : MonoBehaviour
 {
-    // Provides a place for loot crates to add themselves to a list of loot crates 
+    // Tracks and provides access to important pieces within the level (such as pickups, enemies, camera etc...)
+    [SerializeField] private CinemachineVirtualCamera levelCam;
 
     [SerializeField] private List<PickUpItem> pickUpItems = new List<PickUpItem>();
     [SerializeField] private List<Enemy_Base> baseEnemies = new List<Enemy_Base>();
@@ -20,6 +22,20 @@ public class LevelManager : MonoBehaviour
         turretBaseEnemies.Clear();
         breakableObjects.Clear();
     }
+
+
+    // < ------------------------------------- TRACK VIRTUAL CAMERA ----------------------------- >> //
+
+    public void AssignVirtualCam(CinemachineVirtualCamera _cam)
+    {
+        levelCam = _cam;
+    }
+
+    public CinemachineVirtualCamera GetVirtualCam()
+    {
+        return this.levelCam;
+    }
+
 
     // < ------------------------------------- TRACK BREAKABLE WALLS ----------------------------- >> //
 

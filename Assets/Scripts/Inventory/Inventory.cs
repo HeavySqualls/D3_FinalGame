@@ -24,7 +24,7 @@ public class Inventory : MonoBehaviour, IItemContainer
     [SerializeField] AudioClip errorSound;
     [SerializeField] AudioClip trashSound;
     [SerializeField] float soundVolume = 0.15f;
-    AudioSource audioSource;
+    AudioManager AM;
 
     private void Start()
     {
@@ -44,8 +44,7 @@ public class Inventory : MonoBehaviour, IItemContainer
 
         gameObject.SetActive(!gameObject.activeSelf);
 
-        audioSource = GetComponent<AudioSource>();
-        audioSource.volume = soundVolume;
+        AM = Toolbox.GetInstance().GetAudioManager();
     }
 
     private void OnValidate()
@@ -79,7 +78,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         {
             if (itemSlots[i].Item == null)
             {
-                audioSource.PlayOneShot(pickUpSound);
+                AM.PlayConsistentOneShot(pickUpSound, soundVolume);
                 itemSlots[i].Item = item;
                 return true;
             }
@@ -95,7 +94,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         {
             if (itemSlots[i].Item == _item)
             {
-                audioSource.PlayOneShot(trashSound);
+                AM.PlayConsistentOneShot(trashSound, soundVolume);
                 itemSlots[i].Item = null;
                 return true;
             }
@@ -128,7 +127,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         {
             if (itemSlots[i].Item == null)
             {
-                audioSource.PlayOneShot(errorSound);
+                AM.PlayConsistentOneShot(errorSound, soundVolume);
                 return false;
             }
         }
@@ -158,7 +157,7 @@ public class Inventory : MonoBehaviour, IItemContainer
             }
         }
 
-        audioSource.PlayOneShot(errorSound);
+        AM.PlayConsistentOneShot(errorSound, soundVolume);
         return false;
     }
 }

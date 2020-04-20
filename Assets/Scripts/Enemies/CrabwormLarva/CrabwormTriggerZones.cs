@@ -33,7 +33,7 @@ public class CrabwormTriggerZones : MonoBehaviour
         {
             if (other.gameObject.tag == "Player")
             {
-                crabwormCon.AttackCall(other.gameObject);
+                crabwormCon.TriggerZoneAttackCall(other.gameObject);
                 isActive = false;
             }
         }

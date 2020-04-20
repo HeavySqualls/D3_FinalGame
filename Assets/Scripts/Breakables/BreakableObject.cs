@@ -47,7 +47,7 @@ public class BreakableObject : MonoBehaviour
     [SerializeField] float hitSoundVolume = 0.3f;
     [SerializeField] AudioClip breakSound;
     [SerializeField] float breakSoundVolume = 0.3f;
-    AudioSource audioSource;
+    AudioManager AM;
 
     [Space]
     [Header("OBJECT PIECES:")]
@@ -68,7 +68,7 @@ public class BreakableObject : MonoBehaviour
     protected virtual void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
-        audioSource = GetComponent<AudioSource>();
+        AM = Toolbox.GetInstance().GetAudioManager();
         currentHP = startHP;
 
         if (!isRespawnable)
@@ -79,11 +79,11 @@ public class BreakableObject : MonoBehaviour
         FindEveryChild(gameObject.transform);
     }
 
-    private void PlayAudio(AudioClip _clip, float _volume)
-    {
-        audioSource.volume = _volume;
-        audioSource.PlayOneShot(_clip);
-    }
+    //private void PlayAudio(AudioClip _clip, float _volume)
+    //{
+    //    audioSource.volume = _volume;
+    //    audioSource.PlayOneShot(_clip);
+    //}
 
     protected virtual void ResetObject()
     {
@@ -182,7 +182,7 @@ public class BreakableObject : MonoBehaviour
         // Disable box collider on parent object
         boxCollider.enabled = false;
         isBroken = true;
-        PlayAudio(breakSound, breakSoundVolume);
+        AM.PlayVariedOneShot(breakSound, breakSoundVolume);
 
         // If the object has been hit by a rolling object
         if ((hitByHeavyObject || hitByPlayer) && !isBreakableFloor /*|| isRottenDoor*/)
@@ -218,7 +218,7 @@ public class BreakableObject : MonoBehaviour
     private void ShakeObject()
     {
         damagePartSyst.Play();
-        PlayAudio(hitSound, hitSoundVolume);
+        AM.PlayVariedOneShot(hitSound, hitSoundVolume);
 
         foreach (BreakablePiece bp in objPieces)
         {

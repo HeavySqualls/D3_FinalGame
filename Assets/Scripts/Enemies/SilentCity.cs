@@ -33,7 +33,7 @@ public class SilentCity : MonoBehaviour
 
     [Space]
     [Header("Screen Shake:")]
-    public CinemachineVirtualCamera cam;
+    CinemachineVirtualCamera cam;
     Tween shakeTween;
     [SerializeField] float levelDuration;
     [SerializeField] float shakeStrength;
@@ -44,6 +44,7 @@ public class SilentCity : MonoBehaviour
     {
         StartCoroutine(WaitToStart());
         currentMoveSpeed = baseMoveSpeed;
+        cam = Toolbox.GetInstance().GetLevelManager().GetVirtualCam();
     }
 
     private void Update()

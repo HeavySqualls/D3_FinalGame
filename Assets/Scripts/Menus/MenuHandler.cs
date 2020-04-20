@@ -34,7 +34,7 @@ public class MenuHandler : MonoBehaviour
     [SerializeField] float clickVolume = 0.3f;
     [SerializeField] AudioClip openMenuSound;
     [SerializeField] float openMenuVolume = 0.3f;
-    AudioSource audioSource;
+    AudioManager AM;
 
     [Space]
     [Header("References:")]
@@ -55,7 +55,7 @@ public class MenuHandler : MonoBehaviour
     private void Start()
     {
         gm = Toolbox.GetInstance().GetGameManager();
-        audioSource = GetComponent<AudioSource>();
+        AM = Toolbox.GetInstance().GetAudioManager();
 
         if (isPauseMenu)
         {
@@ -63,7 +63,11 @@ public class MenuHandler : MonoBehaviour
         }
 
         OptionsMenu.SetActive(false);
-        DeathMenu.SetActive(false);
+
+        if (DeathMenu != null)
+        {
+            DeathMenu.SetActive(false);
+        }
 
         if (PauseMenu != null)
         {
@@ -88,27 +92,27 @@ public class MenuHandler : MonoBehaviour
         }
     }
 
-    private void PlayAudio(AudioClip _clip, float _volume)
-    {
-        audioSource.volume = _volume;
-        audioSource.PlayOneShot(_clip);
-    }
+    //private void PlayAudio(AudioClip _clip, float _volume)
+    //{
+    //    audioSource.volume = _volume;
+    //    audioSource.PlayOneShot(_clip);
+    //}
 
     public void StartGame()
     {
-        PlayAudio(clickSound, clickVolume);
+        AM.PlayConsistentOneShot(clickSound, clickVolume);
         gm.LoadNextScene();
     }
 
     public void PlayHoverSound()
     {
-        PlayAudio(hoverSound, hoverVolume);
+        AM.PlayConsistentOneShot(hoverSound, hoverVolume);
     }
 
     public void OpenClosePauseMenu()
     {
         PauseMenu.SetActive(!PauseMenu.activeSelf);
-        PlayAudio(openMenuSound, openMenuVolume);
+        AM.PlayConsistentOneShot(openMenuSound, openMenuVolume);
 
         if (PauseMenu.activeSelf && !OptionsMenu.activeSelf)
         {
@@ -137,7 +141,7 @@ public class MenuHandler : MonoBehaviour
 
     public void ResetToLastCheckpoint()
     {
-        PlayAudio(clickSound, clickVolume);
+        AM.PlayConsistentOneShot(clickSound, clickVolume);
         DeathMenu.SetActive(false);
         SpawnManager.ResetLevelObjects();
         Cursor.visible = false;
@@ -146,7 +150,7 @@ public class MenuHandler : MonoBehaviour
 
     public void ResetLevel()
     {
-        PlayAudio(clickSound, clickVolume);
+        AM.PlayConsistentOneShot(clickSound, clickVolume);
 
         Time.timeScale = 1;
         gm.RestartLevel();
@@ -154,7 +158,7 @@ public class MenuHandler : MonoBehaviour
 
     public void OpenCloseOptions()
     {
-        PlayAudio(clickSound, clickVolume);
+        AM.PlayConsistentOneShot(clickSound, clickVolume);
         OptionsMenu.SetActive(!OptionsMenu.activeSelf);
 
         if (PauseMenu != null)
@@ -165,14 +169,14 @@ public class MenuHandler : MonoBehaviour
 
     public void QuitToMainMenu()
     {
-        PlayAudio(clickSound, clickVolume);
+        AM.PlayConsistentOneShot(clickSound, clickVolume);
         Time.timeScale = 1;
         gm.LoadCustomScene(0);
     }
 
     public void Quit()
     {
-        PlayAudio(clickSound, clickVolume);
+        AM.PlayConsistentOneShot(clickSound, clickVolume);
         gm.QuitGame();
     }
 }

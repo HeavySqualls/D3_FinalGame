@@ -15,19 +15,19 @@ public class DangerousObstacle : Interact_Base
     [Header("Audio:")]
     [SerializeField] AudioClip hitSound;
     [SerializeField] float hitSoundVolume = 0.3f;
-    AudioSource audioSource;
+    AudioManager AM;
 
     void Start()
     {
         FindEveryChild(gameObject.transform);
-        audioSource = GetComponent<AudioSource>();
+        AM = Toolbox.GetInstance().GetAudioManager();
     }
 
-    private void PlayAudio(AudioClip _clip, float _volume)
-    {
-        audioSource.volume = _volume;
-        audioSource.PlayOneShot(_clip);
-    }
+    //private void PlayAudio(AudioClip _clip, float _volume)
+    //{
+    //    audioSource.volume = _volume;
+    //    audioSource.PlayOneShot(_clip);
+    //}
 
     private void FindEveryChild(Transform parent)
     {
@@ -46,7 +46,7 @@ public class DangerousObstacle : Interact_Base
         if (pRecieveDamage != null)
         {
             pRecieveDamage.GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
-            PlayAudio(hitSound, hitSoundVolume);
+            AM.PlayVariedOneShot(hitSound, hitSoundVolume);
 
             foreach (MeshRenderer spikeMR in spikeMeshes)
             {

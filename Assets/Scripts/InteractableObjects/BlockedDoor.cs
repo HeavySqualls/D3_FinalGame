@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cinemachine;
 using DG.Tweening;
 
 public class BlockedDoor : MonoBehaviour
@@ -24,9 +25,16 @@ public class BlockedDoor : MonoBehaviour
     private float timer;
     private Vector3 currentPosition;
 
-    Camera cam;
-    Tween shakeTween;
+    [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip openingCloseSound;
+    [SerializeField] float desiredMaxVolume = 0.7f;
+    [SerializeField] float volumeIncrementation = 0.05f;
+    [SerializeField] float incrementTime = 0.08f;
+    AudioSource audioSource;
 
+    CinemachineVirtualCamera cam;
+    Tween shakeTween;
     SpriteRenderer spriteRenderer;
 
     private void Start()
@@ -34,9 +42,10 @@ public class BlockedDoor : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
 
-        cam = Camera.main;
+        cam = Toolbox.GetInstance().GetLevelManager().GetVirtualCam();
+        audioSource = GetComponent<AudioSource>();
+        audioSource.clip = openingCloseSound;
     }
-
 
     private void OnTriggerEnter2D(Collider2D other)
     {
@@ -58,7 +67,9 @@ public class BlockedDoor : MonoBehaviour
 
     public void OpenCloseDoor()
     {
+        StopAllCoroutines();
         StartCoroutine(SlideDoor());
+        StartCoroutine(FadeInOutDoorSound());
         shakeTween = cam.transform.DOShakePosition(duration, 0.10f, 10, 2f, false, true);
     }
 
@@ -94,5 +105,29 @@ public class BlockedDoor : MonoBehaviour
         }
 
         isInputBlocked = false;
+    }
+
+    private IEnumerator FadeInOutDoorSound()
+    {
+        audioSource.volume = 0;
+        audioSource.Play();
+
+        while (audioSource.volume < desiredMaxVolume)
+        {
+            audioSource.volume += volumeIncrementation;
+
+            yield return new WaitForSeconds(incrementTime);
+        }
+
+        while (audioSource.volume > 0)
+        {
+            audioSource.volume -= volumeIncrementation;
+
+            yield return new WaitForSeconds(incrementTime);
+        }
+
+        audioSource.Stop();
+
+        yield break;
     }
 }

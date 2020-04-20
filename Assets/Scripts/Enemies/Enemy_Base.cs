@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy_Base : PhysicsObject
 {
-    public enum State { Patrolling, Hunting, Attacking, Idle, Hurt, InAirInWind, Dead }
+    public enum State { Patrolling, Hunting, Attacking, Idle, Hurt, DoNothing, Dead }
     [Space]
     [Header("--- ENEMY BASE ---")]
 
@@ -137,14 +137,18 @@ public class Enemy_Base : PhysicsObject
 
     // << --------------------------------------- COMBAT -------------------------------- >> //
 
-    public IEnumerator ThisUnitHit(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
+    public void ThisUnitHit(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
     {
         isHurt = true;
-        targetVelocity.x = 0;
+        GoToHurt();
 
-        currentState = State.Hurt;
+        StartCoroutine(KnockBack(_hitDirection, _knockBack, _knockUp, _stunTime));
+    }
 
+    private IEnumerator KnockBack(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
+    {
         float timer = 0.0f;
+        targetVelocity.x = 0;
 
         while (timer < _stunTime)
         {
@@ -166,7 +170,8 @@ public class Enemy_Base : PhysicsObject
 
     protected IEnumerator AttackCoolDown()
     {
-        currentState = State.Idle;
+        isUnitPaused = true;
+        currentState = State.DoNothing;
 
         yield return new WaitForSeconds(attackCooldown);
 
@@ -189,9 +194,15 @@ public class Enemy_Base : PhysicsObject
             currentState = State.Patrolling;
         }
 
+        isUnitPaused = false;
         objectHit = false;
 
         yield break;
+    }
+
+    protected virtual void GoToHurt()
+    {
+        // Behaviour handled in specific enemy controller
     }
 
     protected virtual void AfterThisUnitWasAttacked()

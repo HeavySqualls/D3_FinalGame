@@ -19,8 +19,9 @@ public class RollingObject : MonoBehaviour
     bool isRollingSoundPlaying = false;
     [SerializeField] AudioClip landSound;
     [SerializeField] float landSoundVolume = 0.3f;
-    [SerializeField] AudioSource rollingSource;
-    [SerializeField] AudioSource effectSource;
+    AudioSource rollingSource;
+    AudioManager AM;
+
     private void OnEnable()
     {
         SpawnManager.onResetLevelObjects += ResetRollingObject;
@@ -36,16 +37,18 @@ public class RollingObject : MonoBehaviour
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer));
         startPos = gameObject.transform.position;
         rb2D = GetComponent<Rigidbody2D>();
-
+        rollingSource = GetComponent<AudioSource>();
         rollingSource.clip = rollingSound;
         rollingSource.volume = rollingVolume;
+
+        AM = Toolbox.GetInstance().GetAudioManager();
     }
 
-    private void PlayAudio(AudioClip _clip, float _volume)
-    {
-        effectSource.volume = _volume;
-        effectSource.PlayOneShot(_clip);
-    }
+    //private void PlayAudio(AudioClip _clip, float _volume)
+    //{
+    //    effectSource.volume = _volume;
+    //    effectSource.PlayOneShot(_clip);
+    //}
 
     private void Update()
     {
@@ -89,7 +92,7 @@ public class RollingObject : MonoBehaviour
 
         if (hitGround.collider != null && shakeOnLanding == true)
         {
-            PlayAudio(landSound, landSoundVolume);
+            AM.PlayVariedOneShot(landSound, landSoundVolume);
             Toolbox.GetInstance().GetPlayerManager().GetPlayerFeedback().BreakShake();
             disposablePartSyst = Instantiate(Resources.Load("LandingParticleSystem-Heavy", typeof(GameObject))) as GameObject;
             disposablePartSyst.transform.position = gameObject.transform.position - groundPositionOffset;

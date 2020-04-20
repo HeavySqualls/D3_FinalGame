@@ -19,10 +19,53 @@ public class CrabwormLarvaController : Enemy_Base
     [Tooltip("The location of the units hit box - activated when attacking.")]
     [SerializeField] Transform hitBoxPos;
 
+    [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip movingSound;
+    [SerializeField] float idleVolume = 0.3f;
+    [SerializeField] float movingPitchIdle = 0.3f;
+    [SerializeField] float patrollingVolume = 0.6f;
+    [SerializeField] float movingPitchPatrolling = 1f;
+    [SerializeField] float huntingVolume = 1f;
+    [SerializeField] float movingPitchHunting = 1.5f;
+
+    bool isMovingSoundPlaying = false;
+    [SerializeField] AudioSource movementAudioSource;
+
+    [SerializeField] AudioClip attackingSound;
+    [SerializeField] float attackingVolume = 0.3f;
+    [SerializeField] AudioClip hurtSound;
+    [SerializeField] float hurtVolume = 0.3f;
+    [SerializeField] AudioSource localAudioSource;
+
+    GameObject disposablePartSyst;
+
     protected override void Start()
     {
         base.Start();
+
+        if (startingState == State.Idle)
+        {
+            GoIdle();
+        }
     }
+
+
+    private void PlayMovementAudio(float _volume, float _pitch)
+    {
+        movementAudioSource.Stop();
+        movementAudioSource.clip = movingSound;
+        movementAudioSource.volume = _volume;
+        movementAudioSource.pitch = _pitch;
+        movementAudioSource.Play();
+    }
+
+    private void PlayOneShotAudio(AudioClip _clip, float _volume) 
+    {
+        localAudioSource.volume = _volume;
+        localAudioSource.PlayOneShot(_clip);
+    }
+
 
     protected override void Update()
     {
@@ -30,7 +73,7 @@ public class CrabwormLarvaController : Enemy_Base
 
         if (inWindZone && !isGrounded)
         {
-            this.currentState = State.InAirInWind;
+            this.currentState = State.DoNothing;
         }
 
         switch (this.currentState)
@@ -50,8 +93,8 @@ public class CrabwormLarvaController : Enemy_Base
             case State.Hurt:
                 this.Hurt();
                 break;
-            case State.InAirInWind:
-                this.InAirInWind();
+            case State.DoNothing:
+                this.DoNothing();
                 break;
             case State.Dead:
                 this.Dead();
@@ -111,7 +154,7 @@ public class CrabwormLarvaController : Enemy_Base
         isHunting = false;
     }
 
-    private void InAirInWind()        // Do nothing
+    private void DoNothing()        // Do nothing
     {
 
     }
@@ -122,6 +165,34 @@ public class CrabwormLarvaController : Enemy_Base
         isPatrolling = false;
         isHunting = false;
         targetVelocity.x = 0;
+    }
+
+    private void GoToAttackState()
+    {
+        if (isMovingSoundPlaying)
+            movementAudioSource.Stop();
+
+        PlayOneShotAudio(attackingSound, attackingVolume);
+        currentState = State.Attacking;
+        animator.SetTrigger("isAttacking");
+    }
+
+    private void GoIdle()
+    {
+        PlayMovementAudio(idleVolume, movingPitchIdle);
+        currentState = State.Idle;
+    }
+
+    private void GoPatrolling()
+    {
+        PlayMovementAudio(patrollingVolume, movingPitchPatrolling);
+        currentState = State.Patrolling;
+    }
+
+    private void GoHunting()
+    {
+        PlayMovementAudio(huntingVolume, movingPitchHunting);
+        currentState = State.Hunting;
     }
 
 
@@ -139,13 +210,23 @@ public class CrabwormLarvaController : Enemy_Base
 
     // << --------------------------------------- COMBAT -------------------------------- >> //
 
+    protected override void GoToHurt()
+    {
+        base.GoToHurt();
+
+        disposablePartSyst = Instantiate(Resources.Load("WormGooParticles", typeof(GameObject))) as GameObject;
+        disposablePartSyst.transform.position = gameObject.transform.position;
+        Destroy(disposablePartSyst, 0.8f);
+
+        currentState = State.Hurt;
+        PlayOneShotAudio(hurtSound, hurtVolume);
+    }
+
     protected override void AfterThisUnitWasAttacked()
     {
         if (target != null)
         {
-            Vector2 targetDirection;
-
-            targetDirection = (transform.position + target.transform.position);
+            Vector2 targetDirection = (transform.position + target.transform.position);
             targetDirection.x = Mathf.Clamp(targetDirection.x, -1f, 1f);
 
             if (targetDirection.x < 0 && direction == Vector2.right || targetDirection.x > 0 && direction == Vector2.left)
@@ -153,18 +234,17 @@ public class CrabwormLarvaController : Enemy_Base
                 FlipSprite();
             }
 
-            currentState = State.Hunting;
+            GoHunting();
         }
         else
         {
-            currentState = State.Patrolling;
+            GoPatrolling();
         }
     }
 
     protected override void AfterAttackCooldown()
     {
         base.AfterAttackCooldown();
-
         StartCoroutine(AttackCoolDown());
     }
 
@@ -195,14 +275,13 @@ public class CrabwormLarvaController : Enemy_Base
                 if (attackInfo.collider != null)
                 {
                     isPatrolling = false;
-                    currentState = State.Attacking;
-                    animator.SetTrigger("isAttacking");
+                    GoToAttackState();
                 }
             }
         }
     }
 
-    public void AttackCall(GameObject _target)
+    public void TriggerZoneAttackCall(GameObject _target)
     {
         target = _target;
 
@@ -219,8 +298,7 @@ public class CrabwormLarvaController : Enemy_Base
             }
         }
 
-        currentState = State.Attacking;
-        animator.SetTrigger("isAttacking");
+        GoToAttackState();
     }
 
     void OnDrawGizmos()
@@ -250,10 +328,9 @@ public class CrabwormLarvaController : Enemy_Base
 
                 if (hitObj != null)
                 {
-                    print("hit: " + hitObj.name);
-
                     hitObj.GetComponent<RecieveDamage>().GetHit(direction, damageOutput, knockBack, knockUp, stunTime);
                     objectHit = true; // prevents enemy attacking the player every frame - gets reset in AfterAttackCooldown()
+                    AfterAttackCooldown();
                 }
                 else
                 {
@@ -267,7 +344,7 @@ public class CrabwormLarvaController : Enemy_Base
     {
         PlayerController pCon = collision.gameObject.GetComponent<PlayerController>();
 
-        if (pCon != null && pCon.magBootsOn)
+        if (pCon != null && pCon.magBootsOn && pCon.inAir)
         {
             KillUnit();
         }

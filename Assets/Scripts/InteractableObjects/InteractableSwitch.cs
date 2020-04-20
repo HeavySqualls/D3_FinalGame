@@ -25,6 +25,14 @@ public class InteractableSwitch : MonoBehaviour
     [SerializeField] Material highlightMat;
     [Tooltip("Assign the relative door to actuate with this switch.")]
 
+    [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip valveOpenSound;
+    [SerializeField] float valveOpenVolume;
+    [SerializeField] AudioClip switchOpenSound;
+    [SerializeField] float switchOpenVolume;
+    AudioManager AM;
+
     bool isOpen;
     PlayerHandleInteract pInteract;
     SpriteRenderer spriteRenderer;
@@ -35,6 +43,7 @@ public class InteractableSwitch : MonoBehaviour
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
+        AM = Toolbox.GetInstance().GetAudioManager();
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -65,6 +74,7 @@ public class InteractableSwitch : MonoBehaviour
             if (!door.isInputBlocked)
             {
                 print("door switch is actuated!");
+                AM.PlayConsistentOneShot(switchOpenSound, switchOpenVolume);
                 door.OpenCloseDoor();
                 isOpen = !isOpen;
             }
@@ -75,13 +85,14 @@ public class InteractableSwitch : MonoBehaviour
         if (isSpillSwitch)
         {
             print("spill switch is actuated!");
-
-            isOpen = !isOpen;
+            AM.PlayConsistentOneShot(valveOpenSound, valveOpenVolume);
 
             foreach (ToxicSpill ts in spillPipes)
             {
                 ts.TurnOffSpillPipe();
             }
+
+            isOpen = !isOpen;
         }
 
         animator.SetBool("isOpen", isOpen);

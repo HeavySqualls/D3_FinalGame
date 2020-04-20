@@ -20,7 +20,7 @@ public class Toolbox : MonoBehaviour
     private PlayerManager _playerMan;
     private DialogueSystemManager _dialogueManager;
     private CanvasManager _canvasManager;
-    //private SpawnManager _spawnManager;  // TODO: is this ok to have spawn manager in the toolbox?
+    private AudioManager _audioManager;  // TODO: is this ok to have spawn manager in the toolbox?
 
     void Awake()
     {
@@ -39,7 +39,7 @@ public class Toolbox : MonoBehaviour
         this._playerMan = gameObject.AddComponent<PlayerManager>();
         this._dialogueManager = gameObject.AddComponent<DialogueSystemManager>();
         this._canvasManager = gameObject.AddComponent<CanvasManager>();
-        //this._spawnManager = gameObject.AddComponent<SpawnManager>();
+        this._audioManager = gameObject.AddComponent<AudioManager>();
     }
 
     public GameManager GetGameManager()
@@ -67,8 +67,8 @@ public class Toolbox : MonoBehaviour
         return this._canvasManager;
     }
 
-    //public SpawnManager GetSpawnManager()
-    //{
-    //    return this._spawnManager;
-    //}
+    public AudioManager GetAudioManager()
+    {
+        return this._audioManager;
+    }
 }

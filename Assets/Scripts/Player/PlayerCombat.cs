@@ -56,10 +56,6 @@ public class PlayerCombat : MonoBehaviour
     public float b_stunTime;
 
     [Space]
-    [Header("Audio:")]
-
-
-    [Space]
     [Header("References:")]
     private AirTankController pUI;
     private Animator animator;

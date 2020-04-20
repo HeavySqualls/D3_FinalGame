@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
+using Cinemachine;
 
-public class SmoothFollow : MonoBehaviour
+public class CameraController : MonoBehaviour
 {
     public GameObject objectToFollow;
 
@@ -12,7 +13,14 @@ public class SmoothFollow : MonoBehaviour
 
     public bool isCamera;
 
+    CinemachineVirtualCamera cam;
     PlayerController pCon;
+
+    private void Awake()
+    {
+        cam = GetComponentInChildren<CinemachineVirtualCamera>();
+        Toolbox.GetInstance().GetLevelManager().AssignVirtualCam(cam);
+    }
 
     void Start()
     {

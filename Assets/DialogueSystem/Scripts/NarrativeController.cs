@@ -42,7 +42,8 @@ public class NarrativeController : MonoBehaviour
     [SerializeField] float continueVolume = 0.3f;
     [SerializeField] AudioClip quickTypeSound;
     [SerializeField] float quickTypeVolume = 0.3f;
-    AudioSource audioSource;
+    AudioSource typingSource;
+    AudioManager AM;
 
     [Space]
     [Header("Tutorial References:")]
@@ -64,14 +65,15 @@ public class NarrativeController : MonoBehaviour
     private void Start()
     {
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
-        audioSource = GetComponent<AudioSource>();
+        AM = Toolbox.GetInstance().GetAudioManager();
+        typingSource = GetComponent<AudioSource>();
     }
 
-    private void PlayAudio(AudioClip _clip, float _volume)
-    {
-        audioSource.volume = _volume;
-        audioSource.PlayOneShot(_clip);
-    }
+    //private void PlayAudio(AudioClip _clip, float _volume)
+    //{
+    //    audioSource.volume = _volume;
+    //    audioSource.PlayOneShot(_clip);
+    //}
 
     private IEnumerator typeCoroutine; 
 
@@ -85,8 +87,8 @@ public class NarrativeController : MonoBehaviour
             {
                 if (typeCoroutine != null)
                 {
-                    audioSource.Stop();
-                    PlayAudio(quickTypeSound, quickTypeVolume);
+                    typingSource.Stop();
+                    AM.PlayConsistentOneShot(quickTypeSound, quickTypeVolume);
                     StopCoroutine(typeCoroutine);
                 }
 
@@ -95,7 +97,7 @@ public class NarrativeController : MonoBehaviour
             }
             else
             {
-                PlayAudio(continueSound, continueVolume);
+                AM.PlayConsistentOneShot(continueSound, continueVolume);
                 AdvanceNarrative();
             }
         }
@@ -115,7 +117,7 @@ public class NarrativeController : MonoBehaviour
             yield return new WaitForSeconds(N.narrativeStartDelayTime);
         }
 
-        PlayAudio(alertSound, alertVolume);
+        AM.PlayConsistentOneShot(alertSound, alertVolume);
         cinematicController.PlayNarrativeSlideIn();
 
         yield return new WaitForSeconds(delayTime);
@@ -133,7 +135,7 @@ public class NarrativeController : MonoBehaviour
         pCon.DisablePlayerController();
         Toolbox.GetInstance().GetLevelManager().PauseAllEnemies();
 
-        PlayAudio(speakersMoveInSound, speakersMoveInVolume);
+        AM.PlayConsistentOneShot(speakersMoveInSound, speakersMoveInVolume);
 
         // Check if this narrative is a monologue, and if so, only enable the speaker on the left side
         if (N.isMonologue)
@@ -274,14 +276,14 @@ public class NarrativeController : MonoBehaviour
 
         if (_activeSpeakerUI.dialoguePanelGO != enabled)
         {
-            PlayAudio(panelOpenCloseSound, panelOpenCloseVolume);
+            AM.PlayConsistentOneShot(panelOpenCloseSound, panelOpenCloseVolume);
         }
 
         _inactiveSpeakerUI.Hide();
 
         if (_activeSpeakerUI.dialoguePanelGO == enabled)
         {
-            PlayAudio(panelOpenCloseSound, panelOpenCloseVolume);
+            AM.PlayConsistentOneShot(panelOpenCloseSound, panelOpenCloseVolume);
         }
 
         _activeSpeakerUI.Dialogue = "";
@@ -301,9 +303,9 @@ public class NarrativeController : MonoBehaviour
 
         yield return new WaitForSeconds(0.3f);
 
-        audioSource.volume = textVolume;
-        audioSource.clip = textSound;
-        audioSource.Play();
+        typingSource.volume = textVolume;
+        typingSource.clip = textSound;
+        typingSource.Play();
 
         foreach (char letter in _text.ToCharArray())
         {
@@ -311,7 +313,7 @@ public class NarrativeController : MonoBehaviour
             yield return new WaitForSeconds(textDelayTime);
         }
 
-        audioSource.Stop();
+        typingSource.Stop();
 
         isTyping = false;
     }
@@ -332,7 +334,7 @@ public class NarrativeController : MonoBehaviour
     public void EndResetNarrativeController()
     {
         // Hide UI
-        PlayAudio(speakersMoveInSound, speakersMoveInVolume);
+        AM.PlayConsistentOneShot(speakersMoveInSound, speakersMoveInVolume);
 
         speakerUILeft.Hide();
         speakerUILeft.HideSprite();

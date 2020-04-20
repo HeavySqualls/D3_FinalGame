@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PickUpItem : MonoBehaviour
 {
@@ -21,15 +19,18 @@ public class PickUpItem : MonoBehaviour
     [Tooltip("Assign the related highlighed 'Outline' shader for when the player is in the trigger zone.")]
     [SerializeField] Material highlightMat;
 
-
+    [Space]
+    [Header("Audio:")]
     [SerializeField] AudioClip pickUpSound;
-    [SerializeField] AudioClip openBoxSound;
-    [SerializeField] AudioClip errorSound;
     [SerializeField] float pickUpVolume = 0.15f;
+    [SerializeField] AudioClip openBoxSound;
+    [SerializeField] float openVolume = 0.15f;
+    [SerializeField] AudioClip errorSound;
+    [SerializeField] float errorVolume = 0.15f;
+    AudioManager AM;
 
     public LootBoxPanel lootBoxPanel;
 
-    AudioSource audioSource;
     SpriteRenderer spriteRenderer;
     CircleCollider2D circleCollider;
 
@@ -38,8 +39,7 @@ public class PickUpItem : MonoBehaviour
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
         circleCollider = GetComponent<CircleCollider2D>();
-        audioSource = GetComponent<AudioSource>();
-        audioSource.volume = pickUpVolume;
+        AM = Toolbox.GetInstance().GetAudioManager();
         //Toolbox.GetInstance().GetLevelManager().AddPickups(this);
         //lootBoxPanel = GetComponentInChildren<LootBoxPanel>();
     }
@@ -77,7 +77,7 @@ public class PickUpItem : MonoBehaviour
     {
         if (!isLootBox)
         {
-            audioSource.PlayOneShot(pickUpSound);
+            AM.PlayConsistentOneShot(pickUpSound, pickUpVolume);
             spriteRenderer.enabled = false;
             pInteract.UnAssignPickUpItemReferences();
             pInteract = null;
@@ -88,7 +88,7 @@ public class PickUpItem : MonoBehaviour
 
     public void OpenLootBox()
     {
-        audioSource.PlayOneShot(openBoxSound);
+        AM.PlayConsistentOneShot(openBoxSound, openVolume);
         lootBoxPanel.ViewItems();
         isOpen = true;
         ShowMouseCursor();
@@ -97,7 +97,7 @@ public class PickUpItem : MonoBehaviour
     public void CloseLootBox()
     {
         //TODO: Figure out how to play a track backwards
-        audioSource.PlayOneShot(openBoxSound);
+        AM.PlayConsistentOneShot(openBoxSound, openVolume);
         lootBoxPanel.HideItems();
         isOpen = false;
         HideMouseCursor();
@@ -107,12 +107,12 @@ public class PickUpItem : MonoBehaviour
     {
         if (!lootBoxPanel.CheckIfEmpty())
         {
-            audioSource.PlayOneShot(pickUpSound);
+            AM.PlayConsistentOneShot(pickUpSound, pickUpVolume);
             lootBoxPanel.QuickLoot();
         }
         else
         {
-            audioSource.PlayOneShot(errorSound);
+            AM.PlayConsistentOneShot(errorSound, errorVolume);
         }
     }
 

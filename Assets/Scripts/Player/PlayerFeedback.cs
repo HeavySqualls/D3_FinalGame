@@ -35,7 +35,8 @@ public class PlayerFeedback : MonoBehaviour
     public int vibrato = 9;
     [Tooltip("The randomness of the shake postitions.")]
     public float randomness = 2f;
-    public CinemachineVirtualCamera cam;
+
+    CinemachineVirtualCamera cam;
     Tween shakeTween;
     PlayerController pCon;
 
@@ -44,9 +45,7 @@ public class PlayerFeedback : MonoBehaviour
         Toolbox.GetInstance().GetPlayerManager().SetPlayerFeedback(this);
         pCon = GetComponent<PlayerController>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        //spriteRenderer.receiveShadows = true;
-        //spriteRenderer.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.TwoSided;
-
+        cam = Toolbox.GetInstance().GetLevelManager().GetVirtualCam();
     }
 
     private void Update()

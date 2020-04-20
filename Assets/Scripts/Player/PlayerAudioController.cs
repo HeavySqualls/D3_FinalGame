@@ -4,7 +4,8 @@ using UnityEngine;
 public class PlayerAudioController : MonoBehaviour
 {
     [Header("Audio Effects:")]
-    public AudioSource effectSource;
+    //public AudioSource effectSource;
+    AudioManager AM;
 
     [Header("Jump:")]
     [SerializeField] AudioClip jumpSound;
@@ -84,6 +85,7 @@ public class PlayerAudioController : MonoBehaviour
 
     private void Start()
     {
+        AM = Toolbox.GetInstance().GetAudioManager();
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
         footStepsSource.clip = footStepsNormal;
 
@@ -115,13 +117,13 @@ public class PlayerAudioController : MonoBehaviour
         {
             magBootsSource.Play();
             isPlayingMagBoots = true;
-            PlayEffectSource(magBootsSwitchSound, magBootsSwitchVolume);
+            AM.PlayVariedOneShot(magBootsSwitchSound, magBootsSwitchVolume);
         }
         else if (!pCon.magBootsOn && isPlayingMagBoots)
         {
             magBootsSource.Stop();
             isPlayingMagBoots = false;
-            PlayEffectSource(magBootsSwitchSound, magBootsSwitchVolume);
+            AM.PlayVariedOneShot(magBootsSwitchSound, magBootsSwitchVolume);
         }
 
         // Detect Wind Zone Warning
@@ -152,81 +154,81 @@ public class PlayerAudioController : MonoBehaviour
 
     // <<----------------------------------------------------- PUBLIC SOUND EFFECTS ------------------------------------------- //
 
-    private void PlayEffectSource(AudioClip _clip, float _volume)
-    {
-        effectSource.volume = _volume;
-        effectSource.PlayOneShot(_clip);
-    }
+    //private void PlayEffectSource(AudioClip _clip, float _volume)
+    //{
+    //    effectSource.volume = _volume;
+    //    effectSource.PlayOneShot(_clip);
+    //}
 
     public void PlaySlideSound()
     {
-        PlayEffectSource(slideSound, slideVolume);
+        AM.PlayVariedOneShot(slideSound, slideVolume);
     }
 
     public void PlayJumpSound()
     {
-        PlayEffectSource(jumpSound, jumpVolume);
+        AM.PlayVariedOneShot(jumpSound, jumpVolume);
     }
 
     public void PlayClimbSound()
     {
-        PlayEffectSource(climbSound, climbVolume);
+        AM.PlayVariedOneShot(climbSound, climbVolume);
     }
 
     public void PlayLandSound(bool _isHardLanding, bool _isHeavyLanding)
     {
         if (_isHeavyLanding)
         {
-            PlayEffectSource(landSound, heavyLandVolume);
+            AM.PlayVariedOneShot(landSound, heavyLandVolume);
         }
         else if (_isHardLanding)
         {
-            PlayEffectSource(landSound, hardLandVolume);
+            AM.PlayVariedOneShot(landSound, hardLandVolume);
         }
         else
         {
-            PlayEffectSource(landSound, landVolume);
+            AM.PlayVariedOneShot(landSound, landVolume);
         }
     }
 
     public void PlayHurtSound()
     {
-        PlayEffectSource(hurtSound, hurtVolume);
+        AM.PlayVariedOneShot(hurtSound, hurtVolume);
     }
 
     public void PlayDeathSound()
     {
-        PlayEffectSource(deathSound, deathVolume);
+        AM.PlayVariedOneShot(deathSound, deathVolume);
     }
 
     public void PlayPunchSound(int _punch)
     {
         if (_punch == 1)
-            PlayEffectSource(punch1Sound, punch1Volume);
+            AM.PlayVariedOneShot(punch1Sound, punch1Volume);
         else if (_punch == 2)
-            PlayEffectSource(punch2Sound, punch2Volume);
+            AM.PlayVariedOneShot(punch2Sound, punch2Volume);
         else if (_punch == 3)
-            PlayEffectSource(punch3Sound, punch3Volume);
+            AM.PlayVariedOneShot(punch3Sound, punch3Volume);
     }
 
     public void PlayConnectSound(int _punch)
     {
         if (_punch == 1)
-            PlayEffectSource(connectSound, connect1Volume);
+            AM.PlayVariedOneShot(connectSound, connect1Volume);
         else if (_punch == 2)
-            PlayEffectSource(connectSound, connect2Volume);
+            AM.PlayVariedOneShot(connectSound, connect2Volume);
         else if (_punch == 3)
-            PlayEffectSource(connectSound, connect3Volume);
+            AM.PlayVariedOneShot(connectSound, connect3Volume);
     }
 
     public void PlayWindEnterWarningSound()
     {
-        PlayEffectSource(enterWindWarningSound, windWarningVolume);
+        AM.PlayVariedOneShot(enterWindWarningSound, windWarningVolume);
     }
 
     public void PlayWindExitWarningSound()
     {
-        PlayEffectSource(exitWindWarningSound, windWarningVolume);
+        AM.PlayVariedOneShot(exitWindWarningSound, windWarningVolume);
     }
 
     // <<----------------------------------------------------- FOOT STEPS ------------------------------------------- //
