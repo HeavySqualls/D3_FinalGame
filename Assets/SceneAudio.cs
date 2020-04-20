@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class SceneAudio : MonoBehaviour
 {
@@ -15,6 +13,4 @@ public class SceneAudio : MonoBehaviour
         AM.PlayLevelMusic(sceneTrack);
         AM.PlayLevelBG(sceneBG1);
     }
-
-
 }

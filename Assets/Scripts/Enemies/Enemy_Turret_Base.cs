@@ -9,13 +9,13 @@ public class Enemy_Turret_Base : MonoBehaviour
     [Header("--- ENEMY TURRET BASE ---")]
 
     public State startingState;
-    protected State currentState;
+    [SerializeField] protected State currentState;
 
     public bool isTurretPaused = false;
     protected bool isIdle;
     protected bool isPatrolling;
     protected bool isHunting;
-    protected bool isDead;
+    public bool isDead;
     protected bool isInAirInWind;
     protected bool isHit = false;
     protected bool isHurt = false;
@@ -101,21 +101,6 @@ public class Enemy_Turret_Base : MonoBehaviour
 
     // << --------------------------------------- COMBAT -------------------------------- >> //
 
-    protected IEnumerator AttackCoolDown()
-    {
-
-        yield return new WaitForSeconds(attackCooldown);
-
-        if (target == null)
-            currentState = State.Idle;
-        else
-            currentState = State.Prone;
-
-        isCooldown = false;
-        objectHit = false;
-        yield break;
-    }
-
     protected virtual void AfterThisUnitWasAttacked()
     {
         // Behaviour handled in specific enemy controller
@@ -123,22 +108,17 @@ public class Enemy_Turret_Base : MonoBehaviour
 
     protected void AfterAttackCooldown()
     {
-
+        // Behaviour handled in specific enemy controller
     }
 
     protected virtual void KillUnit()
     {
         // Behaviour handled in specific enemy controller
-        //Toolbox.GetInstance().GetLevelManager().RemoveTurretEnemies(this);
-        //currentState = State.Dead;
     }
 
-    public void ThisUnitHit(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
+    public void ThisUnitHit()
     {
-        if (currentHP <= 0)
-            KillUnit();
-        else
-            AfterThisUnitWasAttacked();
+        AfterThisUnitWasAttacked();
     }
 
     // << ------------------------------------- FLIP SPRITE -------------------------------- >> //

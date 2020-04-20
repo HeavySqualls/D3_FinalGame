@@ -5,7 +5,9 @@ public class PlayerHealthSystem : MonoBehaviour
 {
     [Header("Health Variables:")]
     [SerializeField] float playerHealthStart;
+    [SerializeField] float damageCooldownTime = 1f;
     float playerHealth;
+    bool isDamageCooldown = false;
 
     [Space]
     [Header("Red Flash:")]
@@ -69,7 +71,7 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
-        if (!isDead)
+        if (!isDead && !isDamageCooldown)
         {
             pAudio.PlayHurtSound();
             pFeedback.HurtShake();
@@ -110,7 +112,20 @@ public class PlayerHealthSystem : MonoBehaviour
             {
                 StartCoroutine(pCon.PlayerKnocked(_hitDirection, _knockBack, _knockUp, _stunTime));
             }
+
+            StartCoroutine(DamageCooldownTimer());
         }    
+    }
+
+    IEnumerator DamageCooldownTimer()
+    {
+        isDamageCooldown = true;
+
+        yield return new WaitForSeconds(damageCooldownTime);
+
+        isDamageCooldown = false;
+
+        yield break;
     }
 
     public void KillPlayer()

@@ -16,7 +16,7 @@ public class Enemy_Base : PhysicsObject
     protected bool isIdle;
     protected bool isPatrolling;
     protected bool isHunting;
-    protected bool isDead;
+    public bool isDead;
     protected bool isInAirInWind;
     protected bool isHit = false;
     protected bool objectHit = false;

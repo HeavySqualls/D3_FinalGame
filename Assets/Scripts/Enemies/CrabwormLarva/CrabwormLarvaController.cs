@@ -216,6 +216,7 @@ public class CrabwormLarvaController : Enemy_Base
 
         disposablePartSyst = Instantiate(Resources.Load("WormGooParticles", typeof(GameObject))) as GameObject;
         disposablePartSyst.transform.position = gameObject.transform.position;
+        disposablePartSyst.transform.SetParent(gameObject.transform);
         Destroy(disposablePartSyst, 0.8f);
 
         currentState = State.Hurt;
@@ -319,7 +320,7 @@ public class CrabwormLarvaController : Enemy_Base
 
     public void CastForPlayer() // Called every frame when in Attacking state 
     {
-        if (!objectHit)
+        if (!objectHit) // prevents enemy attacking the player every frame - gets reset in AfterAttackCooldown()
         {
             RaycastHit2D[] hits = Physics2D.CircleCastAll(hitBoxPos.position, 0.35f, direction, 0f, playerLayerMask);
             foreach (RaycastHit2D hit in hits)
@@ -329,7 +330,7 @@ public class CrabwormLarvaController : Enemy_Base
                 if (hitObj != null)
                 {
                     hitObj.GetComponent<RecieveDamage>().GetHit(direction, damageOutput, knockBack, knockUp, stunTime);
-                    objectHit = true; // prevents enemy attacking the player every frame - gets reset in AfterAttackCooldown()
+                    objectHit = true; 
                     AfterAttackCooldown();
                 }
                 else

@@ -25,16 +25,16 @@ public class EnemyHandleInteract : MonoBehaviour
 
     public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
     {
-        if (enemyBase != null)
+        if (enemyBase != null && !enemyBase.isDead)
         {
             enemyBase.currentHP -= _damage;
             enemyBase.ThisUnitHit(_hitDirection, _knockBack, _knockUp, _stunTime);
             StartCoroutine(IFlashRed());
         }
-        else if (enemyTurretBase != null)
+        else if (enemyTurretBase != null && !enemyTurretBase.isDead)
         {
             enemyTurretBase.currentHP -= _damage;
-            enemyTurretBase.ThisUnitHit(_hitDirection, _knockBack, _knockUp, _stunTime);
+            enemyTurretBase.ThisUnitHit();
             StartCoroutine(IFlashRed());
         }
     }

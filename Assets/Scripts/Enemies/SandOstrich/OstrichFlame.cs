@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class OstrichFlame : MonoBehaviour
 {
@@ -15,12 +13,7 @@ public class OstrichFlame : MonoBehaviour
     {
         if (other == so.target)
         {
-            //pRecieveDamage = target.GetComponent<RecieveDamage>();
-
-            if (!so.isDamageDelay)
-            {
-                so.DealDamage();
-            }
+            so.DealFlameParticleDamage();
         }
     }
 }
