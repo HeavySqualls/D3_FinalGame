@@ -47,7 +47,9 @@ public class BreakableObject : MonoBehaviour
     [SerializeField] float hitSoundVolume = 0.3f;
     [SerializeField] AudioClip breakSound;
     [SerializeField] float breakSoundVolume = 0.3f;
-    AudioManager AM;
+    [SerializeField] float lowPitchRange = 0.90f;
+    [SerializeField] float highPitchRange = 1.15f;
+    AudioSource breakableObjectSource;
 
     [Space]
     [Header("OBJECT PIECES:")]
@@ -68,7 +70,10 @@ public class BreakableObject : MonoBehaviour
     protected virtual void Start()
     {
         boxCollider = GetComponent<BoxCollider2D>();
-        AM = Toolbox.GetInstance().GetAudioManager();
+        breakableObjectSource = GetComponent<AudioSource>();
+
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(breakableObjectSource);
+
         currentHP = startHP;
 
         if (!isRespawnable)
@@ -79,11 +84,14 @@ public class BreakableObject : MonoBehaviour
         FindEveryChild(gameObject.transform);
     }
 
-    //private void PlayAudio(AudioClip _clip, float _volume)
-    //{
-    //    audioSource.volume = _volume;
-    //    audioSource.PlayOneShot(_clip);
-    //}
+    private void PlayAudio(AudioClip _clip, float _volume)
+    {
+        float randomPitch = Random.Range(lowPitchRange, highPitchRange);
+
+        breakableObjectSource.pitch = randomPitch;
+        breakableObjectSource.volume = _volume;
+        breakableObjectSource.PlayOneShot(_clip);
+    }
 
     protected virtual void ResetObject()
     {
@@ -175,14 +183,13 @@ public class BreakableObject : MonoBehaviour
         // If the object has not been hit by a rolling object, wait for shake to finish
         if (!hitByHeavyObject && !hitByPlayer)
         {
-            print("poo");
             yield return new WaitForSeconds(shakeDuration);
         }
 
         // Disable box collider on parent object
         boxCollider.enabled = false;
         isBroken = true;
-        AM.PlayVariedOneShot(breakSound, breakSoundVolume);
+        PlayAudio(breakSound, breakSoundVolume);
 
         // If the object has been hit by a rolling object
         if ((hitByHeavyObject || hitByPlayer) && !isBreakableFloor /*|| isRottenDoor*/)
@@ -218,7 +225,7 @@ public class BreakableObject : MonoBehaviour
     private void ShakeObject()
     {
         damagePartSyst.Play();
-        AM.PlayVariedOneShot(hitSound, hitSoundVolume);
+        PlayAudio(hitSound, hitSoundVolume);
 
         foreach (BreakablePiece bp in objPieces)
         {

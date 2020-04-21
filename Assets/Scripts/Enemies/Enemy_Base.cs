@@ -142,6 +142,7 @@ public class Enemy_Base : PhysicsObject
         isHurt = true;
         GoToHurt();
 
+        StopAllCoroutines();
         StartCoroutine(KnockBack(_hitDirection, _knockBack, _knockUp, _stunTime));
     }
 
@@ -158,7 +159,7 @@ public class Enemy_Base : PhysicsObject
             yield return null;
         }
 
-        isHurt = false;
+        //isHurt = false;
 
         if (currentHP <= 0)
             KillUnit();
@@ -187,11 +188,11 @@ public class Enemy_Base : PhysicsObject
                 FlipSprite();
             }
 
-            currentState = State.Hunting;
+            GoPatrolling();
         }
         else
         {
-            currentState = State.Patrolling;
+            GoPatrolling();
         }
 
         isUnitPaused = false;
@@ -201,6 +202,21 @@ public class Enemy_Base : PhysicsObject
     }
 
     protected virtual void GoToHurt()
+    {
+        // Behaviour handled in specific enemy controller
+    }
+
+    protected virtual void GoIdle()
+    {
+        // Behaviour handled in specific enemy controller
+    }
+
+    protected virtual void GoPatrolling()
+    {
+        // Behaviour handled in specific enemy controller
+    }
+
+    protected virtual void GoHunting()
     {
         // Behaviour handled in specific enemy controller
     }

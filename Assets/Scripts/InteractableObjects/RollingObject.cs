@@ -42,6 +42,7 @@ public class RollingObject : MonoBehaviour
         rollingSource.volume = rollingVolume;
 
         AM = Toolbox.GetInstance().GetAudioManager();
+        AM.AddAudioSources(rollingSource);
     }
 
     //private void PlayAudio(AudioClip _clip, float _volume)

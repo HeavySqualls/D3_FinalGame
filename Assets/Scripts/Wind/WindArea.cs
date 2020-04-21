@@ -16,4 +16,14 @@ public class WindArea : MonoBehaviour
 
     [Tooltip("Does the wind affect the players movement (disable if just the in wind animations are desired)")]
     public bool doesAffectMovement = true;
+
+    [SerializeField] AudioSource windZoneAudioSource;
+
+    private void Start()
+    {
+        if (windZoneAudioSource != null)
+        {
+            Toolbox.GetInstance().GetAudioManager().AddAudioSources(windZoneAudioSource);
+        }
+    }
 }

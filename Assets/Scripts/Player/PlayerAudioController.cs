@@ -30,6 +30,8 @@ public class PlayerAudioController : MonoBehaviour
     [SerializeField] float hurtVolume = 0.4f;
     [SerializeField] AudioClip deathSound;
     [SerializeField] float deathVolume = 0.4f;
+    [SerializeField] AudioClip failSound;
+    [SerializeField] float failVolume = 0.4f;
 
     [SerializeField] AudioClip connectSound;
 
@@ -199,6 +201,7 @@ public class PlayerAudioController : MonoBehaviour
     public void PlayDeathSound()
     {
         AM.PlayVariedOneShot(deathSound, deathVolume);
+        AM.PlayConsistentOneShot(failSound, failVolume);
     }
 
     public void PlayPunchSound(int _punch)

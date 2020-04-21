@@ -23,11 +23,10 @@ public class CrabwormLarvaController : Enemy_Base
     [Header("Audio:")]
     [SerializeField] AudioClip movingSound;
     [SerializeField] float idleVolume = 0.3f;
-    [SerializeField] float movingPitchIdle = 0.3f;
     [SerializeField] float patrollingVolume = 0.6f;
-    [SerializeField] float movingPitchPatrolling = 1f;
     [SerializeField] float huntingVolume = 1f;
-    [SerializeField] float movingPitchHunting = 1.5f;
+    [SerializeField] float lowPitchRange = 0.5f;
+    [SerializeField] float highPitchRange = 1.5f;
 
     bool isMovingSoundPlaying = false;
     [SerializeField] AudioSource movementAudioSource;
@@ -48,15 +47,22 @@ public class CrabwormLarvaController : Enemy_Base
         {
             GoIdle();
         }
+
+        PlayMovementAudio(idleVolume);
+
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(localAudioSource);
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(movementAudioSource);
     }
 
 
-    private void PlayMovementAudio(float _volume, float _pitch)
+    private void PlayMovementAudio(float _volume)
     {
+        float randomPitch = Random.Range(lowPitchRange, highPitchRange);
+
         movementAudioSource.Stop();
         movementAudioSource.clip = movingSound;
         movementAudioSource.volume = _volume;
-        movementAudioSource.pitch = _pitch;
+        movementAudioSource.pitch = randomPitch;
         movementAudioSource.Play();
     }
 
@@ -161,9 +167,6 @@ public class CrabwormLarvaController : Enemy_Base
 
     private void Dead()         // Wait to die
     {
-        isIdle = false;
-        isPatrolling = false;
-        isHunting = false;
         targetVelocity.x = 0;
     }
 
@@ -177,21 +180,24 @@ public class CrabwormLarvaController : Enemy_Base
         animator.SetTrigger("isAttacking");
     }
 
-    private void GoIdle()
+    protected override void GoIdle()
     {
-        PlayMovementAudio(idleVolume, movingPitchIdle);
+        base.GoIdle();
+        PlayMovementAudio(idleVolume);
         currentState = State.Idle;
     }
 
-    private void GoPatrolling()
+    protected override void GoPatrolling()
     {
-        PlayMovementAudio(patrollingVolume, movingPitchPatrolling);
+        base.GoPatrolling();
+        PlayMovementAudio(patrollingVolume);
         currentState = State.Patrolling;
     }
 
-    private void GoHunting()
+    protected override void GoHunting()
     {
-        PlayMovementAudio(huntingVolume, movingPitchHunting);
+        base.GoHunting();
+        PlayMovementAudio(huntingVolume);
         currentState = State.Hunting;
     }
 
@@ -216,7 +222,7 @@ public class CrabwormLarvaController : Enemy_Base
 
         disposablePartSyst = Instantiate(Resources.Load("WormGooParticles", typeof(GameObject))) as GameObject;
         disposablePartSyst.transform.position = gameObject.transform.position;
-        disposablePartSyst.transform.SetParent(gameObject.transform);
+        //disposablePartSyst.transform.SetParent(gameObject.transform);
         Destroy(disposablePartSyst, 0.8f);
 
         currentState = State.Hurt;
@@ -253,7 +259,10 @@ public class CrabwormLarvaController : Enemy_Base
     {
         base.KillUnit();
         isDead = true;
+        isHurt = false;
+        print("crabworm dead");
         currentState = State.Dead;
+        movementAudioSource.Stop();
     }
 
 
@@ -261,12 +270,12 @@ public class CrabwormLarvaController : Enemy_Base
 
     void DetectPlayerCollisions()
     {
-        if (!isUnitPaused)
+        if (!isUnitPaused || !isDead)
         {
             RaycastHit2D huntingInfo = Physics2D.Raycast(eyeRange.position, direction, eyeRangeDistance, playerLayerMask);
 
             // If we have detected the player and are not currently attacking them
-            if (huntingInfo.collider != null && currentState != State.Attacking)
+            if (huntingInfo.collider != null && !huntingInfo.collider.gameObject.GetComponent<PlayerHealthSystem>().isDead && currentState != State.Attacking)
             {
                 target = huntingInfo.collider.gameObject;
                 currentState = State.Hunting;
@@ -347,6 +356,14 @@ public class CrabwormLarvaController : Enemy_Base
 
         if (pCon != null && pCon.magBootsOn && pCon.inAir)
         {
+            PlayOneShotAudio(hurtSound, hurtVolume);
+
+            disposablePartSyst = Instantiate(Resources.Load("WormGooParticles", typeof(GameObject))) as GameObject;
+            disposablePartSyst.transform.position = gameObject.transform.position;
+            //disposablePartSyst.transform.SetParent(gameObject.transform);
+            Destroy(disposablePartSyst, 0.8f);
+
+            StopAllCoroutines();
             KillUnit();
         }
     }

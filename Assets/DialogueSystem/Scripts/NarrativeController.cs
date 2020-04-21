@@ -129,6 +129,8 @@ public class NarrativeController : MonoBehaviour
 
     private void StartNarrative()
     {
+        AM.DampenAllAudio(true);
+        AM.DampenBGMusic(true);
         isNarrativeEventRunning = true;
 
         // Disable both the player input and the enemy movements
@@ -368,5 +370,7 @@ public class NarrativeController : MonoBehaviour
         N = null;
         activeLineIndex = 0;
         isNarrativeEventRunning = false;
+        AM.DampenAllAudio(false);
+        AM.DampenBGMusic(false);
     }
 }

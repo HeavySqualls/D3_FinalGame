@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
     {
         ResetGameManager();
         Toolbox.GetInstance().GetLevelManager().ClearLists();
+        Toolbox.GetInstance().GetAudioManager().ClearAudioSources();
     }
 
     void Start()

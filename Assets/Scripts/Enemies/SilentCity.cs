@@ -32,6 +32,20 @@ public class SilentCity : MonoBehaviour
     [SerializeField] GameObject disposablePartSyst;
 
     [Space]
+    [Header("Audio")]
+    [SerializeField] AudioClip smashSound;
+    [SerializeField] float smashVolume = 0.5f;
+    [SerializeField] AudioClip crushSound;
+    [SerializeField] float crushVolume = 0.5f;
+    [SerializeField] float lowPitchRange = 0.7f;
+    [SerializeField] float highPitchRange = 1.5f;
+    [SerializeField] float lowVolumeRange = 0.5f;
+    [SerializeField] float highVolumeRange = 1f;
+    [SerializeField] AudioSource smashSource;
+    [SerializeField] AudioSource tankSource;
+    [SerializeField] AudioSource debrisSource;
+
+    [Space]
     [Header("Screen Shake:")]
     CinemachineVirtualCamera cam;
     Tween shakeTween;
@@ -45,6 +59,25 @@ public class SilentCity : MonoBehaviour
         StartCoroutine(WaitToStart());
         currentMoveSpeed = baseMoveSpeed;
         cam = Toolbox.GetInstance().GetLevelManager().GetVirtualCam();
+
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(smashSource);
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(tankSource);
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(debrisSource);
+    }
+
+    private void PlayVariedOneShot(AudioClip _clip, float _volume, bool playRandomVolume)
+    {
+        float randomPitch = Random.Range(lowPitchRange, highPitchRange);
+        float randomVolume = Random.Range(lowVolumeRange, highVolumeRange);
+
+        smashSource.pitch = randomPitch;
+
+        if (playRandomVolume)
+            smashSource.volume = randomVolume;
+        else
+            smashSource.volume = _volume;
+
+        smashSource.PlayOneShot(_clip);
     }
 
     private void Update()
@@ -138,11 +171,14 @@ public class SilentCity : MonoBehaviour
                 {
                     objectRecieveDamage.GetHit(Vector2.left, 100f, 0, 0, 0);
                 }
+
+                PlayVariedOneShot(crushSound, crushVolume, false);
             }
             else
             {
                 print("City ran over " + objectHit.name);
                 SmashingWallEffect(objectHit.transform.position);
+                PlayVariedOneShot(smashSound, smashVolume, true);
             }  
         }
     }

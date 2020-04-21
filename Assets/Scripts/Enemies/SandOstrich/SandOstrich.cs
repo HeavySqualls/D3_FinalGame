@@ -66,6 +66,9 @@ public class SandOstrich : Enemy_Turret_Base
         }
         else
             isInHole = false;
+
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(localAudioSource);
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(oneShotSource);
     }
 
     private void PlayOneShotAudio(AudioClip _clip, float _volume)
@@ -135,7 +138,7 @@ public class SandOstrich : Enemy_Turret_Base
     {
         currentNoiseInterval -= Time.deltaTime;
 
-        if (currentNoiseInterval <= 0)
+        if (currentNoiseInterval <= 0 && !isInHole)
         {
             float randInt = Random.Range(1, 3);
             currentNoiseInterval = randInt;

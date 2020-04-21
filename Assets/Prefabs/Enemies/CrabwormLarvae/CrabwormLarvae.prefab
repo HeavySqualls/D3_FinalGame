@@ -303,12 +303,13 @@ MonoBehaviour:
     m_Bits: 0
   startingState: 0
   isUnitPaused: 0
+  isDead: 0
   currentHP: 0
   startHP: 1
   damageOutput: 2
   attackCooldown: 2
   knockBack: 6.5
-  knockUp: 2
+  knockUp: 3
   stunTime: 0.05
   patrolMoveSpeed: 2
   huntingMoveSpeed: 5
@@ -324,11 +325,10 @@ MonoBehaviour:
   hitBoxPos: {fileID: 7518789101042350976}
   movingSound: {fileID: 8300000, guid: 14b1628c9107b6040b43893c5d7101e1, type: 3}
   idleVolume: 0.3
-  movingPitchIdle: 0.8
   patrollingVolume: 0.6
-  movingPitchPatrolling: 1
   huntingVolume: 1
-  movingPitchHunting: 1.5
+  lowPitchRange: 0.5
+  highPitchRange: 1.5
   movementAudioSource: {fileID: 6807936318493059178}
   attackingSound: {fileID: 8300000, guid: 0cb8e5d2a49a08942b3826a7fc4a32fc, type: 3}
   attackingVolume: 2

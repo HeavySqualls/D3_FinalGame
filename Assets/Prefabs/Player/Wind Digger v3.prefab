@@ -4964,7 +4964,6 @@ MonoBehaviour:
   shakeStrength: 0.25
   vibrato: 9
   randomness: 2
-  cam: {fileID: 0}
 --- !u!114 &7036694795940340694
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5023,6 +5022,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHealthStart: 0
+  damageCooldownTime: 1
   flashDuration: 5
   currentFlashDelay: 0
   phase1FlashDelay: 0.5
@@ -5344,7 +5344,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3414a82ac80e68b4e989b346d487404c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectSource: {fileID: 1622546247}
   jumpSound: {fileID: 8300000, guid: 7649664e45018d44591473bd289e2e09, type: 3}
   jumpVolume: 0.2
   climbSound: {fileID: 8300000, guid: 7649664e45018d44591473bd289e2e09, type: 3}
@@ -5359,6 +5358,8 @@ MonoBehaviour:
   hurtVolume: 0.7
   deathSound: {fileID: 8300000, guid: cd6c378ff8e58ba45831bb667951746d, type: 3}
   deathVolume: 0.6
+  failSound: {fileID: 8300000, guid: eae320832d3dcf141a33bcb2db321733, type: 3}
+  failVolume: 0.4
   connectSound: {fileID: 8300000, guid: 87f3b3ec012b89f479e71e7e4e913c53, type: 3}
   punch1Sound: {fileID: 8300000, guid: 0491c65a0fcab474a90ad48c5fcb5ccb, type: 3}
   punch1Volume: 0.1

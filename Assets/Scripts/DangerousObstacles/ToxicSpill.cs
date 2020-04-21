@@ -18,17 +18,19 @@ public class ToxicSpill : Interact_Base
     [SerializeField] float volumeIncrementation = 0.08f;
     [SerializeField] float incrementTime = 0.02f;
     bool isSoundPlaying = false;
-    AudioSource audioSource;
+    AudioSource toxicSpillAudioSource;
 
     [SerializeField] ParticleSystem partSyst;
 
     void Start()
     {
         partSyst = GetComponentInChildren<ParticleSystem>();
-        audioSource = GetComponent<AudioSource>();
-        audioSource.clip = sprayingSound;
-        audioSource.loop = true;
+        toxicSpillAudioSource = GetComponent<AudioSource>();
+        toxicSpillAudioSource.clip = sprayingSound;
+        toxicSpillAudioSource.loop = true;
         StartCoroutine(FadeInSound());
+
+        Toolbox.GetInstance().GetAudioManager().AddAudioSources(toxicSpillAudioSource);
     }
 
     void Update()
@@ -63,7 +65,7 @@ public class ToxicSpill : Interact_Base
     {
         pRecieveDamage = other.GetComponent<RecieveDamage>();
 
-        if (pRecieveDamage != null && !isDamageDelay)
+        if (pRecieveDamage != null && !isDamageDelay && pRecieveDamage.gameObject.GetComponent<PlayerController>())
         {
             isDamageDelay = true;
             pRecieveDamage.GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
@@ -92,12 +94,12 @@ public class ToxicSpill : Interact_Base
     {
         //yield return new WaitForSeconds(soundDelay);
 
-        audioSource.volume = 0;
-        audioSource.Play();
+        toxicSpillAudioSource.volume = 0;
+        toxicSpillAudioSource.Play();
 
-        while (audioSource.volume < desiredMaxVolume)
+        while (toxicSpillAudioSource.volume < desiredMaxVolume)
         {
-            audioSource.volume += volumeIncrementation;
+            toxicSpillAudioSource.volume += volumeIncrementation;
 
             yield return new WaitForSeconds(incrementTime);
         }
@@ -112,14 +114,14 @@ public class ToxicSpill : Interact_Base
         if (!_immediate)
             yield return new WaitForSeconds(4);
 
-        while (audioSource.volume > 0)
+        while (toxicSpillAudioSource.volume > 0)
         {
-            audioSource.volume -= volumeIncrementation;
+            toxicSpillAudioSource.volume -= volumeIncrementation;
 
             yield return new WaitForSeconds(incrementTime);
         }
 
-        audioSource.Stop();
+        toxicSpillAudioSource.Stop();
 
         yield break;
     }

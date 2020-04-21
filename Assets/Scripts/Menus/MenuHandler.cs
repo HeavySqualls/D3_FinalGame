@@ -112,6 +112,9 @@ public class MenuHandler : MonoBehaviour
     public void OpenClosePauseMenu()
     {
         PauseMenu.SetActive(!PauseMenu.activeSelf);
+        AM.DampenBGMusic(PauseMenu.activeSelf);
+        AM.MuteAudioSources(PauseMenu.activeSelf);
+
         AM.PlayConsistentOneShot(openMenuSound, openMenuVolume);
 
         if (PauseMenu.activeSelf && !OptionsMenu.activeSelf)
