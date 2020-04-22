@@ -22,31 +22,47 @@ public class CinematicCanvasController : MonoBehaviour
         // if we have a cinematic controller assigned, 
         if (cinematicTrigger != null)
         {
-            if (!cinematicTrigger.isFlowCutscene)
+            if (cinematicTrigger.isCutscene)
             {
                 // start tracking whether the cutscene has finished, and if so, display the continue prompt
-                ShowContinueButton();
+                WaitAndShowContinueButton();
 
                 // if we have recieved the correct button input, and if the cinemtic timeline has stopped playing, and if the cinematic camera
                 // is still active
                 if ((Input.GetButtonDown(Toolbox.GetInstance().GetPlayerManager().GetPlayerController().controls.interact) || Controls.IsDown)
                    && cinematicTrigger.timeLine.state != PlayState.Playing && cinematicTrigger.cinematicCam.activeSelf == true)
                 {
-                    // End the cutscene from the trigger
-                    cinematicTrigger.EndCutScene();
                     // slide out cinematic bars
-                    if (cinematicTrigger.isCutscene)
-                        PlayCutSceneSlideOut();
+                    PlayCutSceneSlideOut();
 
                     // hide the continue prompt
                     HideContinueButton();
+
+                    // End the cutscene from the trigger
+                    cinematicTrigger.EndCutScene();
+
                     // nullify the cinematicTrigger variable
                     cinematicTrigger = null;
                 }
             }
+            else if (cinematicTrigger.isCinematicFlowCutscene && cinematicTrigger.timeLine.state != PlayState.Playing)
+            {
+                // slide out cinematic bars
+                PlayCutSceneSlideOut();
+
+                // End the cutscene from the trigger
+                cinematicTrigger.EndCutScene();
+
+                // nullify the cinematicTrigger variable
+                cinematicTrigger = null;
+            }
             else if (cinematicTrigger.isFlowCutscene && cinematicTrigger.timeLine.state != PlayState.Playing)
             {
+                // End the cutscene from the trigger
                 cinematicTrigger.EndCutScene();
+
+                // nullify the cinematicTrigger variable
+                cinematicTrigger = null;
             }
         }
     }
@@ -65,7 +81,7 @@ public class CinematicCanvasController : MonoBehaviour
         animator.SetBool("isCutSceneSlideIn", false);
     }
 
-    public void ShowContinueButton()
+    public void WaitAndShowContinueButton()
     {
         if (cinematicTrigger.timeLine.state != PlayState.Playing && !continuePrompt.activeSelf)
         {

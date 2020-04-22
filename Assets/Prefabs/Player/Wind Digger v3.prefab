@@ -4861,6 +4861,7 @@ GameObject:
   - component: {fileID: 1622546248}
   - component: {fileID: 1695776531}
   - component: {fileID: 3431403315996601166}
+  - component: {fileID: 5161685506199332878}
   m_Layer: 12
   m_Name: Wind Digger v3
   m_TagString: Player
@@ -5022,7 +5023,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHealthStart: 0
-  damageCooldownTime: 1
+  damageCooldownTime: 1.25
   flashDuration: 5
   currentFlashDelay: 0
   phase1FlashDelay: 0.5
@@ -5382,8 +5383,8 @@ MonoBehaviour:
   magBootsSource: {fileID: 1695776531}
   magBootsSound: {fileID: 8300000, guid: 2fea60f8c3af0e447a75186aa5f3b60a, type: 3}
   magBootsSwitchSound: {fileID: 8300000, guid: bae7c93f5cc6f544b9a75523393ec6ce, type: 3}
-  magBootsVolume: 0.4
-  magBootsSwitchVolume: 0.6
+  magBootsVolume: 0.2
+  magBootsSwitchVolume: 0.3
   footStepsSource: {fileID: 1622546248}
   footStepsNormal: {fileID: 8300000, guid: a5bf5e22a6f08ff4aa7365949f122883, type: 3}
   footStepsInWind: {fileID: 8300000, guid: b2bf667e740f7a645a85ced553b903ab, type: 3}
@@ -5776,6 +5777,14 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!81 &5161685506199332878
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7036694795940340716}
+  m_Enabled: 1
 --- !u!1 &8053016423708399965
 GameObject:
   m_ObjectHideFlags: 0

@@ -4,7 +4,6 @@ using UnityEngine;
 public class PlayerAudioController : MonoBehaviour
 {
     [Header("Audio Effects:")]
-    //public AudioSource effectSource;
     AudioManager AM;
 
     [Header("Jump:")]

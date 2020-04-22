@@ -29,4 +29,9 @@ public class NarrativeTrigger : MonoBehaviour
     {
         boxColl.enabled = false;
     }
+
+    public void PlayNarrative()
+    {
+        narrativeController.SetUpNarrativeController(thisConversation, this);
+    }
 }

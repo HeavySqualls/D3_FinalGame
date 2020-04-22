@@ -5,10 +5,12 @@ public class CinematicTriggerController : MonoBehaviour
 {
     [Tooltip("Does this cinematic contain a camera change?")]
     public bool isCameraChange = true;
-    [Tooltip("Is this a cutscene? (black bars on top & bottom)")]
+    [Tooltip("Is this a cutscene? (black bars on top & bottom + continue button after cutscene is played)")]
     public bool isCutscene = true;
-    [Tooltip("Is this a flow cutscene?")]
-    public bool isFlowCutscene;
+    [Tooltip("Is this a cutscene? (black bars on top & bottom WITHOUT continue button after cutscene is played)")]
+    public bool isCinematicFlowCutscene = false;
+    [Tooltip("Is this a flow cutscene? (camera change, with no black bars)")]
+    public bool isFlowCutscene = false;
 
     public PlayableDirector timeLine;
     public GameObject cinematicCam;
@@ -44,8 +46,11 @@ public class CinematicTriggerController : MonoBehaviour
 
         if (pRef != null || ro != null)
         {
-            if (isCutscene)
+            if (isCutscene || isCinematicFlowCutscene)
+            {
+                print("slide in the bars");
                 Toolbox.GetInstance().GetCanvasManager().GetCinematicCanvasController().PlayCutSceneSlideIn(this);
+            }
 
             if (isCameraChange)
                 cinematicCam.SetActive(true);

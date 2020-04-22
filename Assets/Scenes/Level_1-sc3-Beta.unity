@@ -81125,6 +81125,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7036694795940340689, guid: cca52d49f95b769418995afbe90124fc,
+        type: 3}
+      propertyPath: isController
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7036694795940340691, guid: cca52d49f95b769418995afbe90124fc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -103254,6 +103259,7 @@ MonoBehaviour:
   isBorasWind: 0
   direction: {x: 1, y: 0, z: 0}
   doesAffectMovement: 1
+  windZoneAudioSource: {fileID: 0}
 --- !u!4 &1687162379 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1868931435680286762, guid: 1e7d67a411d3a754f96105c4d0ae9590,
