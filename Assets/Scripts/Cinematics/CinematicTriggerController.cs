@@ -48,21 +48,26 @@ public class CinematicTriggerController : MonoBehaviour
 
         if (pRef != null || ro != null)
         {
-            if (isCutscene || isCinematicFlowCutscene)
-            {
-                print("slide in the bars");
-                Toolbox.GetInstance().GetCanvasManager().GetCinematicCanvasController().PlayCutSceneSlideIn(this);
-            }
+            PlayCinematic();
+        }
+    }
 
-            if (isCameraChange)
-                cinematicCam.SetActive(true);
+    public void PlayCinematic()
+    {
+        if (isCutscene || isCinematicFlowCutscene)
+        {
+            print("slide in the bars");
+            Toolbox.GetInstance().GetCanvasManager().GetCinematicCanvasController().PlayCutSceneSlideIn(this);
+        }
 
-            timeLine.Play();
+        if (isCameraChange)
+            cinematicCam.SetActive(true);
 
-            if (!isFlowCutscene)
-            {
-                pCon.DisablePlayerController();
-            }
+        timeLine.Play();
+
+        if (!isFlowCutscene)
+        {
+            pCon.DisablePlayerController();
         }
     }
 }

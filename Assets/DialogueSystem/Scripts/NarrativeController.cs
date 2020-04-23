@@ -372,5 +372,11 @@ public class NarrativeController : MonoBehaviour
         isNarrativeEventRunning = false;
         AM.DampenAllAudio(false);
         AM.DampenBGMusic(false);
+
+        // If this trigger has a cinematic attached to it, play it now
+        if (narTrigger.hasCinematic)
+        {
+            narTrigger.PlayPostNarrativeCinematic();
+        }
     }
 }
