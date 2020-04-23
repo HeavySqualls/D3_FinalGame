@@ -331,7 +331,7 @@ MonoBehaviour:
   highPitchRange: 1.5
   movementAudioSource: {fileID: 6807936318493059178}
   attackingSound: {fileID: 8300000, guid: 0cb8e5d2a49a08942b3826a7fc4a32fc, type: 3}
-  attackingVolume: 2
+  attackingVolume: 1
   hurtSound: {fileID: 8300000, guid: 1b62e071049c990418c9aded82050c31, type: 3}
   hurtVolume: 0.5
   localAudioSource: {fileID: 6467531696290717826}
@@ -418,10 +418,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 4.0908813
+  MinDistance: 4
   MaxDistance: 35
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0
@@ -514,10 +514,10 @@ AudioSource:
   SpatializePostEffects: 0
   Priority: 128
   DopplerLevel: 1
-  MinDistance: 4.0908813
+  MinDistance: 4
   MaxDistance: 35
   Pan2D: 0
-  rolloffMode: 0
+  rolloffMode: 1
   BypassEffects: 0
   BypassListenerEffects: 0
   BypassReverbZones: 0

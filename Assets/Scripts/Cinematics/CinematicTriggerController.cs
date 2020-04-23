@@ -5,6 +5,8 @@ public class CinematicTriggerController : MonoBehaviour
 {
     [Tooltip("Does this cinematic contain a camera change?")]
     public bool isCameraChange = true;
+    [Tooltip("Does this camera get turned off after the cutscene?")]
+    public bool cameraChangeAtEnd = true;
     [Tooltip("Is this a cutscene? (black bars on top & bottom + continue button after cutscene is played)")]
     public bool isCutscene = true;
     [Tooltip("Is this a cutscene? (black bars on top & bottom WITHOUT continue button after cutscene is played)")]
@@ -31,7 +33,7 @@ public class CinematicTriggerController : MonoBehaviour
 
     public void EndCutScene()
     {
-        if (isCameraChange)
+        if (isCameraChange && cameraChangeAtEnd)
             cinematicCam.SetActive(false);
 
         pCon.EnablePlayerController();

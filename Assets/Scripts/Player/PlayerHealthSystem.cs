@@ -152,7 +152,6 @@ public class PlayerHealthSystem : MonoBehaviour
             spawnZone.RespawnObject(gameObject);
         }
         else
-
             Debug.LogError("No respawn location assigned!");
 
         pCon.EnablePlayerController();

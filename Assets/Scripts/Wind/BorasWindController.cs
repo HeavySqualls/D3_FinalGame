@@ -10,13 +10,14 @@ public class BorasWindController : MonoBehaviour
     [SerializeField] float blowTimeStart = 2f;
     [Tooltip("The current duration that the wind is blowing.")]
     [SerializeField] private float blowTime;
-    [SerializeField] private bool countdown = false;
+    [SerializeField] private float blowIncrementValue = 0.01f;
+    [SerializeField] private float blowIncrementTime = 1f;
+    public bool isBlowTime = true;
 
     [Space]
     [Header("Wind Collider Variables:")]
     [Tooltip("The box collider where the wind affect will be applied.")]
     [SerializeField] BoxCollider2D[] windAreas;
-    //public BoxCollider2D windArea;
     [Tooltip("The time that the box collider will be enabled at (check blowTime to set the enable time).")]
     [SerializeField] float enableDelay;
     [Tooltip("The time that the box collider will be enabled at (check blowTime to set the enable time).")]
@@ -28,70 +29,113 @@ public class BorasWindController : MonoBehaviour
     [Space]
     [Header("Particle System:")]
     public ParticleSystem detectSyst;
-    [SerializeField] bool isBlowing = false;
+    public bool isBlowing = false;
     private ParticleSystem borasSyst;
     private bool withChildren = true;
-
-    //OLD MOVING COLLIDER SYSTEM VARS:
-    //public WindColliderController windCollCon;
-    //public float speed;
-    //public Transform startPos;
 
     void Start()
     {
         borasSyst = GetComponentInChildren<ParticleSystem>();
-        //windArea.enabled = false;
 
         foreach (BoxCollider2D wA in windAreas)
-        {
             wA.enabled = false;
-        }
 
         blowTime = blowTimeStart;
     }
 
     void Update()
     {
-        BlowGust();
+        if (!isBlowTime)
+        {
+            StartCoroutine(BlowGust());
+            isBlowTime = true;
+        }
     }
 
-    void  BlowGust()
+    IEnumerator BlowGust()
     {
-        if (!isBlowing)
+        isBlowing = true;
+        blowTime = blowTimeStart;
+        borasSyst.Play(withChildren);
+
+        while (blowTime > enableColliderTime)
         {
-            borasSyst.Play(withChildren);
-            countdown = true;
-            isBlowing = true;
+            blowTime -= blowIncrementValue;
+            yield return new WaitForSeconds(blowIncrementTime);
         }
 
-        if (countdown && isBlowing)
+        StartCoroutine(EnableWindColliders());
+
+        while (blowTime > disableColliderTime)
         {
-            blowTime -= Time.deltaTime;
-
-            if (!enableColliders && blowTime < enableColliderTime)
-            {
-                //windArea.enabled = true;
-                StartCoroutine(EnableWindColliders());
-                enableColliders = true;
-            }
-
-            if (enableColliders && blowTime < disableColliderTime)
-            {
-                //windArea.enabled = false;
-                StartCoroutine(DisableWindColliders());
-                enableColliders = false;
-            }
-
-            if (blowTime < 0)
-            {
-                StartCoroutine(Interval());
-                countdown = false;
-            }
+            blowTime -= blowIncrementValue;
+            yield return new WaitForSeconds(blowIncrementTime);
         }
+
+        StartCoroutine(DisableWindColliders());
+
+        while (blowTime > 0)
+        {
+            blowTime -= blowIncrementValue;
+            yield return new WaitForSeconds(blowIncrementTime);
+        }
+
+        StartCoroutine(Interval());
+        borasSyst.Stop(withChildren);
+        isBlowing = false;
+
+        yield break;
     }
+
+    IEnumerator Interval()
+    {
+        print("Start boras interval");
+
+        yield return new WaitForSeconds(intervalTime);
+        isBlowTime = false;
+
+        print("Stop boras interval");
+        yield break;
+    }
+
+    //void  BlowGust()
+    //{
+    //    // Check to play the particle system once
+    //    if (!isBlowing)
+    //    {
+    //        print("Blow Boras Wind");
+    //        borasSyst.Play(withChildren);
+    //        isBlowing = true;
+    //    }
+
+    //    if (isBlowing)
+    //    {
+    //        blowTime -= Time.deltaTime;
+
+    //        // Start to enable the colliders one by one in sequence
+    //        if (!enableColliders && blowTime < enableColliderTime && blowTime > disableColliderTime)
+    //        {
+    //            StartCoroutine(EnableWindColliders());
+    //            enableColliders = true;
+    //        }
+    //        // Start to disable the colliders one by one in sequence when the blowing time has reached its peak point
+    //        else if (enableColliders && blowTime < disableColliderTime)
+    //        {
+    //            StartCoroutine(DisableWindColliders());
+    //            enableColliders = false;
+    //        }
+    //        // If we have reached the end of the blow time, start the interval countdown and set is blowing countdown to false
+    //        else if (blowTime <= 0)
+    //        {
+    //            StartCoroutine(Interval());
+    //            isBlowTime = false;
+    //        }
+    //    }
+    //}
 
     IEnumerator EnableWindColliders()
     {
+        print("Enable wind colliders");
         int colliderCount = 0;
 
         while (colliderCount < windAreas.Length)
@@ -108,6 +152,7 @@ public class BorasWindController : MonoBehaviour
 
     IEnumerator DisableWindColliders()
     {
+        print("Disable wind colliders");
         int colliderCount = 0;
 
         while (colliderCount < windAreas.Length)
@@ -120,15 +165,5 @@ public class BorasWindController : MonoBehaviour
         }
 
         yield break;
-    }
-
-    IEnumerator Interval()
-    {
-        borasSyst.Stop(withChildren);
-
-        yield return new WaitForSeconds(intervalTime);
-
-        blowTime = blowTimeStart;
-        isBlowing = false;
     }
 }

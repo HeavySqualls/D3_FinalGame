@@ -149,20 +149,26 @@ public class BreakableObject : MonoBehaviour
     }
 
 
-    // Shakes the floor when the player lands on it
+    // Shakes the floor/crumbling wall when the player lands on it
     public void TriggerObjectShake()
     {
-        damagePartSyst.Play();
-        ShakeObject();
+        if (!damagePartSyst.isPlaying)
+        {
+            print("shake");
+            damagePartSyst.Play();
+            ShakeObject();
+        }
     }
 
 
     // Shake platform and then trigger platform collapse & respawn coroutine
     public void TriggerPlatformCollapse()
-    {       
-        ShakeObject();
-
-        StartCoroutine(CollapseAndRespawnCounter());
+    {
+        if (!isFallingApart)
+        {
+            ShakeObject();
+            StartCoroutine(CollapseAndRespawnCounter());
+        }
     }
 
 
@@ -224,6 +230,7 @@ public class BreakableObject : MonoBehaviour
 
     private void ShakeObject()
     {
+        print("collapse");
         damagePartSyst.Play();
         PlayAudio(hitSound, hitSoundVolume);
 

@@ -13,7 +13,6 @@ public class PlayerInventoryHandler : MonoBehaviour
     bool isInventoryOpen = false;
     [SerializeField] AudioClip openSound;
     [SerializeField] float openSoundVolume = 0.15f;
-    float playSpeed = 1.5f;
     AudioManager AM;
     PlayerController pCon;
 
@@ -28,8 +27,6 @@ public class PlayerInventoryHandler : MonoBehaviour
         equipmentPanel.SetActive(!equipmentPanel.activeSelf);
         AM = Toolbox.GetInstance().GetAudioManager();
     }
-
-    float wantedTime = 0;
 
     void Update()
     {

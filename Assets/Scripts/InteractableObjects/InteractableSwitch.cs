@@ -18,6 +18,11 @@ public class InteractableSwitch : MonoBehaviour
     [SerializeField] ToxicSpill[] spillPipes;
 
     [Space]
+    [Header("Additional Objects this switch controls:")]
+    [Tooltip("Assign any relative game objects you want to disable with this switch.")]
+    [SerializeField] GameObject[] additionalGameObjects;
+
+    [Space]
     [Header("Material References:")]
     [Tooltip("Assign the normal material assigned to the asset.")]
     [SerializeField] Material normalMat;
@@ -93,6 +98,15 @@ public class InteractableSwitch : MonoBehaviour
             }
 
             isOpen = !isOpen;
+        }
+
+        if (additionalGameObjects.Length > 0)
+        {
+            foreach(GameObject go in additionalGameObjects)
+            {
+                go.SetActive(false);
+                Debug.Log(gameObject.name + " has disabled " + go.name);
+            }
         }
 
         animator.SetBool("isOpen", isOpen);

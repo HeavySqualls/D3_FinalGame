@@ -8,7 +8,6 @@ public class CinematicCanvasController : MonoBehaviour
 
     [Tooltip("Gets automatically assighed by the trigger itself, and nullified when the continue prompt is closed.")]
     CinematicTriggerController cinematicTrigger;
-
     Animator animator;
 
     private void Start()
@@ -38,7 +37,7 @@ public class CinematicCanvasController : MonoBehaviour
                     // hide the continue prompt
                     HideContinueButton();
 
-                    // End the cutscene from the trigger
+                    // end the cutscene from the trigger
                     cinematicTrigger.EndCutScene();
 
                     // nullify the cinematicTrigger variable
@@ -50,7 +49,7 @@ public class CinematicCanvasController : MonoBehaviour
                 // slide out cinematic bars
                 PlayCutSceneSlideOut();
 
-                // End the cutscene from the trigger
+                // end the cutscene from the trigger
                 cinematicTrigger.EndCutScene();
 
                 // nullify the cinematicTrigger variable

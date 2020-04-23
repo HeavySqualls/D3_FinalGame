@@ -16,10 +16,12 @@ public class NarrativeTrigger : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        PlayerHandleInteract playerHandleInteract = collision.gameObject.GetComponent<PlayerHandleInteract>();
+        //PlayerHandleInteract playerHandleInteract = collision.gameObject.GetComponent<PlayerHandleInteract>();
+        PlayerController pCon = collision.gameObject.GetComponent<PlayerController>();
 
-        if (playerHandleInteract != null)
+        if (pCon != null)
         {
+            pCon.SetPlayerVelocityToZero();
             narrativeController.SetUpNarrativeController(thisConversation, this);
             boxColl.enabled = false;
         }

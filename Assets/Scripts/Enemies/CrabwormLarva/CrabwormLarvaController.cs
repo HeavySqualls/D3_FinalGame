@@ -225,7 +225,7 @@ public class CrabwormLarvaController : Enemy_Base
         //disposablePartSyst.transform.SetParent(gameObject.transform);
         Destroy(disposablePartSyst, 0.8f);
 
-        currentState = State.Hurt;
+        currentState = State.DoNothing;
         PlayOneShotAudio(hurtSound, hurtVolume);
     }
 
@@ -260,6 +260,9 @@ public class CrabwormLarvaController : Enemy_Base
         base.KillUnit();
         isDead = true;
         isHurt = false;
+        isIdle = false;
+        isPatrolling = false;
+        isHunting = false;
         print("crabworm dead");
         currentState = State.Dead;
         movementAudioSource.Stop();

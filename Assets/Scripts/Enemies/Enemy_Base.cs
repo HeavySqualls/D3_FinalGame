@@ -140,7 +140,7 @@ public class Enemy_Base : PhysicsObject
     public void ThisUnitHit(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
     {
         isHurt = true;
-        GoToHurt();
+        GoToHurt(); // handled in enemy controller
 
         StopAllCoroutines();
         StartCoroutine(KnockBack(_hitDirection, _knockBack, _knockUp, _stunTime));
@@ -176,7 +176,11 @@ public class Enemy_Base : PhysicsObject
 
         yield return new WaitForSeconds(attackCooldown);
 
-        if (target != null)
+        if (isDead)
+        {
+            currentState = State.Dead;
+        }
+        else if (target != null)
         {
             Vector2 targetDirection;
 

@@ -1,10 +1,10 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class ToxicSpill : Interact_Base
 {
     public bool isTurnedOn = true;
+    [SerializeField] bool isPaused = false;
     public float damageDelay;
     private bool isDamageDelay = false;
 
@@ -17,7 +17,7 @@ public class ToxicSpill : Interact_Base
     [SerializeField] float desiredMaxVolume = 1f;
     [SerializeField] float volumeIncrementation = 0.08f;
     [SerializeField] float incrementTime = 0.02f;
-    bool isSoundPlaying = false;
+    [SerializeField] float partPlayTime = 4f;
     AudioSource toxicSpillAudioSource;
 
     [SerializeField] ParticleSystem partSyst;
@@ -35,30 +35,31 @@ public class ToxicSpill : Interact_Base
 
     void Update()
     {
-        //print(partSyst.isEmitting);
-        if (!partSyst.isEmitting && isTurnedOn)
+        if (!partSyst.isEmitting && isTurnedOn && !isPaused)
+        {
+            StartCoroutine(EmissionPause());
+            isPaused = true;
+        }
+    }
+
+    IEnumerator EmissionPause()
+    {
+        print("emission pause");
+        while (emmisionPause < maxEmmisionPause)
         {
             emmisionPause += Time.deltaTime;
-
-            if (isSoundPlaying)
-            {
-                //StopAllCoroutines();
-                //StartCoroutine(FadeOutSound());
-                isSoundPlaying = false;
-            }
-
-            if (emmisionPause >= maxEmmisionPause)
-            {
-                partSyst.Play();
-
-                if (!isSoundPlaying)
-                {
-                    StopAllCoroutines();
-                    StartCoroutine(FadeInSound());
-                    isSoundPlaying = true;
-                }
-            }
         }
+
+        FadeSound();
+
+        yield break;
+    }
+
+    private void FadeSound()
+    {
+        partSyst.Play();
+        StopAllCoroutines();
+        StartCoroutine(FadeInSound());
     }
 
     void OnParticleCollision(GameObject other)
@@ -92,9 +93,8 @@ public class ToxicSpill : Interact_Base
 
     private IEnumerator FadeInSound()
     {
-        //yield return new WaitForSeconds(soundDelay);
-
         toxicSpillAudioSource.volume = 0;
+        toxicSpillAudioSource.pitch = Random.Range(0.9f, 1.25f);
         toxicSpillAudioSource.Play();
 
         while (toxicSpillAudioSource.volume < desiredMaxVolume)
@@ -112,7 +112,7 @@ public class ToxicSpill : Interact_Base
     private IEnumerator FadeOutSound(bool _immediate)
     {
         if (!_immediate)
-            yield return new WaitForSeconds(4);
+            yield return new WaitForSeconds(partPlayTime);
 
         while (toxicSpillAudioSource.volume > 0)
         {
@@ -121,6 +121,7 @@ public class ToxicSpill : Interact_Base
             yield return new WaitForSeconds(incrementTime);
         }
 
+        isPaused = false;
         toxicSpillAudioSource.Stop();
 
         yield break;

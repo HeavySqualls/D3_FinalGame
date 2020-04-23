@@ -126,6 +126,7 @@ public class PlayerController : PhysicsObject
     public Animator animator;
     private PlayerFeedback pFeedback;
     private PlayerAudioController pAudio;
+    private PlayerHealthSystem pHealth;
     private RipplePostProcessor ripPP;
     private SpriteRenderer spriteRenderer;
     private LayerMask groundLayerMask;
@@ -155,6 +156,7 @@ public class PlayerController : PhysicsObject
 
         pFeedback = GetComponent<PlayerFeedback>();
         pAudio = GetComponent<PlayerAudioController>();
+        pHealth = GetComponent<PlayerHealthSystem>();
 
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
         wallLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << breakableObjectsLayer));
@@ -177,32 +179,36 @@ public class PlayerController : PhysicsObject
     {
         base.Update();
 
-        horizontalInput = Input.GetAxisRaw(controls.xMove);
-        isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
-
-        //if (!isWallJumping)
-        //{
-        //    targetVelocity = Vector2.zero; // for hard landings to stop movement
-        //}
-
-        CheckSurroundings();
-        CheckIfWallSliding();
-        TrackAirTime();
-        ComputeVelocity(); // Realised that this was happening twice, here AND in physics object. Disabled it here for now to see the effects. 
-        Jump();
-        RapidJump();
-        MagBoots();
-        GraceJumpTimer();
-        CheckLedgeClimb();
-
-        if (isWallSliding && velocity.y < -terminalWallSlidingVelocity)
+        if (!isDisabled)
         {
-            velocity.y = -terminalWallSlidingVelocity;
+            horizontalInput = Input.GetAxisRaw(controls.xMove);
+            isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
+
+            //if (!isWallJumping)
+            //{
+            //    targetVelocity = Vector2.zero; // for hard landings to stop movement
+            //}
+
+            CheckSurroundings();
+            CheckIfWallSliding();
+            TrackAirTime();
+            ComputeVelocity(); // Realised that this was happening twice, here AND in physics object. Disabled it here for now to see the effects. 
+            Jump();
+            RapidJump();
+            MagBoots();
+            GraceJumpTimer();
+            CheckLedgeClimb();
+
+            if (isWallSliding && velocity.y < -terminalWallSlidingVelocity)
+            {
+                velocity.y = -terminalWallSlidingVelocity;
+            }
+            else if (velocity.y < -terminalVelocity)
+            {
+                velocity.y = -terminalVelocity;
+            }
         }
-        else if (velocity.y < -terminalVelocity)
-        {
-            velocity.y = -terminalVelocity;
-        }
+
     }
 
     public float GetAnimTime() //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip
@@ -259,13 +265,19 @@ public class PlayerController : PhysicsObject
 
         targetVelocity.x = 0;
         isHit = false;
-        EnablePlayerController();
+
+        if (!pHealth.isDead)
+            EnablePlayerController();
+
         yield break;
     }
 
 
     // <<----------------------------------------------------- COMPUTE VELOCITY (IN AND OUT OF WIND ZONES) ------------------------------------------- //
-
+    public void SetPlayerVelocityToZero()
+    {
+        targetVelocity.x = 0;
+    }
 
     protected override void ComputeVelocity()
     {
@@ -548,123 +560,125 @@ public class PlayerController : PhysicsObject
 
     private void CheckSurroundings()
     {
-        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
-        Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
-
-        if (hitGround.collider != null)
+        // ---- CHECK FOR GROUND
+        if (!isDisabled)
         {
-            isOnGround = true;
+            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
 
-            int currentLayer = hitGround.collider.gameObject.layer;
-
-            if (currentLayer == breakableObjectsLayer)
+            if (hitGround.collider != null)
             {
-                BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
+                isOnGround = true;
 
-                if (bo == null)
+                int currentLayer = hitGround.collider.gameObject.layer;
+
+                if (currentLayer == breakableObjectsLayer)
                 {
-                    Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
+                    BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
+
+                    if (bo == null)
+                    {
+                        Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
+                    }
+                    else if (bo.isPlatform && !bo.isFallingApart)
+                    {
+                        bo.TriggerPlatformCollapse();
+                    }
                 }
-                else if (bo.isPlatform && !bo.isFallingApart)
+                else if (currentLayer == breakableFloorsLayer)
                 {
-                    bo.TriggerPlatformCollapse();
+                    BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
+
+                    if (bf == null)
+                    {
+                        Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
+                    }
+                    else if (inAir)
+                    {
+                        bf.TriggerObjectShake();
+                    }
+                }
+                else if (currentLayer == slidingSurfaceLayer && !isPressingJumpButton && !magBootsOn)
+                {
+                    SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
+
+                    if (ss == null)
+                    {
+                        Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
+                    }
+                    else
+                    {
+                        SlopeSlide(ss.direction);
+                    }
+                }
+                else if (currentLayer != slidingSurfaceLayer && isGroundSliding || isGroundSliding && magBootsOn)
+                {
+                    print("Stop");
+                    StopSlopeSlide();
                 }
             }
-            else if (currentLayer == breakableFloorsLayer)
+            else if (hitGround.collider == null && isGroundSliding)
             {
-                BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
-
-                if (bf == null)
+                if (direction == Vector2.right)
                 {
-                    Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
-                }
-                else if (inAir)
-                {
-                    bf.TriggerObjectShake();
-                }
-            }
-            else if (currentLayer == slidingSurfaceLayer && !isPressingJumpButton && !magBootsOn)
-            {
-                SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
-
-                if (ss == null)
-                {
-                    Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
+                    move.x = 16;
                 }
                 else
                 {
-                    SlopeSlide(ss.direction);
+                    move.x = -16;
                 }
+
+                targetVelocity.x = move.x;
             }
-            else if (currentLayer != slidingSurfaceLayer && isGroundSliding || isGroundSliding && magBootsOn)
+            else if (hitGround.collider == null)
             {
-                print("Stop");
-                StopSlopeSlide();
-            }
-            //else if (currentLayer == groundLayer)
-            //{
-            //    isOnGround = true;
-            //}
-        }
-        else if(hitGround.collider == null && isGroundSliding)
-        {
-            if (direction == Vector2.right)
-            {
-                move.x = 16;
-            }
-            else
-            {
-                move.x = -16;
+                isOnGround = false;
             }
 
-            targetVelocity.x = move.x;
-        }
-        else if (hitGround.collider == null)
-        {
-            isOnGround = false;
-        }
+            // ---- CHECK FOR WALLS
 
-        if (canMove)
-        {
-            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, wallLayerMask);
-            Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
-
-            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, wallLayerMask);
-            Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
-
-            // Check for ledge grab
-            if (isTouchingWall && !isTouchingLedge && !ledgeDetected)// << ----------- OPTION TO PUT MANUAL LEDGE GRAB HERE 
+            if (canMove)
             {
-                ledgeDetected = true;
-                ledgePosBot = wallCheck.position;
-            }
+                isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, wallLayerMask);
+                Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
 
-            // Check for crumbling wall
-            if (isWallSliding)
-            {
-                RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
+                isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, wallLayerMask);
+                Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
 
-                if (hitWall.collider != null)
+                // Check for ledge grab
+                if (isTouchingWall && !isTouchingLedge && !ledgeDetected)// << ----------- OPTION TO PUT MANUAL LEDGE GRAB HERE 
                 {
-                    int currentLayer = hitWall.collider.gameObject.layer;
+                    ledgeDetected = true;
+                    ledgePosBot = wallCheck.position;
+                }
 
-                    if (currentLayer == breakableObjectsLayer)
+                // Check for crumbling wall
+                if (isWallSliding)
+                {
+                    RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
+
+                    if (hitWall.collider != null)
                     {
-                        BreakableObject boWall = hitWall.collider.gameObject.GetComponent<BreakableObject>();
+                        int currentLayer = hitWall.collider.gameObject.layer;
 
-                        if (boWall == null)
+                        if (currentLayer == breakableObjectsLayer)
                         {
-                            Debug.LogError("Object on Breakable Object layer does not have Breakable Object component!");
-                        }
-                        else
-                        {
-                            boWall.TriggerPlatformCollapse();
-                            canWallSlide = false;
+                            BreakableObject crumblingWall = hitWall.collider.gameObject.GetComponent<BreakableObject>();
+
+                            if (crumblingWall != null)
+                            {
+                                print("hit crumbling wall");
+                                crumblingWall.TriggerPlatformCollapse();
+                                StopWallSliding();
+                            }
+                            else
+                                Debug.LogError("Object on Breakable Object layer does not have Breakable Object component!");
                         }
                     }
                 }
             }
         }
+        
     }
 
 
@@ -727,21 +741,30 @@ public class PlayerController : PhysicsObject
 
     private void CheckIfWallSliding()
     {
-        if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
+        if (!isDisabled)
         {
-            isWallSliding = true;
-            StopTrackAirTime();
-            gravityModifier = wallSlidingSpeed;
-        }
-        else if (!isTouchingWall)
-        {
-            isWallSliding = false;
-            gravityModifier = gravStart;
+            if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
+            {
+                isWallSliding = true;
+                StopTrackAirTime();
+                gravityModifier = wallSlidingSpeed;
+            }
+            else if (!isTouchingWall)
+            {
+                isWallSliding = false;
+                gravityModifier = gravStart;
+            }
         }
 
         animator.SetBool("isWallSliding", isWallSliding);
     }
 
+    public void StopWallSliding()
+    {
+        isWallSliding = false;
+        canWallSlide = false;
+        canJump = false;
+    }
 
     // <<----------------------------------------------------- MAG BOOTS METHODS ------------------------------------------- >> //
 
@@ -1093,7 +1116,7 @@ public class PlayerController : PhysicsObject
         isMovingInWind = false;
         canJump = false;
         canMove = false;
-        canWallSlide = false;
+        StopWallSliding();
         canFlipSprite = false;
         targetVelocity = Vector2.zero;
         pAudio.StopFootSteps();

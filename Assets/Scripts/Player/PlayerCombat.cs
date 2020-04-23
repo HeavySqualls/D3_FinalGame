@@ -114,7 +114,7 @@ public class PlayerCombat : MonoBehaviour
 
     private void Attacks()
     {
-        if (canAttack)
+        if (canAttack && !pCon.isDisabled)
         {
             // Punch
             if (Input.GetButtonDown(pCon.controls.punch) && comboAttacking && comboNum == 3)
