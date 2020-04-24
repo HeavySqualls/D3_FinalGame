@@ -28,7 +28,7 @@ RectTransform:
   m_GameObject: {fileID: 85663433}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 2, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1027991123}
   m_RootOrder: 0
@@ -261,6 +261,7 @@ GameObject:
   - component: {fileID: 1027991126}
   - component: {fileID: 1027991125}
   - component: {fileID: 1027991124}
+  - component: {fileID: 558915327}
   m_Layer: 0
   m_Name: canvas_CinematicFade
   m_TagString: Untagged
@@ -348,6 +349,25 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!95 &558915327
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1027991122}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0
 --- !u!1 &700433536317950671
 GameObject:
   m_ObjectHideFlags: 0
@@ -1551,6 +1571,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   N: {fileID: 0}
   narTrigger: {fileID: 0}
+  hideCursorAfter: 1
   isNarrativeEventRunning: 0
   textDelayTime: 0.015
   delayTime: 0.35

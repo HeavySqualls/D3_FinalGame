@@ -11,6 +11,8 @@ public class NarrativeController : MonoBehaviour
 
     [Space]
     [Header("Controller Status:")]
+    [Tooltip("Hide the cursor after the narrative is over.")]
+    public bool hideCursorAfter = true;
     [Tooltip("Is there a narrative playing right now?")]
     public bool isNarrativeEventRunning = false;
     [Tooltip("The time between displaying individual letters in a dialogue.")]
@@ -68,12 +70,6 @@ public class NarrativeController : MonoBehaviour
         AM = Toolbox.GetInstance().GetAudioManager();
         typingSource = GetComponent<AudioSource>();
     }
-
-    //private void PlayAudio(AudioClip _clip, float _volume)
-    //{
-    //    audioSource.volume = _volume;
-    //    audioSource.PlayOneShot(_clip);
-    //}
 
     private IEnumerator typeCoroutine; 
 
@@ -350,11 +346,11 @@ public class NarrativeController : MonoBehaviour
         cinematicController.PlayNarrativeSlideOut();
 
         // Hide Cursor
-        Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
-
-        // Re-Enable player 
-        pCon.EnablePlayerController();
+        if (hideCursorAfter)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+        }
 
         // Re-emable enemies
         Toolbox.GetInstance().GetLevelManager().UnPauseAllEnemies();
@@ -377,6 +373,11 @@ public class NarrativeController : MonoBehaviour
         if (narTrigger.hasCinematic)
         {
             narTrigger.PlayPostNarrativeCinematic();
+        }
+        else
+        {
+            // Re-Enable player 
+            pCon.EnablePlayerController();
         }
     }
 }

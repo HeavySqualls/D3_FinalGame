@@ -31,7 +31,7 @@ public class NarrativeTrigger : MonoBehaviour
 
         if (pCon != null)
         {
-            pCon.SetPlayerVelocityToZero();
+            //pCon.SetPlayerVelocityToZero();
             narrativeController.SetUpNarrativeController(thisConversation, this);
             boxColl.enabled = false;
         }

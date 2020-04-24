@@ -8,13 +8,16 @@ public class SceneChangeController : MonoBehaviour
     {
         print("Change Scene");
 
-        Toolbox.GetInstance().GetAudioManager().PlayConsistentOneShot(winSound, winVolume);
-        Toolbox.GetInstance().GetGameManager().LoadNextScene();
+        ChangeScene();
     }
 
     public void ChangeScene()
     {
-        Toolbox.GetInstance().GetAudioManager().PlayConsistentOneShot(winSound, winVolume);
+        if (winSound != null)
+        {
+            Toolbox.GetInstance().GetAudioManager().PlayConsistentOneShot(winSound, winVolume);
+        }
+
         Toolbox.GetInstance().GetGameManager().LoadNextScene();
     }
 }

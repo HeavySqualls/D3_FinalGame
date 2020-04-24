@@ -58,21 +58,16 @@ public class MenuHandler : MonoBehaviour
         AM = Toolbox.GetInstance().GetAudioManager();
 
         if (isPauseMenu)
-        {
             pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
-        }
 
-        OptionsMenu.SetActive(false);
+        if (OptionsMenu != null)
+            OptionsMenu.SetActive(false);
 
         if (DeathMenu != null)
-        {
             DeathMenu.SetActive(false);
-        }
 
         if (PauseMenu != null)
-        {
             PauseMenu.SetActive(false);
-        }
 
         if (timeLine != null)
         {
@@ -91,12 +86,6 @@ public class MenuHandler : MonoBehaviour
             }
         }
     }
-
-    //private void PlayAudio(AudioClip _clip, float _volume)
-    //{
-    //    audioSource.volume = _volume;
-    //    audioSource.PlayOneShot(_clip);
-    //}
 
     public void StartGame()
     {

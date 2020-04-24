@@ -64,6 +64,7 @@ public class PlayerController : PhysicsObject
     [Tooltip("Time it takes while holding the jump button to enable the 'Jump Flip' animation.")]
     public float jumpHoldTimeMax = 1.5f;
     public float airDisableTimer = 0.2f;
+    public float landDelay = 0.5f;
     public float slidingSurfaceJumpForceY = 25f;
     private bool isPressingJumpButton = false;
     private float currentGraceTime;
@@ -183,30 +184,26 @@ public class PlayerController : PhysicsObject
         {
             horizontalInput = Input.GetAxisRaw(controls.xMove);
             isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
-
-            //if (!isWallJumping)
-            //{
-            //    targetVelocity = Vector2.zero; // for hard landings to stop movement
-            //}
-
             CheckSurroundings();
             CheckIfWallSliding();
             TrackAirTime();
-            ComputeVelocity(); // Realised that this was happening twice, here AND in physics object. Disabled it here for now to see the effects. 
+            ComputeVelocity();
             Jump();
             RapidJump();
             MagBoots();
             GraceJumpTimer();
             CheckLedgeClimb();
+        }
 
-            if (isWallSliding && velocity.y < -terminalWallSlidingVelocity)
-            {
-                velocity.y = -terminalWallSlidingVelocity;
-            }
-            else if (velocity.y < -terminalVelocity)
-            {
-                velocity.y = -terminalVelocity;
-            }
+        RunAnimations();
+
+        if (isWallSliding && velocity.y < -terminalWallSlidingVelocity)
+        {
+            velocity.y = -terminalWallSlidingVelocity;
+        }
+        else if (velocity.y < -terminalVelocity)
+        {
+            velocity.y = -terminalVelocity;
         }
 
     }
@@ -277,6 +274,7 @@ public class PlayerController : PhysicsObject
     public void SetPlayerVelocityToZero()
     {
         targetVelocity.x = 0;
+        move.x = 0;
     }
 
     protected override void ComputeVelocity()
@@ -456,7 +454,10 @@ public class PlayerController : PhysicsObject
                 FlipSpriteBasedOnInput();
             }
         }
+    }
 
+    private void RunAnimations()
+    {
         // Animation settings
         animator.SetBool("isGroundSliding", isGroundSliding);
         animator.SetBool("isMoving", isMoving);
@@ -561,124 +562,123 @@ public class PlayerController : PhysicsObject
     private void CheckSurroundings()
     {
         // ---- CHECK FOR GROUND
-        if (!isDisabled)
+
+        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+        Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
+
+        if (hitGround.collider != null)
         {
-            RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
-            Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
+            isOnGround = true;
 
-            if (hitGround.collider != null)
+            int currentLayer = hitGround.collider.gameObject.layer;
+
+            if (currentLayer == breakableObjectsLayer)
             {
-                isOnGround = true;
+                BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
 
-                int currentLayer = hitGround.collider.gameObject.layer;
-
-                if (currentLayer == breakableObjectsLayer)
+                if (bo == null)
                 {
-                    BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
-
-                    if (bo == null)
-                    {
-                        Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
-                    }
-                    else if (bo.isPlatform && !bo.isFallingApart)
-                    {
-                        bo.TriggerPlatformCollapse();
-                    }
+                    Debug.LogError("Object on Breakable Objects layer does not have Breakable Object component!");
                 }
-                else if (currentLayer == breakableFloorsLayer)
+                else if (bo.isPlatform && !bo.isFallingApart)
                 {
-                    BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
-
-                    if (bf == null)
-                    {
-                        Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
-                    }
-                    else if (inAir)
-                    {
-                        bf.TriggerObjectShake();
-                    }
-                }
-                else if (currentLayer == slidingSurfaceLayer && !isPressingJumpButton && !magBootsOn)
-                {
-                    SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
-
-                    if (ss == null)
-                    {
-                        Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
-                    }
-                    else
-                    {
-                        SlopeSlide(ss.direction);
-                    }
-                }
-                else if (currentLayer != slidingSurfaceLayer && isGroundSliding || isGroundSliding && magBootsOn)
-                {
-                    print("Stop");
-                    StopSlopeSlide();
+                    bo.TriggerPlatformCollapse();
                 }
             }
-            else if (hitGround.collider == null && isGroundSliding)
+            else if (currentLayer == breakableFloorsLayer)
             {
-                if (direction == Vector2.right)
+                BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
+
+                if (bf == null)
                 {
-                    move.x = 16;
+                    Debug.LogError("Object on Breakable Floors layer does not have Breakable Floors component!");
+                }
+                else if (inAir)
+                {
+                    bf.TriggerObjectShake();
+                }
+            }
+            else if (currentLayer == slidingSurfaceLayer && !isPressingJumpButton && !magBootsOn)
+            {
+                SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
+
+                if (ss == null)
+                {
+                    Debug.LogError("Object on Sliding Surface layer does not have Sliding Surface component!");
                 }
                 else
                 {
-                    move.x = -16;
+                    SlopeSlide(ss.direction);
                 }
-
-                targetVelocity.x = move.x;
             }
-            else if (hitGround.collider == null)
+            else if (currentLayer != slidingSurfaceLayer && isGroundSliding || isGroundSliding && magBootsOn)
             {
-                isOnGround = false;
+                print("Stop");
+                StopSlopeSlide();
+            }
+        }
+        else if (hitGround.collider == null && isGroundSliding)
+        {
+            if (direction == Vector2.right)
+            {
+                move.x = 16;
+            }
+            else
+            {
+                move.x = -16;
             }
 
-            // ---- CHECK FOR WALLS
+            targetVelocity.x = move.x;
+        }
+        else if (hitGround.collider == null)
+        {
+            isOnGround = false;
+        }
 
-            if (canMove)
+        // ---- CHECK FOR WALLS
+
+        if (canMove && !isDisabled)
+        {
+            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, wallLayerMask);
+            Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
+
+            isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, wallLayerMask);
+            Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
+
+            // Check for ledge grab
+            if (isTouchingWall && !isTouchingLedge && !ledgeDetected)// << ----------- OPTION TO PUT MANUAL LEDGE GRAB HERE 
             {
-                isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, wallLayerMask);
-                Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
+                ledgeDetected = true;
+                ledgePosBot = wallCheck.position;
+            }
 
-                isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, wallLayerMask);
-                Debug.DrawRay(ledgeCheck.position, direction * ledgeCheckDistance, Color.red);
+            // Check for crumbling wall
+            if (isWallSliding)
+            {
+                RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
 
-                // Check for ledge grab
-                if (isTouchingWall && !isTouchingLedge && !ledgeDetected)// << ----------- OPTION TO PUT MANUAL LEDGE GRAB HERE 
+                if (hitWall.collider != null)
                 {
-                    ledgeDetected = true;
-                    ledgePosBot = wallCheck.position;
-                }
+                    int currentLayer = hitWall.collider.gameObject.layer;
 
-                // Check for crumbling wall
-                if (isWallSliding)
-                {
-                    RaycastHit2D hitWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, groundLayerMask);
-
-                    if (hitWall.collider != null)
+                    if (currentLayer == breakableObjectsLayer)
                     {
-                        int currentLayer = hitWall.collider.gameObject.layer;
+                        BreakableObject crumblingWall = hitWall.collider.gameObject.GetComponent<BreakableObject>();
 
-                        if (currentLayer == breakableObjectsLayer)
+                        if (crumblingWall != null)
                         {
-                            BreakableObject crumblingWall = hitWall.collider.gameObject.GetComponent<BreakableObject>();
-
-                            if (crumblingWall != null)
-                            {
-                                print("hit crumbling wall");
-                                crumblingWall.TriggerPlatformCollapse();
-                                StopWallSliding();
-                            }
-                            else
-                                Debug.LogError("Object on Breakable Object layer does not have Breakable Object component!");
+                            print("hit crumbling wall");
+                            crumblingWall.TriggerPlatformCollapse();
+                            StopWallSliding();
                         }
+                        else
+                            Debug.LogError("Object on Breakable Object layer does not have Breakable Object component!");
                     }
                 }
             }
         }
-        
+
+
     }
 
 
@@ -1111,6 +1111,8 @@ public class PlayerController : PhysicsObject
 
     public void DisablePlayerController()
     {
+        //windAffectMovement = false;
+        SetPlayerVelocityToZero();
         isDisabled = true;
         isMoving = false;
         isMovingInWind = false;
@@ -1118,18 +1120,19 @@ public class PlayerController : PhysicsObject
         canMove = false;
         StopWallSliding();
         canFlipSprite = false;
-        targetVelocity = Vector2.zero;
         pAudio.StopFootSteps();
     }
 
     public void EnablePlayerController()
     {
+        print("Player controller is enabled");
+        //windAffectMovement = true;
         isDisabled = false;
         canFlipSprite = true;
         canJump = true;
         canMove = true;
         canWallSlide = true;
-        targetVelocity = Vector2.zero;
+        //targetVelocity = Vector2.zero;
     }
 
 
@@ -1139,7 +1142,6 @@ public class PlayerController : PhysicsObject
         canMove = _enable;
         targetVelocity = Vector2.zero;
     }
-
     private IEnumerator LandingPause(float _pauseTime)
     {
         EnableMovement(false);
@@ -1147,7 +1149,7 @@ public class PlayerController : PhysicsObject
         move.x = 0;
         animator.SetBool("isMoving", isMoving);
 
-        yield return new WaitForSeconds(_pauseTime);
+        yield return new WaitForSeconds(landDelay);
         
         EnableMovement(true);
     }

@@ -25,7 +25,7 @@ public class SilentCity : MonoBehaviour
     [SerializeField] float baseDistance = 52f;
     [SerializeField] float distantDistance = 47f;
     [SerializeField] float farDistance = 58f;
-    bool isMoving = false;
+    [SerializeField] bool isMoving = false;
 
     [Space]
     [Header("Particle Effects:")]
@@ -56,8 +56,7 @@ public class SilentCity : MonoBehaviour
 
     private void Start()
     {
-        StartCoroutine(WaitToStart());
-        currentMoveSpeed = baseMoveSpeed;
+        //StartCoroutine(WaitToStart());
         cam = Toolbox.GetInstance().GetLevelManager().GetVirtualCam();
 
         Toolbox.GetInstance().GetAudioManager().AddAudioSources(smashSource);
@@ -82,17 +81,17 @@ public class SilentCity : MonoBehaviour
 
     private void Update()
     {
-        TrackDistanceBetweenObject();
-        AdjustSpeedBasedOnDistance();
-
         if (isMoving)
         {
             transform.position += Vector3.left * Time.deltaTime * currentMoveSpeed;
+            TrackDistanceBetweenObject();
+            AdjustSpeedBasedOnDistance();
         }
     }
 
     public void Respawn(Transform _respawnLocation)
     {
+        print("respawn");
         transform.position = _respawnLocation.position;
         StartCoroutine(WaitToStart());
         endchaseSpeed = false;
@@ -136,10 +135,14 @@ public class SilentCity : MonoBehaviour
             currentAccelDecelTime = accelDecelTimeStart;
     }
 
-    private void StartMoving()
+    public void StartMoving()
     {
-        shakeTween = cam.transform.DOShakePosition(levelDuration, shakeStrength, virbrato, randomness, false, false);
+        print("Silent City started moving");
+        currentMoveSpeed = baseMoveSpeed;
         isMoving = true;
+        shakeTween = cam.transform.DOShakePosition(levelDuration, shakeStrength, virbrato, randomness, false, false);
+        debrisSource.Play();
+        tankSource.Play();
     }
 
     IEnumerator WaitToStart()
