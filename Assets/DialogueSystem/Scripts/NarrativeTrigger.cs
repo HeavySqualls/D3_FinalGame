@@ -13,6 +13,8 @@ public class NarrativeTrigger : MonoBehaviour
     [Tooltip("Does this trigger have a CinematicTriggerController attached to it? " +
         "(cinematic will only play at the end of the current narrative event)")]
     public bool hasCinematic = false;
+    [Tooltip("Will the music and scene background sound be turned down during the cutscene?")]
+    public bool isDampenMusic = true;
     [SerializeField] CinematicTriggerController cinCon;
 
     NarrativeController narrativeController;

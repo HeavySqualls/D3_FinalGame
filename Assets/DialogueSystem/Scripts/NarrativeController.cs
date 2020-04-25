@@ -126,7 +126,10 @@ public class NarrativeController : MonoBehaviour
     private void StartNarrative()
     {
         AM.DampenAllAudio(true);
-        AM.DampenBGMusic(true);
+
+        if (narTrigger.isDampenMusic)
+            AM.DampenBGMusic(true);
+
         isNarrativeEventRunning = true;
 
         // Disable both the player input and the enemy movements
@@ -367,7 +370,9 @@ public class NarrativeController : MonoBehaviour
         activeLineIndex = 0;
         isNarrativeEventRunning = false;
         AM.DampenAllAudio(false);
-        AM.DampenBGMusic(false);
+
+        if (narTrigger.isDampenMusic)
+            AM.DampenBGMusic(false);
 
         // If this trigger has a cinematic attached to it, play it now
         if (narTrigger.hasCinematic)

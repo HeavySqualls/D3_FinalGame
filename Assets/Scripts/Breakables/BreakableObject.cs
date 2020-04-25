@@ -95,7 +95,7 @@ public class BreakableObject : MonoBehaviour
 
     protected virtual void ResetObject()
     {
-        if (isBroken)
+        if (isBroken && isRespawnable)
         {
             RespawnObject();
         }

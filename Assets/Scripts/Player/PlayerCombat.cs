@@ -154,23 +154,23 @@ public class PlayerCombat : MonoBehaviour
                 comboNum = 2;
             }
 
-            // Boot Launch
-            if (Input.GetButton(pCon.controls.ability_1))
-            {
-                if (pUI.airInCan >= airDrainAmount)
-                {
-                    SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
-                    pCon.animator.SetTrigger("kick");
-                    pUI.UseAirInTank(airDrainAmount);
-                    StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
-                    StartCoroutine(CastForHit());
-                }
-                else
-                {
-                    pUI.UseAirInTank(0);
-                    print("No air left in tank!");
-                }
-            }
+            //// Boot Launch
+            //if (Input.GetButton(pCon.controls.ability_1))
+            //{
+            //    if (pUI.airInCan >= airDrainAmount)
+            //    {
+            //        SetAttackStats(b_damage, b_knockback, b_knockUp, b_stunTime);
+            //        pCon.animator.SetTrigger("kick");
+            //        pUI.UseAirInTank(airDrainAmount);
+            //        StartCoroutine(AttackCoolDown(pCon.GetAnimTime()));
+            //        StartCoroutine(CastForHit());
+            //    }
+            //    else
+            //    {
+            //        pUI.UseAirInTank(0);
+            //        print("No air left in tank!");
+            //    }
+            //}
         }
     }
 

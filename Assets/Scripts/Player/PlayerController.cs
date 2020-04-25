@@ -74,6 +74,7 @@ public class PlayerController : PhysicsObject
 
     [Space]
     [Header("Mag Boots:")]
+    public bool isMagBootsEnabled = true;
     public bool magBootsOn = false;
     [Tooltip("Rate at which the player gets pulled down towards the ground with the magnetic boots enabled.")]
     public float onGravValue = 10f;
@@ -773,30 +774,37 @@ public class PlayerController : PhysicsObject
 
     public void MagBoots()
     {
-        if (Input.GetButton(controls.magBoots)/* && !magBootsOn*/ && !canClimbLedge)
+        if (isMagBootsEnabled)
         {
-            if (!isGrounded && !bootsSwitchedOn)
+            if (Input.GetButton(controls.magBoots)/* && !magBootsOn*/ && !canClimbLedge)
             {
-                StartCoroutine(MagBootsOn());
-                bootsSwitchedOn = true;
-            }
-            else if (isGrounded && !bootsSwitchedOn)
-            {
-                magBootsOn = true;
-                print("MagBoots Activated: " + magBootsOn);
-                bootsSwitchedOn = true;
-                rb2d.velocity = Vector3.zero;
-                gravityModifier = onGravValue;
-            }
+                if (!isGrounded && !bootsSwitchedOn)
+                {
+                    StartCoroutine(MagBootsOn());
+                    bootsSwitchedOn = true;
+                }
+                else if (isGrounded && !bootsSwitchedOn)
+                {
+                    magBootsOn = true;
+                    print("MagBoots Activated: " + magBootsOn);
+                    bootsSwitchedOn = true;
+                    rb2d.velocity = Vector3.zero;
+                    gravityModifier = onGravValue;
+                }
 
-            ripPP.CauseRipple(groundCheck, 4f, 0.5f);
+                ripPP.CauseRipple(groundCheck, 4f, 0.5f);
+            }
+            else if (Input.GetButtonUp(controls.magBoots)/* && magBootsOn*/ && !canClimbLedge)
+            {
+                bootsSwitchedOn = false;
+                magBootsOn = false;
+                gravityModifier = gravStart;
+                print("MagBoots Activated: " + magBootsOn);
+            }
         }
-        else if (Input.GetButtonUp(controls.magBoots)/* && magBootsOn*/ && !canClimbLedge)
+        else
         {
-            bootsSwitchedOn = false;
-            magBootsOn = false;
-            gravityModifier = gravStart;
-            print("MagBoots Activated: " + magBootsOn);
+            //TODO: Play some sort of disabled sound?
         }
     }
 

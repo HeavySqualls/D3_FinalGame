@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] float highPitchRange = 1.05f;
 
     // Music Tracks
-    [SerializeField] float levelMusicVolume = 0.3f;
+    [SerializeField] float levelMusicVolume = 0.375f;
     [SerializeField] float musicVolIncrementation = 0.005f;
     [SerializeField] float musicIncrementTime = 0.05f;
     AudioClip currentMusicClip;
@@ -21,7 +21,7 @@ public class AudioManager : MonoBehaviour
     AudioSource musicAudioSource2;
 
     // Back Ground Tracks
-    [SerializeField] float BGVolume = 0.2f;
+    [SerializeField] float BGVolume = 0.175f;
     [SerializeField] float BGVolIncrementation = 0.005f;
     [SerializeField] float BGIncrementTime = 0.05f;
     AudioClip currentBGClip;
@@ -169,7 +169,7 @@ public class AudioManager : MonoBehaviour
             }
             // If we already have a currentMusicClip assigned, we will need to crossfade that one out with the new clip, 
             // and replace the currentMusicClip variable with this new one. 
-            else
+            else if(currentMusicClip != _newAudioClip)
             {
                 StartCoroutine(CrossFadeAudio(freeSource, playingSource, currentMusicClip, _newAudioClip, musicVolIncrementation, musicIncrementTime, levelMusicVolume, true));
             }
@@ -194,7 +194,7 @@ public class AudioManager : MonoBehaviour
                 currentBGAudioSource = freeSource;
                 StartCoroutine(FadeInAudio(freeSource, _newAudioClip, BGVolIncrementation, BGIncrementTime, BGVolume));
             }
-            else
+            else if(currentBGClip != _newAudioClip)
             {
                 StartCoroutine(CrossFadeAudio(freeSource, playingSource, currentBGClip, _newAudioClip, BGVolIncrementation, BGIncrementTime, BGVolume, false));
             }

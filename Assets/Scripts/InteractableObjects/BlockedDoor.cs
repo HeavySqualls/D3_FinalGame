@@ -8,10 +8,11 @@ public class BlockedDoor : MonoBehaviour
 {
     [Tooltip("This field gets auto-assigned and holds the reference to the player while they are in the trigger zone.")]
     private PlayerHandleInteract pInteract;
-    [Tooltip("Assign the normal material assigned to the asset.")]
-    [SerializeField] Material normalMat;
-    [Tooltip("Assign the related highlighed 'Outline' shader for when the player is in the trigger zone.")]
-    [SerializeField] Material highlightMat;
+    [SerializeField] GameObject door;
+    //[Tooltip("Assign the normal material assigned to the asset.")]
+    //[SerializeField] Material normalMat;
+    //[Tooltip("Assign the related highlighed 'Outline' shader for when the player is in the trigger zone.")]
+    //[SerializeField] Material highlightMat;
 
     [Tooltip("Time it will take for the door to open.")]
     public float duration;
@@ -35,12 +36,12 @@ public class BlockedDoor : MonoBehaviour
 
     CinemachineVirtualCamera cam;
     Tween shakeTween;
-    SpriteRenderer spriteRenderer;
+    //SpriteRenderer spriteRenderer;
 
     private void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        spriteRenderer.material = normalMat;
+        //spriteRenderer = GetComponent<SpriteRenderer>();
+        //spriteRenderer.material = normalMat;
 
         cam = Toolbox.GetInstance().GetLevelManager().GetVirtualCam();
         audioSource = GetComponent<AudioSource>();
@@ -53,7 +54,7 @@ public class BlockedDoor : MonoBehaviour
 
         if (pInteract != null)
         {
-            spriteRenderer.material = highlightMat;
+            //spriteRenderer.material = highlightMat;
         }
     }
 
@@ -61,7 +62,7 @@ public class BlockedDoor : MonoBehaviour
     {
         if (pInteract != null)
         {
-            spriteRenderer.material = normalMat;
+            //spriteRenderer.material = normalMat;
         }
     }
 
@@ -88,7 +89,7 @@ public class BlockedDoor : MonoBehaviour
                 currentPosition = Vector3.Lerp(openPosition, closedPosition, timer / duration);
             }
 
-            transform.localPosition = currentPosition;
+            door.transform.localPosition = currentPosition;
             timer += Time.deltaTime;
             yield return null;
         }
@@ -97,11 +98,11 @@ public class BlockedDoor : MonoBehaviour
 
         if (!isOpen)
         {
-            transform.localPosition = closedPosition; // makes sure the door is completely closed at the end 
+            door.transform.localPosition = closedPosition; // makes sure the door is completely closed at the end 
         }
         else if (isOpen)
         {
-            transform.localPosition = openPosition; // makes sure the door is completely open at the end 
+            door.transform.localPosition = openPosition; // makes sure the door is completely open at the end 
         }
 
         isInputBlocked = false;
