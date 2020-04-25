@@ -36,7 +36,7 @@ public class CameraController : MonoBehaviour
     {
         if (objectToFollow == null)
         {
-            Debug.LogError("Assign a target to the Smooth Follow component on the Camera Anchor.");
+            Debug.Log("Assign a target to the Smooth Follow component on the Camera Anchor.");
         }
         else
         {

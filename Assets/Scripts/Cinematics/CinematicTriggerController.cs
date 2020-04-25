@@ -73,7 +73,7 @@ public class CinematicTriggerController : MonoBehaviour
 
         timeLine.Play();
 
-        if (!isFlowCutscene)
+        if (!isFlowCutscene && pCon != null)
         {
             pCon.DisablePlayerController();
         }

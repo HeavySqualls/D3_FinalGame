@@ -39,7 +39,7 @@ public class PlayerHealthSystem : MonoBehaviour
     PlayerFeedback pFeedback;
     PlayerAudioController pAudio;
     Animator animator;
-    SpriteRenderer spriteRenderer;
+    [SerializeField] SpriteRenderer spriteRenderer;
 
     private void OnEnable()
     {

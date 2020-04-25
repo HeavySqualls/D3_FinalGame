@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 public class WindDial : MonoBehaviour
@@ -18,6 +16,7 @@ public class WindDial : MonoBehaviour
 
     bool bootsSwitchedOn;
     bool inWindZone;
+    public bool isHurt;
 
     PlayerController pCon;
     AirTankController airCon;
@@ -34,9 +33,16 @@ public class WindDial : MonoBehaviour
 
     void Update()
     {
-        TrackTimeSinceInWindZone();
-        TrackTimeSinceLastAttacked();
-        TrackTimeSinceDisabledMagBoots();
+        //if (isHurt)
+        //{
+        //    windDial.SetActive(true);
+        //}
+        //else
+        //{
+            TrackTimeSinceInWindZone();
+            TrackTimeSinceLastUsedMeter();
+            TrackTimeSinceDisabledMagBoots();
+        //}
 
         MagBootCheck();
         WindStrengthCheck();
@@ -70,8 +76,7 @@ public class WindDial : MonoBehaviour
         }
     }
 
-
-    private void TrackTimeSinceLastAttacked()
+    private void TrackTimeSinceLastUsedMeter()
     {
         if (airCon.attacked && !inWindZone && !bootsSwitchedOn)
         {
