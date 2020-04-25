@@ -10,15 +10,22 @@ public class WindDial : MonoBehaviour
     [SerializeField] GameObject windDial;
 
     [SerializeField] float timeSinceInWindZone = 0;
-    [SerializeField] float timeSinceLastMeterUse = 0;
-    [SerializeField] float timeSinceMagBootsUsed = 0;
-    [SerializeField] float hideWindDialTime = 5f;
-
-    bool bootsSwitchedOn;
+    bool wasInWindZone = false;
     bool inWindZone;
-    public bool isHurt;
 
+    [SerializeField] float timeSinceWasAttacked = 0;
+    bool wasAttacked = false;
+
+    [SerializeField] float timeSinceMagBootsUsed = 0;
+    bool wasMagBootsOn = false;
+    bool bootsSwitchedOn;
+
+    [SerializeField] float timeSinceLastMeterUse = 0;
+
+    [SerializeField] float hideWindDialTime = 5f;
+    [SerializeField] Image windDialImage;
     PlayerController pCon;
+    PlayerHealthSystem pHealth;
     AirTankController airCon;
     Animator animator;
 
@@ -26,6 +33,8 @@ public class WindDial : MonoBehaviour
     {       
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
         airCon = Toolbox.GetInstance().GetPlayerManager().GetAirTankController();
+        pHealth = Toolbox.GetInstance().GetPlayerManager().GetPlayerHealthSystem();
+        pHealth.AssignWindDialSprite(windDialImage);
         animator = GetComponentInChildren<Animator>();
 
         windDial.SetActive(false);
@@ -33,23 +42,16 @@ public class WindDial : MonoBehaviour
 
     void Update()
     {
-        //if (isHurt)
-        //{
-        //    windDial.SetActive(true);
-        //}
-        //else
-        //{
-            TrackTimeSinceInWindZone();
-            TrackTimeSinceLastUsedMeter();
-            TrackTimeSinceDisabledMagBoots();
-        //}
+
+        TrackTimeSinceHealed();
+        TrackTimeSinceInWindZone();
+        TrackTimeSinceLastUsedMeter();
+        TrackTimeSinceDisabledMagBoots();
 
         MagBootCheck();
         WindStrengthCheck();
         WindMeterFillAmount();
     }
-
-    bool wasInWindZone = false;
 
     private void TrackTimeSinceInWindZone()
     {
@@ -69,6 +71,31 @@ public class WindDial : MonoBehaviour
                 wasInWindZone = false;
 
                 if (!airCon.attacked && !bootsSwitchedOn)
+                {
+                    windDial.SetActive(false);
+                }
+            }
+        }
+    }
+
+    private void TrackTimeSinceHealed()
+    {
+        if (pHealth.isHurt)
+        {
+            windDial.SetActive(true);
+            wasAttacked = true;
+        }
+        else if (wasAttacked && !pHealth.isHurt && windDial.activeSelf == true && !bootsSwitchedOn && !inWindZone)
+        {
+            timeSinceWasAttacked += Time.deltaTime;
+
+            if (timeSinceWasAttacked >= hideWindDialTime)
+            {
+                timeSinceInWindZone = 0;
+                timeSinceMagBootsUsed = 0;
+                wasAttacked = false;
+
+                if (!airCon.attacked && !bootsSwitchedOn && !inWindZone)
                 {
                     windDial.SetActive(false);
                 }
@@ -98,8 +125,6 @@ public class WindDial : MonoBehaviour
             }
         }
     }
-
-    bool wasMagBootsOn = false;
 
     private void TrackTimeSinceDisabledMagBoots()
     {

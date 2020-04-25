@@ -1,12 +1,13 @@
 ﻿using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHealthSystem : MonoBehaviour
 {
     [Header("Health Variables:")]
     [SerializeField] float playerHealthStart;
     [SerializeField] float damageCooldownTime = 1f;
-    float playerHealth;
+    public bool isHurt = false;
     bool isDamageCooldown = false;
 
     [Space]
@@ -39,7 +40,8 @@ public class PlayerHealthSystem : MonoBehaviour
     PlayerFeedback pFeedback;
     PlayerAudioController pAudio;
     Animator animator;
-    [SerializeField] SpriteRenderer spriteRenderer;
+    //[SerializeField] SpriteRenderer spriteRenderer;
+    Image windDial;
 
     private void OnEnable()
     {
@@ -51,21 +53,29 @@ public class PlayerHealthSystem : MonoBehaviour
         SpawnManager.onResetLevelObjects -= RespawnPlayer;
     }
 
+    private void Awake()
+    {
+        Toolbox.GetInstance().GetPlayerManager().SetPlayerHealthSystem(this);
+    }
+
     void Start()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-
+        //spriteRenderer = GetComponent<SpriteRenderer>();
         pCon = GetComponent<PlayerController>();
         pAudio = GetComponent<PlayerAudioController>();
         pFeedback = GetComponent<PlayerFeedback>();
         animator = GetComponent<Animator>();
 
-        playerHealth = playerHealthStart;
+        //playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;
 
         flashCoroutine = IInjuredFlashRed();
     }
 
+    public void AssignWindDialSprite(Image _windDial)
+    {
+        windDial = _windDial;
+    }
 
     // ---- HANDLE DAMAGE ---- //
 
@@ -104,7 +114,7 @@ public class PlayerHealthSystem : MonoBehaviour
 
             StartCoroutine("IInjuredFlashRed");
 
-            playerHealth -= _damage;
+            //playerHealth -= _damage;
 
             animator.SetTrigger("isHurt");
 
@@ -137,7 +147,8 @@ public class PlayerHealthSystem : MonoBehaviour
         pCon.DisablePlayerController();
 
         StopCoroutine("IInjuredFlashRed");
-        spriteRenderer.color = Color.white;
+        //spriteRenderer.color = Color.white;
+        windDial.color = Color.white;
         SpawnManager.PlayerWasKilled();
     }
 
@@ -155,23 +166,32 @@ public class PlayerHealthSystem : MonoBehaviour
             Debug.LogError("No respawn location assigned!");
 
         pCon.EnablePlayerController();
-        playerHealth = playerHealthStart;
+        //playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;
     }
 
     public IEnumerator IInjuredFlashRed()
     {
         print("Flash");
+        isHurt = true;
 
         for (float i = 0; i < flashDuration; i += currentFlashDelay)
         {
-            if (spriteRenderer.color == Color.white)
+            //if (spriteRenderer.color == Color.white)
+            //{
+            //    spriteRenderer.color = Color.red;
+            //}
+            //else if (spriteRenderer.color == Color.red)
+            //{
+            //    spriteRenderer.color = Color.white;
+            //}
+            if (windDial.color == Color.white)
             {
-                spriteRenderer.color = Color.red;
+                windDial.color = Color.red;
             }
-            else if (spriteRenderer.color == Color.red)
+            else if (windDial.color == Color.red)
             {
-                spriteRenderer.color = Color.white;
+                windDial.color = Color.white;
             }
 
             yield return new WaitForSeconds(currentFlashDelay);
@@ -185,13 +205,21 @@ public class PlayerHealthSystem : MonoBehaviour
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                if (spriteRenderer.color == Color.white)
+                //if (spriteRenderer.color == Color.white)
+                //{
+                //    spriteRenderer.color = Color.red;
+                //}
+                //else if (spriteRenderer.color == Color.red)
+                //{
+                //    spriteRenderer.color = Color.white;
+                //}
+                if (windDial.color == Color.white)
                 {
-                    spriteRenderer.color = Color.red;
+                    windDial.color = Color.red;
                 }
-                else if (spriteRenderer.color == Color.red)
+                else if (windDial.color == Color.red)
                 {
-                    spriteRenderer.color = Color.white;
+                    windDial.color = Color.white;
                 }
 
                 yield return new WaitForSeconds(currentFlashDelay);
@@ -206,13 +234,22 @@ public class PlayerHealthSystem : MonoBehaviour
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                if (spriteRenderer.color == Color.white)
+                //if (spriteRenderer.color == Color.white)
+                //{
+                //    spriteRenderer.color = Color.red;
+                //}
+                //else if (spriteRenderer.color == Color.red)
+                //{
+                //    spriteRenderer.color = Color.white;
+                //}
+
+                if (windDial.color == Color.white)
                 {
-                    spriteRenderer.color = Color.red;
+                    windDial.color = Color.red;
                 }
-                else if (spriteRenderer.color == Color.red)
+                else if (windDial.color == Color.red)
                 {
-                    spriteRenderer.color = Color.white;
+                    windDial.color = Color.white;
                 }
 
                 yield return new WaitForSeconds(currentFlashDelay);
@@ -221,8 +258,10 @@ public class PlayerHealthSystem : MonoBehaviour
 
         currentPhase = 0;
 
-        spriteRenderer.color = Color.white;
+        //spriteRenderer.color = Color.white;
+        windDial.color = Color.white;
 
+        isHurt = false;
         yield break;
     }
 }

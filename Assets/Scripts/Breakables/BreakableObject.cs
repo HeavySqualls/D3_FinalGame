@@ -122,7 +122,7 @@ public class BreakableObject : MonoBehaviour
         {
             hitByHeavyObject = true;
             boulderHitFromDirection = other.collider.gameObject.GetComponent<RollingObject>().direction;
-            StartCoroutine(CollapseAndRespawnCounter());
+            StartCoroutine(CollapseAndRespawnCounter(boulderHitFromDirection));
         }
     }
 
@@ -136,7 +136,7 @@ public class BreakableObject : MonoBehaviour
         {
             Toolbox.GetInstance().GetPlayerManager().GetPlayerFeedback().BreakShake();
             hitByPlayer = true;
-            StartCoroutine(CollapseAndRespawnCounter());
+            StartCoroutine(CollapseAndRespawnCounter(_hitDir));
             //Debug.Log("Wall is broken");
             //boxCollider.enabled = false;
             //isBroken = true;
@@ -167,7 +167,7 @@ public class BreakableObject : MonoBehaviour
         if (!isFallingApart)
         {
             ShakeObject();
-            StartCoroutine(CollapseAndRespawnCounter());
+            StartCoroutine(CollapseAndRespawnCounter(Vector2.zero));
         }
     }
 
@@ -182,7 +182,7 @@ public class BreakableObject : MonoBehaviour
     }
 
 
-    protected IEnumerator CollapseAndRespawnCounter()
+    protected IEnumerator CollapseAndRespawnCounter(Vector2 _hitDir)
     {
         isFallingApart = true;
 
@@ -200,7 +200,7 @@ public class BreakableObject : MonoBehaviour
         // If the object has been hit by a rolling object
         if ((hitByHeavyObject || hitByPlayer) && !isBreakableFloor /*|| isRottenDoor*/)
         {
-            BlowOutObject();
+            BlowOutObject(_hitDir);
         }
         else // let gravity take its course...
         {
@@ -266,13 +266,13 @@ public class BreakableObject : MonoBehaviour
         }
     }
 
-    private void BlowOutObject()
+    private void BlowOutObject(Vector2 _hitDir)
     {
         brokenPartSyst.Play();
 
         foreach (BreakablePiece bp in objPieces)
         {
-            bp.BlowOutPiece(boulderHitFromDirection, isPlatform);
+            bp.BlowOutPiece(_hitDir, isPlatform);
         }
 
         if (earlyBreakPieces.Count > 0)

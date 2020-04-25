@@ -163,7 +163,7 @@ public class MenuHandler : MonoBehaviour
     {
         AM.PlayConsistentOneShot(clickSound, clickVolume);
         Time.timeScale = 1;
-        gm.LoadCustomScene(0);
+        gm.LoadCustomScene(1);
     }
 
     public void Quit()

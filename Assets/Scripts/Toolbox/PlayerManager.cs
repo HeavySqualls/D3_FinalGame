@@ -8,7 +8,20 @@ public class PlayerManager : MonoBehaviour
     PlayerInventoryHandler pInventoryHandler;
     PlayerController pCon;
     PlayerFeedback pFeedback;
+    PlayerHealthSystem pHealth;
     AirTankController airTankCon;
+
+    // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
+
+    public void SetPlayerHealthSystem(PlayerHealthSystem _pHealth)
+    {
+        pHealth = _pHealth;
+    }
+
+    public PlayerHealthSystem GetPlayerHealthSystem()
+    {
+        return pHealth;
+    }
 
     // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
 

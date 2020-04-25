@@ -69,7 +69,7 @@ public class BreakableFloor : BreakableObject
         {
             brokenPartSyst.Play();
             triggerCollider.enabled = false;
-            StartCoroutine(CollapseAndRespawnCounter());
+            StartCoroutine(CollapseAndRespawnCounter(Vector2.zero));
             objectsOnFloor.Clear();
             totalWeight = 0;
         }
