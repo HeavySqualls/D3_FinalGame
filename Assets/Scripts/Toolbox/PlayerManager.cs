@@ -11,6 +11,19 @@ public class PlayerManager : MonoBehaviour
     PlayerHealthSystem pHealth;
     AirTankController airTankCon;
 
+    bool isControllerActivated;
+
+    public void SetControlType(bool _isController)
+    {
+        isControllerActivated = _isController;
+        pCon.isController = _isController;
+    }
+
+    public bool GetControlType()
+    {
+        return isControllerActivated;
+    }
+
     // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
 
     public void SetPlayerHealthSystem(PlayerHealthSystem _pHealth)

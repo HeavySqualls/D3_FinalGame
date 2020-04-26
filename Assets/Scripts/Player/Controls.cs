@@ -2,7 +2,8 @@
 
 public class Controls : MonoBehaviour
 {
-    public string xMove;
+    public string xMoveKeys;
+    public string xMoveController;
     public string jump;
     public string punch;
     public string ability_1;
@@ -20,6 +21,8 @@ public class Controls : MonoBehaviour
 
     private void Start()
     {
+        ControllerMovement();
+        KeyboardMovement();
         jump = "Jump";
         punch = "Punch";
         ability_1 = "Ability_1";
@@ -71,11 +74,11 @@ public class Controls : MonoBehaviour
 
     public void KeyboardMovement()
     {
-        xMove = "Horizontal";
+        xMoveKeys = "Horizontal";
     }
 
     public void ControllerMovement()
     {
-        xMove = "Cont_Hor";
+        xMoveController = "Cont_Hor";
     }
 }

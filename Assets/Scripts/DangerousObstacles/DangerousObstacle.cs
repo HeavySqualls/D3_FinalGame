@@ -7,6 +7,10 @@ public class DangerousObstacle : Interact_Base
     [Tooltip("The delay until the interacted object will be attacked again if still standing on the spikes")]
     public float damageDelay = 0.5f;
     private bool isDamageDelay = false;
+    private bool isBloodied = false;
+
+    [SerializeField] Material baseMat;
+    [SerializeField] Material bloodiedMat;
 
     [Tooltip("Spikes and debris that will become bloodied")]
     public HashSet<MeshRenderer> spikeMeshes = new HashSet<MeshRenderer>();
@@ -17,17 +21,33 @@ public class DangerousObstacle : Interact_Base
     [SerializeField] float hitSoundVolume = 0.3f;
     AudioManager AM;
 
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += ResetDangerousSpikes;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= ResetDangerousSpikes;
+    }
+
     void Start()
     {
         FindEveryChild(gameObject.transform);
         AM = Toolbox.GetInstance().GetAudioManager();
     }
 
-    //private void PlayAudio(AudioClip _clip, float _volume)
-    //{
-    //    audioSource.volume = _volume;
-    //    audioSource.PlayOneShot(_clip);
-    //}
+
+    public void ResetDangerousSpikes()
+    {
+        if (isBloodied)
+        {
+            foreach (MeshRenderer spikeMR in spikeMeshes)
+            {
+                spikeMR.material = baseMat;
+            }
+        }
+    }
 
     private void FindEveryChild(Transform parent)
     {
@@ -35,7 +55,10 @@ public class DangerousObstacle : Interact_Base
 
         for (int i = 0; i < count; i++)
         {
-            spikeMeshes.Add(parent.GetChild(i).transform.GetComponent<MeshRenderer>());
+            if (parent.GetChild(i).gameObject.tag == "Spike")
+            {
+                spikeMeshes.Add(parent.GetChild(i).transform.GetComponent<MeshRenderer>());
+            }
         }
     }
 
@@ -48,9 +71,11 @@ public class DangerousObstacle : Interact_Base
             pRecieveDamage.GetHit(hitDirection, damage, knockBack, knockUp, stunTime);
             AM.PlayVariedOneShot(hitSound, hitSoundVolume);
 
+            isBloodied = true;
+
             foreach (MeshRenderer spikeMR in spikeMeshes)
             {
-                spikeMR.material.SetColor("_Color", Color.red);
+                spikeMR.material = bloodiedMat;
             }
         }
     }

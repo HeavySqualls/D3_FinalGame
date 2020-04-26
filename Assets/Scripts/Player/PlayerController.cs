@@ -141,6 +141,7 @@ public class PlayerController : PhysicsObject
     void Awake()
     {
         Toolbox.GetInstance().GetPlayerManager().SetPlayerController(this);
+        isController = Toolbox.GetInstance().GetPlayerManager().GetControlType();
 
         spriteRenderer = GetComponent<SpriteRenderer>();
         animator = GetComponent<Animator>();
@@ -163,15 +164,15 @@ public class PlayerController : PhysicsObject
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
         wallLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << breakableObjectsLayer));
 
-        if (controls != null)
-        {
-            if (isController)
-                controls.ControllerMovement();
-            else
-                controls.KeyboardMovement();
-        }
-        else
-            Debug.Log("Player does not have the controls component attached!");
+        //if (controls != null)
+        //{
+        //    if (isController)
+        //        controls.ControllerMovement();
+        //    else
+        //        controls.KeyboardMovement();
+        //}
+        //else
+        //    Debug.Log("Player does not have the controls component attached!");
     }
 
     float horizontalInput;
@@ -183,7 +184,15 @@ public class PlayerController : PhysicsObject
 
         if (!isDisabled)
         {
-            horizontalInput = Input.GetAxisRaw(controls.xMove);
+            if (isController)
+            {
+                horizontalInput = Input.GetAxisRaw(controls.xMoveController);
+            }
+            else
+            {
+                horizontalInput = Input.GetAxisRaw(controls.xMoveKeys);
+            }
+
             isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
             CheckSurroundings();
             CheckIfWallSliding();

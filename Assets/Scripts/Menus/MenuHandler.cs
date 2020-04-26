@@ -87,6 +87,26 @@ public class MenuHandler : MonoBehaviour
         }
     }
 
+    public GameObject controllerToggle;
+    public GameObject keyboardToggle;
+    bool isController;
+
+    public void ToggleControllerInput()
+    {
+        isController = true;
+
+        Toolbox.GetInstance().GetPlayerManager().SetControlType(isController);
+        print("controller switch toggled");
+    }
+
+    public void ToggleKeyboardInput()
+    {
+        isController = false;
+
+        Toolbox.GetInstance().GetPlayerManager().SetControlType(isController);
+        print("keyboard switch toggled");
+    }
+
     public void StartGame()
     {
         AM.PlayConsistentOneShot(clickSound, clickVolume);
