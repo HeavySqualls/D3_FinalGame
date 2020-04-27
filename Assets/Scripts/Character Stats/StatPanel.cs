@@ -14,11 +14,11 @@ public class StatPanel : MonoBehaviour
         gameObject.SetActive(!gameObject.activeSelf);
     }
 
-    private void OnValidate()
-    {
-        statDisplays = GetComponentsInChildren<StatDisplay>();
-        UpdateStatNames();
-    }
+    //private void OnValidate()
+    //{
+    //    statDisplays = GetComponentsInChildren<StatDisplay>();
+    //    UpdateStatNames();
+    //}
 
     // Recieves stats 
     public void SetStats(params CharacterStat[] charStats)

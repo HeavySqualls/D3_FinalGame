@@ -16,7 +16,9 @@ public class PlayerManager : MonoBehaviour
     public void SetControlType(bool _isController)
     {
         isControllerActivated = _isController;
-        pCon.isController = _isController;
+
+        if (pCon != null)
+            pCon.isController = _isController;
     }
 
     public bool GetControlType()

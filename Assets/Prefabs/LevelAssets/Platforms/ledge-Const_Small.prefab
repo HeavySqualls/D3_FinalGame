@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 666954440031893744}
   - component: {fileID: 5368478901117045346}
   m_Layer: 8
-  m_Name: Ledge-Const_Small
+  m_Name: ledge-Const_Small
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -120,6 +120,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -1504981713932161579, guid: 79d5129f7e228cf4eac25e3667b71245,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 36124577a5656ed42bbe9287c17dfb82, type: 2}
     - target: {fileID: -927199367670048503, guid: 79d5129f7e228cf4eac25e3667b71245,
         type: 3}
       propertyPath: m_Name
