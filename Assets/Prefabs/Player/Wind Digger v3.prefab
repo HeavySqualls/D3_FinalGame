@@ -5023,7 +5023,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerHealthStart: 0
-  damageCooldownTime: 0.25
+  damageCooldownTime: 1
   isHurt: 0
   flashDuration: 5
   currentFlashDelay: 0
@@ -5111,7 +5111,7 @@ MonoBehaviour:
   accelSpeedNormal: 15
   accelSpeedMaxSpeed: 6
   accelSpeedAir: 6
-  decelSpeed: 15
+  decelSpeed: 20
   skidTimeLimit: 20
   canMove: 1
   isMoving: 0
@@ -5171,7 +5171,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bceea798f89e454d9b9d6fa7675c5ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xMove: 
+  xMoveKeys: 
+  xMoveController: 
   jump: 
   punch: 
   ability_1: 

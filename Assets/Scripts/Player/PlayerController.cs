@@ -753,13 +753,13 @@ public class PlayerController : PhysicsObject
     {
         if (!isDisabled)
         {
-            if (canWallSlide && isTouchingWall && !isGrounded && isTouchingLedge && velocity.y <= 0)
+            if (canWallSlide && isTouchingWall && /*!isGrounded*/ !isOnGround && isTouchingLedge && velocity.y <= 0)
             {
                 isWallSliding = true;
                 StopTrackAirTime();
                 gravityModifier = wallSlidingSpeed;
             }
-            else if (!isTouchingWall)
+            else if ((!isTouchingWall || isOnGround))
             {
                 isWallSliding = false;
                 gravityModifier = gravStart;
@@ -902,7 +902,7 @@ public class PlayerController : PhysicsObject
             else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
             {
                 isPressingJumpButton = false;
-                canJump = true;
+                //canJump = true;
 
                 if (velocity.y > 0)
                 {
@@ -1113,6 +1113,7 @@ public class PlayerController : PhysicsObject
                
                 airTime = 0;
                 inAir = false;
+                canJump = true;
             }
         }
     }

@@ -20,17 +20,17 @@ public class CinematicTriggerController : MonoBehaviour
     public GameObject cinematicCam;
 
     PlayerController pCon;
-    CircleCollider2D circColl;
+    BoxCollider2D boxColl;
 
     void Start()
     {
-        circColl = GetComponent<CircleCollider2D>();
+        boxColl = GetComponent<BoxCollider2D>();
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
     }
 
     public void DisableTrigger()
     {
-        circColl.enabled = false;
+        boxColl.enabled = false;
     }
 
     public void EndCutScene()
@@ -46,7 +46,7 @@ public class CinematicTriggerController : MonoBehaviour
 
         pCon.EnablePlayerController();
 
-        circColl.enabled = false;
+        boxColl.enabled = false;
     }
 
     void OnTriggerEnter2D(Collider2D other)

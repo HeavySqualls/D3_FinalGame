@@ -1,5 +1,4 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
 using UnityEngine.UI;
 using Kryz.CharacterStats;
 
@@ -25,9 +24,10 @@ public class InventoryManager : MonoBehaviour
         Toolbox.GetInstance().GetPlayerManager().SetInventoryManager(this);
 
         lootBoxPanels = FindObjectsOfType<LootBoxPanel>();
-
-        statPanel.SetStats(strength, agility, intellect, vitality);
-        statPanel.UpdateStatValues();
+        
+        // TODO: enable this again when we decide to start working with stats
+        //statPanel.SetStats(strength, agility, intellect, vitality);
+        //statPanel.UpdateStatValues();
 
         // ---- SET UP EVENTS: ---- //
 
@@ -203,7 +203,7 @@ public class InventoryManager : MonoBehaviour
             }
             
             // Update the stat panel
-            statPanel.UpdateStatValues();
+            //statPanel.UpdateStatValues();
 
             sItem draggedItem = draggedSlot.Item;
             draggedSlot.Item = _dropItemSlot.Item;
