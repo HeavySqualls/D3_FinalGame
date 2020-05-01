@@ -268,7 +268,7 @@ public class SandOstrich : Enemy_Turret_Base
         Debug.DrawRay(eyeRange.position, direction * eyeRangeDistance, Color.yellow);
 
         // If we have detected the player and are not currently attacking them
-        if (huntingInfo.collider != null)
+        if (huntingInfo.collider != null && !huntingInfo.collider.gameObject.GetComponent<PlayerHealthSystem>().isDead)
         {
             if (localAudioSource.isPlaying)
                 localAudioSource.Stop();
