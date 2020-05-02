@@ -902,7 +902,7 @@ public class PlayerController : PhysicsObject
             else if (Input.GetButtonUp(controls.jump)) // << -- for determining jump height 
             {
                 isPressingJumpButton = false;
-                //canJump = true;
+                //canJump = true; <<--- moved to TrackAirTime
 
                 if (velocity.y > 0)
                 {

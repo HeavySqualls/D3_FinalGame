@@ -155,7 +155,9 @@ public class MenuHandler : MonoBehaviour
     {
         AM.PlayConsistentOneShot(clickSound, clickVolume);
         DeathMenu.SetActive(false);
+        PauseMenu.SetActive(false);
         SpawnManager.ResetLevelObjects();
+        Time.timeScale = 1;
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
