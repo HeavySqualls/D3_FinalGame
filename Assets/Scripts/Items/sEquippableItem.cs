@@ -11,7 +11,7 @@ public enum EquipmentType
 }
 
 [CreateAssetMenu(fileName = "Scriptable Objects", menuName = "Items/Equippable Item", order = 1)]
-public class sEquippableItem : sItem
+public class sEquippableItem : sScrapItem
 {
     [Header("Stat Bonuses:")]
     public int strengthBonus;

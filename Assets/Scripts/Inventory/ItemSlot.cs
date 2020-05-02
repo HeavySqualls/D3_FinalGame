@@ -18,9 +18,9 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     private Color enabledColor = Color.white;
     private Color disabledColor = new Color (1, 1, 1, 0);
 
-    private sItem _item;
+    private sScrapItem _item;
 
-    public sItem Item
+    public sScrapItem Item
     {
         get { return _item; }
         set
@@ -32,7 +32,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
             }
             else
             {
-                slotImage.sprite = _item.icon;
+                slotImage.sprite = _item.scrapSprite;
                 slotImage.color = enabledColor;
             }
         }
@@ -55,7 +55,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
         }
     }
 
-    public virtual bool CanRecieveItem(sItem _item)
+    public virtual bool CanRecieveItem(sScrapItem _item)
     {
         return true; // tells us whether we can put this item inside a slot
 

@@ -6,7 +6,7 @@ using UnityEngine;
 [Serializable]
 public struct ItemAmount
 {
-    public sItem item;
+    public sScrapItem item;
     [Range(1,999)] // to prevent a negative number from being possible
     public int amount;
 }
@@ -44,7 +44,7 @@ public class sCraftingRecipe : ScriptableObject
             {
                 for (int i = 0; i < itemAmount.amount; i++)
                 {
-                    sItem oldItem = itemContainer.RemoveItem(itemAmount.item.ID);
+                    sScrapItem oldItem = itemContainer.RemoveItem(itemAmount.item.ID);
                     Destroy(oldItem);
                 }
             }

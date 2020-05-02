@@ -133,9 +133,15 @@ public class InventoryManager : MonoBehaviour
     {
         // if the item in the selected equipment slot is an equippable item, display the tooltip!
         sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
+        sScrapItem scrapItem = _itemSlot.Item;
+
         if (equippableItem != null)
         {
-            itemTooltip.ShowToolTip(equippableItem);
+            itemTooltip.ShowEquipmentToolTip(equippableItem);
+        }
+        else if (scrapItem != null)
+        {
+            itemTooltip.ShowScrapToolTip(scrapItem);
         }
     }
 
@@ -143,7 +149,13 @@ public class InventoryManager : MonoBehaviour
     {
         // if the item in the selected equipment slot is an equippable item, hide the tooltip!
         sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
+        sScrapItem scrapItem = _itemSlot.Item;
+
         if (equippableItem != null)
+        {
+            itemTooltip.HideToolTip();
+        }
+        else if (scrapItem != null)
         {
             itemTooltip.HideToolTip();
         }
@@ -154,7 +166,7 @@ public class InventoryManager : MonoBehaviour
         if (_itemSlot.Item != null)
         {
             draggedSlot = _itemSlot;
-            draggableItem.sprite = _itemSlot.Item.icon;
+            draggableItem.sprite = _itemSlot.Item.scrapSprite;
             draggableItem.transform.position = Input.mousePosition;
             draggableItem.enabled = true;
         }
@@ -205,7 +217,7 @@ public class InventoryManager : MonoBehaviour
             // Update the stat panel
             //statPanel.UpdateStatValues();
 
-            sItem draggedItem = draggedSlot.Item;
+            sScrapItem draggedItem = draggedSlot.Item;
             draggedSlot.Item = _dropItemSlot.Item;
 
             if (draggedSlot as LootBoxSlot)

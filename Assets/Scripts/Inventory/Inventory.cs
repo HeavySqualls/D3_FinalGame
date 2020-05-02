@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class Inventory : MonoBehaviour, IItemContainer
 {
-    [SerializeField] sItem[] startingItems;
+    [SerializeField] sScrapItem[] startingItems;
     [SerializeField] Transform itemsParent;
     [SerializeField] ItemSlot[] itemSlots;
 
@@ -18,7 +18,7 @@ public class Inventory : MonoBehaviour, IItemContainer
     public event Action<ItemSlot> OnDragEvent;
     public event Action<ItemSlot> OnDropEvent;
 
-    public event Action<sItem> OnItemRightClickedEvent;
+    public event Action<sScrapItem> OnItemRightClickedEvent;
 
     [SerializeField] AudioClip pickUpSound;
     [SerializeField] AudioClip errorSound;
@@ -72,7 +72,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         }
     }
 
-    public bool AddItem(sItem item) 
+    public bool AddItem(sScrapItem item) 
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
@@ -88,7 +88,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         return false;
     }
 
-    public bool RemoveItem(sItem _item)
+    public bool RemoveItem(sScrapItem _item)
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
@@ -102,12 +102,12 @@ public class Inventory : MonoBehaviour, IItemContainer
         return false;
     }
 
-    public sItem RemoveItem(string _itemID)
+    public sScrapItem RemoveItem(string _itemID)
     {
         // loop through the item slots 
         for (int i = 0; i < itemSlots.Length; i++)
         {
-            sItem item = itemSlots[i].Item;
+            sScrapItem item = itemSlots[i].Item;
 
             // check to see if there is an item in the slot, and if so, does it have the same item ID as the one we are looking for
             if (item != null && item.ID == _itemID)
@@ -147,7 +147,7 @@ public class Inventory : MonoBehaviour, IItemContainer
         return number;
     }
 
-    public bool ContainsItem(sItem _item)
+    public bool ContainsItem(sScrapItem _item)
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {

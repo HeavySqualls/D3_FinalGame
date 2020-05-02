@@ -9,8 +9,8 @@ public class PickUpItem : MonoBehaviour
     [Tooltip("Is this object empty?")]
     public bool isEmpty;
 
-    [Tooltip("What scriptable object item this item be? - NOT FOR LOOT BOX. FOR SINGLE PIKC UP ITEMS ONLY!")]
-    public sItem item;
+    [Tooltip("What scriptable object item this item be? - NOT FOR LOOT BOX. FOR SINGLE PICK UP ITEMS ONLY!")]
+    public sScrapItem item;
 
     [Tooltip("This field gets auto-assigned and holds the reference to the player while they are in the trigger zone.")]
     [SerializeField] PlayerHandleInteract pInteract;
@@ -38,16 +38,11 @@ public class PickUpItem : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
+        spriteRenderer.sprite = item.scrapSprite;
         circleCollider = GetComponent<CircleCollider2D>();
         AM = Toolbox.GetInstance().GetAudioManager();
-        //Toolbox.GetInstance().GetLevelManager().AddPickups(this);
-        //lootBoxPanel = GetComponentInChildren<LootBoxPanel>();
     }
 
-    //private void OnDestroy()
-    //{
-    //    Toolbox.GetInstance().GetLevelManager().RemovePickups(this);
-    //}
 
     private void OnTriggerEnter2D(Collider2D other)
     {

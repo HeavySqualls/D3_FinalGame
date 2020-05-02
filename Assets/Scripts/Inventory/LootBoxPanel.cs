@@ -9,7 +9,7 @@ public class LootBoxPanel : MonoBehaviour
     [Tooltip("How many slots will this loot box have?")]
     [SerializeField] LootBoxSlot[] lootBoxSlots = new LootBoxSlot[4];
     [Tooltip("What scriptable object items will be inside this loot box? - Must be the same number as loot box slots!")]
-    [SerializeField] sItem[] startingItems = new sItem[4];
+    [SerializeField] sScrapItem[] startingItems = new sScrapItem[4];
     GameObject lootBoxPanel;
     [SerializeField] Transform lootBoxSlotsParent;
 
@@ -20,7 +20,7 @@ public class LootBoxPanel : MonoBehaviour
     public event Action<ItemSlot> OnEndDragEvent;
     public event Action<ItemSlot> OnDragEvent;
     public event Action<ItemSlot> OnDropEvent;
-    public event Action<sItem> OnItemRightClickedEvent;
+    public event Action<sScrapItem> OnItemRightClickedEvent;
 
     InventoryManager inventoryManager;
 

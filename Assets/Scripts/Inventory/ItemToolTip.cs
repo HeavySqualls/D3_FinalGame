@@ -1,17 +1,25 @@
 ﻿using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class ItemToolTip : MonoBehaviour
 {
+    // For Equipment Tooltip (no longer implemented)
     [SerializeField] Text itemNameText;
     [SerializeField] Text itemSlotText;
     [SerializeField] Text itemStatsText;
 
+    // For scrap item Tooltip
+    [SerializeField] TextMeshProUGUI scrapItemNameText;
+    [SerializeField] TextMeshProUGUI scrapItemDescText;
+    [SerializeField] TextMeshProUGUI scrapItemValueText;
+    [SerializeField] Image scrapItemIcon;
+
     // Allows us to join several things together in to one string, without taking the penalty for allocating a new string each time
     private StringBuilder sb = new StringBuilder();
 
-    public void ShowToolTip(sEquippableItem _item)
+    public void ShowEquipmentToolTip(sEquippableItem _item)
     {
         itemNameText.text = _item.itemName;
         itemSlotText.text = _item.equipType.ToString();
@@ -30,6 +38,16 @@ public class ItemToolTip : MonoBehaviour
         AddStat(_item.vitalityPercentBonus, "Vitality", true);
 
         itemStatsText.text = sb.ToString();
+
+        gameObject.SetActive(true);
+    }
+
+    public void ShowScrapToolTip(sScrapItem _item)
+    {
+        scrapItemNameText.text = _item.itemName;
+        scrapItemDescText.text = _item.itemDescription;
+        scrapItemValueText.text = _item.scrapValue.ToString();
+        scrapItemIcon.sprite = _item.inventoryIcon;
 
         gameObject.SetActive(true);
     }

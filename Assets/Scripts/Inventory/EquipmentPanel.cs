@@ -15,7 +15,7 @@ public class EquipmentPanel : MonoBehaviour
     public event Action<ItemSlot> OnDragEvent;
     public event Action<ItemSlot> OnDropEvent;
 
-    public event Action<sItem> OnItemRightClickedEvent;
+    public event Action<sScrapItem> OnItemRightClickedEvent;
 
     private void Start()
     {
