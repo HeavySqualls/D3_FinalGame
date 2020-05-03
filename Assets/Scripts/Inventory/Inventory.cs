@@ -1,11 +1,11 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour, IItemContainer
 {
+    bool isOpen;
+
     [SerializeField] sScrapItem[] startingItems;
     [SerializeField] Transform itemsParent;
     [SerializeField] ItemSlot[] itemSlots;
@@ -24,6 +24,7 @@ public class Inventory : MonoBehaviour, IItemContainer
     [SerializeField] AudioClip errorSound;
     [SerializeField] AudioClip trashSound;
     [SerializeField] float soundVolume = 0.15f;
+    Animator animator;
     AudioManager AM;
 
     private void Start()
@@ -42,9 +43,15 @@ public class Inventory : MonoBehaviour, IItemContainer
 
         SetStartingItems();
 
+        animator = GetComponent<Animator>();
         gameObject.SetActive(!gameObject.activeSelf);
 
         AM = Toolbox.GetInstance().GetAudioManager();
+
+        foreach (ItemSlot iS in itemSlots)
+        {
+            iS.GetComponent<Image>().enabled = false;
+        }
     }
 
     private void OnValidate()
@@ -53,6 +60,32 @@ public class Inventory : MonoBehaviour, IItemContainer
             itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
 
         SetStartingItems();
+    }
+
+    public void OpenCloseInventory(bool _open) // < ---- Called from PlayerInventoryHandler
+    {
+        animator.SetBool("isOpen", _open);
+    }
+
+    public void ShowSlots() // <---- Called from the animator
+    {
+        foreach (ItemSlot iS in itemSlots)
+        {
+            iS.GetComponent<Image>().enabled = true;
+        }
+    }
+
+    public void HideSlots() // <---- Called from the animator
+    {
+        foreach (ItemSlot iS in itemSlots)
+        {
+            iS.GetComponent<Image>().enabled = true;
+        }
+    }
+
+    public void HideInventory() // <---- Called from the animator
+    {
+        gameObject.SetActive(false);
     }
 
     private void SetStartingItems()

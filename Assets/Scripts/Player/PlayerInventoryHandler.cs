@@ -5,10 +5,10 @@ public class PlayerInventoryHandler : MonoBehaviour
     public GameObject lootBoxPanel;
 
     [SerializeField] GameObject inventory;
-    [SerializeField] GameObject equipmentPanel;
-    [SerializeField] GameObject statsPanel;
+    //[SerializeField] GameObject equipmentPanel;
+    //[SerializeField] GameObject statsPanel;
     [SerializeField] GameObject itemTooltip;
-    [SerializeField] GameObject statTooltip;
+    //[SerializeField] GameObject statTooltip;
 
     bool isInventoryOpen = false;
     [SerializeField] AudioClip openSound;
@@ -24,7 +24,7 @@ public class PlayerInventoryHandler : MonoBehaviour
     private void Start()
     {
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
-        equipmentPanel.SetActive(!equipmentPanel.activeSelf);
+        //equipmentPanel.SetActive(!equipmentPanel.activeSelf);
         AM = Toolbox.GetInstance().GetAudioManager();
     }
 
@@ -63,22 +63,25 @@ public class PlayerInventoryHandler : MonoBehaviour
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
         itemTooltip.SetActive(false);
-        statTooltip.SetActive(false);
+        //statTooltip.SetActive(false);
     }
 
     private void EnableInventory()
     {
         inventory.SetActive(true);
-        equipmentPanel.SetActive(true);
-        statsPanel.SetActive(true);
+        inventory.GetComponent<Inventory>().OpenCloseInventory(true);
         isInventoryOpen = true;
+
+        //equipmentPanel.SetActive(true);
+        //statsPanel.SetActive(true);
     }
 
     private void DisableInventory()
     {
-        inventory.SetActive(false);
-        equipmentPanel.SetActive(false);
-        statsPanel.SetActive(false);
+        inventory.GetComponent<Inventory>().OpenCloseInventory(false);
+        //inventory.SetActive(false);
+        //equipmentPanel.SetActive(false);
+        //statsPanel.SetActive(false);
         isInventoryOpen = false;
 
         if (lootBoxPanel != null && lootBoxPanel.activeSelf == true)
