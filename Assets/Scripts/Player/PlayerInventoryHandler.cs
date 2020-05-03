@@ -4,7 +4,7 @@ public class PlayerInventoryHandler : MonoBehaviour
 {
     public GameObject lootBoxPanel;
 
-    [SerializeField] GameObject inventory;
+    [SerializeField] Inventory inventory;
     //[SerializeField] GameObject equipmentPanel;
     //[SerializeField] GameObject statsPanel;
     [SerializeField] GameObject itemTooltip;
@@ -32,23 +32,28 @@ public class PlayerInventoryHandler : MonoBehaviour
     {
         if (!pCon.isDisabled)
         {
-            if (Input.GetButtonDown(pCon.controls.inventory) || Controls.IsUp)
+            if ((Input.GetButtonDown(pCon.controls.inventory) || Controls.IsUp) && !inventory.isAnimating)
             {
-                if (isInventoryOpen)
-                {
-                    AM.PlayConsistentOneShot(openSound, openSoundVolume);
-
-                    HideMouseCursor();
-                    DisableInventory();
-                }
-                else if (!isInventoryOpen)
-                {
-                    AM.PlayConsistentOneShot(openSound, openSoundVolume);
-
-                    ShowMouseCursor();
-                    EnableInventory();
-                }
+                ToggleInventory();
             }
+        }
+    }
+
+    public void ToggleInventory()
+    {
+        if (isInventoryOpen)
+        {
+            AM.PlayConsistentOneShot(openSound, openSoundVolume);
+
+            HideMouseCursor();
+            DisableInventory();
+        }
+        else if (!isInventoryOpen)
+        {
+            AM.PlayConsistentOneShot(openSound, openSoundVolume);
+
+            ShowMouseCursor();
+            EnableInventory();
         }
     }
 
@@ -68,8 +73,7 @@ public class PlayerInventoryHandler : MonoBehaviour
 
     private void EnableInventory()
     {
-        inventory.SetActive(true);
-        inventory.GetComponent<Inventory>().OpenCloseInventory(true);
+        inventory.OpenCloseInventory(true);
         isInventoryOpen = true;
 
         //equipmentPanel.SetActive(true);
@@ -78,7 +82,7 @@ public class PlayerInventoryHandler : MonoBehaviour
 
     private void DisableInventory()
     {
-        inventory.GetComponent<Inventory>().OpenCloseInventory(false);
+        inventory.OpenCloseInventory(false);
         //inventory.SetActive(false);
         //equipmentPanel.SetActive(false);
         //statsPanel.SetActive(false);

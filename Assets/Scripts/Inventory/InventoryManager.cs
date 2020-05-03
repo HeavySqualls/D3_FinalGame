@@ -17,6 +17,11 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] ItemToolTip itemTooltip;
     [SerializeField] Image draggableItem;
 
+    [Space]
+    [Header("Audio:")]
+    [SerializeField] AudioClip hoverSound;
+    [SerializeField] float hoverVolume = 0.3f;
+
     private ItemSlot draggedSlot;
 
     private void Awake()
@@ -131,6 +136,9 @@ public class InventoryManager : MonoBehaviour
 
     private void ShowTooltip(ItemSlot _itemSlot)
     {
+
+        Toolbox.GetInstance().GetAudioManager().PlayConsistentOneShot(hoverSound, hoverVolume);
+
         // if the item in the selected equipment slot is an equippable item, display the tooltip!
         sEquippableItem equippableItem = _itemSlot.Item as sEquippableItem;
         sScrapItem scrapItem = _itemSlot.Item;

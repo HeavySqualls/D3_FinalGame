@@ -1,14 +1,17 @@
 ﻿using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour, IItemContainer
 {
-    bool isOpen;
+    public bool isAnimating = false;
 
     [SerializeField] sScrapItem[] startingItems;
     [SerializeField] Transform itemsParent;
     [SerializeField] ItemSlot[] itemSlots;
+    [SerializeField] GameObject slotsPanel;
+    [SerializeField] GameObject closeButton;
 
     public event Action<ItemSlot> OnPointerEnterEvent;
     public event Action<ItemSlot> OnPointerExitEvent;
@@ -48,10 +51,8 @@ public class Inventory : MonoBehaviour, IItemContainer
 
         AM = Toolbox.GetInstance().GetAudioManager();
 
-        foreach (ItemSlot iS in itemSlots)
-        {
-            iS.GetComponent<Image>().enabled = false;
-        }
+        slotsPanel.SetActive(false);
+        closeButton.SetActive(false);
     }
 
     private void OnValidate()
@@ -62,25 +63,51 @@ public class Inventory : MonoBehaviour, IItemContainer
         SetStartingItems();
     }
 
+    [SerializeField] float displayDelay = 0.3f;
+
     public void OpenCloseInventory(bool _open) // < ---- Called from PlayerInventoryHandler
     {
+        if (_open)
+        {
+            gameObject.SetActive(true);
+            StartCoroutine(WaitToDisplayInventorySlots());
+        }
+        else
+        {
+            HideSlots();
+            StartCoroutine(WaitToHideInventory());
+        }
+
         animator.SetBool("isOpen", _open);
     }
 
-    public void ShowSlots() // <---- Called from the animator
+    IEnumerator WaitToDisplayInventorySlots()
     {
-        foreach (ItemSlot iS in itemSlots)
-        {
-            iS.GetComponent<Image>().enabled = true;
-        }
+        isAnimating = true;
+        yield return new WaitForSeconds(displayDelay);
+
+        ShowSlots();
+        isAnimating = false;
     }
 
-    public void HideSlots() // <---- Called from the animator
+    IEnumerator WaitToHideInventory()
     {
-        foreach (ItemSlot iS in itemSlots)
-        {
-            iS.GetComponent<Image>().enabled = true;
-        }
+        isAnimating = true;
+        yield return new WaitForSeconds(displayDelay);
+        HideInventory();
+        isAnimating = false;
+    }
+
+    public void ShowSlots()
+    {
+        slotsPanel.SetActive(true);
+        closeButton.SetActive(true);
+    }
+
+    public void HideSlots()
+    {
+        slotsPanel.SetActive(false);
+        closeButton.SetActive(false);
     }
 
     public void HideInventory() // <---- Called from the animator

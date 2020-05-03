@@ -274,24 +274,27 @@ public class AudioManager : MonoBehaviour
 
     public void DampenBGMusic(bool _isReducingVol)
     {
-        if (currentBGAudioSource.isPlaying)
+        if (currentBGAudioSource != null)
         {
-            if (_isReducingVol)
-                currentBGAudioSource.volume = dampenedAudioVol;
-            //StartCoroutine(DampenAudio(currentBGAudioSource, dampenedAudioVol, _isReducingVol));
-            else
-                currentMusicAudioSource.volume = BGVolume;
+            if (currentBGAudioSource.isPlaying)
+            {
+                if (_isReducingVol)
+                    currentBGAudioSource.volume = dampenedAudioVol;
+                //StartCoroutine(DampenAudio(currentBGAudioSource, dampenedAudioVol, _isReducingVol));
+                else
+                    currentMusicAudioSource.volume = BGVolume;
                 //StartCoroutine(DampenAudio(currentBGAudioSource, BGVolume, _isReducingVol));
-        }
+            }
 
-        if (currentMusicAudioSource.isPlaying)
-        {
-            if (_isReducingVol)
-                currentMusicAudioSource.volume = dampenedAudioVol;
-            //StartCoroutine(DampenAudio(currentMusicAudioSource, dampenedAudioVol, _isReducingVol));
-            else
-                currentMusicAudioSource.volume = levelMusicVolume;
+            if (currentMusicAudioSource.isPlaying)
+            {
+                if (_isReducingVol)
+                    currentMusicAudioSource.volume = dampenedAudioVol;
+                //StartCoroutine(DampenAudio(currentMusicAudioSource, dampenedAudioVol, _isReducingVol));
+                else
+                    currentMusicAudioSource.volume = levelMusicVolume;
                 //StartCoroutine(DampenAudio(currentMusicAudioSource, levelMusicVolume, _isReducingVol));
+            }
         }
     }
 
