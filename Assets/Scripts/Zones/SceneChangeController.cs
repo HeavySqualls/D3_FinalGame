@@ -4,11 +4,14 @@ public class SceneChangeController : MonoBehaviour
 {
     [SerializeField] AudioClip winSound;
     [SerializeField] float winVolume = 0.4f;
+
     private void OnTriggerEnter2D(Collider2D collision)
     {
         print("Change Scene");
+        PlayerController pCon = collision.gameObject.GetComponent<PlayerController>();
 
-        ChangeScene();
+        if (pCon != null)
+            ChangeScene();
     }
 
     public void ChangeScene()

@@ -5,7 +5,17 @@ using UnityEngine.EventSystems;
 
 public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IBeginDragHandler, IEndDragHandler, IDragHandler, IDropHandler
 {
+    private sScrapItem _item;
+
     [SerializeField] Image slotImage;
+    private Color enabledColor = Color.white;
+    private Color disabledColor = new Color(1, 1, 1, 0);
+
+    public Image slotBGImage;
+    public Color slotEmptyColor;
+    public Color slotFullColor;
+    public Color selectedColor;
+    public Color previousColor;
 
     public event Action<ItemSlot> OnPointerEnterEvent;
     public event Action<ItemSlot> OnPointerExitEvent;
@@ -15,25 +25,26 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
     public event Action<ItemSlot> OnDragEvent;
     public event Action<ItemSlot> OnDropEvent;
 
-    private Color enabledColor = Color.white;
-    private Color disabledColor = new Color (1, 1, 1, 0);
-
-    private sScrapItem _item;
-
     public sScrapItem Item
     {
         get { return _item; }
         set
         {
+            if (slotBGImage == null)
+            {
+                slotBGImage = GetComponent<Image>();
+            }
             _item = value;
             if (_item == null)
             {
                 slotImage.color = disabledColor;
+                slotBGImage.color = slotEmptyColor;
             }
             else
             {
                 slotImage.sprite = _item.scrapSprite;
                 slotImage.color = enabledColor;
+                slotBGImage.color = slotFullColor;
             }
         }
     }
@@ -81,6 +92,8 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
         if (OnPointerEnterEvent != null)
         {
             OnPointerEnterEvent(this);
+            previousColor = slotBGImage.color;
+            slotBGImage.color = selectedColor;
         }
     }
 
@@ -89,6 +102,7 @@ public class ItemSlot : MonoBehaviour, IPointerClickHandler, IPointerEnterHandle
         if (OnPointerExitEvent != null)
         {
             OnPointerExitEvent(this);
+            slotBGImage.color = previousColor;
         }
     }
 

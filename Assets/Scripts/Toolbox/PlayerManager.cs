@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections.Generic;
+using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
@@ -10,6 +11,8 @@ public class PlayerManager : MonoBehaviour
     PlayerFeedback pFeedback;
     PlayerHealthSystem pHealth;
     AirTankController airTankCon;
+
+    public List<sScrapItem> inventoryItems = new List<sScrapItem>();
 
     bool isControllerActivated;
 
@@ -25,6 +28,7 @@ public class PlayerManager : MonoBehaviour
     {
         return isControllerActivated;
     }
+
 
     // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
 

@@ -38,7 +38,10 @@ public class PickUpItem : MonoBehaviour
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
-        spriteRenderer.sprite = item.scrapSprite;
+
+        if (!isLootBox)
+            spriteRenderer.sprite = item.scrapSprite;
+
         circleCollider = GetComponent<CircleCollider2D>();
         AM = Toolbox.GetInstance().GetAudioManager();
     }

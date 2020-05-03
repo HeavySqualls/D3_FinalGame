@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour, IItemContainer
 {
@@ -29,9 +28,14 @@ public class Inventory : MonoBehaviour, IItemContainer
     [SerializeField] float soundVolume = 0.15f;
     Animator animator;
     AudioManager AM;
+    PlayerManager PM;
 
     private void Start()
     {
+
+        AM = Toolbox.GetInstance().GetAudioManager();
+        PM = Toolbox.GetInstance().GetPlayerManager();
+
         for (int i = 0; i < itemSlots.Length; i++)
         {
             // catches the events from ItemSlot.cs and says "the player right clicked this item"... (see InventoryManager.cs for next step)
@@ -49,19 +53,17 @@ public class Inventory : MonoBehaviour, IItemContainer
         animator = GetComponent<Animator>();
         gameObject.SetActive(!gameObject.activeSelf);
 
-        AM = Toolbox.GetInstance().GetAudioManager();
-
         slotsPanel.SetActive(false);
         closeButton.SetActive(false);
     }
 
-    private void OnValidate()
-    {
-        if (itemsParent != null)
-            itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
+    //private void OnValidate()
+    //{
+    //    if (itemsParent != null)
+    //        itemSlots = itemsParent.GetComponentsInChildren<ItemSlot>();
 
-        SetStartingItems();
-    }
+    //    SetStartingItems();
+    //}
 
     [SerializeField] float displayDelay = 0.3f;
 
@@ -106,6 +108,15 @@ public class Inventory : MonoBehaviour, IItemContainer
 
     public void HideSlots()
     {
+        // Reset the color of an item slot if the mouse is still hovering over it when the inventory is closed
+        foreach  (ItemSlot iS in itemSlots)
+        {
+            if (iS.slotBGImage.color == iS.selectedColor)
+            {
+                iS.slotBGImage.color = iS.previousColor;
+            }
+        }
+
         slotsPanel.SetActive(false);
         closeButton.SetActive(false);
     }
@@ -119,10 +130,10 @@ public class Inventory : MonoBehaviour, IItemContainer
     {
         int i = 0;
         // For each item we have, assign it to an item slot,
-        for (; i < startingItems.Length && i < itemSlots.Length; i++)
+        for (; i < PM.inventoryItems.Count && i < itemSlots.Length; i++)
         {
-            if (startingItems[i] != null)
-                itemSlots[i].Item = Instantiate(startingItems[i]);
+            //if (startingItems[i] != null)
+            itemSlots[i].Item = Instantiate(PM.inventoryItems[i]);
         }
 
         // for each remaining slot with no item, set slot to null
@@ -132,14 +143,15 @@ public class Inventory : MonoBehaviour, IItemContainer
         }
     }
 
-    public bool AddItem(sScrapItem item) 
+    public bool AddItem(sScrapItem _item) 
     {
         for (int i = 0; i < itemSlots.Length; i++)
         {
             if (itemSlots[i].Item == null)
             {
                 AM.PlayConsistentOneShot(pickUpSound, soundVolume);
-                itemSlots[i].Item = item;
+                PM.inventoryItems.Add(Instantiate(_item));
+                itemSlots[i].Item = Instantiate(_item);
                 return true;
             }
         }
@@ -156,6 +168,7 @@ public class Inventory : MonoBehaviour, IItemContainer
             {
                 AM.PlayConsistentOneShot(trashSound, soundVolume);
                 itemSlots[i].Item = null;
+                PM.inventoryItems.Remove(_item);
                 return true;
             }
         }

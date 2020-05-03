@@ -505,18 +505,6 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
---- !u!114 &200865941 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
-    type: 3}
-  m_PrefabInstance: {fileID: 1343327010}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fd33ad3755d4ce74cbd36a74de8507a5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &223274479
 GameObject:
   m_ObjectHideFlags: 0
@@ -1320,6 +1308,36 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 32642801362004116, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32642801362004116, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32642801362004116, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32642801362004116, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32642801362004116, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_SizeDelta.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 32642801362004116, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_SizeDelta.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 208981283759038337, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
         type: 3}
       propertyPath: m_AnchorMin.y
@@ -1821,11 +1839,24 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3301433854376171110, guid: 7d05d075b1775534b90bf3d158cd56ea,
+    - target: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
         type: 3}
-      propertyPath: openBoxSound
+      propertyPath: startingItems.Array.data[0]
       value: 
-      objectReference: {fileID: 8300000, guid: ff461c9e321f84546903650950445637, type: 3}
+      objectReference: {fileID: 11400000, guid: aedff59bdf5932945a7b50a7764e849f,
+        type: 2}
+    - target: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
+        type: 3}
+      propertyPath: startingItems.Array.data[1]
+      value: 
+      objectReference: {fileID: 11400000, guid: aedff59bdf5932945a7b50a7764e849f,
+        type: 2}
+    - target: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
+        type: 3}
+      propertyPath: startingItems.Array.data[2]
+      value: 
+      objectReference: {fileID: 11400000, guid: aedff59bdf5932945a7b50a7764e849f,
+        type: 2}
     - target: {fileID: 3301433854376171113, guid: 7d05d075b1775534b90bf3d158cd56ea,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -3249,26 +3280,6 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
-        type: 3}
-      propertyPath: startingItems.Array.size
-      value: 4
-      objectReference: {fileID: 0}
-    - target: {fileID: 3301433853112589805, guid: 7d05d075b1775534b90bf3d158cd56ea,
-        type: 3}
-      propertyPath: startingItems.Array.data[0]
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3301433854376171110, guid: 7d05d075b1775534b90bf3d158cd56ea,
-        type: 3}
-      propertyPath: item
-      value: 
-      objectReference: {fileID: 0}
-    - target: {fileID: 3301433854376171110, guid: 7d05d075b1775534b90bf3d158cd56ea,
-        type: 3}
-      propertyPath: lootBoxPanel
-      value: 
-      objectReference: {fileID: 200865941}
     - target: {fileID: 3301433854376171113, guid: 7d05d075b1775534b90bf3d158cd56ea,
         type: 3}
       propertyPath: m_LocalPosition.x
