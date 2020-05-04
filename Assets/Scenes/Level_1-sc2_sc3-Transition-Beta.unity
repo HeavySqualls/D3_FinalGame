@@ -5340,9 +5340,11 @@ MonoBehaviour:
   windMeterFillBar: {fileID: 1277829018015754875}
   windDial: {fileID: 1277829017181740281}
   timeSinceInWindZone: 0
-  timeSinceLastMeterUse: 0
+  timeSinceWasAttacked: 0
   timeSinceMagBootsUsed: 0
+  timeSinceLastMeterUse: 0
   hideWindDialTime: 5
+  windDialImage: {fileID: 0}
 --- !u!224 &1277829018256282636
 RectTransform:
   m_ObjectHideFlags: 0
@@ -18878,6 +18880,8 @@ MonoBehaviour:
   openMenuSound: {fileID: 8300000, guid: 92fe72d82397f624ebb68f1a19c7082f, type: 3}
   openMenuVolume: 0.2
   timeLine: {fileID: 0}
+  controllerToggle: {fileID: 0}
+  keyboardToggle: {fileID: 0}
 --- !u!222 &4806209303958520888
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -20781,6 +20785,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerHealthStart: 0
   damageCooldownTime: 0.25
+  isHurt: 0
   flashDuration: 5
   currentFlashDelay: 0
   phase1FlashDelay: 0.5
@@ -20903,6 +20908,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959195521275563}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &6943959193502174773
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21060,6 +21070,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959194223113699}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 1
 --- !u!114 &6943959193520788236
 MonoBehaviour:
@@ -21157,6 +21172,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959194464644726}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &6943959193540210957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -21318,6 +21338,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959193550874920}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 3
 --- !u!224 &6943959193597079334
 RectTransform:
@@ -21639,6 +21664,8 @@ MonoBehaviour:
   statPanel: {fileID: 6943959194227663126}
   itemTooltip: {fileID: 6943959194473985266}
   draggableItem: {fileID: 6943959193711285394}
+  hoverSound: {fileID: 0}
+  hoverVolume: 0.3
 --- !u!1 &6943959193716585812
 GameObject:
   m_ObjectHideFlags: 0
@@ -21812,6 +21839,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959194222119072}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 2
 --- !u!224 &6943959193780384302
 RectTransform:
@@ -22067,6 +22099,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959193981105049}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 0
 --- !u!114 &6943959193870783998
 MonoBehaviour:
@@ -22117,6 +22154,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959195517661931}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 4
 --- !u!114 &6943959193934362050
 MonoBehaviour:
@@ -22214,6 +22256,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959194083812299}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &6943959193980864677
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22642,6 +22689,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959194493546975}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &6943959194185777167
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -22854,7 +22906,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6943959194227663145
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22895,6 +22947,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9694cc33c32bddb4d9fa655c28c6f5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAnimating: 0
   startingItems: []
   itemsParent: {fileID: 6943959195054544836}
   itemSlots:
@@ -22904,10 +22957,13 @@ MonoBehaviour:
   - {fileID: 6943959194185777166}
   - {fileID: 6943959193980864676}
   - {fileID: 6943959195243042417}
+  slotsPanel: {fileID: 0}
+  closeButton: {fileID: 0}
   pickUpSound: {fileID: 8300000, guid: a2bc9b81c99846d4f82575e4aa617f3b, type: 3}
   errorSound: {fileID: 8300000, guid: 3237971bfa08e5547b4449d48471ec4b, type: 3}
   trashSound: {fileID: 8300000, guid: 7fbe5e753737668408075532edcff40a, type: 3}
   soundVolume: 0.15
+  displayDelay: 0.3
 --- !u!224 &6943959194247204824
 RectTransform:
   m_ObjectHideFlags: 0
@@ -22963,10 +23019,10 @@ RectTransform:
   m_Father: {fileID: 6943959194869332603}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 53, y: -115.799995}
+  m_SizeDelta: {x: 80, y: 18}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6943959194411629297
 MonoBehaviour:
@@ -23280,6 +23336,10 @@ MonoBehaviour:
   itemNameText: {fileID: 6943959194976212301}
   itemSlotText: {fileID: 6943959193506007726}
   itemStatsText: {fileID: 6943959194771160778}
+  scrapItemNameText: {fileID: 0}
+  scrapItemDescText: {fileID: 0}
+  scrapItemValueText: {fileID: 0}
+  scrapItemIcon: {fileID: 0}
 --- !u!114 &6943959194473985268
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -23802,10 +23862,10 @@ RectTransform:
   m_Father: {fileID: 6943959194869332603}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 53, y: -44.7}
+  m_SizeDelta: {x: 80, y: 18}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6943959194945567769
 MonoBehaviour:
@@ -24248,11 +24308,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootBoxPanel: {fileID: 0}
-  inventory: {fileID: 6943959194247204827}
-  equipmentPanel: {fileID: 6943959195149964230}
-  statsPanel: {fileID: 6943959194227663144}
+  inventory: {fileID: 0}
   itemTooltip: {fileID: 6943959194473985033}
-  statTooltip: {fileID: 6943959195133973771}
   openSound: {fileID: 8300000, guid: 92fe72d82397f624ebb68f1a19c7082f, type: 3}
   openSoundVolume: 0.15
 --- !u!224 &6943959195133973768
@@ -24396,7 +24453,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &6943959195149964231
 RectTransform:
   m_ObjectHideFlags: 0
@@ -24467,10 +24524,10 @@ RectTransform:
   m_Father: {fileID: 6943959194869332603}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 53, y: -92.1}
+  m_SizeDelta: {x: 80, y: 18}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6943959195189246543
 MonoBehaviour:
@@ -24581,10 +24638,10 @@ RectTransform:
   m_Father: {fileID: 6943959194869332603}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 53, y: -9}
+  m_SizeDelta: {x: 80, y: 30}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6943959195215878455
 MonoBehaviour:
@@ -24656,6 +24713,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959195202963292}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &6943959195243042419
 GameObject:
   m_ObjectHideFlags: 0
@@ -25055,6 +25117,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 6943959195024228937}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!114 &6943959195323940177
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25220,10 +25287,10 @@ RectTransform:
   m_Father: {fileID: 6943959194869332603}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 53, y: -68.4}
+  m_SizeDelta: {x: 80, y: 18}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &6943959195415817137
 MonoBehaviour:
@@ -25570,6 +25637,8 @@ MonoBehaviour:
   airDisableTimer: 0.3
   landDelay: 0.5
   slidingSurfaceJumpForceY: 30
+  airTime: 0
+  isMagBootsEnabled: 1
   magBootsOn: 0
   onGravValue: 30
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
@@ -26255,7 +26324,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bceea798f89e454d9b9d6fa7675c5ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xMove: 
+  xMoveKeys: 
+  xMoveController: 
   jump: 
   punch: 
   ability_1: 

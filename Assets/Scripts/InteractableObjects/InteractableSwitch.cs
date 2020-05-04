@@ -81,7 +81,7 @@ public class InteractableSwitch : MonoBehaviour
                 print("door switch is actuated!");
                 AM.PlayConsistentOneShot(switchOpenSound, switchOpenVolume);
                 door.OpenCloseDoor();
-                isOpen = !isOpen;
+                isOpen = true;
             }
             else
                 Debug.LogWarning("Door is currently in use... wait for movement to finish.");
@@ -97,7 +97,7 @@ public class InteractableSwitch : MonoBehaviour
                 ts.TurnOffSpillPipe();
             }
 
-            isOpen = !isOpen;
+            isOpen = true;
         }
 
         if (additionalGameObjects.Length > 0)

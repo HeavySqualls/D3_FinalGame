@@ -5122,8 +5122,8 @@ MonoBehaviour:
   inAir: 0
   canJump: 1
   jumpTakeoffSpeed: 26
-  hardLandTime: 1
-  heavyLandTime: 1.5
+  hardLandTime: 0.55
+  heavyLandTime: 1
   jumpDelayTime: 0.02
   quickJumpDelay: 0.02
   maxGraceTime: 0.12
@@ -5131,6 +5131,7 @@ MonoBehaviour:
   airDisableTimer: 0.3
   landDelay: 0.3
   slidingSurfaceJumpForceY: 30
+  airTime: 0
   isMagBootsEnabled: 1
   magBootsOn: 0
   onGravValue: 30

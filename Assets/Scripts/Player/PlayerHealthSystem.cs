@@ -40,7 +40,6 @@ public class PlayerHealthSystem : MonoBehaviour
     PlayerFeedback pFeedback;
     PlayerAudioController pAudio;
     Animator animator;
-    //[SerializeField] SpriteRenderer spriteRenderer;
     Image windDial;
 
     private void OnEnable()
@@ -60,13 +59,11 @@ public class PlayerHealthSystem : MonoBehaviour
 
     void Start()
     {
-        //spriteRenderer = GetComponent<SpriteRenderer>();
         pCon = GetComponent<PlayerController>();
         pAudio = GetComponent<PlayerAudioController>();
         pFeedback = GetComponent<PlayerFeedback>();
         animator = GetComponent<Animator>();
 
-        //playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;
 
         flashCoroutine = IInjuredFlashRed();
@@ -79,7 +76,17 @@ public class PlayerHealthSystem : MonoBehaviour
 
     // ---- HANDLE DAMAGE ---- //
 
-    public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime)
+    public void TakeFallDamage()
+    {
+        if (currentPhase < hurtPhase2)
+        {
+            currentPhase = hurtPhase2;
+        }
+
+        TakeDamage(Vector2.zero, 0, 0, 0, 0, true);
+    }
+
+    public void TakeDamage(Vector2 _hitDirection, float _damage, float _knockBack, float _knockUp, float _stunTime, bool _isFallDamage)
     {
         if (!isDead && !isDamageCooldown)
         {
@@ -112,11 +119,12 @@ public class PlayerHealthSystem : MonoBehaviour
                 return;
             }
 
+            if (!_isFallDamage)
+            {
+                animator.SetTrigger("isHurt");
+            }
+
             StartCoroutine("IInjuredFlashRed");
-
-            //playerHealth -= _damage;
-
-            animator.SetTrigger("isHurt");
 
             if (!pCon.isHit)
             {
@@ -147,7 +155,7 @@ public class PlayerHealthSystem : MonoBehaviour
         pCon.DisablePlayerController();
 
         StopCoroutine("IInjuredFlashRed");
-        //spriteRenderer.color = Color.white;
+
         windDial.color = Color.white;
         SpawnManager.PlayerWasKilled();
     }
@@ -166,7 +174,6 @@ public class PlayerHealthSystem : MonoBehaviour
             Debug.LogError("No respawn location assigned!");
 
         pCon.EnablePlayerController();
-        //playerHealth = playerHealthStart;
         currentPhase = hurtPhase0;
     }
 
@@ -177,14 +184,6 @@ public class PlayerHealthSystem : MonoBehaviour
 
         for (float i = 0; i < flashDuration; i += currentFlashDelay)
         {
-            //if (spriteRenderer.color == Color.white)
-            //{
-            //    spriteRenderer.color = Color.red;
-            //}
-            //else if (spriteRenderer.color == Color.red)
-            //{
-            //    spriteRenderer.color = Color.white;
-            //}
             if (windDial.color == Color.white)
             {
                 windDial.color = Color.red;
@@ -205,14 +204,6 @@ public class PlayerHealthSystem : MonoBehaviour
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                //if (spriteRenderer.color == Color.white)
-                //{
-                //    spriteRenderer.color = Color.red;
-                //}
-                //else if (spriteRenderer.color == Color.red)
-                //{
-                //    spriteRenderer.color = Color.white;
-                //}
                 if (windDial.color == Color.white)
                 {
                     windDial.color = Color.red;
@@ -234,15 +225,6 @@ public class PlayerHealthSystem : MonoBehaviour
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                //if (spriteRenderer.color == Color.white)
-                //{
-                //    spriteRenderer.color = Color.red;
-                //}
-                //else if (spriteRenderer.color == Color.red)
-                //{
-                //    spriteRenderer.color = Color.white;
-                //}
-
                 if (windDial.color == Color.white)
                 {
                     windDial.color = Color.red;
@@ -258,7 +240,6 @@ public class PlayerHealthSystem : MonoBehaviour
 
         currentPhase = 0;
 
-        //spriteRenderer.color = Color.white;
         windDial.color = Color.white;
 
         isHurt = false;

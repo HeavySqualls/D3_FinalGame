@@ -146,31 +146,13 @@ public class PlayerFeedback : MonoBehaviour
         shakeTween = cam.transform.DOShakePosition(0.3f, 0.2f, 20, randomness, false, false);
     }
 
+    public void HeavyLandShake()
+    {
+        shakeTween = cam.transform.DOShakePosition(0.45f, 0.4f, 20, randomness, false, false);
+    }
+
     public void BreakShake()
     {
         shakeTween = cam.transform.DOShakePosition(shakeDuration, 0.2f, 20, randomness, false, true);
     }
-
-    //public IEnumerator IFlashRed()
-    //{
-    //    shakeTween = cam.transform.DOShakePosition(shakeDuration, shakeStrength, vibrato, randomness, false, true);
-
-    //    for (float i = 0; i < flashDuration; i += flashDelay)
-    //    {
-    //        if (spriteRenderer.color == Color.white)
-    //        {
-    //            spriteRenderer.color = Color.red;
-    //        }
-    //        else if (spriteRenderer.color == Color.red)
-    //        {
-    //            spriteRenderer.color = Color.white;
-    //        }
-
-    //        yield return new WaitForSeconds(flashDelay);
-    //    }
-
-    //    spriteRenderer.color = Color.white;
-
-    //    yield break;
-    //}
 }

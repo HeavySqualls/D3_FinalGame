@@ -68,7 +68,7 @@ public class PlayerController : PhysicsObject
     public float slidingSurfaceJumpForceY = 25f;
     private bool isPressingJumpButton = false;
     private float currentGraceTime;
-    private float airTime = 0f;
+    public float airTime = 0f;
     private float jumpHoldTime = 0;
     private bool quickJump = true;
 
@@ -1059,7 +1059,7 @@ public class PlayerController : PhysicsObject
 
     public void RapidJump()
     {
-        if (!isOnGround/*isGrounded*/ && canJump && Input.GetButtonDown(controls.jump) && quickJump)
+        if (!isOnGround && canJump && Input.GetButtonDown(controls.jump) && quickJump)
         {
             StartCoroutine(QuickJumpTimer());
         }
@@ -1069,14 +1069,28 @@ public class PlayerController : PhysicsObject
     {
         if (inAir)
         {
-            airTime += Time.deltaTime;
+            if (velocity.y < 0)
+                airTime += Time.deltaTime;
 
             if (isGrounded)
             {
                 canWallSlide = true;
 
-                if (airTime > hardLandTime) // Light hard landing 
+                if (airTime >= heavyLandTime)// Heavy hard landing 
                 {
+                    print("HEAVY LANDING");
+                    pFeedback.LandingParticles("LandingParticleSystem-Heavy");
+                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
+                    pFeedback.HeavyLandShake();
+                    pAudio.PlayLandSound(false, true);
+
+                    animator.SetTrigger("land");
+                    StartCoroutine(LandingPause(GetAnimTime() + 0.5f));
+                    pHealth.TakeFallDamage();
+                }
+                else if (airTime >= hardLandTime && airTime < heavyLandTime) // Light hard landing 
+                {
+                    print("HARD LANDING");
                     pFeedback.LandingParticles("LandingParticleSystem-Heavy");
                     ripPP.CauseRipple(groundCheck, 12f, 0.8f);
                     pFeedback.HardLandShake();
@@ -1084,16 +1098,6 @@ public class PlayerController : PhysicsObject
 
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime()));
-                }
-                else if (airTime > heavyLandTime) // Heavy hard landing 
-                {
-                    pFeedback.LandingParticles("LandingParticleSystem-Heavy");
-                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
-                    pFeedback.HardLandShake();
-                    pAudio.PlayLandSound(false, true);
-
-                    animator.SetTrigger("land");
-                    StartCoroutine(LandingPause(GetAnimTime() + 0.5f));
                 }
                 else // normal landing
                 {

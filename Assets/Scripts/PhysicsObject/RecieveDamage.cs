@@ -62,15 +62,15 @@ public class RecieveDamage : MonoBehaviour
         {
             if (_hitDirection == Vector2.right) // knock to the left
             {
-                pHealthSystem.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime);
+                pHealthSystem.TakeDamage(_hitDirection, _dmg, _knockback, _knockUp, _stunTime, false);
             }
             else if (_hitDirection == Vector2.left) // knock to the right 
             {
-                pHealthSystem.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                pHealthSystem.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime, false);
             }
             else if (_hitDirection == Vector2.zero) // below or above
             {
-                pHealthSystem.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime);
+                pHealthSystem.TakeDamage(_hitDirection, _dmg, -_knockback, _knockUp, _stunTime, false);
             }
         }
         else if (bO != null)
