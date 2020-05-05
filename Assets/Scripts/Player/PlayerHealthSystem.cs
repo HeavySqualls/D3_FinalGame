@@ -5,7 +5,6 @@ using UnityEngine.UI;
 public class PlayerHealthSystem : MonoBehaviour
 {
     [Header("Health Variables:")]
-    [SerializeField] float playerHealthStart;
     [SerializeField] float damageCooldownTime = 1f;
     public bool isHurt = false;
     bool isDamageCooldown = false;
@@ -36,11 +35,11 @@ public class PlayerHealthSystem : MonoBehaviour
 
     [Space]
     [Header("References:")]
+    WindDial windDial;
     PlayerController pCon;
     PlayerFeedback pFeedback;
     PlayerAudioController pAudio;
     Animator animator;
-    Image windDial;
 
     private void OnEnable()
     {
@@ -52,16 +51,13 @@ public class PlayerHealthSystem : MonoBehaviour
         SpawnManager.onResetLevelObjects -= RespawnPlayer;
     }
 
-    private void Awake()
-    {
-        Toolbox.GetInstance().GetPlayerManager().SetPlayerHealthSystem(this);
-    }
-
     void Start()
     {
         pCon = GetComponent<PlayerController>();
         pAudio = GetComponent<PlayerAudioController>();
         pFeedback = GetComponent<PlayerFeedback>();
+        windDial = Toolbox.GetInstance().GetPlayerManager().GetWindDial();
+
         animator = GetComponent<Animator>();
 
         currentPhase = hurtPhase0;
@@ -69,9 +65,9 @@ public class PlayerHealthSystem : MonoBehaviour
         flashCoroutine = IInjuredFlashRed();
     }
 
-    public void AssignWindDialSprite(Image _windDial)
+    private void Update()
     {
-        windDial = _windDial;
+        windDial.isHurt = isHurt;
     }
 
     // ---- HANDLE DAMAGE ---- //
@@ -156,7 +152,7 @@ public class PlayerHealthSystem : MonoBehaviour
 
         StopCoroutine("IInjuredFlashRed");
 
-        windDial.color = Color.white;
+        windDial.SetNodesBackToIdle();
         SpawnManager.PlayerWasKilled();
     }
 
@@ -181,57 +177,67 @@ public class PlayerHealthSystem : MonoBehaviour
     {
         print("Flash");
         isHurt = true;
-
-        for (float i = 0; i < flashDuration; i += currentFlashDelay)
-        {
-            if (windDial.color == Color.white)
-            {
-                windDial.color = Color.red;
-            }
-            else if (windDial.color == Color.red)
-            {
-                windDial.color = Color.white;
-            }
-
-            yield return new WaitForSeconds(currentFlashDelay);
-        }
+        windDial.isHurt = isHurt;
 
         if (currentPhase == hurtPhase3)
         {
-            print("Phase 3 to 2");
-            currentPhase = hurtPhase2;
-            currentFlashDelay = phase2FlashDelay;
+            print("Hurt Phase 3");
+            currentFlashDelay = phase3FlashDelay;
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                if (windDial.color == Color.white)
+                foreach (Image node in windDial.healthNodes)
                 {
-                    windDial.color = Color.red;
-                }
-                else if (windDial.color == Color.red)
-                {
-                    windDial.color = Color.white;
+                    if (node.color == windDial.idleColor)
+                        node.color = windDial.flashColor;
+                    else if (node.color == windDial.flashColor)
+                        node.color = windDial.idleColor;
                 }
 
                 yield return new WaitForSeconds(currentFlashDelay);
             }
-        }
 
+            windDial.SetNodesBackToIdle();
+            currentPhase = hurtPhase2;
+        }
+        
         if (currentPhase == hurtPhase2)
         {
-            print("Phase 2 to 1");
+            print("Hurt Phase 2");
+
+            currentFlashDelay = phase2FlashDelay;
+
+            for (float i = 0; i < flashDuration; i += currentFlashDelay)
+            {
+                for (int node = 0; node < windDial.healthNodes.Length -1; node++)
+                {
+                    if (windDial.healthNodes[node].color == windDial.idleColor)
+                        windDial.healthNodes[node].color = windDial.flashColor;
+                    else if (windDial.healthNodes[node].color == windDial.flashColor)
+                        windDial.healthNodes[node].color = windDial.idleColor;
+                }
+
+                yield return new WaitForSeconds(currentFlashDelay);
+            }
+
+            windDial.SetNodesBackToIdle();
             currentPhase = hurtPhase1;
+        }
+        
+        if (currentPhase == hurtPhase1)
+        {
+            print("Phase 1");
+
             currentFlashDelay = phase1FlashDelay;
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                if (windDial.color == Color.white)
+                for (int node = 0; node < windDial.healthNodes.Length - 2; node++)
                 {
-                    windDial.color = Color.red;
-                }
-                else if (windDial.color == Color.red)
-                {
-                    windDial.color = Color.white;
+                    if (windDial.healthNodes[node].color == windDial.idleColor)
+                        windDial.healthNodes[node].color = windDial.flashColor;
+                    else if (windDial.healthNodes[node].color == windDial.flashColor)
+                        windDial.healthNodes[node].color = windDial.idleColor;
                 }
 
                 yield return new WaitForSeconds(currentFlashDelay);
@@ -240,9 +246,75 @@ public class PlayerHealthSystem : MonoBehaviour
 
         currentPhase = 0;
 
-        windDial.color = Color.white;
+        windDial.SetNodesBackToIdle();
 
         isHurt = false;
         yield break;
     }
 }
+
+//print("Flash");
+//isHurt = true;
+
+//        for (float i = 0; i<flashDuration; i += currentFlashDelay)
+//        {
+//            if (healthNode1.color == Color.white)
+//            {
+//                healthNode1.color = Color.red;
+//            }
+//            else if (healthNode1.color == Color.red)
+//            {
+//                healthNode1.color = Color.white;
+//            }
+
+//            yield return new WaitForSeconds(currentFlashDelay);
+//        }
+
+//        if (currentPhase == hurtPhase3)
+//        {
+//            print("Phase 3 to 2");
+//currentPhase = hurtPhase2;
+//            currentFlashDelay = phase2FlashDelay;
+
+//            for (float i = 0; i<flashDuration; i += currentFlashDelay)
+//            {
+//                if (healthNode1.color == Color.white)
+//                {
+//                    healthNode1.color = Color.red;
+//                }
+//                else if (healthNode1.color == Color.red)
+//                {
+//                    healthNode1.color = Color.white;
+//                }
+
+//                yield return new WaitForSeconds(currentFlashDelay);
+//            }
+//        }
+
+//        if (currentPhase == hurtPhase2)
+//        {
+//            print("Phase 2 to 1");
+//currentPhase = hurtPhase1;
+//            currentFlashDelay = phase1FlashDelay;
+
+//            for (float i = 0; i<flashDuration; i += currentFlashDelay)
+//            {
+//                if (healthNode1.color == Color.white)
+//                {
+//                    healthNode1.color = Color.red;
+//                }
+//                else if (healthNode1.color == Color.red)
+//                {
+//                    healthNode1.color = Color.white;
+//                }
+
+//                yield return new WaitForSeconds(currentFlashDelay);
+//            }
+//        }
+
+//        currentPhase = 0;
+
+//        healthNode1.color = Color.white;
+
+//        isHurt = false;
+//        yield break;

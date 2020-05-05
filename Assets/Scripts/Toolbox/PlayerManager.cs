@@ -10,6 +10,7 @@ public class PlayerManager : MonoBehaviour
     PlayerController pCon;
     PlayerFeedback pFeedback;
     PlayerHealthSystem pHealth;
+    WindDial pWindDial;
     AirTankController airTankCon;
 
     public List<sScrapItem> inventoryItems = new List<sScrapItem>();
@@ -30,16 +31,29 @@ public class PlayerManager : MonoBehaviour
     }
 
 
-    // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
+    //// <<--------------------------------------------- SET UP PLAYER HEALTH SYSTEM ------------------------------------------- >> //
 
-    public void SetPlayerHealthSystem(PlayerHealthSystem _pHealth)
+    //public void SetPlayerHealth(WindDial _windDial)
+    //{
+    //    pWindDial = _windDial;
+    //}
+
+    //public WindDial GetWindDial()
+    //{
+    //    return pWindDial;
+    //}
+
+
+    // <<--------------------------------------------- SET UP WIND DIAL ------------------------------------------- >> //
+
+    public void SetWindDial(WindDial _windDial)
     {
-        pHealth = _pHealth;
+        pWindDial = _windDial;
     }
 
-    public PlayerHealthSystem GetPlayerHealthSystem()
+    public WindDial GetWindDial()
     {
-        return pHealth;
+        return pWindDial;
     }
 
     // <<--------------------------------------------- SET UP PLAYER CONTROLLER ------------------------------------------- >> //
