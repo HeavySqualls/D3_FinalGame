@@ -41,7 +41,7 @@ public class RecieveDamage : MonoBehaviour
 
     public void GetHit(Vector2 _hitDirection, float _dmg, float _knockback, float _knockUp, float _stunTime)
     {    
-        print(gameObject.name + " hit!");
+        //print(gameObject.name + " hit!");
 
         if (eHandleInteract != null)
         {

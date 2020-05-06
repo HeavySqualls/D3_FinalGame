@@ -1,9 +1,12 @@
 ﻿using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 public class PlayerHealthSystem : MonoBehaviour
 {
+    Tween fadeTween;
+
     [Header("Health Variables:")]
     [SerializeField] float damageCooldownTime = 1f;
     public bool isHurt = false;
@@ -17,11 +20,20 @@ public class PlayerHealthSystem : MonoBehaviour
     [SerializeField] float phase1FlashDelay = 1f;
     [SerializeField] float phase2FlashDelay = 0.5f;
     [SerializeField] float phase3FlashDelay = 0.35f;
-    private IEnumerator flashCoroutine;
+    private IEnumerator healthNodeFlashRoutine;
+
+    [SerializeField] Image injuredFlashImage;
+    [SerializeField] float injured_1Alpha = 0.35f;
+    [SerializeField] float injured_2Alpha = 0.65f;
+    [SerializeField] float injured_3Alpha = 1f;
+    private float currentAlphaTarget;
+    private float currentDuration;
+    private IEnumerator injuredFlashRoutine;
 
     [Space]
     [Header("Injury Phases:")]
     [SerializeField] int currentPhase;
+    [SerializeField] Color idleColor;
     int hurtPhase0 = 0;
     int hurtPhase1 = 1;
     int hurtPhase2 = 2;
@@ -57,17 +69,43 @@ public class PlayerHealthSystem : MonoBehaviour
         pAudio = GetComponent<PlayerAudioController>();
         pFeedback = GetComponent<PlayerFeedback>();
         windDial = Toolbox.GetInstance().GetPlayerManager().GetWindDial();
-
         animator = GetComponent<Animator>();
 
         currentPhase = hurtPhase0;
-
-        flashCoroutine = IInjuredFlashRed();
+        healthNodeFlashRoutine = IInjuredFlashRed();
     }
+
+    private bool isFlashing = false;
 
     private void Update()
     {
         windDial.isHurt = isHurt;
+
+        //if (isHurt && !isFlashing)
+        //{
+        //    if (injuredFlashImage.color.a == 0)
+        //    {
+        //        if (injuredFlashRoutine != null)
+        //        {
+        //            StopCoroutine(injuredFlashRoutine);
+        //            injuredFlashRoutine = null;
+        //        }
+
+        //        injuredFlashRoutine = FadeImage(injuredFlashImage, currentAlphaTarget, 1f);
+        //        StartCoroutine(injuredFlashRoutine);
+        //    }
+        //    else if (injuredFlashImage.color.a == currentAlphaTarget)
+        //    {
+        //        if (injuredFlashRoutine != null)
+        //        {
+        //            StopCoroutine(injuredFlashRoutine);
+        //            injuredFlashRoutine = null;
+        //        }
+
+        //        injuredFlashRoutine = FadeImage(injuredFlashImage, 0, 1f);
+        //        StartCoroutine(injuredFlashRoutine);
+        //    }
+        //}
     }
 
     // ---- HANDLE DAMAGE ---- //
@@ -144,7 +182,6 @@ public class PlayerHealthSystem : MonoBehaviour
 
     public void KillPlayer()
     {
-        print("player killed");
         isDead = true;
         pAudio.PlayDeathSound();
         pCon.animator.SetBool("isDead", isDead);
@@ -163,7 +200,6 @@ public class PlayerHealthSystem : MonoBehaviour
 
         if (spawnZone != null)
         {
-            print("spawn player");
             spawnZone.RespawnObject(gameObject);
         }
         else
@@ -173,9 +209,85 @@ public class PlayerHealthSystem : MonoBehaviour
         currentPhase = hurtPhase0;
     }
 
+    private void CheckAndTriggerFadeLoop()
+    {
+        if (isHurt)
+        {
+            if (fadeTween != null)
+            {
+                fadeTween.Kill();
+                fadeTween = null;
+            }
+            FadeInImage(currentAlphaTarget, currentDuration);
+        }
+    }
+
+    private void FadeOutImage(float target, float duration)
+    {
+        fadeTween = injuredFlashImage.DOFade(0, duration).OnComplete(CheckAndTriggerFadeLoop);
+    }
+
+    private void FadeInImage(float target, float duration)
+    {
+        fadeTween = injuredFlashImage.DOFade(target, duration).OnComplete(() => FadeOutImage(target, duration));
+    }
+
+    //IEnumerator FadeImage(Image _image, float target, float duration)
+    //{
+        //print("start flashing");
+        //isFlashing = true;
+
+        //float totalTime = 0;
+        //bool isIncreasing;
+
+        //if (_image.color.a == target)
+        //    isIncreasing = true;
+        //else
+        //    isIncreasing = false;
+
+        //while (isFlashing)
+        //{
+        //    float totalChange = target - _image.color.a;
+        //    float changePerSecond = Mathf.Abs(totalChange) / duration;
+
+        //    if (isIncreasing)
+        //    {
+        //        _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, Mathf.Lerp(0f, target, changePerSecond));
+        //    }
+        //    else if (!isIncreasing)
+        //    {
+        //        _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, Mathf.Lerp(target, 0f, changePerSecond));
+        //    }
+
+        //    yield return null;
+
+        //    totalTime += Time.deltaTime;
+        //}
+
+        //_image.color = new Color(_image.color.r, _image.color.g, _image.color.b, target);
+
+        //isFlashing = false;
+    //}
+
+    private void Flash(float _flashDelay, int _arraySubtractInt, float _vignetteAlpha)
+    {
+        for (int node = 0; node < windDial.healthNodes.Length - _arraySubtractInt; node++)
+        {
+            // Change the health node material 
+            if (windDial.healthNodes[node].material == windDial.idleMat)
+            {
+                windDial.healthNodes[node].material = windDial.flashMat;
+            }
+            else if (windDial.healthNodes[node].material == windDial.flashMat)
+            {
+                windDial.healthNodes[node].material = windDial.idleMat;
+            }
+        }
+    }
+
     public IEnumerator IInjuredFlashRed()
     {
-        print("Flash");
+        isFlashing = false;
         isHurt = true;
         windDial.isHurt = isHurt;
 
@@ -183,19 +295,17 @@ public class PlayerHealthSystem : MonoBehaviour
         {
             print("Hurt Phase 3");
             currentFlashDelay = phase3FlashDelay;
+            currentAlphaTarget = injured_3Alpha;
+            currentDuration = 0.6f;
+            CheckAndTriggerFadeLoop();
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                foreach (Image node in windDial.healthNodes)
-                {
-                    if (node.color == windDial.idleColor)
-                        node.color = windDial.flashColor;
-                    else if (node.color == windDial.flashColor)
-                        node.color = windDial.idleColor;
-                }
-
+                Flash(currentFlashDelay, 0, injured_3Alpha);
                 yield return new WaitForSeconds(currentFlashDelay);
-            }
+                //FadeInImage(injured_3Alpha, 0.7f);
+                isFlashing = false;
+            }   
 
             windDial.SetNodesBackToIdle();
             currentPhase = hurtPhase2;
@@ -206,18 +316,16 @@ public class PlayerHealthSystem : MonoBehaviour
             print("Hurt Phase 2");
 
             currentFlashDelay = phase2FlashDelay;
+            currentAlphaTarget = injured_2Alpha;
+            currentDuration = 0.7f;
+            CheckAndTriggerFadeLoop();
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                for (int node = 0; node < windDial.healthNodes.Length -1; node++)
-                {
-                    if (windDial.healthNodes[node].color == windDial.idleColor)
-                        windDial.healthNodes[node].color = windDial.flashColor;
-                    else if (windDial.healthNodes[node].color == windDial.flashColor)
-                        windDial.healthNodes[node].color = windDial.idleColor;
-                }
-
+                Flash(currentFlashDelay, 1, injured_2Alpha);
                 yield return new WaitForSeconds(currentFlashDelay);
+
+                isFlashing = false;
             }
 
             windDial.SetNodesBackToIdle();
@@ -229,18 +337,16 @@ public class PlayerHealthSystem : MonoBehaviour
             print("Phase 1");
 
             currentFlashDelay = phase1FlashDelay;
+            currentAlphaTarget = injured_1Alpha;
+            currentDuration = 0.8f;
+            CheckAndTriggerFadeLoop();
 
             for (float i = 0; i < flashDuration; i += currentFlashDelay)
             {
-                for (int node = 0; node < windDial.healthNodes.Length - 2; node++)
-                {
-                    if (windDial.healthNodes[node].color == windDial.idleColor)
-                        windDial.healthNodes[node].color = windDial.flashColor;
-                    else if (windDial.healthNodes[node].color == windDial.flashColor)
-                        windDial.healthNodes[node].color = windDial.idleColor;
-                }
-
+                Flash(currentFlashDelay, 2, injured_1Alpha);
                 yield return new WaitForSeconds(currentFlashDelay);
+
+                isFlashing = false;
             }
         }
 
@@ -252,69 +358,3 @@ public class PlayerHealthSystem : MonoBehaviour
         yield break;
     }
 }
-
-//print("Flash");
-//isHurt = true;
-
-//        for (float i = 0; i<flashDuration; i += currentFlashDelay)
-//        {
-//            if (healthNode1.color == Color.white)
-//            {
-//                healthNode1.color = Color.red;
-//            }
-//            else if (healthNode1.color == Color.red)
-//            {
-//                healthNode1.color = Color.white;
-//            }
-
-//            yield return new WaitForSeconds(currentFlashDelay);
-//        }
-
-//        if (currentPhase == hurtPhase3)
-//        {
-//            print("Phase 3 to 2");
-//currentPhase = hurtPhase2;
-//            currentFlashDelay = phase2FlashDelay;
-
-//            for (float i = 0; i<flashDuration; i += currentFlashDelay)
-//            {
-//                if (healthNode1.color == Color.white)
-//                {
-//                    healthNode1.color = Color.red;
-//                }
-//                else if (healthNode1.color == Color.red)
-//                {
-//                    healthNode1.color = Color.white;
-//                }
-
-//                yield return new WaitForSeconds(currentFlashDelay);
-//            }
-//        }
-
-//        if (currentPhase == hurtPhase2)
-//        {
-//            print("Phase 2 to 1");
-//currentPhase = hurtPhase1;
-//            currentFlashDelay = phase1FlashDelay;
-
-//            for (float i = 0; i<flashDuration; i += currentFlashDelay)
-//            {
-//                if (healthNode1.color == Color.white)
-//                {
-//                    healthNode1.color = Color.red;
-//                }
-//                else if (healthNode1.color == Color.red)
-//                {
-//                    healthNode1.color = Color.white;
-//                }
-
-//                yield return new WaitForSeconds(currentFlashDelay);
-//            }
-//        }
-
-//        currentPhase = 0;
-
-//        healthNode1.color = Color.white;
-
-//        isHurt = false;
-//        yield break;

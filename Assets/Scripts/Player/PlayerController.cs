@@ -255,7 +255,7 @@ public class PlayerController : PhysicsObject
 
     public IEnumerator PlayerKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
     {
-        print(gameObject.name + " was hit!");
+        //print(gameObject.name + " was hit!");
 
         isHit = true;
         DisablePlayerController();
@@ -537,7 +537,7 @@ public class PlayerController : PhysicsObject
 
             if (flipPlayerSprite)
             {
-                print("flip");
+                //print("flip");
                 ChangeDirection();
             }
         }
@@ -918,7 +918,7 @@ public class PlayerController : PhysicsObject
 
             if (jumpHoldTime > jumpHoldTimeMax)
             {
-                print("flip jump");
+                //print("flip jump");
 
                 animator.SetTrigger("jumpingFlip");
                 isPressingJumpButton = false;
@@ -1147,7 +1147,7 @@ public class PlayerController : PhysicsObject
 
     public void EnablePlayerController()
     {
-        print("Player controller is enabled");
+        //print("Player controller is enabled");
         //windAffectMovement = true;
         isDisabled = false;
         canFlipSprite = true;

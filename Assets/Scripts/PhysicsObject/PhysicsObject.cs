@@ -32,6 +32,7 @@ public class PhysicsObject : MonoBehaviour
     public float windPwr;
     protected bool isFromLeft;
     public bool windAffectMovement;
+    public bool inBoras;
     public LayerMask layerMask;
 
     protected virtual void Start()
@@ -51,12 +52,13 @@ public class PhysicsObject : MonoBehaviour
 
     }
 
-    public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource, bool _windAffectMovement)
+    public void WindZoneStats(Vector2 _windDir, float _windPwr, bool _directionOfSource, bool _windAffectMovement, bool _isBoras)
     {
         windDir = _windDir;
         windPwr = _windPwr;
         isFromLeft = _directionOfSource;
         windAffectMovement = _windAffectMovement;
+        inBoras = _isBoras;
     }
 
     protected virtual void ComputeVelocity()

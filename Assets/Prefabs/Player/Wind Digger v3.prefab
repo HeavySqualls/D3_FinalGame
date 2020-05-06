@@ -5022,7 +5022,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b949dadd950d944cbae01e2d625702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHealthStart: 0
   damageCooldownTime: 1
   isHurt: 0
   flashDuration: 5
@@ -5030,7 +5029,12 @@ MonoBehaviour:
   phase1FlashDelay: 0.5
   phase2FlashDelay: 0.35
   phase3FlashDelay: 0.15
+  injuredFlashImage: {fileID: 0}
+  injured_1Alpha: 0.1
+  injured_2Alpha: 0.4
+  injured_3Alpha: 1
   currentPhase: 0
+  idleColor: {r: 1, g: 1, b: 1, a: 1}
   spawnZone: {fileID: 0}
   respawnTime: 3
   isDead: 0
@@ -5102,12 +5106,13 @@ MonoBehaviour:
   windDir: {x: 0, y: 0}
   windPwr: 0
   windAffectMovement: 0
+  inBoras: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 4294889471
   move: {x: 0, y: 0}
   isDisabled: 0
-  isController: 1
+  isController: 0
   accelSpeedNormal: 15
   accelSpeedMaxSpeed: 6
   accelSpeedAir: 6

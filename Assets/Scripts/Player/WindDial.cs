@@ -9,12 +9,14 @@ public class WindDial : MonoBehaviour
     [SerializeField] Image magBootIcon;
     [SerializeField] Image windMeterFillBar;
     [SerializeField] GameObject windDial;
+    [SerializeField] Image windTypeSymbol;
+    [SerializeField] Sprite borasIcon;
 
     public Image[] healthNodes;
     public bool isHurt;
 
-    public Color idleColor;
-    public Color flashColor;
+    public Material idleMat;
+    public Material flashMat;
 
     [SerializeField] float timeSinceInWindZone = 0;
     bool wasInWindZone = false;
@@ -33,7 +35,6 @@ public class WindDial : MonoBehaviour
     [SerializeField] float hideWindDialTime = 5f;
 
     PlayerController pCon;
-    //PlayerHealthSystem pHealth;
     AirTankController airCon;
     Animator animator;
 
@@ -49,6 +50,7 @@ public class WindDial : MonoBehaviour
 
         animator = GetComponentInChildren<Animator>();
 
+        windTypeSymbol.enabled = false;
         windDial.SetActive(false);
         SetNodesBackToIdle();
     }
@@ -69,7 +71,7 @@ public class WindDial : MonoBehaviour
     {
         foreach (Image node in healthNodes)
         {
-            node.color = idleColor;
+            node.material = idleMat;
         }
     }
 
@@ -180,7 +182,14 @@ public class WindDial : MonoBehaviour
 
         if (inWindZone)
         {
+            // Enable the direction arrow, then set the direction the arrow will be facing
             windDirectionArrow.enabled = true;
+
+            if (pCon.inBoras)
+            {
+                windTypeSymbol.enabled = true;
+                windTypeSymbol.sprite = borasIcon;
+            }
 
             if (!setDirection)
             {
@@ -192,6 +201,7 @@ public class WindDial : MonoBehaviour
                 setDirection = true;
             }
 
+            // Check the strength of the wind, and increase the UI number until it reaches the desired target number
             if (pCon.windPwr == 0.7f)
                 strengthTarget = 30f;
             else if (pCon.windPwr == 0.6f)
@@ -216,6 +226,7 @@ public class WindDial : MonoBehaviour
         }
         else
         {
+            // If we have left the wind zone, decrease the UI number until it reaches zero, then hide the wind dial
             if (currentStrength > 0)
             {
                 currentStrength -= 0.5f;
@@ -223,6 +234,11 @@ public class WindDial : MonoBehaviour
             }
             else
             {
+                if (windTypeSymbol.enabled)
+                {
+                    windTypeSymbol.enabled = false;
+                }
+
                 windDirectionArrow.enabled = false;
                 windStrengthText.text = "00";
                 setDirection = false;
