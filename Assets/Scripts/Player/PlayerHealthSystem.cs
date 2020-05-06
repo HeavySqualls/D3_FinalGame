@@ -271,16 +271,16 @@ public class PlayerHealthSystem : MonoBehaviour
 
     private void Flash(float _flashDelay, int _arraySubtractInt, float _vignetteAlpha)
     {
-        for (int node = 0; node < windDial.healthNodes.Length - _arraySubtractInt; node++)
+        for (int node = 0; node < windDial.healthNodes_lit.Length - _arraySubtractInt; node++)
         {
             // Change the health node material 
-            if (windDial.healthNodes[node].material == windDial.idleMat)
+            if (!windDial.healthNodes_lit[node].enabled)
             {
-                windDial.healthNodes[node].material = windDial.flashMat;
+                windDial.healthNodes_lit[node].enabled = true;
             }
-            else if (windDial.healthNodes[node].material == windDial.flashMat)
+            else if (windDial.healthNodes_lit[node].enabled)
             {
-                windDial.healthNodes[node].material = windDial.idleMat;
+                windDial.healthNodes_lit[node].enabled = false;
             }
         }
     }

@@ -12,7 +12,7 @@ public class WindDial : MonoBehaviour
     [SerializeField] Image windTypeSymbol;
     [SerializeField] Sprite borasIcon;
 
-    public Image[] healthNodes;
+    public Image[] healthNodes_lit;
     public bool isHurt;
 
     public Material idleMat;
@@ -69,9 +69,9 @@ public class WindDial : MonoBehaviour
 
     public void SetNodesBackToIdle()
     {
-        foreach (Image node in healthNodes)
+        foreach (Image node in healthNodes_lit)
         {
-            node.material = idleMat;
+            node.enabled = false;
         }
     }
 
