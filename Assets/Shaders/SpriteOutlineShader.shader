@@ -33,6 +33,7 @@ Shader "DreamGrenade/SpriteOutlineShader"
 			Cull Off
 			Lighting Off
 			ZWrite Off
+			ZTest Always
 			Blend One OneMinusSrcAlpha
 
 			Pass

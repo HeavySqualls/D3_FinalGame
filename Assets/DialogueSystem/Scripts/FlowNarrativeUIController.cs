@@ -8,13 +8,19 @@ public class FlowNarrativeUIController : MonoBehaviour
     public GameObject speechBubble;
     public TextMeshProUGUI dialogue;
     //public Text dialogue;
-    public GameObject speechTarget;
+    //public GameObject speechTarget;
 
     [Header("Speech Bubble Offset:")]
     [Tooltip("Desired offset position for the speech bubble to be positioned from center of the unit talking.")]
     [SerializeField] Vector3 positionOffset;
 
     // Set the dialogue text based on what is assigned
+
+    private void Start()
+    {
+        speechBubble.SetActive(false);
+    }
+
     public string Dialogue
     {
         get { return dialogue.text; }
@@ -23,16 +29,16 @@ public class FlowNarrativeUIController : MonoBehaviour
 
     private void Update()
     {
-        if (speechTarget != null)
-        {
-            gameObject.transform.position = speechTarget.transform.position + positionOffset;
-        }
+        //if (speechTarget != null)
+        //{
+        //    gameObject.transform.position = speechTarget.transform.position + positionOffset;
+        //}
     }
 
     public void ShowFNSpeechBubble(GameObject _target)
     {
         speechBubble.SetActive(true);
-        speechTarget = _target;
+        //speechTarget = _target;
     }
 
     public void ShowSpeechBubble()
@@ -47,6 +53,6 @@ public class FlowNarrativeUIController : MonoBehaviour
 
     public void RemoveTargetRef()
     {
-        speechTarget = null;
+        //speechTarget = null;
     }
 }
