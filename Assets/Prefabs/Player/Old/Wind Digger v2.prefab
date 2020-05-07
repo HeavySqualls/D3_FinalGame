@@ -87,14 +87,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0629db508e95a174fb2c31575394efba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windDirectionText: {fileID: 532421871}
-  windStrengthText: {fileID: 1032915556}
+  windDirectionArrow: {fileID: 0}
+  windStrengthText: {fileID: 0}
   magBootIcon: {fileID: 455322127}
   windMeterFillBar: {fileID: 2090159037}
   windDial: {fileID: 1323007295}
+  windTypeSymbol: {fileID: 0}
+  borasIcon: {fileID: 0}
+  healthNodes_lit: []
+  isHurt: 0
+  idleMat: {fileID: 0}
+  flashMat: {fileID: 0}
   timeSinceInWindZone: 0
-  timeSinceLastMeterUse: 0
+  timeSinceWasAttacked: 0
   timeSinceMagBootsUsed: 0
+  timeSinceLastMeterUse: 0
   hideWindDialTime: 5
 --- !u!1 &455322125
 GameObject:
@@ -862,6 +869,10 @@ MonoBehaviour:
   itemNameText: {fileID: 8207287641034192011}
   itemSlotText: {fileID: 8207287641711668072}
   itemStatsText: {fileID: 8207287640831221516}
+  scrapItemNameText: {fileID: 0}
+  scrapItemDescText: {fileID: 0}
+  scrapItemValueText: {fileID: 0}
+  scrapItemIcon: {fileID: 0}
 --- !u!114 &8207287640601089331
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1668,11 +1679,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lootBoxPanel: {fileID: 0}
-  inventory: {fileID: 8207287642455223837}
-  equipmentPanel: {fileID: 8207287641275511296}
-  statsPanel: {fileID: 8207287642432848110}
+  inventory: {fileID: 0}
   itemTooltip: {fileID: 8207287640601089487}
-  statTooltip: {fileID: 8207287641261094093}
+  openSound: {fileID: 0}
+  openSoundVolume: 0.15
 --- !u!1 &8207287641182189057
 GameObject:
   m_ObjectHideFlags: 0
@@ -1989,6 +1999,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287641330673306}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8207287641311484094
 GameObject:
   m_ObjectHideFlags: 0
@@ -2614,6 +2629,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287641082471311}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8207287641526008347
 GameObject:
   m_ObjectHideFlags: 0
@@ -3091,6 +3111,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287641579517805}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8207287641711668070
 GameObject:
   m_ObjectHideFlags: 0
@@ -3402,6 +3427,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287642429019173}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 1
 --- !u!1 &8207287641814798536
 GameObject:
@@ -3491,6 +3521,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287640589455280}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8207287641872256767
 GameObject:
   m_ObjectHideFlags: 0
@@ -3579,6 +3614,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287641758943470}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 3
 --- !u!1 &8207287641917273426
 GameObject:
@@ -3874,6 +3914,8 @@ MonoBehaviour:
   statPanel: {fileID: 8207287642432848080}
   itemTooltip: {fileID: 8207287640601089332}
   draggableItem: {fileID: 8207287641917273428}
+  hoverSound: {fileID: 0}
+  hoverVolume: 0.3
 --- !u!1 &8207287642010731502
 GameObject:
   m_ObjectHideFlags: 0
@@ -4210,6 +4252,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287642429876582}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 2
 --- !u!1 &8207287642143814710
 GameObject:
@@ -4299,6 +4346,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287642255757919}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 0
 --- !u!1 &8207287642209211394
 GameObject:
@@ -4388,6 +4440,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287641577984813}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
   equipType: 4
 --- !u!1 &8207287642255757917
 GameObject:
@@ -4550,6 +4607,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287642291356173}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8207287642291356171
 GameObject:
   m_ObjectHideFlags: 0
@@ -5041,6 +5103,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9694cc33c32bddb4d9fa655c28c6f5f5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isAnimating: 0
   startingItems:
   - {fileID: 0}
   - {fileID: 11400000, guid: c95ae281f7703994e80a40988ef68643, type: 2}
@@ -5056,6 +5119,13 @@ MonoBehaviour:
   - {fileID: 8207287642460971464}
   - {fileID: 8207287642255993186}
   - {fileID: 8207287641303054263}
+  slotsPanel: {fileID: 0}
+  closeButton: {fileID: 0}
+  pickUpSound: {fileID: 0}
+  errorSound: {fileID: 0}
+  trashSound: {fileID: 0}
+  soundVolume: 0.15
+  displayDelay: 0.3
 --- !u!1 &8207287642460971462
 GameObject:
   m_ObjectHideFlags: 0
@@ -5144,6 +5214,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   slotImage: {fileID: 8207287640552034329}
+  slotBGImage: {fileID: 0}
+  slotEmptyColor: {r: 0, g: 0, b: 0, a: 0}
+  slotFullColor: {r: 0, g: 0, b: 0, a: 0}
+  selectedColor: {r: 0, g: 0, b: 0, a: 0}
+  previousColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!1 &8207287642649933931
 GameObject:
   m_ObjectHideFlags: 0
@@ -5450,7 +5525,6 @@ MonoBehaviour:
   shakeStrength: 0.25
   vibrato: 9
   randomness: 2
-  cam: {fileID: 0}
 --- !u!114 &8840246823808797432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5508,13 +5582,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b949dadd950d944cbae01e2d625702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHealthStart: 0
+  damageCooldownTime: 1
+  isHurt: 0
   flashDuration: 5
   currentFlashDelay: 0
   phase1FlashDelay: 0.5
   phase2FlashDelay: 0.35
   phase3FlashDelay: 0.15
+  injuredFlashImage: {fileID: 0}
+  injured_1Alpha: 0.35
+  injured_2Alpha: 0.65
+  injured_3Alpha: 1
   currentPhase: 0
+  idleColor: {r: 0, g: 0, b: 0, a: 0}
   spawnZone: {fileID: 0}
   respawnTime: 0
   isDead: 0
@@ -5586,10 +5666,12 @@ MonoBehaviour:
   windDir: {x: 0, y: 0}
   windPwr: 0
   windAffectMovement: 0
+  inBoras: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 0
   move: {x: 0, y: 0}
+  isDisabled: 0
   isController: 0
   accelSpeedNormal: 15
   accelSpeedMaxSpeed: 4.25
@@ -5601,6 +5683,7 @@ MonoBehaviour:
   isMovingInWind: 0
   maxSpeed: 3.75
   accessibleDirection: {x: 0, y: 0}
+  backToWind: 1
   inAir: 0
   canJump: 1
   jumpTakeoffSpeed: 26
@@ -5611,7 +5694,10 @@ MonoBehaviour:
   maxGraceTime: 0.12
   jumpHoldTimeMax: 0.37
   airDisableTimer: 0.1
+  landDelay: 0.5
   slidingSurfaceJumpForceY: 25
+  airTime: 0
+  isMagBootsEnabled: 1
   magBootsOn: 0
   onGravValue: 25
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
@@ -5651,7 +5737,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bceea798f89e454d9b9d6fa7675c5ec, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  xMove: 
+  xMoveKeys: 
+  xMoveController: 
   jump: 
   punch: 
   ability_1: 
