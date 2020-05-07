@@ -137,6 +137,7 @@ public class PlayerController : PhysicsObject
     private int breakableFloorsLayer = 17;
     private int slidingSurfaceLayer = 18;
     private int breakableObjectsLayer = 19;
+    private int rollingObjectsLayer = 15;
 
     void Awake()
     {
@@ -161,7 +162,7 @@ public class PlayerController : PhysicsObject
         pAudio = GetComponent<PlayerAudioController>();
         pHealth = GetComponent<PlayerHealthSystem>();
 
-        groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer));
+        groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer)) | ((1 << rollingObjectsLayer));
         wallLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << breakableObjectsLayer));
 
         //if (controls != null)

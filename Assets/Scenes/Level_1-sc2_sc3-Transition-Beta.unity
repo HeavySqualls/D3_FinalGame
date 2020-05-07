@@ -5334,17 +5334,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0629db508e95a174fb2c31575394efba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  windDirectionText: {fileID: 1277829018538392873}
-  windStrengthText: {fileID: 1277829019106519970}
+  windDirectionArrow: {fileID: 0}
+  windStrengthText: {fileID: 0}
   magBootIcon: {fileID: 1277829018463570889}
   windMeterFillBar: {fileID: 1277829018015754875}
   windDial: {fileID: 1277829017181740281}
+  windTypeSymbol: {fileID: 0}
+  borasIcon: {fileID: 0}
+  healthNodes_lit: []
+  isHurt: 0
+  idleMat: {fileID: 0}
+  flashMat: {fileID: 0}
   timeSinceInWindZone: 0
   timeSinceWasAttacked: 0
   timeSinceMagBootsUsed: 0
   timeSinceLastMeterUse: 0
   hideWindDialTime: 5
-  windDialImage: {fileID: 0}
 --- !u!224 &1277829018256282636
 RectTransform:
   m_ObjectHideFlags: 0
@@ -6103,7 +6108,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speechBubble: {fileID: 1277829018290162915}
   dialogue: {fileID: 1277829017771538053}
-  speechTarget: {fileID: 0}
   positionOffset: {x: -2, y: 2.5, z: 0}
 --- !u!1 &1277829018726075109
 GameObject:
@@ -20783,7 +20787,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7b949dadd950d944cbae01e2d625702c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerHealthStart: 0
   damageCooldownTime: 0.25
   isHurt: 0
   flashDuration: 5
@@ -20791,7 +20794,12 @@ MonoBehaviour:
   phase1FlashDelay: 0.5
   phase2FlashDelay: 0.35
   phase3FlashDelay: 0.15
+  injuredFlashImage: {fileID: 0}
+  injured_1Alpha: 0.35
+  injured_2Alpha: 0.65
+  injured_3Alpha: 1
   currentPhase: 0
+  idleColor: {r: 0, g: 0, b: 0, a: 0}
   spawnZone: {fileID: 0}
   respawnTime: 3
   isDead: 0
@@ -20975,10 +20983,10 @@ RectTransform:
   m_Father: {fileID: 6943959195054544836}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 181, y: -90.399994}
+  m_SizeDelta: {x: 55, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &6943959193506007712
 GameObject:
@@ -21239,10 +21247,10 @@ RectTransform:
   m_Father: {fileID: 6943959195054544836}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 121, y: -90.399994}
+  m_SizeDelta: {x: 55, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6943959193550874920
 MonoBehaviour:
@@ -22323,10 +22331,10 @@ RectTransform:
   m_Father: {fileID: 6943959195054544836}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 121, y: -30.399994}
+  m_SizeDelta: {x: 55, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6943959193981105030
 CanvasRenderer:
@@ -22663,10 +22671,10 @@ RectTransform:
   m_Father: {fileID: 6943959195054544836}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 61, y: -30.399994}
+  m_SizeDelta: {x: 55, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6943959194185777164
 CanvasRenderer:
@@ -24695,10 +24703,10 @@ RectTransform:
   m_Father: {fileID: 6943959195054544836}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 181, y: -30.399994}
+  m_SizeDelta: {x: 55, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &6943959195243042417
 MonoBehaviour:
@@ -24953,7 +24961,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &6943959195311452784
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -25184,10 +25192,10 @@ RectTransform:
   m_Father: {fileID: 6943959195054544836}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 61, y: -90.399994}
+  m_SizeDelta: {x: 55, y: 55}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6943959195323940190
 CanvasRenderer:
@@ -25608,6 +25616,7 @@ MonoBehaviour:
   windDir: {x: 0, y: 0}
   windPwr: 0
   windAffectMovement: 0
+  inBoras: 0
   layerMask:
     serializedVersion: 2
     m_Bits: 4294889471
