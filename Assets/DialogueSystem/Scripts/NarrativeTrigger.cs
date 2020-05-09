@@ -7,15 +7,18 @@ public class NarrativeTrigger : MonoBehaviour
     [Tooltip("Drag in a Scriptable Object conversation.")]
     [SerializeField] sNarrative thisConversation;
 
-    //[Tooltip("Drag in any Timeline cutscenes that will be played during this narrative event.")]
-    //[SerializeField] PlayableDirector[] timeLines;
-
     [Tooltip("Does this trigger have a CinematicTriggerController attached to it? " +
         "(cinematic will only play at the end of the current narrative event)")]
     public bool hasCinematic = false;
+    [SerializeField] CinematicTriggerController cinCon;
+
+    [Tooltip("Is there a camera change that happens during this narrative event?" +  
+        "(CamerChangeTriggerController component required)")]
+    public bool isCameraChange = false;
+    [SerializeField] CameraChangeTriggerController camChangeTrigCon;
+
     [Tooltip("Will the music and scene background sound be turned down during the cutscene?")]
     public bool isDampenMusic = true;
-    [SerializeField] CinematicTriggerController cinCon;
 
     NarrativeController narrativeController;
     BoxCollider2D boxColl;
@@ -41,6 +44,14 @@ public class NarrativeTrigger : MonoBehaviour
 
     public void DisableTrigger()
     {
+        if (isCameraChange)
+        {
+            if (camChangeTrigCon != null)
+                camChangeTrigCon.DisableCamera();
+            else
+                Debug.LogError("Attach a CamerChangeTriggerController component");
+        }
+
         boxColl.enabled = false;
     }
 

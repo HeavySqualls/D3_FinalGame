@@ -23,4 +23,9 @@ public class CameraChangeTriggerController : MonoBehaviour
             cinematicCamera.SetActive(false);
         }
     }
+
+    public void DisableCamera()
+    {
+        cinematicCamera.SetActive(false);
+    }
 }
