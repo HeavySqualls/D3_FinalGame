@@ -164,16 +164,6 @@ public class PlayerController : PhysicsObject
 
         groundLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << slidingSurfaceLayer)) | ((1 << breakableObjectsLayer)) | ((1 << rollingObjectsLayer));
         wallLayerMask = ((1 << groundLayer)) | ((1 << breakableFloorsLayer)) | ((1 << breakableObjectsLayer));
-
-        //if (controls != null)
-        //{
-        //    if (isController)
-        //        controls.ControllerMovement();
-        //    else
-        //        controls.KeyboardMovement();
-        //}
-        //else
-        //    Debug.Log("Player does not have the controls component attached!");
     }
 
     float horizontalInput;
@@ -256,8 +246,6 @@ public class PlayerController : PhysicsObject
 
     public IEnumerator PlayerKnocked(Vector2 _hitDirection, float _knockBack, float _knockUp, float _stunTime)
     {
-        //print(gameObject.name + " was hit!");
-
         isHit = true;
         DisablePlayerController();
 
@@ -290,8 +278,6 @@ public class PlayerController : PhysicsObject
 
     protected override void ComputeVelocity()
     {
-        //targetVelocity = Vector2.zero;
-
         // Checks to determine what acceleration speed the player will have depending on the situation
         if (inAir) // if the player is in the air
         {
@@ -537,10 +523,7 @@ public class PlayerController : PhysicsObject
             bool flipPlayerSprite = (spriteRenderer.flipX ? (horizontalInput > 0f) : (horizontalInput < 0f));
 
             if (flipPlayerSprite)
-            {
-                //print("flip");
                 ChangeDirection();
-            }
         }
     }
 
@@ -702,11 +685,12 @@ public class PlayerController : PhysicsObject
         if (!magBootsOn)
         {
             canMove = false;
-            //isGrounded = true;
+
             if (!isGroundSliding)
             {
                 isTouchingWall = false;
                 isWallSliding = false;
+                isOnGround = true;
                 isGroundSliding = true;
             }
 
@@ -731,7 +715,7 @@ public class PlayerController : PhysicsObject
             }
 
             targetVelocity.x = move.x;
-            velocity.y = -15;
+            //velocity.y = -15;
         }
         else
         {

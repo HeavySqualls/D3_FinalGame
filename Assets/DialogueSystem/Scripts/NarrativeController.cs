@@ -77,7 +77,7 @@ public class NarrativeController : MonoBehaviour
     {
         // Check if the correct input was registered, if the narrative is not null, and if the tutorial panel is not open 
         // (to prevent the narrative from continuing at the same time as the tutorial panel is closed).
-        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && N != null && !tutorialController.isOpen)       
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight || Input.GetButtonDown(pCon.controls.jump)) && N != null && !tutorialController.isOpen)       
         {
             if (isTyping)
             {

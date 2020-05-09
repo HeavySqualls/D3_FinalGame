@@ -11,6 +11,7 @@ public class SpeakerUIController : MonoBehaviour
     public TextMeshProUGUI dialogue;
     public GameObject dialoguePanelGO;
     public GameObject portraitGO;
+    public GameObject continuePrompts;
 
     [Space]
     [Header("UI Input Buttons:")]
@@ -85,6 +86,7 @@ public class SpeakerUIController : MonoBehaviour
         purpleButton.SetActive(true);
         continueButton.SetActive(true);
         closeButton.SetActive(true);
+        continuePrompts.SetActive(true);
         nameText.enabled = true;
 
         isAnimating = false;
@@ -114,6 +116,7 @@ public class SpeakerUIController : MonoBehaviour
         purpleButton.SetActive(false);
         continueButton.SetActive(false);
         closeButton.SetActive(false);
+        continuePrompts.SetActive(false);
         nameText.enabled = false;
         dialogue.enabled = false;
     }

@@ -42,6 +42,8 @@ public class TutorialController : MonoBehaviour
     [SerializeField] GameObject purpleButton;
     [SerializeField] GameObject continueButton;
     [SerializeField] GameObject closeButton;
+    [SerializeField] GameObject continuePrompt;
+
 
     [Space]
     [Header("Audio:")]
@@ -67,12 +69,6 @@ public class TutorialController : MonoBehaviour
         pCon = Toolbox.GetInstance().GetPlayerManager().GetPlayerController();
         AM = Toolbox.GetInstance().GetAudioManager();
     }
-
-    //private void PlayAudio(AudioClip _clip, float _volume)
-    //{
-    //    audioSource.volume = _volume;
-    //    audioSource.PlayOneShot(_clip);
-    //}
 
     private void Update()
     {
@@ -113,6 +109,7 @@ public class TutorialController : MonoBehaviour
         purpleButton.SetActive(false);
         continueButton.SetActive(false);
         closeButton.SetActive(false);
+        continuePrompt.SetActive(false);
 
         animator.SetBool("isOpen", false);
         narCon.hasDisplayedTutorial = false;
@@ -130,6 +127,7 @@ public class TutorialController : MonoBehaviour
         purpleButton.SetActive(true);
         continueButton.SetActive(true);
         closeButton.SetActive(true);
+        continuePrompt.SetActive(true);
 
         open = true;
         isOpen = true;

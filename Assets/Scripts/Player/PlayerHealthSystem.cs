@@ -80,32 +80,6 @@ public class PlayerHealthSystem : MonoBehaviour
     private void Update()
     {
         windDial.isHurt = isHurt;
-
-        //if (isHurt && !isFlashing)
-        //{
-        //    if (injuredFlashImage.color.a == 0)
-        //    {
-        //        if (injuredFlashRoutine != null)
-        //        {
-        //            StopCoroutine(injuredFlashRoutine);
-        //            injuredFlashRoutine = null;
-        //        }
-
-        //        injuredFlashRoutine = FadeImage(injuredFlashImage, currentAlphaTarget, 1f);
-        //        StartCoroutine(injuredFlashRoutine);
-        //    }
-        //    else if (injuredFlashImage.color.a == currentAlphaTarget)
-        //    {
-        //        if (injuredFlashRoutine != null)
-        //        {
-        //            StopCoroutine(injuredFlashRoutine);
-        //            injuredFlashRoutine = null;
-        //        }
-
-        //        injuredFlashRoutine = FadeImage(injuredFlashImage, 0, 1f);
-        //        StartCoroutine(injuredFlashRoutine);
-        //    }
-        //}
     }
 
     // ---- HANDLE DAMAGE ---- //
@@ -232,43 +206,6 @@ public class PlayerHealthSystem : MonoBehaviour
         fadeTween = injuredFlashImage.DOFade(target, duration).OnComplete(() => FadeOutImage(target, duration));
     }
 
-    //IEnumerator FadeImage(Image _image, float target, float duration)
-    //{
-        //print("start flashing");
-        //isFlashing = true;
-
-        //float totalTime = 0;
-        //bool isIncreasing;
-
-        //if (_image.color.a == target)
-        //    isIncreasing = true;
-        //else
-        //    isIncreasing = false;
-
-        //while (isFlashing)
-        //{
-        //    float totalChange = target - _image.color.a;
-        //    float changePerSecond = Mathf.Abs(totalChange) / duration;
-
-        //    if (isIncreasing)
-        //    {
-        //        _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, Mathf.Lerp(0f, target, changePerSecond));
-        //    }
-        //    else if (!isIncreasing)
-        //    {
-        //        _image.color = new Color(_image.color.r, _image.color.g, _image.color.b, Mathf.Lerp(target, 0f, changePerSecond));
-        //    }
-
-        //    yield return null;
-
-        //    totalTime += Time.deltaTime;
-        //}
-
-        //_image.color = new Color(_image.color.r, _image.color.g, _image.color.b, target);
-
-        //isFlashing = false;
-    //}
-
     private void Flash(float _flashDelay, int _arraySubtractInt, float _vignetteAlpha)
     {
         for (int node = 0; node < windDial.healthNodes_lit.Length - _arraySubtractInt; node++)
@@ -303,7 +240,6 @@ public class PlayerHealthSystem : MonoBehaviour
             {
                 Flash(currentFlashDelay, 0, injured_3Alpha);
                 yield return new WaitForSeconds(currentFlashDelay);
-                //FadeInImage(injured_3Alpha, 0.7f);
                 isFlashing = false;
             }   
 
