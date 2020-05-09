@@ -219,7 +219,7 @@ public class WindDial : MonoBehaviour
 
             if (currentStrength < strengthTarget)
             {
-                currentStrength += 0.5f;
+                currentStrength += 1f;
             }
 
             windStrengthText.text = currentStrength.ToString("F0");
@@ -229,7 +229,7 @@ public class WindDial : MonoBehaviour
             // If we have left the wind zone, decrease the UI number until it reaches zero, then hide the wind dial
             if (currentStrength > 0)
             {
-                currentStrength -= 0.5f;
+                currentStrength -= 1f;
                 windStrengthText.text = currentStrength.ToString("F0");
             }
             else

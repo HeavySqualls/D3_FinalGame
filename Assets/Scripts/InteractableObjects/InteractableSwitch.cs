@@ -21,6 +21,10 @@ public class InteractableSwitch : MonoBehaviour
     [Header("Additional Objects this switch controls:")]
     [Tooltip("Assign any relative game objects you want to disable with this switch.")]
     [SerializeField] GameObject[] additionalGameObjects;
+    [Tooltip("Does this trigger have a CinematicTriggerController attached to it? " +
+    "(cinematic will only play at the end of the current narrative event)")]
+    public bool hasCinematic = false;
+    [SerializeField] CinematicTriggerController cinCon;
 
     [Space]
     [Header("Material References:")]
@@ -39,12 +43,14 @@ public class InteractableSwitch : MonoBehaviour
     AudioManager AM;
 
     bool isOpen;
+    CircleCollider2D trigger;
     PlayerHandleInteract pInteract;
     SpriteRenderer spriteRenderer;
     Animator animator;
 
     private void Start()
     {
+        trigger = GetComponent<CircleCollider2D>();
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
         spriteRenderer.material = normalMat;
@@ -82,6 +88,13 @@ public class InteractableSwitch : MonoBehaviour
                 AM.PlayConsistentOneShot(switchOpenSound, switchOpenVolume);
                 door.OpenCloseDoor();
                 isOpen = true;
+
+                if (hasCinematic && cinCon != null)
+                {
+                    cinCon.PlayCinematic();
+                }
+
+                trigger.enabled = false;
             }
             else
                 Debug.LogWarning("Door is currently in use... wait for movement to finish.");

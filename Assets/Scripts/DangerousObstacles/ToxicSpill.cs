@@ -44,7 +44,7 @@ public class ToxicSpill : Interact_Base
 
     IEnumerator EmissionPause()
     {
-        print("emission pause");
+        //print("emission pause");
         while (emmisionPause < maxEmmisionPause)
         {
             emmisionPause += Time.deltaTime;
