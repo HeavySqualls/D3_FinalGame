@@ -1,5 +1,35 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &749948762695654339
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8925966860779548923}
+  m_Layer: 12
+  m_Name: OnGroundCheckPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &8925966860779548923
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 749948762695654339}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.041, y: -1.3999996, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7036694795940340691}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &785325347745463307
 GameObject:
   m_ObjectHideFlags: 0
@@ -29,6 +59,36 @@ Transform:
   m_Children: []
   m_Father: {fileID: 7036694795940340691}
   m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1526826412291418417
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3444655823045614419}
+  m_Layer: 12
+  m_Name: HeelGroundCheckPos
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3444655823045614419
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1526826412291418417}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: -0.3999977, y: -1.1999998, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 7036694795940340691}
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1618530514877541750
 GameObject:
@@ -61,7 +121,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7036694795940340691}
-  m_RootOrder: 4
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1618530514877541754
 MonoBehaviour:
@@ -4813,7 +4873,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8563630165634237405}
   m_Layer: 12
-  m_Name: GroundCheckPos
+  m_Name: ToeGroundCheckPos
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4827,7 +4887,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3194496524370276631}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.09, y: -1.27, z: 0}
+  m_LocalPosition: {x: 0.5, y: -1.1999998, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7036694795940340691}
@@ -4883,6 +4943,8 @@ Transform:
   - {fileID: 8820056755052035560}
   - {fileID: 295720888722231046}
   - {fileID: 8563630165634237405}
+  - {fileID: 8925966860779548923}
+  - {fileID: 3444655823045614419}
   - {fileID: 8113414051494117404}
   - {fileID: 1618530514877541755}
   - {fileID: 497008577}
@@ -5130,7 +5192,7 @@ MonoBehaviour:
   hardLandTime: 0.7
   heavyLandTime: 1
   jumpDelayTime: 0.02
-  quickJumpDelay: 0.02
+  quickJumpDelay: 0.08
   maxGraceTime: 0.12
   jumpHoldTimeMax: 0.37
   airDisableTimer: 0.3
@@ -5143,7 +5205,9 @@ MonoBehaviour:
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
     type: 3}
   groundCheckDistance: 0.5
-  groundCheck: {fileID: 8563630165634237405}
+  onGroundCheck: {fileID: 8925966860779548923}
+  toeGroundCheck: {fileID: 8563630165634237405}
+  heelGroundCheck: {fileID: 3444655823045614419}
   groundSlideSpeed: 18
   isGroundSliding: 0
   wallCheckDistance: 0.9
@@ -5157,10 +5221,10 @@ MonoBehaviour:
   canClimbLedge: 0
   ledgeCheckDistance: 0.9
   ledgeCheck: {fileID: 8820056755052035560}
-  ledgeClimbXOffset1: -0.15
+  ledgeClimbXOffset1: -0.18
   ledgeClimbYOffset1: 0.5
-  ledgeClimbXOffset2: 0.7
-  ledgeClimbYOffset2: 2.4
+  ledgeClimbXOffset2: 0.9
+  ledgeClimbYOffset2: 2.6
   controls: {fileID: 8159515642940856334}
   animator: {fileID: 7036694795940340695}
   isHit: 0
@@ -5853,7 +5917,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 7036694795940340691}
-  m_RootOrder: 3
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &3355465873212630524
 PrefabInstance:
@@ -5866,6 +5930,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: JumpingTrailParticleSystem
+      objectReference: {fileID: 0}
+    - target: {fileID: 3355465874815269640, guid: 3a08e9324e8612b49af33bdc2871996e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3355465874815269641, guid: 3a08e9324e8612b49af33bdc2871996e,
         type: 3}
@@ -5935,7 +6004,7 @@ PrefabInstance:
     - target: {fileID: 3355465874815269647, guid: 3a08e9324e8612b49af33bdc2871996e,
         type: 3}
       propertyPath: m_RootOrder
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 3355465874815269647, guid: 3a08e9324e8612b49af33bdc2871996e,
         type: 3}
@@ -6011,7 +6080,7 @@ PrefabInstance:
     - target: {fileID: 717758496782552066, guid: 77dbc99773ce36f42b326a5df22b25e4,
         type: 3}
       propertyPath: m_RootOrder
-      value: 7
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 717758496782552066, guid: 77dbc99773ce36f42b326a5df22b25e4,
         type: 3}
@@ -6088,6 +6157,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: SlidingParticleSystem
       objectReference: {fileID: 0}
+    - target: {fileID: 7018141372906277392, guid: 77dbc99773ce36f42b326a5df22b25e4,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 77dbc99773ce36f42b326a5df22b25e4, type: 3}
 --- !u!4 &4285490808834145615 stripped
@@ -6141,7 +6215,7 @@ PrefabInstance:
     - target: {fileID: 9197523361628000888, guid: 771833b30a0325b499c38021538c628f,
         type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     - target: {fileID: 9197523361628000888, guid: 771833b30a0325b499c38021538c628f,
         type: 3}
@@ -6162,6 +6236,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: RunningParticleSystem
+      objectReference: {fileID: 0}
+    - target: {fileID: 9197523361628000889, guid: 771833b30a0325b499c38021538c628f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9197523361628000890, guid: 771833b30a0325b499c38021538c628f,
         type: 3}

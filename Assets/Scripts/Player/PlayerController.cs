@@ -84,7 +84,9 @@ public class PlayerController : PhysicsObject
     [Header("Ground Check:")]
     [Tooltip("Distance of ground check raycast from the bottom of the player sprite.")]
     public float groundCheckDistance = 1.75f;
-    public Transform groundCheck; // for determining quick landing jump
+    public Transform onGroundCheck;
+    public Transform toeGroundCheck;
+    public Transform heelGroundCheck;
     public float groundSlideSpeed = 18f;
     public bool isGroundSliding;
 
@@ -557,18 +559,24 @@ public class PlayerController : PhysicsObject
     {
         // ---- CHECK FOR GROUND
 
-        RaycastHit2D hitGround = Physics2D.Raycast(groundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
-        Debug.DrawRay(groundCheck.position, Vector2.down * groundCheckDistance, Color.red);
+        RaycastHit2D onGround = Physics2D.Raycast(onGroundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+        Debug.DrawRay(onGroundCheck.position, Vector2.down * groundCheckDistance, Color.red);
 
-        if (hitGround.collider != null)
+        RaycastHit2D toeHitGround = Physics2D.Raycast(toeGroundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+        Debug.DrawRay(toeGroundCheck.position, Vector2.down * groundCheckDistance, Color.yellow);
+
+        RaycastHit2D heelHitGround = Physics2D.Raycast(heelGroundCheck.position, Vector2.down, groundCheckDistance, groundLayerMask);
+        Debug.DrawRay(heelGroundCheck.position, Vector2.down * groundCheckDistance, Color.yellow);
+
+        if (onGround.collider != null)
         {
             isOnGround = true;
 
-            int currentLayer = hitGround.collider.gameObject.layer;
+            int currentLayer = onGround.collider.gameObject.layer;
 
             if (currentLayer == breakableObjectsLayer)
             {
-                BreakableObject bo = hitGround.collider.gameObject.GetComponent<BreakableObject>();
+                BreakableObject bo = onGround.collider.gameObject.GetComponent<BreakableObject>();
 
                 if (bo == null)
                 {
@@ -581,7 +589,7 @@ public class PlayerController : PhysicsObject
             }
             else if (currentLayer == breakableFloorsLayer)
             {
-                BreakableFloor bf = hitGround.collider.gameObject.GetComponent<BreakableFloor>();
+                BreakableFloor bf = onGround.collider.gameObject.GetComponent<BreakableFloor>();
 
                 if (bf == null)
                 {
@@ -594,7 +602,7 @@ public class PlayerController : PhysicsObject
             }
             else if (currentLayer == slidingSurfaceLayer && !isPressingJumpButton && !magBootsOn)
             {
-                SlidingSurface ss = hitGround.collider.gameObject.GetComponent<SlidingSurface>();
+                SlidingSurface ss = onGround.collider.gameObject.GetComponent<SlidingSurface>();
 
                 if (ss == null)
                 {
@@ -611,7 +619,7 @@ public class PlayerController : PhysicsObject
                 StopSlopeSlide();
             }
         }
-        else if (hitGround.collider == null && isGroundSliding)
+        else if (onGround.collider == null && isGroundSliding)
         {
             if (direction == Vector2.right)
             {
@@ -624,9 +632,14 @@ public class PlayerController : PhysicsObject
 
             targetVelocity.x = move.x;
         }
-        else if (hitGround.collider == null)
+        else if (onGround.collider == null)
         {
-            isOnGround = false;
+            if (toeHitGround.collider != null && heelHitGround.collider == null && !hasJumped)
+                move.x = -3f;
+            else if (toeHitGround.collider == null && heelHitGround.collider != null && !hasJumped)
+                move.x = 3f;
+            else if (toeHitGround.collider == null && heelHitGround.collider == null)
+                isOnGround = false;
         }
 
         // ---- CHECK FOR WALLS
@@ -786,7 +799,7 @@ public class PlayerController : PhysicsObject
                     gravityModifier = onGravValue;
                 }
 
-                ripPP.CauseRipple(groundCheck, 4f, 0.5f);
+                ripPP.CauseRipple(toeGroundCheck, 4f, 0.5f);
             }
             else if (Input.GetButtonUp(controls.magBoots)/* && magBootsOn*/ && !canClimbLedge)
             {
@@ -808,7 +821,7 @@ public class PlayerController : PhysicsObject
         magBootsOn = true;
         gravityModifier = 0;
         rb2d.velocity = Vector3.zero;
-        ripPP.CauseRipple(groundCheck, 15f, 0.95f);
+        ripPP.CauseRipple(toeGroundCheck, 15f, 0.95f);
 
         yield return new WaitForSeconds(0.25f);
 
@@ -865,7 +878,7 @@ public class PlayerController : PhysicsObject
 
 
     // <<----------------------------------------------------- JUMP METHODS ------------------------------------------- //
-
+    bool hasJumped = false;
 
     private void Jump()
     {
@@ -875,7 +888,12 @@ public class PlayerController : PhysicsObject
             {
                 isPressingJumpButton = true;
 
-                if (currentGraceTime > 0 && canJump || isWallSliding)
+                if (!isOnGround && quickJump)
+                {
+                    print("Quick Jump!");
+                    StartCoroutine(QuickJumpTimer());
+                }
+                else if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
                     pAudio.PlayJumpSound();
                     pFeedback.JumpingParticleEffect();
@@ -919,6 +937,7 @@ public class PlayerController : PhysicsObject
     IEnumerator JumpDelayTime()
     {
         yield return new WaitForSeconds(jumpDelayTime);
+        hasJumped = true;
 
         if (isWallSliding)
         {
@@ -968,15 +987,9 @@ public class PlayerController : PhysicsObject
         canMove = true;
 
         if (direction == Vector2.right)
-        {
-            print("ding");
             move.x = 3.75f;
-        }
         else
-        {
-            print("dong");
             move.x = -3.75f;
-        }
     }
 
     private void PushOffWall()
@@ -1012,13 +1025,20 @@ public class PlayerController : PhysicsObject
 
         if (isGrounded)
         {
-            Jump();
-            //print("Quick jump!");
-            //velocity.y = jumpTakeoffSpeed;
-            //animator.SetTrigger("jumping");
-            //currentGraceTime = 0;
-            //StopTrackAirTime();
-            //inAir = true;
+            //Jump();
+            ////print("Quick jump!");
+            ////velocity.y = jumpTakeoffSpeed;
+            ////animator.SetTrigger("jumping");
+            ////currentGraceTime = 0;
+            ////StopTrackAirTime();
+            ////inAir = true;
+            pAudio.PlayJumpSound();
+            pFeedback.JumpingParticleEffect();
+            //StartCoroutine(JumpDelayTime());
+            velocity.y = jumpTakeoffSpeed;
+            currentGraceTime = 0;
+            canJump = false;
+            hasJumped = true;
         }
         else
         {
@@ -1065,7 +1085,7 @@ public class PlayerController : PhysicsObject
                 {
                     print("HEAVY LANDING");
                     pFeedback.LandingParticles("LandingParticleSystem-Heavy");
-                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
+                    ripPP.CauseRipple(toeGroundCheck, 30f, 0.9f);
                     pFeedback.HeavyLandShake();
                     pAudio.PlayLandSound(false, true);
 
@@ -1077,7 +1097,7 @@ public class PlayerController : PhysicsObject
                 {
                     print("HARD LANDING");
                     pFeedback.LandingParticles("LandingParticleSystem-Heavy");
-                    ripPP.CauseRipple(groundCheck, 12f, 0.8f);
+                    ripPP.CauseRipple(toeGroundCheck, 12f, 0.8f);
                     pFeedback.HardLandShake();
                     pAudio.PlayLandSound(true, false);
 
@@ -1094,7 +1114,7 @@ public class PlayerController : PhysicsObject
                 {
                     animator.SetTrigger("land");
                     StartCoroutine(LandingPause(GetAnimTime()));
-                    ripPP.CauseRipple(groundCheck, 30f, 0.9f);
+                    ripPP.CauseRipple(toeGroundCheck, 30f, 0.9f);
 
                     ParticleSystem ps = Instantiate(bootSparks, transform.position, transform.rotation) as ParticleSystem;
                     Destroy(ps.gameObject, ps.main.startLifetime.constantMax);
@@ -1103,6 +1123,7 @@ public class PlayerController : PhysicsObject
                 airTime = 0;
                 inAir = false;
                 canJump = true;
+                hasJumped = false;
             }
         }
     }
