@@ -131,6 +131,7 @@ public class MenuHandler : MonoBehaviour
             Time.timeScale = 0;
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
+            pCon.DisablePlayerController();
         }
         else
         {
@@ -138,8 +139,13 @@ public class MenuHandler : MonoBehaviour
 
             if (!Toolbox.GetInstance().GetDialogueSystemManager().GetNarrativeController().isNarrativeEventRunning)
             {
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+                if (!Toolbox.GetInstance().GetPlayerManager().isInventoryOpen)
+                {
+                    Cursor.visible = false;
+                    Cursor.lockState = CursorLockMode.Locked;
+                }
+
+                pCon.EnablePlayerController();
             }
         }
     }

@@ -16,6 +16,7 @@ public class PlayerManager : MonoBehaviour
     public List<sScrapItem> inventoryItems = new List<sScrapItem>();
 
     bool isControllerActivated;
+    public bool isInventoryOpen = false;
 
     public void SetControlType(bool _isController)
     {

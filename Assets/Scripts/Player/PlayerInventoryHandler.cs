@@ -41,19 +41,24 @@ public class PlayerInventoryHandler : MonoBehaviour
 
     public void ToggleInventory()
     {
-        if (isInventoryOpen)
+        if (Time.timeScale == 1)
         {
-            AM.PlayConsistentOneShot(openSound, openSoundVolume);
+            if (isInventoryOpen)
+            {
+                AM.PlayConsistentOneShot(openSound, openSoundVolume);
 
-            HideMouseCursor();
-            DisableInventory();
-        }
-        else if (!isInventoryOpen)
-        {
-            AM.PlayConsistentOneShot(openSound, openSoundVolume);
+                HideMouseCursor();
+                DisableInventory();
+                Toolbox.GetInstance().GetPlayerManager().isInventoryOpen = false;
+            }
+            else if (!isInventoryOpen)
+            {
+                AM.PlayConsistentOneShot(openSound, openSoundVolume);
 
-            ShowMouseCursor();
-            EnableInventory();
+                ShowMouseCursor();
+                EnableInventory();
+                Toolbox.GetInstance().GetPlayerManager().isInventoryOpen = true;
+            }
         }
     }
 
