@@ -2142,6 +2142,16 @@ PrefabInstance:
       propertyPath: m_textInfo.pageCount
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1277829017014057531, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -29.99997
+      objectReference: {fileID: 0}
+    - target: {fileID: 1277829017977133159, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+        type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -29.99997
+      objectReference: {fileID: 0}
     - target: {fileID: 1277829017989150992, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
         type: 3}
       propertyPath: m_textInfo.characterCount
@@ -5965,6 +5975,11 @@ PrefabInstance:
       propertyPath: m_LocalPosition.x
       value: -0.314
       objectReference: {fileID: 0}
+    - target: {fileID: 6865621407660703323, guid: cca52d49f95b769418995afbe90124fc,
+        type: 3}
+      propertyPath: injuredFlashImage
+      value: 
+      objectReference: {fileID: 2103234510}
     - target: {fileID: 7036694795940340691, guid: cca52d49f95b769418995afbe90124fc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -7630,6 +7645,18 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2100581657}
   m_Mesh: {fileID: -6420019823700397525, guid: 82c57e34d2086b94291e0a94f84f4ece, type: 3}
+--- !u!114 &2103234510 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1920672908, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 608040797}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2123142592
 GameObject:
   m_ObjectHideFlags: 0

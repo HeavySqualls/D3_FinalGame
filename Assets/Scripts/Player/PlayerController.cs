@@ -887,13 +887,14 @@ public class PlayerController : PhysicsObject
             if (Input.GetButtonDown(controls.jump))
             {
                 isPressingJumpButton = true;
+                //if (!isOnGround && quickJump)
+                //{
+                //    print("Quick Jump!");
+                //    StartCoroutine(QuickJumpTimer());
+                //}
+                //else
 
-                if (!isOnGround && quickJump)
-                {
-                    print("Quick Jump!");
-                    StartCoroutine(QuickJumpTimer());
-                }
-                else if (currentGraceTime > 0 && canJump || isWallSliding)
+                if (currentGraceTime > 0 && canJump || isWallSliding)
                 {
                     pAudio.PlayJumpSound();
                     pFeedback.JumpingParticleEffect();
@@ -1123,9 +1124,18 @@ public class PlayerController : PhysicsObject
                 airTime = 0;
                 inAir = false;
                 canJump = true;
-                hasJumped = false;
+                StartCoroutine(HasJumpedDelay());
             }
         }
+    }
+
+    public float hasJumpedResetDelay = 0.5f;
+
+    IEnumerator HasJumpedDelay()
+    {
+        yield return new WaitForSeconds(hasJumpedResetDelay);
+
+        hasJumped = false;
     }
 
     void StopTrackAirTime()
