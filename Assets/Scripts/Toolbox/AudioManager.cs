@@ -12,7 +12,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] float highPitchRange = 1.05f;
 
     // Music Tracks
-    [SerializeField] float levelMusicVolume = 0.375f;
+    [SerializeField] float levelMusicVolume = 0.4f;
     [SerializeField] float musicVolIncrementation = 0.005f;
     [SerializeField] float musicIncrementTime = 0.05f;
     AudioClip currentMusicClip;
