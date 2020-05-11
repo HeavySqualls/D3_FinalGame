@@ -251,7 +251,7 @@ public class PlayerController : PhysicsObject
         isHit = true;
         DisablePlayerController();
 
-        float timer = 0.0f;
+        float timer = 0f;
 
         while (timer < _stunTime)
         {
@@ -266,10 +266,29 @@ public class PlayerController : PhysicsObject
 
         if (!pHealth.isDead)
             EnablePlayerController();
-
-        yield break;
     }
 
+    public IEnumerator MoveForwardOnAttack(float _forwardMomentum, float _slideTime)
+    {
+        SetPlayerVelocityToZero();
+
+        float forwardMovement;
+        float timer = 0f;
+
+        if (direction == Vector2.right)
+            forwardMovement = _forwardMomentum;
+        else
+            forwardMovement = -_forwardMomentum;
+
+        while (timer < _slideTime)
+        {
+            targetVelocity.x += forwardMovement;
+            timer += Time.deltaTime;
+            yield return null;
+        }
+
+        SetPlayerVelocityToZero();
+    }
 
     // <<----------------------------------------------------- COMPUTE VELOCITY (IN AND OUT OF WIND ZONES) ------------------------------------------- //
     public void SetPlayerVelocityToZero()

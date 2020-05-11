@@ -12,7 +12,12 @@ public class PlayerCombat : MonoBehaviour
     [SerializeField] float circleCastRadius = 0.5f;
     [Tooltip("The distance from the center of the sprite that the circle cast will appear.")]
     [SerializeField] float castDistance = 0.85f;
+    [Tooltip("The ammount of air that is drained from tank on each special attack use.")]
     [SerializeField] float airDrainAmount = 2f;
+    [Tooltip("The distance forward that the player will move on each attack.")]
+    [SerializeField] float forwardMomentum = 1f;
+    [Tooltip("The ammount of time the player will spend moving forward after an attack.")]
+    [SerializeField] float slideTime = 0.1f;
     float timeBetweenCombos = 0;
     int comboNum = 1;
     int currentAttackNum = 1;
@@ -178,6 +183,7 @@ public class PlayerCombat : MonoBehaviour
     {
         canAttack = false;
         pCon.canMove = false;
+        StartCoroutine(pCon.MoveForwardOnAttack(forwardMomentum, slideTime));
 
         yield return new WaitForSeconds(_time);
 
