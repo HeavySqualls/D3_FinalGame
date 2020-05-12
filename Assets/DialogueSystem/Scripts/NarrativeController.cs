@@ -78,7 +78,7 @@ public class NarrativeController : MonoBehaviour
     {
         // Check if the correct input was registered, if the narrative is not null, and if the tutorial panel is not open 
         // (to prevent the narrative from continuing at the same time as the tutorial panel is closed).
-        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight || Input.GetButtonDown(pCon.controls.jump)) && N != null && !tutorialController.isOpen)       
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight || Input.GetButtonDown(pCon.controls.jump)) && N != null && !tutorialController.isOpen && Time.timeScale == 1)       
         {
             if (isTyping)
             {
@@ -175,52 +175,55 @@ public class NarrativeController : MonoBehaviour
     {
         // Check if this narrative is a Monologue, OR if both the speaker UI's have finished animating (to prevent UI elements from being enabled/disabled
         // before they are supposed to be)
-        if (N.isMonologue && !speakerUILeft.isAnimating || !N.isMonologue && !speakerUILeft.isAnimating && !speakerUIRight.isAnimating)
+        if (Time.timeScale == 1)
         {
-            // If there are still lines left in the dialogue OR if there are any tutorials remaining in the narrative event that have not yet been displayed 
-            // (typically located after the last line of dialogue)
-            if (activeLineIndex < N.lines.Length || tutorialsRemaining)
+            if (N.isMonologue && !speakerUILeft.isAnimating || !N.isMonologue && !speakerUILeft.isAnimating && !speakerUIRight.isAnimating)
             {
-                // If this narrative has tutorials, and there are tutorials remaining to be played, the tutorial line index matches the current line index, 
-                // AND we are not currently displaying a tutorial
-                if (N.hasTutorial && tutorialsRemaining && N.tutorialLines[activeTutorialLineIndex] == activeLineIndex && !hasDisplayedTutorial)
+                // If there are still lines left in the dialogue OR if there are any tutorials remaining in the narrative event that have not yet been displayed 
+                // (typically located after the last line of dialogue)
+                if (activeLineIndex < N.lines.Length || tutorialsRemaining)
                 {
-                    // Hide speaker UIs
-                    if (N.isMonologue)
+                    // If this narrative has tutorials, and there are tutorials remaining to be played, the tutorial line index matches the current line index, 
+                    // AND we are not currently displaying a tutorial
+                    if (N.hasTutorial && tutorialsRemaining && N.tutorialLines[activeTutorialLineIndex] == activeLineIndex && !hasDisplayedTutorial)
                     {
-                        speakerUILeft.Hide();
+                        // Hide speaker UIs
+                        if (N.isMonologue)
+                        {
+                            speakerUILeft.Hide();
+                        }
+                        else
+                        {
+                            speakerUIRight.Hide();
+                            speakerUILeft.Hide();
+                        }
+
+                        // Display tutorial that matches the index number of the activeTutorialLineIndex
+                        tutorialController.DisplayTutorial(N.tutorials[activeTutorialLineIndex]);
+
+                        // Increase the line index to select the next index line number to display the following tutorial next time (if applicable)
+                        activeTutorialLineIndex++;
+                        // Increase the number of tutorials we have played so we can track how many are left
+                        tutorialsPlayed++;
+
+                        // Check if we have played all the tutorials the array
+                        if (tutorialsPlayed == N.tutorialLines.Length)
+                        {
+                            tutorialsRemaining = false;
+                        }
+
+                        hasDisplayedTutorial = true;
                     }
                     else
                     {
-                        speakerUIRight.Hide();
-                        speakerUILeft.Hide();
+                        DisplayNextLine();
+                        activeLineIndex += 1;
                     }
-
-                    // Display tutorial that matches the index number of the activeTutorialLineIndex
-                    tutorialController.DisplayTutorial(N.tutorials[activeTutorialLineIndex]);
-
-                    // Increase the line index to select the next index line number to display the following tutorial next time (if applicable)
-                    activeTutorialLineIndex++;
-                    // Increase the number of tutorials we have played so we can track how many are left
-                    tutorialsPlayed++;
-
-                    // Check if we have played all the tutorials the array
-                    if (tutorialsPlayed == N.tutorialLines.Length)
-                    {
-                        tutorialsRemaining = false;
-                    }
-
-                    hasDisplayedTutorial = true;
                 }
                 else
                 {
-                    DisplayNextLine();
-                    activeLineIndex += 1;
+                    EndResetNarrativeController();
                 }
-            }
-            else
-            {
-                EndResetNarrativeController();
             }
         }
     }
@@ -335,55 +338,58 @@ public class NarrativeController : MonoBehaviour
 
     public void EndResetNarrativeController()
     {
-        // Hide UI
-        AM.PlayConsistentOneShot(speakersMoveInSound, speakersMoveInVolume);
-
-        speakerUILeft.Hide();
-        speakerUILeft.HideSprite();
-
-        if (N != null && !N.isMonologue)
+        if (Time.timeScale == 1)
         {
-            speakerUIRight.Hide();
-            speakerUIRight.HideSprite();
-        }
+            // Hide UI
+            AM.PlayConsistentOneShot(speakersMoveInSound, speakersMoveInVolume);
 
-        cinematicController.PlayNarrativeSlideOut();
+            speakerUILeft.Hide();
+            speakerUILeft.HideSprite();
 
-        // Hide Cursor
-        if (hideCursorAfter)
-        {
-            Cursor.visible = false;
-            Cursor.lockState = CursorLockMode.Locked;
-        }
+            if (N != null && !N.isMonologue)
+            {
+                speakerUIRight.Hide();
+                speakerUIRight.HideSprite();
+            }
 
-        // Re-emable enemies
-        Toolbox.GetInstance().GetLevelManager().UnPauseAllEnemies();
+            cinematicController.PlayNarrativeSlideOut();
 
-        // Reset tutorial tracking vars 
-        hasDisplayedTutorial = false;
-        tutorialsPlayed = 0;
-        tutorialsRemaining = true;
-        activeTutorialLineIndex = 0;
+            // Hide Cursor
+            if (hideCursorAfter)
+            {
+                Cursor.visible = false;
+                Cursor.lockState = CursorLockMode.Locked;
+            }
 
-        // Reset controller vars 
-        narTrigger.DisableTrigger();
-        N = null;
-        activeLineIndex = 0;
-        isNarrativeEventRunning = false;
-        AM.DampenAllAudio(false);
+            // Re-emable enemies
+            Toolbox.GetInstance().GetLevelManager().UnPauseAllEnemies();
 
-        if (narTrigger.isDampenMusic)
-            AM.DampenBGMusic(false);
+            // Reset tutorial tracking vars 
+            hasDisplayedTutorial = false;
+            tutorialsPlayed = 0;
+            tutorialsRemaining = true;
+            activeTutorialLineIndex = 0;
 
-        // If this trigger has a cinematic attached to it, play it now
-        if (narTrigger.hasCinematic)
-        {
-            narTrigger.PlayPostNarrativeCinematic();
-        }
-        else
-        {
-            // Re-Enable player 
-            pCon.EnablePlayerController();
+            // Reset controller vars 
+            narTrigger.DisableTrigger();
+            N = null;
+            activeLineIndex = 0;
+            isNarrativeEventRunning = false;
+            AM.DampenAllAudio(false);
+
+            if (narTrigger.isDampenMusic)
+                AM.DampenBGMusic(false);
+
+            // If this trigger has a cinematic attached to it, play it now
+            if (narTrigger.hasCinematic)
+            {
+                narTrigger.PlayPostNarrativeCinematic();
+            }
+            else
+            {
+                // Re-Enable player 
+                pCon.EnablePlayerController();
+            }
         }
     }
 }

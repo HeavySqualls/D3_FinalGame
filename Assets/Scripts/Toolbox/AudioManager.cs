@@ -280,20 +280,16 @@ public class AudioManager : MonoBehaviour
             {
                 if (_isReducingVol)
                     currentBGAudioSource.volume = dampenedAudioVol;
-                //StartCoroutine(DampenAudio(currentBGAudioSource, dampenedAudioVol, _isReducingVol));
                 else
                     currentMusicAudioSource.volume = BGVolume;
-                //StartCoroutine(DampenAudio(currentBGAudioSource, BGVolume, _isReducingVol));
             }
 
             if (currentMusicAudioSource.isPlaying)
             {
                 if (_isReducingVol)
                     currentMusicAudioSource.volume = dampenedAudioVol;
-                //StartCoroutine(DampenAudio(currentMusicAudioSource, dampenedAudioVol, _isReducingVol));
                 else
                     currentMusicAudioSource.volume = levelMusicVolume;
-                //StartCoroutine(DampenAudio(currentMusicAudioSource, levelMusicVolume, _isReducingVol));
             }
         }
     }
@@ -309,33 +305,4 @@ public class AudioManager : MonoBehaviour
             foreach (AudioSource AS in sceneSources)
                 AS.volume = AS.volume * 4;
     }
-
-    //private IEnumerator DampenAudio(AudioSource _source, float _desiredVol, bool _isReducingVol)
-    //{
-    //    // If we are reducing the sources volume...
-    //    if (_isReducingVol)
-    //    {
-    //        print("damped");
-    //        while (_source.volume > _desiredVol)
-    //        {
-    //            _source.volume -= dampenVolIncrementation;
-
-    //            yield return new WaitForSeconds(dampenIncrementTime);
-    //        }
-    //    }
-    //    // if we are increasing the sources volume...
-    //    else
-    //    {
-    //        print("undamped");
-    //        while (_source.volume < _desiredVol)
-    //        {
-    //            _source.volume += dampenVolIncrementation;
-
-    //            yield return new WaitForSeconds(dampenIncrementTime);
-    //        }
-    //    }
-
-
-    //    yield break;
-    //}
 }

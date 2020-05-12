@@ -12,7 +12,7 @@ public class SpawnZone : MonoBehaviour
     {
         pHealthSyst = collision.gameObject.GetComponent<PlayerHealthSystem>();
 
-        if (pHealthSyst.spawnZone != this)
+        if (pHealthSyst != null && pHealthSyst.spawnZone != this)
         {
             pHealthSyst.spawnZone = this;
             Toolbox.GetInstance().GetAudioManager().PlayConsistentOneShot(respawnSound, respawnVolume);
@@ -28,15 +28,4 @@ public class SpawnZone : MonoBehaviour
         _respawnee.transform.position = transform.position;
         print("Respawn Player");
     }
-
-    //IEnumerator PuffCloud()
-    //{
-    //    Toolbox.GetInstance().GetAudioManager().PlayConsistentOneShot(respawnSound, respawnVolume);
-
-    //    disposablePartSyst = Instantiate(Resources.Load("RespawnParticleSystem", typeof(GameObject))) as GameObject;
-    //    disposablePartSyst.transform.position = gameObject.transform.position;
-    //    Destroy(disposablePartSyst, 2f);
-
-    //    yield return new WaitForSeconds(20f);
-    //}
 }
