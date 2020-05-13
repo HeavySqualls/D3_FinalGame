@@ -228,18 +228,18 @@ public class PlayerCombat : MonoBehaviour
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, castDistance, interactableLayerMask);
 
-            if (!isCasting)
-            {
-                GameObject hitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
-                hitBox.name = "PUNCH BOX";
-                hitBox.transform.localScale = new Vector3(boxCast.x /2 + castDistance , boxCast.y, 1);
-                hitBox.transform.position = gameObject.transform.position + (Vector3)pCon.accessibleDirection * hitBox.transform.localScale.x / 2;
-                hitBox.transform.SetParent(gameObject.transform);
+            //if (!isCasting)
+            //{
+            //    GameObject hitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
+            //    hitBox.name = "PUNCH BOX";
+            //    hitBox.transform.localScale = new Vector3(boxCast.x /2 + castDistance , boxCast.y, 1);
+            //    hitBox.transform.position = gameObject.transform.position + (Vector3)pCon.accessibleDirection * hitBox.transform.localScale.x / 2;
+            //    hitBox.transform.SetParent(gameObject.transform);
 
 
-                isCasting = true;
-                StartCoroutine(DestroyHitBox(hitBox));
-            }
+            //    isCasting = true;
+            //    StartCoroutine(DestroyHitBox(hitBox));
+            //}
 
             foreach (RaycastHit2D hit in hits)
             {
