@@ -44,14 +44,18 @@ public class CrabwormGroupManager : MonoBehaviour
 
     private void ChooseEnemyToAttack()
     {
-        isAttacking = true;
+        if (crabwormGroup.Count <= 0f) 
+        {
+            return;
+        }
+
 
         //// Random Choice
         //isAttacking = true;
         //int randomEnemy = Random.Range(0, crabwormGroup.Count);
 
         //attackingCrabworm = crabwormGroup[randomEnemy];
-
+        isAttacking = true;
         float shortestDist = 0;
 
         // Choosing closest enemy
@@ -63,6 +67,8 @@ public class CrabwormGroupManager : MonoBehaviour
             {
                 shortestDist = currentDist;
                 attackingCrabworm = crabwormGroup[i];
+                //crabwormGroup.Remove(attackingCrabworm);
+                //i--;
             }
         }
 
@@ -76,7 +82,17 @@ public class CrabwormGroupManager : MonoBehaviour
 
     private IEnumerator AttackAndCooldown()
     {
-        yield return new WaitForSeconds(attackDelay);
+        float currentDist = Vector3.Distance(attackingCrabworm.transform.position, pCon.transform.position);//3f // based on range of 0-5
+        float randomAdd = Random.Range(-0.5f, 0.5f); // maKE VARS
+
+        bool condition = currentDist > 1f || true;
+
+
+        float randomFactor = condition ?  1f : currentDist / 5f;
+
+        // randomAdd
+
+        yield return new WaitForSeconds(attackDelay + randomAdd * randomFactor);//2 +-1
 
         attackingCrabworm.isUnitPaused = true;
         attackingCrabworm.currentState = Enemy_Base.State.DoNothing;

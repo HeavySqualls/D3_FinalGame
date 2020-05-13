@@ -665,7 +665,10 @@ public class PlayerController : PhysicsObject
 
         if (canMove && !isDisabled)
         {
-            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, wallCheckDistance, wallLayerMask);
+            ContactFilter2D contactFilter = new ContactFilter2D();
+            contactFilter.SetLayerMask(wallLayerMask);
+            RaycastHit2D[] hit = new RaycastHit2D[1];
+            isTouchingWall = Physics2D.Raycast(wallCheck.position, direction, contactFilter, hit, wallCheckDistance) > 0;
             Debug.DrawRay(wallCheck.position, direction * wallCheckDistance, Color.red);
 
             isTouchingLedge = Physics2D.Raycast(ledgeCheck.position, direction, ledgeCheckDistance, wallLayerMask);
@@ -675,6 +678,8 @@ public class PlayerController : PhysicsObject
             if (isTouchingWall && !isTouchingLedge && !ledgeDetected)// << ----------- OPTION TO PUT MANUAL LEDGE GRAB HERE 
             {
                 ledgeDetected = true;
+                // playerposition = hitpointx - wallcheck
+                transform.position = new Vector3(hit[0].point.x + (direction == Vector2.right ? wallCheckDistance : -wallCheckDistance), transform.position.y, transform.position.z);
                 ledgePosBot = wallCheck.position;
             }
 
@@ -863,13 +868,15 @@ public class PlayerController : PhysicsObject
 
             if (direction == Vector2.right)
             {
-                ledgePos1 = new Vector2(Mathf.Floor(ledgePosBot.x + wallCheckDistance) - ledgeClimbXOffset1, Mathf.Floor(ledgePosBot.y) + ledgeClimbYOffset1);
-                ledgePos2 = new Vector2(Mathf.Floor(ledgePosBot.x + wallCheckDistance) + ledgeClimbXOffset2, Mathf.Floor(ledgePosBot.y) + ledgeClimbYOffset2);
+
+                
+                ledgePos1 = new Vector2((ledgePosBot.x + wallCheckDistance) - ledgeClimbXOffset1, (ledgePosBot.y) + ledgeClimbYOffset1);
+                ledgePos2 = new Vector2((ledgePosBot.x + wallCheckDistance) + ledgeClimbXOffset2, (ledgePosBot.y) + ledgeClimbYOffset2);
             }
             else
             {
-                ledgePos1 = new Vector2(Mathf.Ceil(ledgePosBot.x - wallCheckDistance) + ledgeClimbXOffset1, Mathf.Floor(ledgePosBot.y) + ledgeClimbYOffset1);
-                ledgePos2 = new Vector2(Mathf.Ceil(ledgePosBot.x - wallCheckDistance) - ledgeClimbXOffset2, Mathf.Floor(ledgePosBot.y) + ledgeClimbYOffset2);
+                ledgePos1 = new Vector2((ledgePosBot.x - wallCheckDistance) + ledgeClimbXOffset1, (ledgePosBot.y) + ledgeClimbYOffset1);
+                ledgePos2 = new Vector2((ledgePosBot.x - wallCheckDistance) - ledgeClimbXOffset2, (ledgePosBot.y) + ledgeClimbYOffset2);
             }
 
             EnableMovement(false);
@@ -880,6 +887,7 @@ public class PlayerController : PhysicsObject
 
         if (canClimbLedge)
         {
+            
             transform.position = ledgePos1;
         }
     }

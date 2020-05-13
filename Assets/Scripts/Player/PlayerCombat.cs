@@ -189,7 +189,7 @@ public class PlayerCombat : MonoBehaviour
 
         pCon.canMove = true;
         canAttack = true;
-        canCast = true;
+        //canCast = true;
     }
 
     float castTime = 0.2f;
@@ -207,7 +207,7 @@ public class PlayerCombat : MonoBehaviour
             yield return null;
         }
 
-        canCast = false;
+        //canCast = false;
     }
 
     void SetAttackStats(float _dmg, float _knkBk, float _knkUp, float _stunTime)
@@ -220,9 +220,10 @@ public class PlayerCombat : MonoBehaviour
 
     //RaycastHit2D[] hits = Physics2D.OverlapBoxAll(gameObject.transform.position, Vector2(1, 2), pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
     public Vector2 boxCast = new Vector2(1, 3);
-    //private GameObject hitBox;
-    //private bool isCasting = false;
-    //private Vector3 spawnPos;
+   // private GameObject hitBox;
+    private bool isCasting = false;
+    private Vector3 spawnPos;
+
     public void CastForEnemies()
     {
         //spawnPos = gameObject.transform.position + gameObject.transform.right * circleCastDistance;
@@ -231,16 +232,19 @@ public class PlayerCombat : MonoBehaviour
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, castDistance, interactableLayerMask);
 
-            //if (!isCasting)
-            //{
-            //    hitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
-            //    hitBox.transform.localScale = boxCast;
-            //    hitBox.transform.position = spawnPos;
-            //    hitBox.transform.SetParent(gameObject.transform);
+            if (!isCasting)
+            {
+                GameObject hitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
+                hitBox.name = "PUNCH BOX";
+                hitBox.transform.localScale = new Vector3(boxCast.x /2 + castDistance , boxCast.y, 1);
+                hitBox.transform.position = gameObject.transform.position + (Vector3)pCon.accessibleDirection * hitBox.transform.localScale.x / 2;
+                hitBox.transform.SetParent(gameObject.transform);
 
-            //    isCasting = true;
-            //    DestroyHitBox();
-            //}
+
+                isCasting = true;
+                //Destroy(hitBox, 0.01f);
+                StartCoroutine(DestroyHitBox(hitBox));
+            }
 
             foreach (RaycastHit2D hit in hits)
             {
@@ -252,19 +256,19 @@ public class PlayerCombat : MonoBehaviour
                     pAudio.PlayConnectSound(currentAttackNum);
                     recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
                     
-                    canCast = false;
+                    //canCast = false;
                     //pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
                 }
             }
         }
     }
 
-    //IEnumerator DestroyHitBox()
-    //{
-    //    yield return new WaitForSeconds(0.2f);
-    //    Destroy(hitBox);
-    //    isCasting = false;
-    //}
+    IEnumerator DestroyHitBox(GameObject hitBox)
+    {
+        yield return new WaitForSeconds(castTime);
+        Destroy(hitBox);
+        isCasting = false;
+    }
 
     void OnDrawGizmos()
     {
