@@ -189,14 +189,14 @@ public class PlayerCombat : MonoBehaviour
 
         pCon.canMove = true;
         canAttack = true;
-        //canCast = true;
+        canCast = true;
     }
 
-    float castTime = 0.2f;
+    float castTime = 0.3f;
 
     IEnumerator CastForHit()
     {
-        yield return new WaitForSeconds(0.01f);
+        yield return new WaitForSeconds(0.008f);
 
         float timer = 0;
 
@@ -218,16 +218,12 @@ public class PlayerCombat : MonoBehaviour
         stunTime = _stunTime;
     }
 
-    //RaycastHit2D[] hits = Physics2D.OverlapBoxAll(gameObject.transform.position, Vector2(1, 2), pCon.accessibleDirection, circleCastDistance, interactableLayerMask);
     public Vector2 boxCast = new Vector2(1, 3);
-   // private GameObject hitBox;
     private bool isCasting = false;
     private Vector3 spawnPos;
 
     public void CastForEnemies()
     {
-        //spawnPos = gameObject.transform.position + gameObject.transform.right * circleCastDistance;
-
         if (canCast)
         {
             RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, castDistance, interactableLayerMask);
@@ -242,7 +238,6 @@ public class PlayerCombat : MonoBehaviour
 
 
                 isCasting = true;
-                //Destroy(hitBox, 0.01f);
                 StartCoroutine(DestroyHitBox(hitBox));
             }
 
@@ -252,11 +247,11 @@ public class PlayerCombat : MonoBehaviour
 
                 if (recieveDamage != null && !hit.collider.isTrigger)
                 {
-                    //print("hit: " + recieveDamage.name);
+                    print("hit: " + recieveDamage.name);
                     pAudio.PlayConnectSound(currentAttackNum);
                     recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
                     
-                    //canCast = false;
+                    canCast = false;
                     //pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);
                 }
             }

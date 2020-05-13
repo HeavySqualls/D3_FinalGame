@@ -44,17 +44,8 @@ public class CrabwormGroupManager : MonoBehaviour
 
     private void ChooseEnemyToAttack()
     {
-        if (crabwormGroup.Count <= 0f) 
-        {
-            return;
-        }
+        if (crabwormGroup.Count <= 0f) return;
 
-
-        //// Random Choice
-        //isAttacking = true;
-        //int randomEnemy = Random.Range(0, crabwormGroup.Count);
-
-        //attackingCrabworm = crabwormGroup[randomEnemy];
         isAttacking = true;
         float shortestDist = 0;
 
@@ -67,8 +58,6 @@ public class CrabwormGroupManager : MonoBehaviour
             {
                 shortestDist = currentDist;
                 attackingCrabworm = crabwormGroup[i];
-                //crabwormGroup.Remove(attackingCrabworm);
-                //i--;
             }
         }
 
@@ -83,12 +72,12 @@ public class CrabwormGroupManager : MonoBehaviour
     private IEnumerator AttackAndCooldown()
     {
         float currentDist = Vector3.Distance(attackingCrabworm.transform.position, pCon.transform.position);//3f // based on range of 0-5
-        float randomAdd = Random.Range(-0.5f, 0.5f); // maKE VARS
+        float randomAdd = Random.Range(-0.8f, 0.3f); // maKE VARS
 
         bool condition = currentDist > 1f || true;
 
 
-        float randomFactor = condition ?  1f : currentDist / 5f;
+        float randomFactor = condition ?  1f : currentDist / 3f;
 
         // randomAdd
 

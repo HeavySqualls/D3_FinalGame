@@ -867,9 +867,7 @@ public class PlayerController : PhysicsObject
             StopTrackAirTime();
 
             if (direction == Vector2.right)
-            {
-
-                
+            {   
                 ledgePos1 = new Vector2((ledgePosBot.x + wallCheckDistance) - ledgeClimbXOffset1, (ledgePosBot.y) + ledgeClimbYOffset1);
                 ledgePos2 = new Vector2((ledgePosBot.x + wallCheckDistance) + ledgeClimbXOffset2, (ledgePosBot.y) + ledgeClimbYOffset2);
             }

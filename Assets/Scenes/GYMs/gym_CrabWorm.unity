@@ -1207,6 +1207,11 @@ PrefabInstance:
       propertyPath: forwardMomentum
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 6865621407660703323, guid: cca52d49f95b769418995afbe90124fc,
+        type: 3}
+      propertyPath: injuredFlashImage
+      value: 
+      objectReference: {fileID: 1151570398}
     - target: {fileID: 7036694795940340691, guid: cca52d49f95b769418995afbe90124fc,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1761,6 +1766,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c6ad75b7048a42a48814ffeff052fb60, type: 3}
+--- !u!114 &1151570398 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1920672908, guid: 5f7a2f02ac91f7b46bba0625cb0878cc,
+    type: 3}
+  m_PrefabInstance: {fileID: 2005608842}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1199575202
 PrefabInstance:
   m_ObjectHideFlags: 0
