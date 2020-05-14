@@ -3,7 +3,12 @@ guid: ce2f777f1acbb904ea3be0a8f3ee7f45
 ModelImporter:
   serializedVersion: 19300
   internalIDToNameTable: []
-  externalObjects: {}
+  externalObjects:
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: rock_sand_column
+    second: {fileID: 2100000, guid: a03edd81652e2934a9ac17a12d28c5eb, type: 2}
   materials:
     materialImportMode: 1
     materialName: 0
@@ -80,7 +85,7 @@ ModelImporter:
     armStretch: 0.05
     legStretch: 0.05
     feetSpacing: 0
-    globalScale: 0.04
+    globalScale: 4
     rootMotionBoneName: 
     hasTranslationDoF: 0
     hasExtraRoot: 0
