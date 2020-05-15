@@ -14,4 +14,22 @@ public class SceneAudio : MonoBehaviour
         AM.PlayBGAudioORMusic(sceneBG1, false);
         AM.PlayBGAudioORMusic(sceneTrack, true);
     }
+
+    private void OnEnable()
+    {
+        SpawnManager.onResetLevelObjects += PlayLevelAudioOnRespawn;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onResetLevelObjects -= PlayLevelAudioOnRespawn;
+    }
+
+    public void PlayLevelAudioOnRespawn()
+    {
+        if (AM.currentMusicClip != sceneTrack)
+        {
+            AM.PlayBGAudioORMusic(sceneTrack, true);
+        }
+    }
 }

@@ -94,7 +94,7 @@ public class MenuHandler : MonoBehaviour
     {
         if (isPauseMenu)
         {
-            if (Input.GetButtonDown(pCon.controls.pauseMenu))
+            if (Input.GetButtonDown(pCon.controls.pauseMenu) && !DeathMenu.activeSelf)
             {
                 OpenClosePauseMenu();
             }

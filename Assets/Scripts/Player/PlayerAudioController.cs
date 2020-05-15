@@ -200,7 +200,8 @@ public class PlayerAudioController : MonoBehaviour
     public void PlayDeathSound()
     {
         AM.PlayVariedOneShot(deathSound, deathVolume);
-        AM.PlayConsistentOneShot(failSound, failVolume);
+        //AM.PlayConsistentOneShot(failSound, failVolume);
+        AM.PlayJingle(failSound, true);
     }
 
     public void PlayPunchSound(int _punch)

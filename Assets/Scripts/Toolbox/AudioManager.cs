@@ -15,7 +15,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] float levelMusicVolume = 0.4f;
     [SerializeField] float musicVolIncrementation = 0.005f;
     [SerializeField] float musicIncrementTime = 0.05f;
-    AudioClip currentMusicClip;
+    public AudioClip currentMusicClip;
     AudioSource currentMusicAudioSource;
     AudioSource musicAudioSource1;
     AudioSource musicAudioSource2;
@@ -43,12 +43,16 @@ public class AudioManager : MonoBehaviour
         oneShotConsistentAudioSource = gameObject.AddComponent<AudioSource>();
         musicAudioSource1 = gameObject.AddComponent<AudioSource>();
         musicAudioSource1.loop = true;
+        musicAudioSource1.playOnAwake = false;
         musicAudioSource2 = gameObject.AddComponent<AudioSource>();
         musicAudioSource2.loop = true;
+        musicAudioSource2.playOnAwake = false;
         BGAudioSource1 = gameObject.AddComponent<AudioSource>();
         BGAudioSource1.loop = true;
+        BGAudioSource1.playOnAwake = false;
         BGAudioSource2 = gameObject.AddComponent<AudioSource>();
         BGAudioSource2.loop = true;
+        BGAudioSource2.playOnAwake = false;
     }
 
     public AudioClip GetCurrentBGClip()
@@ -148,6 +152,7 @@ public class AudioManager : MonoBehaviour
         // If we are wanting to play level music, reference the music audio sources
         if (_isMusicTrack)
         {
+            print("Play MUSIC audio");
             if (!musicAudioSource1.isPlaying)
             {
                 freeSource = musicAudioSource1; // the source we will be assigning the new audio clip
@@ -228,6 +233,8 @@ public class AudioManager : MonoBehaviour
             yield return new WaitForSeconds(_incTime);
         }
 
+        _source.Stop();
+
         yield break;
     }
 
@@ -304,5 +311,27 @@ public class AudioManager : MonoBehaviour
         else
             foreach (AudioSource AS in sceneSources)
                 AS.volume = AS.volume * 4;
+    }
+
+    // << ------------------------------------- DAMPENERS -------------------------------- >> //
+
+    public void PlayJingle(AudioClip _jingleClip, bool cutoutMusic)
+    {
+        currentMusicClip = _jingleClip;
+
+        if (musicAudioSource1.isPlaying)
+        {
+            if (cutoutMusic)
+                //FadeOutAudio(musicAudioSource1, 1f, 0.1f);
+                musicAudioSource1.Stop();
+        }
+        else
+        {
+            if (cutoutMusic)
+                //FadeOutAudio(musicAudioSource2, 1f, 0.1f);
+                musicAudioSource2.Stop();
+        }
+
+        musicAudioSource2.PlayOneShot(currentMusicClip);
     }
 }
