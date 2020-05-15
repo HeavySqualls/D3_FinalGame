@@ -75,6 +75,11 @@ public class WindDial : MonoBehaviour
         }
     }
 
+    public void HideWindDial()
+    {
+        windDial.SetActive(false);
+    }
+
     private void TrackTimeSinceInWindZone()
     {
         if (pCon.inWindZone)

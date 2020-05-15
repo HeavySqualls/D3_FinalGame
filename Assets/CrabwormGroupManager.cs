@@ -83,8 +83,8 @@ public class CrabwormGroupManager : MonoBehaviour
 
         yield return new WaitForSeconds(attackDelay + randomAdd * randomFactor);//2 +-1
 
-        attackingCrabworm.isUnitPaused = true;
-        attackingCrabworm.currentState = Enemy_Base.State.DoNothing;
+        //attackingCrabworm.isUnitPaused = true;
+        //attackingCrabworm.currentState = Enemy_Base.State.DoNothing;
         isAttacking = false;
     }
 

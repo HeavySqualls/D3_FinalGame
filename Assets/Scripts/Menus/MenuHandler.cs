@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Playables;
+using UnityEngine.EventSystems;
 
 public class MenuHandler : MonoBehaviour
 {
@@ -35,6 +36,8 @@ public class MenuHandler : MonoBehaviour
     [SerializeField] AudioClip openMenuSound;
     [SerializeField] float openMenuVolume = 0.3f;
     AudioManager AM;
+
+    public GameObject pauseFirstSelected, optionsFirstButton, optionsClosedButton;
 
     [Space]
     [Header("References:")]
@@ -132,6 +135,11 @@ public class MenuHandler : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
             pCon.DisablePlayerController();
+
+            // Clear selected object 
+            EventSystem.current.SetSelectedGameObject(null);
+            // Set a new selected object
+            EventSystem.current.SetSelectedGameObject(pauseFirstSelected);
         }
         else
         {
@@ -176,15 +184,37 @@ public class MenuHandler : MonoBehaviour
         gm.RestartLevel();
     }
 
-    public void OpenCloseOptions()
+    public void OpenOptions()
     {
         AM.PlayConsistentOneShot(clickSound, clickVolume);
-        OptionsMenu.SetActive(!OptionsMenu.activeSelf);
+        OptionsMenu.SetActive(true);
+
+        // Clear selected object 
+        EventSystem.current.SetSelectedGameObject(null);
+        // Set a new selected object
+        EventSystem.current.SetSelectedGameObject(optionsFirstButton);
 
         if (PauseMenu != null)
         {
-            PauseMenu.SetActive(!PauseMenu.activeSelf);
+            PauseMenu.SetActive(true);
         }
+    }
+
+    public void CloseOptions()
+    {
+        AM.PlayConsistentOneShot(clickSound, clickVolume);
+        OptionsMenu.SetActive(false);
+
+        // Clear selected object 
+        EventSystem.current.SetSelectedGameObject(null);
+        // Set a new selected object
+        EventSystem.current.SetSelectedGameObject(optionsClosedButton);
+
+
+        //if (PauseMenu != null)
+        //{
+        //    PauseMenu.SetActive(false);
+        //}
     }
 
     public void QuitToMainMenu()

@@ -181,6 +181,9 @@ public class PlayerHealthSystem : MonoBehaviour
 
         pCon.EnablePlayerController();
         currentPhase = hurtPhase0;
+        fadeTween.Kill();
+        injuredFlashImage.color = idleColor;
+        windDial.HideWindDial();
     }
 
     private void CheckAndTriggerFadeLoop()
