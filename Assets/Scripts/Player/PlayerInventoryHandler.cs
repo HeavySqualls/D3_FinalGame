@@ -1,4 +1,6 @@
 ﻿using UnityEngine;
+//using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 public class PlayerInventoryHandler : MonoBehaviour
 {
@@ -10,9 +12,16 @@ public class PlayerInventoryHandler : MonoBehaviour
     [SerializeField] GameObject itemTooltip;
     //[SerializeField] GameObject statTooltip;
 
+    [Space]
+    [Header("Audio:")]
     bool isInventoryOpen = false;
     [SerializeField] AudioClip openSound;
     [SerializeField] float openSoundVolume = 0.15f;
+
+    //[Space]
+    //[Header("Navigation:")]
+    //[SerializeField] GameObject openInventoryButton;
+
     AudioManager AM;
     PlayerController pCon;
 
@@ -58,6 +67,11 @@ public class PlayerInventoryHandler : MonoBehaviour
                 ShowMouseCursor();
                 EnableInventory();
                 Toolbox.GetInstance().GetPlayerManager().isInventoryOpen = true;
+
+                //// Clear selected object 
+                //EventSystem.current.SetSelectedGameObject(null);
+                //// Set a new selected object
+                //EventSystem.current.SetSelectedGameObject(openInventoryButton);
             }
         }
     }

@@ -3,7 +3,7 @@
 public class SceneChangeController : MonoBehaviour
 {
     [SerializeField] AudioClip winSound;
-    [SerializeField] float winVolume = 0.4f;
+    [SerializeField] float winVolume = 0.6f;
 
     private void OnTriggerEnter2D(Collider2D collision)
     {

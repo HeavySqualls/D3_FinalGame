@@ -13,6 +13,7 @@ public class MenuHandler : MonoBehaviour
     [Header("Pause Menu:")]
     public bool isPauseMenu = false;
     [SerializeField] GameObject PauseMenu;
+    [SerializeField] Text menuTitleText;
     [SerializeField] Button quitToMainMenu;
     [SerializeField] Button resetLevelButton;
     [SerializeField] Button continueButton;
@@ -21,6 +22,9 @@ public class MenuHandler : MonoBehaviour
     [Header("Options Menu:")]
     [SerializeField] GameObject OptionsMenu;
     [SerializeField] Button optionsButton;
+    public GameObject controllerToggle;
+    public GameObject keyboardToggle;
+    bool isController;
 
     [Space]
     [Header("Death Menu:")]
@@ -37,7 +41,14 @@ public class MenuHandler : MonoBehaviour
     [SerializeField] float openMenuVolume = 0.3f;
     AudioManager AM;
 
-    public GameObject pauseFirstSelected, optionsFirstButton, optionsClosedButton;
+    [Space]
+    [Header("Button Navigation:")]
+    [SerializeField] GameObject mainMenuFirstSelected;
+    [SerializeField] GameObject pauseFirstSelected;
+    [SerializeField] GameObject optionsFirstButton;
+    [SerializeField] GameObject optionsClosedButton;
+    [SerializeField] GameObject firstDeathMenuButton;
+
 
     [Space]
     [Header("References:")]
@@ -90,9 +101,13 @@ public class MenuHandler : MonoBehaviour
         }
     }
 
-    public GameObject controllerToggle;
-    public GameObject keyboardToggle;
-    bool isController;
+    public void SetMainMenuFirstSelected() // Called from timeline animations
+    {
+        // Clear selected object 
+        EventSystem.current.SetSelectedGameObject(null);
+        // Set a new selected object
+        EventSystem.current.SetSelectedGameObject(mainMenuFirstSelected);
+    }
 
     public void ToggleControllerInput()
     {
@@ -163,6 +178,11 @@ public class MenuHandler : MonoBehaviour
         DeathMenu.SetActive(true);
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
+
+        // Clear selected object 
+        EventSystem.current.SetSelectedGameObject(null);
+        // Set a new selected object
+        EventSystem.current.SetSelectedGameObject(firstDeathMenuButton);
     }
 
     public void ResetToLastCheckpoint()
@@ -209,12 +229,6 @@ public class MenuHandler : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(null);
         // Set a new selected object
         EventSystem.current.SetSelectedGameObject(optionsClosedButton);
-
-
-        //if (PauseMenu != null)
-        //{
-        //    PauseMenu.SetActive(false);
-        //}
     }
 
     public void QuitToMainMenu()

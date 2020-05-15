@@ -30,7 +30,7 @@ public class PlayerAudioController : MonoBehaviour
     [SerializeField] AudioClip deathSound;
     [SerializeField] float deathVolume = 0.4f;
     [SerializeField] AudioClip failSound;
-    [SerializeField] float failVolume = 0.4f;
+    [SerializeField] float failVolume = 0.5f;
 
     [SerializeField] AudioClip connectSound;
 
