@@ -715,7 +715,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: -7334077262613095898, guid: feddde3e4b277ad40ab61a5ee2cedb08, type: 3}
+  - {fileID: 2100000, guid: 9b96593d6ca43784ba08094a4c36685b, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1199,7 +1199,7 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 575c352774b451446b51767673ad2382, type: 2}
+      objectReference: {fileID: 2100000, guid: 79627f743987ae942ab19a8357fc67cd, type: 2}
     - target: {fileID: -927199367670048503, guid: b76968d626c701a47b2a67e46b60898a,
         type: 3}
       propertyPath: m_Name
@@ -1708,6 +1708,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.x
       value: -27.044
       objectReference: {fileID: 0}
+    - target: {fileID: 6208783848890508669, guid: feddde3e4b277ad40ab61a5ee2cedb08,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 9b96593d6ca43784ba08094a4c36685b, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: feddde3e4b277ad40ab61a5ee2cedb08, type: 3}
 --- !u!82 &1224958016
@@ -3168,6 +3173,8 @@ MonoBehaviour:
   circleCastRadius: 0.5
   castDistance: 1.4
   airDrainAmount: 2
+  forwardMomentum: 1
+  slideTime: 0.1
   p1_damage: 2
   p1_knockback: 25
   p1_knockUp: 0
@@ -3585,6 +3592,7 @@ MonoBehaviour:
   purpleButton: {fileID: 1733948730263646317}
   continueButton: {fileID: 6539630463984708621}
   closeButton: {fileID: 1277829018139879026}
+  continuePrompt: {fileID: 0}
   openCloseSound: {fileID: 8300000, guid: 92fe72d82397f624ebb68f1a19c7082f, type: 3}
   openCloseVolume: 0.15
   continueSound: {fileID: 8300000, guid: b16b50304260b6843ae39c6f7dcde2be, type: 3}
@@ -3891,6 +3899,7 @@ MonoBehaviour:
   dialogue: {fileID: 1277829017504153046}
   dialoguePanelGO: {fileID: 1277829018441761798}
   portraitGO: {fileID: 1277829017518349472}
+  continuePrompts: {fileID: 0}
   purpleButton: {fileID: 5648923826862773574}
   continueButton: {fileID: 5648923827180483015}
   closeButton: {fileID: 5648923828042993398}
@@ -5610,6 +5619,7 @@ MonoBehaviour:
   dialogue: {fileID: 1277829018383908780}
   dialoguePanelGO: {fileID: 1277829017934146693}
   portraitGO: {fileID: 1277829017472843516}
+  continuePrompts: {fileID: 0}
   purpleButton: {fileID: 5648923828498559023}
   continueButton: {fileID: 5648923827008512956}
   closeButton: {fileID: 5648923827601604626}
@@ -18870,11 +18880,14 @@ MonoBehaviour:
   quitGameButton: {fileID: 0}
   isPauseMenu: 1
   PauseMenu: {fileID: 4806209303958520901}
+  menuTitleText: {fileID: 0}
   quitToMainMenu: {fileID: 9092936921981692058}
   resetLevelButton: {fileID: 4806209304765190031}
   continueButton: {fileID: 4806209303022446941}
   OptionsMenu: {fileID: 9092936922565057450}
   optionsButton: {fileID: 9092936922383791273}
+  controllerToggle: {fileID: 0}
+  keyboardToggle: {fileID: 0}
   DeathMenu: {fileID: 3286431771656223916}
   respawnButton: {fileID: 0}
   hoverSound: {fileID: 8300000, guid: edaff45f37074774c96de93655c3c5db, type: 3}
@@ -18883,9 +18896,12 @@ MonoBehaviour:
   clickVolume: 0.4
   openMenuSound: {fileID: 8300000, guid: 92fe72d82397f624ebb68f1a19c7082f, type: 3}
   openMenuVolume: 0.2
+  mainMenuFirstSelected: {fileID: 0}
+  pauseFirstSelected: {fileID: 0}
+  optionsFirstButton: {fileID: 0}
+  optionsClosedButton: {fileID: 0}
+  firstDeathMenuButton: {fileID: 0}
   timeLine: {fileID: 0}
-  controllerToggle: {fileID: 0}
-  keyboardToggle: {fileID: 0}
 --- !u!222 &4806209303958520888
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -25653,7 +25669,9 @@ MonoBehaviour:
   bootSparks: {fileID: 1672584336862672876, guid: 317f72acf417766478ad62038ac340ae,
     type: 3}
   groundCheckDistance: 0.5
-  groundCheck: {fileID: 0}
+  onGroundCheck: {fileID: 0}
+  toeGroundCheck: {fileID: 0}
+  heelGroundCheck: {fileID: 0}
   groundSlideSpeed: 18
   isGroundSliding: 0
   wallCheckDistance: 0.9
@@ -25675,6 +25693,7 @@ MonoBehaviour:
   animator: {fileID: 7036694796352115935}
   isHit: 0
   isOnGround: 0
+  hasJumpedResetDelay: 0.5
 --- !u!212 &7036694796352115930
 SpriteRenderer:
   m_ObjectHideFlags: 0
