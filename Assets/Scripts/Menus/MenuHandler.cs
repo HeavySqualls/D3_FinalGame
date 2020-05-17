@@ -216,7 +216,7 @@ public class MenuHandler : MonoBehaviour
 
         if (PauseMenu != null)
         {
-            PauseMenu.SetActive(true);
+            PauseMenu.SetActive(false);
         }
     }
 
@@ -224,6 +224,11 @@ public class MenuHandler : MonoBehaviour
     {
         AM.PlayConsistentOneShot(clickSound, clickVolume);
         OptionsMenu.SetActive(false);
+
+        if (PauseMenu != null)
+        {
+            PauseMenu.SetActive(true);
+        }
 
         // Clear selected object 
         EventSystem.current.SetSelectedGameObject(null);
