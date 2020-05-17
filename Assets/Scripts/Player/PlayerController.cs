@@ -208,7 +208,6 @@ public class PlayerController : PhysicsObject
         {
             velocity.y = -terminalVelocity;
         }
-
     }
 
     public float GetAnimTime() //TODO: Figure out why GetCurrentAnimatorClipInfo isn't returning the correct animation clip

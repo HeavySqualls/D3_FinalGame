@@ -29,7 +29,7 @@ public class CrabwormTriggerZones : MonoBehaviour
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (isActive)
+        if (isActive && !crabwormCon.isDead)
         {
             if (other.gameObject.tag == "Player")
             {
