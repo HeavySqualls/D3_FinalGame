@@ -72,7 +72,7 @@ public class TutorialController : MonoBehaviour
 
     private void Update()
     {
-        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight) && open)
+        if ((Input.GetButtonDown(pCon.controls.interact) || Controls.IsRight || Input.GetButtonDown(pCon.controls.jump)) && open)
         {
             AM.PlayConsistentOneShot(continueSound, continueVolume);
             open = false;

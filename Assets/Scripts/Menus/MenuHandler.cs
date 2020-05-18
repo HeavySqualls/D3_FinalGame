@@ -121,6 +121,9 @@ public class MenuHandler : MonoBehaviour
     {
         isController = false;
 
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+
         Toolbox.GetInstance().GetPlayerManager().SetControlType(isController);
         print("keyboard switch toggled");
     }
@@ -147,8 +150,13 @@ public class MenuHandler : MonoBehaviour
         if (PauseMenu.activeSelf && !OptionsMenu.activeSelf)
         {
             Time.timeScale = 0;
-            Cursor.visible = true;
-            Cursor.lockState = CursorLockMode.None;
+
+            if (!pCon.isController || Toolbox.GetInstance().GetPlayerManager().isInventoryOpen)
+            {
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+
             pCon.DisablePlayerController();
 
             // Clear selected object 
@@ -176,8 +184,12 @@ public class MenuHandler : MonoBehaviour
     private void EnableDeathMenu()
     {
         DeathMenu.SetActive(true);
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+
+        if (!pCon.isController)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
 
         // Clear selected object 
         EventSystem.current.SetSelectedGameObject(null);

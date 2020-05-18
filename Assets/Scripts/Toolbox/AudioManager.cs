@@ -211,6 +211,7 @@ public class AudioManager : MonoBehaviour
 
     private IEnumerator FadeInAudio(AudioSource _source, AudioClip _clip, float _incVol, float _incTime, float _maxVolume)
     {
+        Debug.Log("Fade in: " + _clip.name);
         _source.clip = _clip;
         _source.volume = 0;
         _source.Play();
@@ -271,7 +272,7 @@ public class AudioManager : MonoBehaviour
         _freeSource.volume = _maxVolume;
         _playingSource.volume = 0;
         _playingSource.Stop();
-        _playingSource.clip = null;
+        //_playingSource.clip = null;
 
         yield break;
     }

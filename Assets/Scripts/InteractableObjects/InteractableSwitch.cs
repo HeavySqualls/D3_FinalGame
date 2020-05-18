@@ -110,6 +110,7 @@ public class InteractableSwitch : MonoBehaviour
                 ts.TurnOffSpillPipe();
             }
 
+            trigger.enabled = false;
             isOpen = true;
         }
 

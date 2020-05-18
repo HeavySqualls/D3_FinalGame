@@ -98,6 +98,16 @@ public class NarrativeController : MonoBehaviour
                 AdvanceNarrative();
             }
         }
+
+        if (Input.GetButtonDown(pCon.controls.ability_1) && N != null && Time.timeScale == 1)
+        {
+            if (tutorialController.isOpen)
+            {
+                tutorialController.HideTutorial();
+            }
+
+            EndResetNarrativeController();
+        }
     }
 
     public void SetUpNarrativeController (sNarrative _convo, NarrativeTrigger _trigger)
@@ -163,8 +173,11 @@ public class NarrativeController : MonoBehaviour
             tutorialsRemaining = false;
         }
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+        if (!pCon.isController)
+        {
+            Cursor.visible = true;
+            Cursor.lockState = CursorLockMode.None;
+        }
 
         AdvanceNarrative();
     }

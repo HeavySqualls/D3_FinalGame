@@ -28,7 +28,8 @@ public class CinematicCanvasController : MonoBehaviour
 
                 // if we have recieved the correct button input, and if the cinemtic timeline has stopped playing, and if the cinematic camera
                 // is still active
-                if ((Input.GetButtonDown(Toolbox.GetInstance().GetPlayerManager().GetPlayerController().controls.interact) || Controls.IsDown)
+                if ((Input.GetButtonDown(Toolbox.GetInstance().GetPlayerManager().GetPlayerController().controls.interact) || 
+                    Controls.IsDown || Input.GetButtonDown(Toolbox.GetInstance().GetPlayerManager().GetPlayerController().controls.jump))
                    && cinematicTrigger.timeLine.state != PlayState.Playing && cinematicTrigger.cinematicCam.activeSelf == true)
                 {
                     // if the cinematic trigger is set up to remove the black bars after the cinematic is over, 
