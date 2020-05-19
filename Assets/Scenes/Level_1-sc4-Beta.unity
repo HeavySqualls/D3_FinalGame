@@ -769,11 +769,14 @@ MonoBehaviour:
   quitGameButton: {fileID: 0}
   isPauseMenu: 0
   PauseMenu: {fileID: 0}
+  menuTitleText: {fileID: 0}
   quitToMainMenu: {fileID: 1481694817}
   resetLevelButton: {fileID: 0}
   continueButton: {fileID: 0}
   OptionsMenu: {fileID: 0}
   optionsButton: {fileID: 0}
+  controllerToggle: {fileID: 0}
+  keyboardToggle: {fileID: 0}
   DeathMenu: {fileID: 0}
   respawnButton: {fileID: 0}
   hoverSound: {fileID: 8300000, guid: b16b50304260b6843ae39c6f7dcde2be, type: 3}
@@ -782,9 +785,12 @@ MonoBehaviour:
   clickVolume: 0.3
   openMenuSound: {fileID: 0}
   openMenuVolume: 0.3
+  mainMenuFirstSelected: {fileID: 0}
+  pauseFirstSelected: {fileID: 0}
+  optionsFirstButton: {fileID: 0}
+  optionsClosedButton: {fileID: 0}
+  firstDeathMenuButton: {fileID: 0}
   timeLine: {fileID: 0}
-  controllerToggle: {fileID: 0}
-  keyboardToggle: {fileID: 0}
 --- !u!1 &390419503
 GameObject:
   m_ObjectHideFlags: 0
@@ -6480,6 +6486,11 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7459008352993689752, guid: dd28e3e3bd10e2d46b1eec9c9bcdc1fc,
+        type: 3}
+      propertyPath: sceneTrack
+      value: 
+      objectReference: {fileID: 8300000, guid: 3b3ef27f5d674c84c885e2cdcae13860, type: 3}
     - target: {fileID: 7459008352993689753, guid: dd28e3e3bd10e2d46b1eec9c9bcdc1fc,
         type: 3}
       propertyPath: m_LocalPosition.x
