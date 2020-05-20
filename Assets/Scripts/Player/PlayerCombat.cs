@@ -226,14 +226,15 @@ public class PlayerCombat : MonoBehaviour
     {
         if (canCast)
         {
-            RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, pCon.accessibleDirection, castDistance, interactableLayerMask);
+            Vector2 punchDir = pCon.spriteRenderer.flipX ? Vector2.left : Vector2.right;
+            RaycastHit2D[] hits = Physics2D.BoxCastAll(gameObject.transform.position, boxCast, 0, punchDir, castDistance, interactableLayerMask) ;
 
             //if (!isCasting)
             //{
             //    GameObject hitBox = GameObject.CreatePrimitive(PrimitiveType.Cube);
             //    hitBox.name = "PUNCH BOX";
-            //    hitBox.transform.localScale = new Vector3(boxCast.x /2 + castDistance , boxCast.y, 1);
-            //    hitBox.transform.position = gameObject.transform.position + (Vector3)pCon.accessibleDirection * hitBox.transform.localScale.x / 2;
+            //    hitBox.transform.localScale = new Vector3(boxCast.x / 2 + castDistance, boxCast.y, 1);
+            //    hitBox.transform.position = gameObject.transform.position + (Vector3)(punchDir) * hitBox.transform.localScale.x / 2;
             //    hitBox.transform.SetParent(gameObject.transform);
 
 
@@ -249,7 +250,7 @@ public class PlayerCombat : MonoBehaviour
                 {
                     print("hit: " + recieveDamage.name);
                     pAudio.PlayConnectSound(currentAttackNum);
-                    recieveDamage.GetHit(pCon.accessibleDirection, damage, knockback, knockup, stunTime);
+                    recieveDamage.GetHit(punchDir, damage, knockback, knockup, stunTime);
                     
                     canCast = false;
                     //pCon.PlayerKnocked(-pCon.accessibleDirection, 20, 0f, 0.2f);

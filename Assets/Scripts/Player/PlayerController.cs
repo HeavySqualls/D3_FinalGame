@@ -132,7 +132,7 @@ public class PlayerController : PhysicsObject
     private PlayerAudioController pAudio;
     private PlayerHealthSystem pHealth;
     private RipplePostProcessor ripPP;
-    private SpriteRenderer spriteRenderer;
+    internal SpriteRenderer spriteRenderer;
     private LayerMask groundLayerMask;
     private LayerMask wallLayerMask;
     private int groundLayer = 8;
@@ -175,15 +175,34 @@ public class PlayerController : PhysicsObject
     {
         base.Update();
 
+        //if controller
+        //Input.GetAxisRaw(controls.xMoveKeys) != vector2.zero;
+        //isontroller = false
+
+        //else
+        //Input.GetAxisRaw(controls.xMoveController)!= vector2.zero;
+
+        //iscontroller true
+
         if (!isDisabled)
         {
             if (isController)
             {
                 horizontalInput = Input.GetAxisRaw(controls.xMoveController);
+
+                if (!Mathf.Approximately(Input.GetAxisRaw(controls.xMoveKeys), 0f))
+                {
+                    isController = false;
+                }
             }
             else
             {
                 horizontalInput = Input.GetAxisRaw(controls.xMoveKeys);
+
+                if (!Mathf.Approximately(Input.GetAxisRaw(controls.xMoveController), 0f))
+                {
+                    isController = true;
+                }
             }
 
             isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
