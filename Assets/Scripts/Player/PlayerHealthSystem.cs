@@ -51,6 +51,7 @@ public class PlayerHealthSystem : MonoBehaviour
     PlayerController pCon;
     PlayerFeedback pFeedback;
     PlayerAudioController pAudio;
+    PlayerHandleInteract pInteract;
     Animator animator;
 
     private void OnEnable()
@@ -68,6 +69,7 @@ public class PlayerHealthSystem : MonoBehaviour
         pCon = GetComponent<PlayerController>();
         pAudio = GetComponent<PlayerAudioController>();
         pFeedback = GetComponent<PlayerFeedback>();
+        pInteract = GetComponent<PlayerHandleInteract>();
         windDial = Toolbox.GetInstance().GetPlayerManager().GetWindDial();
         animator = GetComponent<Animator>();
 
@@ -179,6 +181,7 @@ public class PlayerHealthSystem : MonoBehaviour
         else
             Debug.LogError("No respawn location assigned!");
 
+        pInteract.UnAssignSwitchReference();
         pCon.EnablePlayerController();
         currentPhase = hurtPhase0;
         fadeTween.Kill();

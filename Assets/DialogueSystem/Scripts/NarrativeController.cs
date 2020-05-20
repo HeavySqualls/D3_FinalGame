@@ -60,6 +60,16 @@ public class NarrativeController : MonoBehaviour
     private int activeLineIndex = 0;
     private PlayerController pCon;
 
+    private void OnEnable()
+    {
+        SpawnManager.onPlayerKilled += EndResetNarrativeController;
+    }
+
+    private void OnDisable()
+    {
+        SpawnManager.onPlayerKilled -= EndResetNarrativeController;
+    }
+
     private void Awake()
     {
         Toolbox.GetInstance().GetDialogueSystemManager().SetNarrativeController(this);

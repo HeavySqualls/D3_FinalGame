@@ -22,8 +22,8 @@ public class MenuHandler : MonoBehaviour
     [Header("Options Menu:")]
     [SerializeField] GameObject OptionsMenu;
     [SerializeField] Button optionsButton;
-    public GameObject controllerToggle;
-    public GameObject keyboardToggle;
+    //public GameObject controllerToggle;
+    //public GameObject keyboardToggle;
     bool isController;
 
     [Space]
@@ -109,24 +109,24 @@ public class MenuHandler : MonoBehaviour
         EventSystem.current.SetSelectedGameObject(mainMenuFirstSelected);
     }
 
-    public void ToggleControllerInput()
-    {
-        isController = true;
+    //public void ToggleControllerInput()
+    //{
+    //    isController = true;
 
-        Toolbox.GetInstance().GetPlayerManager().SetControlType(isController);
-        print("controller switch toggled");
-    }
+    //    Toolbox.GetInstance().GetPlayerManager().SetControlType(isController);
+    //    print("controller switch toggled");
+    //}
 
-    public void ToggleKeyboardInput()
-    {
-        isController = false;
+    //public void ToggleKeyboardInput()
+    //{
+    //    isController = false;
 
-        Cursor.visible = true;
-        Cursor.lockState = CursorLockMode.None;
+    //    Cursor.visible = true;
+    //    Cursor.lockState = CursorLockMode.None;
 
-        Toolbox.GetInstance().GetPlayerManager().SetControlType(isController);
-        print("keyboard switch toggled");
-    }
+    //    Toolbox.GetInstance().GetPlayerManager().SetControlType(isController);
+    //    print("keyboard switch toggled");
+    //}
 
     public void StartGame()
     {
@@ -202,6 +202,7 @@ public class MenuHandler : MonoBehaviour
         AM.PlayConsistentOneShot(clickSound, clickVolume);
         DeathMenu.SetActive(false);
         PauseMenu.SetActive(false);
+        AM.MuteAudioSources(false);
         SpawnManager.ResetLevelObjects();
         Time.timeScale = 1;
         Cursor.visible = false;

@@ -15,6 +15,7 @@ public class AudioManager : MonoBehaviour
     [SerializeField] float levelMusicVolume = 0.4f;
     [SerializeField] float musicVolIncrementation = 0.005f;
     [SerializeField] float musicIncrementTime = 0.05f;
+    [SerializeField] float jingleClipVol = 0.5f;
     public AudioClip currentMusicClip;
     AudioSource currentMusicAudioSource;
     AudioSource musicAudioSource1;
@@ -325,14 +326,18 @@ public class AudioManager : MonoBehaviour
             if (cutoutMusic)
                 //FadeOutAudio(musicAudioSource1, 1f, 0.1f);
                 musicAudioSource1.Stop();
+
+            musicAudioSource2.volume = jingleClipVol;
+            musicAudioSource2.PlayOneShot(currentMusicClip);
         }
         else
         {
             if (cutoutMusic)
                 //FadeOutAudio(musicAudioSource2, 1f, 0.1f);
                 musicAudioSource2.Stop();
-        }
 
-        musicAudioSource2.PlayOneShot(currentMusicClip);
+            musicAudioSource1.volume = jingleClipVol;
+            musicAudioSource1.PlayOneShot(currentMusicClip);
+        }
     }
 }
