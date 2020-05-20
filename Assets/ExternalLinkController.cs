@@ -2,9 +2,9 @@
 
 public class ExternalLinkController : MonoBehaviour
 {
-    public void Facebook()
+    public void Itch()
     {
-        Application.OpenURL("https://www.facebook.com/DreamGrenade");
+        Application.OpenURL("https://dreamgrenadegames.itch.io/wind-digger");
     }
     public void Website()
     {
