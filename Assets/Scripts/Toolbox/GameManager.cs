@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
 
     // ------ SCENE MANAGEMENT ------ //
 
-    public void LoadCustomScene(int _sceneToLoad)
+    public void LoadCustomScene(string _sceneToLoad)
     {
         UnityEngine.SceneManagement.SceneManager.LoadScene(_sceneToLoad);
     }
