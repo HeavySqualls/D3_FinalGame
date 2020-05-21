@@ -418,7 +418,7 @@ public class NarrativeController : MonoBehaviour
 
     private IEnumerator HoldEnablePCON()
     {
-        yield return new WaitForSeconds(0.05f);
+        yield return new WaitForSeconds(0.5f);
 
         pCon.EnablePlayerController();
     }

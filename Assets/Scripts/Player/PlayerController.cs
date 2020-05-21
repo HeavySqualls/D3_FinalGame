@@ -11,6 +11,7 @@ public class PlayerController : PhysicsObject
     [Header("Input:")]
     public bool isDisabled = false;
     public bool isController = false;
+    public bool inCinematic = false;
 
     [Space]
     [Header("Accel & Deccel Speeds:")]
@@ -184,6 +185,8 @@ public class PlayerController : PhysicsObject
 
         //iscontroller true
 
+        CheckSurroundings();
+
         if (!isDisabled)
         {
             if (isController)
@@ -206,7 +209,7 @@ public class PlayerController : PhysicsObject
             }
 
             isInputLeftORRight = horizontalInput > 0f || horizontalInput < 0f;
-            CheckSurroundings();
+
             CheckIfWallSliding();
             TrackAirTime();
             ComputeVelocity();
@@ -925,7 +928,7 @@ public class PlayerController : PhysicsObject
 
     private void Jump()
     {
-        if (!magBootsOn && !isDisabled)
+        if (!magBootsOn && !isDisabled && !inCinematic)
         {
             if (Input.GetButtonDown(controls.jump))
             {
@@ -1192,7 +1195,7 @@ public class PlayerController : PhysicsObject
 
     public void DisablePlayerController()
     {
-        //windAffectMovement = false;
+        animator.SetBool("grounded", true);
         SetPlayerVelocityToZero();
         isDisabled = true;
         isMoving = false;

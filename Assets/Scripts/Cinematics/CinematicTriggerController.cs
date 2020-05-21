@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using UnityEngine.Playables;
 
 public class CinematicTriggerController : MonoBehaviour
@@ -45,8 +46,16 @@ public class CinematicTriggerController : MonoBehaviour
         }
 
         pCon.EnablePlayerController();
+        StartCoroutine(HoldEnablePCON());
 
         boxColl.enabled = false;
+    }
+
+    private IEnumerator HoldEnablePCON()
+    {
+        yield return new WaitForSeconds(0.5f);
+
+        pCon.inCinematic = false;
     }
 
     void OnTriggerEnter2D(Collider2D other)
@@ -76,6 +85,7 @@ public class CinematicTriggerController : MonoBehaviour
         if (!isFlowCutscene && pCon != null)
         {
             pCon.DisablePlayerController();
+            pCon.inCinematic = true;
         }
     }
 }
