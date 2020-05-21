@@ -411,8 +411,15 @@ public class NarrativeController : MonoBehaviour
             else
             {
                 // Re-Enable player 
-                pCon.EnablePlayerController();
+                StartCoroutine(HoldEnablePCON());
             }
         }
+    }
+
+    private IEnumerator HoldEnablePCON()
+    {
+        yield return new WaitForSeconds(0.05f);
+
+        pCon.EnablePlayerController();
     }
 }
